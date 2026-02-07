@@ -610,7 +610,7 @@
       "title": "Account Settings",
       "description": "A container component that displays account settings including user profile, change email, and appearance.",
       "dependencies": ["@better-auth-ui/react@*"],
-      "registryDependencies": ["user-profile", "change-email", "appearance", "accounts"],
+      "registryDependencies": ["user-profile", "change-email", "appearance", "manage-accounts"],
       "files": [
         {
           "path": "src/components/settings/account/account-settings.tsx",
@@ -629,7 +629,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/account/accounts.tsx",
+          "path": "src/components/settings/account/manage-accounts.tsx",
           "type": "registry:component"
         }
       ]
@@ -705,9 +705,9 @@
       ]
     },
     {
-      "name": "accounts",
+      "name": "manage-accounts",
       "type": "registry:component",
-      "title": "Accounts",
+      "title": "Manage Accounts",
       "description": "Display and manage multiple signed-in accounts for multi-session support. Shows all device sessions, allows switching between accounts, and signing out of individual accounts.",
       "dependencies": [
         "@better-auth-ui/react@*",
@@ -717,7 +717,7 @@
       "registryDependencies": ["button", "card", "spinner", "user-view"],
       "files": [
         {
-          "path": "src/components/settings/account/accounts.tsx",
+          "path": "src/components/settings/account/manage-accounts.tsx",
           "type": "registry:component"
         },
         {

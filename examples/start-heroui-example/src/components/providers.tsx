@@ -32,7 +32,7 @@ export function Providers({ children }: { children: ReactNode }) {
       >
         {children}
 
-        <Toast.Container />
+        <Toast.Provider />
       </AuthProvider>
     </RouterProvider>
   )
