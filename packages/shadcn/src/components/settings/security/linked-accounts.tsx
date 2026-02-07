@@ -8,22 +8,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Item } from "@/components/ui/item"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-import { ConnectedAccount } from "./connected-account"
+import { LinkedAccount } from "./linked-account"
 
-export type ConnectedAccountsProps = {
+export type LinkedAccountsProps = {
   className?: string
 }
 
 /**
- * Render a card showing linked social accounts and available social providers to connect.
+ * Render a card showing linked social accounts and available social providers to link.
  *
  * Linked accounts (excluding the "credential" provider) are shown with an unlink control;
- * available providers are shown with a connect control. Button states and labels reflect
+ * available providers are shown with a link control. Button states and labels reflect
  * ongoing link/unlink activity and use localization for provider-specific text.
  *
- * @returns A JSX element containing the connected accounts card
+ * @returns A JSX element containing the linked accounts card
  */
-export function ConnectedAccounts({ className }: ConnectedAccountsProps) {
+export function LinkedAccounts({ className }: LinkedAccountsProps) {
   const { localization, socialProviders } = useAuth()
   const { data: accounts, isPending, error } = useListAccounts()
 
@@ -35,7 +35,7 @@ export function ConnectedAccounts({ className }: ConnectedAccountsProps) {
     <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
       <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">
-          {localization.settings.connectedAccounts}
+          {localization.settings.linkedAccounts}
         </CardTitle>
       </CardHeader>
 
@@ -47,7 +47,7 @@ export function ConnectedAccounts({ className }: ConnectedAccountsProps) {
             {accounts
               ?.filter((account) => account.providerId !== "credential")
               .map((account) => (
-                <ConnectedAccount
+                <LinkedAccount
                   key={account.id}
                   account={account}
                   provider={account.providerId}
@@ -55,7 +55,7 @@ export function ConnectedAccounts({ className }: ConnectedAccountsProps) {
               ))}
 
             {socialProviders?.map((provider) => {
-              return <ConnectedAccount key={provider} provider={provider} />
+              return <LinkedAccount key={provider} provider={provider} />
             })}
           </>
         )}

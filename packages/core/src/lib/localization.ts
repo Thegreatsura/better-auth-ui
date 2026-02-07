@@ -127,17 +127,17 @@ export const localization = {
     /** @remarks `"Active Sessions"` */
     activeSessions: "Active Sessions",
 
-    /** @remarks `"Connect"` */
-    connect: "Connect",
-
-    /** @remarks `"Connected Accounts"` */
-    connectedAccounts: "Connected Accounts",
-
     /** @remarks `"Current Session"` */
     currentSession: "Current Session",
 
-    /** @remarks `"Connect {{provider}}"` */
-    connectProvider: "Connect {{provider}}",
+    /** @remarks `"Link"` */
+    link: "Link",
+
+    /** @remarks `"Linked Accounts"` */
+    linkedAccounts: "Linked Accounts",
+
+    /** @remarks `"Link {{provider}}"` */
+    linkProvider: "Link {{provider}}",
 
     /** @remarks `"Appearance"` */
     appearance: "Appearance",

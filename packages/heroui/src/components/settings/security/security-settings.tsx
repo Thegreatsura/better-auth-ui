@@ -4,7 +4,7 @@ import type { ComponentProps } from "react"
 import { cn } from "../../../lib/utils"
 import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
-import { ConnectedAccounts } from "./connected-accounts"
+import { LinkedAccounts } from "./linked-accounts"
 
 export type SecuritySettingsProps = {
   className?: string
@@ -12,9 +12,9 @@ export type SecuritySettingsProps = {
 }
 
 /**
- * Renders the security settings layout including password management, connected accounts, and active sessions.
+ * Renders the security settings layout including password management, linked accounts, and active sessions.
  *
- * ChangePassword is rendered when password authentication is enabled; ConnectedAccounts is rendered when social providers are present.
+ * ChangePassword is rendered when password authentication is enabled; LinkedAccounts is rendered when social providers are present.
  *
  * @param className - Optional additional CSS class names for the outer container.
  * @returns The security settings container as a JSX element.
@@ -31,7 +31,7 @@ export function SecuritySettings({
       {...props}
     >
       {emailAndPassword?.enabled && <ChangePassword />}
-      {socialProviders?.length && <ConnectedAccounts />}
+      {socialProviders?.length && <LinkedAccounts />}
       <ActiveSessions />
     </div>
   )

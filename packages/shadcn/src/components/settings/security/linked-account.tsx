@@ -18,22 +18,22 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 
-export type ConnectedAccountProps = {
+export type LinkedAccountProps = {
   account?: Account
   provider: SocialProvider
 }
 
 /**
- * Render a single connected social account card with provider info and unlink control.
+ * Render a single linked social account card with provider info and unlink control.
  *
  * Fetches additional account information from the provider using the accountInfo API
  * and displays the provider name, account details, and an unlink button.
  *
  * @param account - The account object containing id, accountId, and providerId
  * @param provider - The provider id
- * @returns A JSX element containing the connected account card
+ * @returns A JSX element containing the linked account card
  */
-export function ConnectedAccount({ account, provider }: ConnectedAccountProps) {
+export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
 
   const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo(
@@ -81,7 +81,7 @@ export function ConnectedAccount({ account, provider }: ConnectedAccountProps) {
           <span className="text-xs text-muted-foreground">
             {account
               ? displayName
-              : localization.settings.connectProvider.replace(
+              : localization.settings.linkProvider.replace(
                   "{{provider}}",
                   providerName
                 )}
@@ -119,14 +119,14 @@ export function ConnectedAccount({ account, provider }: ConnectedAccountProps) {
             })
           }
           disabled={isLinking}
-          aria-label={localization.settings.connectProvider.replace(
+          aria-label={localization.settings.linkProvider.replace(
             "{{provider}}",
             providerName
           )}
         >
           {isLinking ? <Spinner /> : <LinkIcon className="size-3" />}
 
-          {localization.settings.connect}
+          {localization.settings.link}
         </Button>
       )}
     </Item>
