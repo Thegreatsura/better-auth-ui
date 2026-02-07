@@ -4,7 +4,14 @@ import {
   useSession
 } from "@better-auth-ui/react"
 import { CirclePlus } from "@gravity-ui/icons"
-import { buttonVariants, Card, type CardProps, cn, toast } from "@heroui/react"
+import {
+  buttonVariants,
+  Card,
+  type CardProps,
+  cn,
+  Link,
+  toast
+} from "@heroui/react"
 import { ManageAccount } from "./manage-account"
 
 export type ManageAccountsProps = {
@@ -24,7 +31,7 @@ export function ManageAccounts({
   className,
   ...props
 }: ManageAccountsProps & CardProps) {
-  const { basePaths, localization, viewPaths, Link } = useAuth()
+  const { basePaths, localization, viewPaths } = useAuth()
   const { data: sessionData } = useSession()
 
   const { data: deviceSessions, isPending } = useListDeviceSessions({
@@ -64,7 +71,7 @@ export function ManageAccounts({
       <Card.Footer>
         <Link
           href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-          className={cn(buttonVariants({ variant: "secondary" }))}
+          className={cn("gap-2", buttonVariants({ variant: "secondary" }))}
         >
           <CirclePlus />
 
