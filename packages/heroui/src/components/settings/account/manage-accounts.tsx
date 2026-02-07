@@ -29,7 +29,7 @@ export function ManageAccounts({
 
   const { data: deviceSessions, isPending } = useListDeviceSessions({
     throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message, { timeout: 3000 })
+      if (error.error) toast.danger(error.error.message)
       return false
     }
   })

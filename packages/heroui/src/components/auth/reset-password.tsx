@@ -39,9 +39,9 @@ export function ResetPassword({
 
   const { mutate: resetPassword, isPending } = useResetPassword({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () => {
-      toast.success(localization.auth.passwordResetSuccess, { timeout: 3000 })
+      toast.success(localization.auth.passwordResetSuccess)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
     }
   })
@@ -55,9 +55,7 @@ export function ResetPassword({
     const token = searchParams.get("token") as string
 
     if (!token) {
-      toast.danger(localization.auth.invalidResetPasswordToken, {
-        timeout: 3000
-      })
+      toast.danger(localization.auth.invalidResetPasswordToken)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
     }
   }, [
@@ -74,9 +72,7 @@ export function ResetPassword({
     const token = searchParams.get("token") as string
 
     if (!token) {
-      toast.danger(localization.auth.invalidResetPasswordToken, {
-        timeout: 3000
-      })
+      toast.danger(localization.auth.invalidResetPasswordToken)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
       return
     }
@@ -86,7 +82,7 @@ export function ResetPassword({
     const confirmPassword = formData.get("confirmPassword") as string
 
     if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
-      toast.danger(localization.auth.passwordsDoNotMatch, { timeout: 3000 })
+      toast.danger(localization.auth.passwordsDoNotMatch)
       return
     }
 

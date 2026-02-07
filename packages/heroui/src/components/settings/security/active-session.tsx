@@ -23,11 +23,9 @@ export function ActiveSession({ session }: ActiveSessionProps) {
 
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () =>
-      toast.success(localization.settings.revokeSessionSuccess, {
-        timeout: 3000
-      })
+      toast.success(localization.settings.revokeSessionSuccess)
   })
 
   const isCurrentSession = session.token === sessionData?.session.token

@@ -24,7 +24,7 @@ export function ActiveSessions({
 
   const { data: sessions, isPending } = useListSessions({
     throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message, { timeout: 3000 })
+      if (error.error) toast.danger(error.error.message)
       return false
     }
   })

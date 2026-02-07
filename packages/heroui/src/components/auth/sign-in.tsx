@@ -61,9 +61,9 @@ export function SignIn({
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () =>
-      toast.success(localization.auth.verificationEmailSent, { timeout: 3000 })
+      toast.success(localization.auth.verificationEmailSent)
   })
 
   const { mutate: signInEmail, isPending: signInPending } = useSignInEmail({
@@ -72,7 +72,6 @@ export function SignIn({
 
       if (error.error?.code === "EMAIL_NOT_VERIFIED") {
         toast.danger(error.error?.message || error.message, {
-          timeout: 3000,
           actionProps: {
             children: localization.auth.resend,
             onClick: () =>
@@ -83,7 +82,7 @@ export function SignIn({
           }
         })
       } else {
-        toast.danger(error.error?.message || error.message, { timeout: 3000 })
+        toast.danger(error.error?.message || error.message)
       }
     },
     onSuccess: () => navigate({ to: redirectTo })
@@ -91,7 +90,7 @@ export function SignIn({
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 })
+      toast.danger(error.error?.message || error.message)
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

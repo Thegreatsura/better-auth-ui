@@ -40,9 +40,9 @@ export function ForgotPassword({
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () => {
-      toast.success(localization.auth.passwordResetEmailSent, { timeout: 3000 })
+      toast.success(localization.auth.passwordResetEmailSent)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
     }
   })

@@ -33,7 +33,7 @@ export function ConnectedAccount({ account, provider }: ConnectedAccountProps) {
     {
       enabled: !!account,
       throwOnError: (error) => {
-        if (error.error) toast.danger(error.error.message, { timeout: 3000 })
+        if (error.error) toast.danger(error.error.message)
         return false
       }
     }
@@ -41,14 +41,14 @@ export function ConnectedAccount({ account, provider }: ConnectedAccountProps) {
 
   const { mutate: linkSocial, isPending: isLinking } = useLinkSocial({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 })
+      toast.danger(error.error?.message || error.message)
   })
 
   const { mutate: unlinkAccount, isPending: isUnlinking } = useUnlinkAccount({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () =>
-      toast.success(localization.settings.accountUnlinked, { timeout: 3000 })
+      toast.success(localization.settings.accountUnlinked)
   })
 
   const ProviderIcon = providerIcons[provider]

@@ -39,17 +39,15 @@ export function ManageAccount({
   const { mutate: setActiveSession, isPending: isSwitching } =
     useSetActiveSession({
       onError: (error) =>
-        toast.danger(error.error?.message || error.message, { timeout: 3000 })
+        toast.danger(error.error?.message || error.message)
     })
 
   const { mutate: revokeSession, isPending: isRevoking } =
     useRevokeMultiSession({
       onError: (error) =>
-        toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+        toast.danger(error.error?.message || error.message),
       onSuccess: () =>
-        toast.success(localization.settings.revokeSessionSuccess, {
-          timeout: 3000
-        })
+        toast.success(localization.settings.revokeSessionSuccess)
     })
 
   const isActive = deviceSession?.session.userId === sessionData?.session.userId

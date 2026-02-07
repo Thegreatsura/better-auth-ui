@@ -19,7 +19,7 @@ export function SignOut({ className, ...props }: SignOutProps & CardProps) {
 
   const { mutate: signOut } = useSignOut({
     onError: (error) => {
-      toast.danger(error.error?.message || error.message, { timeout: 3000 })
+      toast.danger(error.error?.message || error.message)
       navigate({
         to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
         replace: true

@@ -40,11 +40,9 @@ export function UserProfile({
 
   const { mutate: updateUser, isPending } = useUpdateUser({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+      toast.danger(error.error?.message || error.message),
     onSuccess: () =>
-      toast.success(localization.settings.profileUpdatedSuccess, {
-        timeout: 3000
-      })
+      toast.success(localization.settings.profileUpdatedSuccess)
   })
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {

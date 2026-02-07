@@ -61,16 +61,16 @@ export function MagicLink({
   const { mutate: signInMagicLink, isPending: magicLinkPending } =
     useSignInMagicLink({
       onError: (error) =>
-        toast.danger(error.error?.message || error.message, { timeout: 3000 }),
+        toast.danger(error.error?.message || error.message),
       onSuccess: () => {
         setEmail("")
-        toast.success(localization.auth.magicLinkSent, { timeout: 3000 })
+        toast.success(localization.auth.magicLinkSent)
       }
     })
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) =>
-      toast.danger(error.error?.message || error.message, { timeout: 3000 })
+      toast.danger(error.error?.message || error.message)
   })
 
   const isPending = magicLinkPending || socialPending
