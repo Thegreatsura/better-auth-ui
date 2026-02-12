@@ -40,15 +40,12 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   )
 
   const { mutate: linkSocial, isPending: isLinking } = useLinkSocial({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message)
   })
 
   const { mutate: unlinkAccount, isPending: isUnlinking } = useUnlinkAccount({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message),
-    onSuccess: () =>
-      toast.success(localization.settings.accountUnlinked)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.settings.accountUnlinked)
   })
 
   const ProviderIcon = providerIcons[provider]
@@ -77,10 +74,12 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
       </div>
 
       <div className="flex flex-col">
-        <span className="text-sm font-medium">{providerName}</span>
+        <span className="text-sm font-medium leading-tight">
+          {providerName}
+        </span>
 
         {account && isLoadingInfo ? (
-          <Skeleton className="h-3 my-0.5 w-24 rounded-lg" />
+          <Skeleton className="h-3 w-24 my-0.5 rounded-lg" />
         ) : (
           <span className="text-xs text-muted">
             {account

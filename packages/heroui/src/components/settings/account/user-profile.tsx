@@ -39,10 +39,8 @@ export function UserProfile({
   const { data: sessionData } = useSession()
 
   const { mutate: updateUser, isPending } = useUpdateUser({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message),
-    onSuccess: () =>
-      toast.success(localization.settings.profileUpdatedSuccess)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -83,7 +81,7 @@ export function UserProfile({
 
               {sessionData ? (
                 <div className="flex flex-col">
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-medium leading-tight">
                     {sessionData?.user?.displayUsername ||
                       sessionData?.user?.name ||
                       sessionData?.user?.email}
@@ -98,8 +96,8 @@ export function UserProfile({
                 </div>
               ) : (
                 <div className="flex flex-col gap-1">
-                  <Skeleton className="h-4 mt-0.5 w-24 rounded-lg" />
-                  <Skeleton className="h-3 mt-0.5 w-32 rounded-lg" />
+                  <Skeleton className="h-3.5 w-24 rounded-lg" />
+                  <Skeleton className="h-3 w-32 rounded-lg" />
                 </div>
               )}
             </div>
