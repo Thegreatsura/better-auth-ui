@@ -65,7 +65,7 @@ export function AuthProvider({
         error.message || (error as BetterFetchError).statusText
       )
     }
-  }, [resolvedQueryClient, mergedConfig.toast.error])
+  }, [resolvedQueryClient, mergedConfig.toast])
 
   return (
     <AuthContext.Provider value={mergedConfig}>

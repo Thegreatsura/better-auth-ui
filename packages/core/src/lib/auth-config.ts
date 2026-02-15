@@ -165,13 +165,7 @@ export const defaultConfig: AuthConfig = {
   },
   viewPaths,
   localization,
-  navigate: ({ to, replace }) => {
-    if (replace) {
-      window.location.replace(to)
-    } else {
-      window.location.href = to
-    }
-  },
+  navigate: () => {},
   toast: {
     error: defaultToast,
     success: defaultToast,

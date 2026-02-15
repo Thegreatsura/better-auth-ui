@@ -2,6 +2,7 @@ import {
   AuthProvider as AuthProviderPrimitive,
   type AuthProviderProps
 } from "@better-auth-ui/react"
+import { RouterProvider } from "@heroui/react"
 import { toast } from "sonner"
 
 /**
@@ -10,10 +11,16 @@ import { toast } from "sonner"
  * @param children - React nodes to render inside the authentication provider
  * @returns A React element that renders an authentication provider configured with the provided props and toast handler
  */
-export function AuthProvider({ children, ...config }: AuthProviderProps) {
+export function AuthProvider({
+  children,
+  navigate,
+  ...config
+}: AuthProviderProps) {
   return (
-    <AuthProviderPrimitive toast={toast} {...config}>
-      {children}
+    <AuthProviderPrimitive toast={toast} navigate={navigate} {...config}>
+      <RouterProvider navigate={(path) => navigate?.({ to: path })}>
+        {children}
+      </RouterProvider>
     </AuthProviderPrimitive>
   )
 }
