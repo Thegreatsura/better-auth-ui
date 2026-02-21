@@ -25,9 +25,9 @@
     }
   },
   "devDependencies": {
-    "@react-email/components": "^1.0.7",
+    "@react-email/components": "^1.0.8",
     "@react-email/preview-server": "^5.2.8",
-    "@tanstack/react-form": "^1.28.2",
+    "@tanstack/react-form": "^1.28.3",
     "@tanstack/react-query": "^5.90.21",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.5.2",
@@ -40,22 +40,22 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-email": "^5.2.8",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.0",
     "vitest": "^4.0.18"
   },
   "dependencies": {
     "@better-auth-ui/core": "*"
   },
   "peerDependencies": {
-    "@react-email/components": ">=1.0.6",
-    "@tanstack/react-form": ">=1.28.2",
+    "@react-email/components": ">=1.0.8",
+    "@tanstack/react-form": ">=1.28.3",
     "@tanstack/react-query": ">=5.90.21",
     "better-auth": ">=1.4.18",
     "clsx": ">=2.0.0",
     "react": ">=19.2.4",
     "react-dom": ">=19.2.4",
-    "tailwind-merge": ">=3.0.0",
-    "tailwindcss": ">=4.0.0"
+    "tailwind-merge": ">=3.5.0",
+    "tailwindcss": ">=4.2.0"
   }
 }

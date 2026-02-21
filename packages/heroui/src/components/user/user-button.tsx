@@ -134,7 +134,6 @@ export function UserButton({
 
                   <Tabs
                     className="ml-auto"
-                    hideSeparator
                     selectedKey={theme}
                     onSelectionChange={(key) => setTheme(key as string)}
                   >
