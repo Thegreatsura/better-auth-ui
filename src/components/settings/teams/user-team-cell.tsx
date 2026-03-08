@@ -6,7 +6,6 @@ import { useContext, useState } from "react"
 import { AuthUIContext } from "../../../lib/auth-ui-provider"
 import { cn, getLocalizedError } from "../../../lib/utils"
 import type { AuthLocalization } from "../../../localization/auth-localization"
-import { authClient } from "../../../types/auth-client"
 import type { Refetch } from "../../../types/refetch"
 import { Button } from "../../ui/button"
 import { Card } from "../../ui/card"
@@ -28,6 +27,7 @@ export function UserTeamCell({
     refetch
 }: UserTeamCellProps) {
     const {
+        authClient,
         hooks: { useSession },
         localization: contextLocalization,
         toast,
