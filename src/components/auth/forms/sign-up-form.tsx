@@ -424,6 +424,7 @@ export function SignUpForm({
     return (
         <Form {...form}>
             <form
+                method="POST"
                 onSubmit={form.handleSubmit(signUp)}
                 noValidate={isHydrated}
                 className={cn("grid w-full gap-6", className, classNames?.base)}
