@@ -53,6 +53,11 @@ export interface UpdateFieldCardProps {
     multiline?: boolean
     value?: unknown
     validate?: (value: string) => boolean | Promise<boolean>
+    errorMessage?: {
+        required?: string
+        invalid?: string
+        validate?: string
+    }
     options?: SelectOption[]
 }
 
@@ -70,6 +75,7 @@ export function UpdateFieldCard({
     multiline,
     value,
     validate,
+    errorMessage,
     options
 }: UpdateFieldCardProps) {
     const {
@@ -96,33 +102,33 @@ export function UpdateFieldCard({
             ? z.preprocess(
                   (val) => (!val ? undefined : Number(val)),
                   z.number({
-                      message: `${label} ${localization.IS_INVALID}`
+                      message: errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
                   })
               )
             : z.coerce
                   .number({
-                      message: `${label} ${localization.IS_INVALID}`
+                      message: errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
                   })
                   .optional()
     } else if (type === "boolean") {
         fieldSchema = required
             ? z.coerce
                   .boolean({
-                      message: `${label} ${localization.IS_INVALID}`
+                      message: errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
                   })
                   .refine((val) => val === true, {
-                      message: `${label} ${localization.IS_REQUIRED}`
+                      message: errorMessage?.required ?? `${label} ${localization.IS_REQUIRED}`
                   })
             : z.coerce.boolean({
-                  message: `${label} ${localization.IS_INVALID}`
+                  message: errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
               })
     } else if (type === "select") {
         fieldSchema = required
-            ? z.string().min(1, `${label} ${localization.IS_REQUIRED}`)
+            ? z.string().min(1, errorMessage?.required ?? `${label} ${localization.IS_REQUIRED}`)
             : z.string().optional()
     } else {
         fieldSchema = required
-            ? z.string().min(1, `${label} ${localization.IS_REQUIRED}`)
+            ? z.string().min(1, errorMessage?.required ?? `${label} ${localization.IS_REQUIRED}`)
             : z.string().optional()
     }
 
@@ -151,7 +157,7 @@ export function UpdateFieldCard({
             !(await validate(newValue))
         ) {
             form.setError(name, {
-                message: `${label} ${localization.IS_INVALID}`
+                message: errorMessage?.validate ?? errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
             })
 
             return
