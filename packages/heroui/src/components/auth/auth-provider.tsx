@@ -18,7 +18,7 @@ export function AuthProvider({
 }: AuthProviderProps) {
   return (
     <AuthProviderPrimitive toast={toast} navigate={navigate} {...config}>
-      <RouterProvider navigate={(path) => navigate?.({ to: path })}>
+      <RouterProvider navigate={(path) => navigate({ to: path })}>
         {children}
       </RouterProvider>
     </AuthProviderPrimitive>

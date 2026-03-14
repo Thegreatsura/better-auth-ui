@@ -30,6 +30,7 @@ const baseAuthConfig: AnyAuthConfig = {
 
 export type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {
   authClient: AnyAuthClient
+  navigate: (options: { to: string; replace?: boolean }) => void
   queryClient?: QueryClient
 }
 
