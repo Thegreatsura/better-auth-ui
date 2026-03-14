@@ -26,6 +26,7 @@ export const providerNames: Record<SocialProvider, string> = {
   paybin: "Paybin",
   paypal: "PayPal",
   polar: "Polar",
+  railway: "Railway",
   reddit: "Reddit",
   roblox: "Roblox",
   salesforce: "Salesforce",

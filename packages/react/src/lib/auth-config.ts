@@ -1,5 +1,4 @@
 import type { AuthConfig as BaseAuthConfig } from "@better-auth-ui/react/core"
-import type { DeepPartial } from "better-auth"
 import type { ComponentType, PropsWithChildren } from "react"
 import type { AnyAuthClient, AuthClient } from "./auth-client"
 
@@ -27,6 +26,15 @@ export interface AuthConfig extends BaseAuthConfig {
     PropsWithChildren<{ className?: string; href: string; to?: string }>
   >
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: required for generic utility type
+type DeepPartial<T> = T extends (...args: any[]) => any
+  ? T
+  : T extends object
+    ? {
+        [P in keyof T]?: DeepPartial<T[P]>
+      }
+    : T
 
 /**
  * Partial AuthConfig with any Better Auth client instance.

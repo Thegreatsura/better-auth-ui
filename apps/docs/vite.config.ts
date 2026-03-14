@@ -3,7 +3,6 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
 import mdx from "fumadocs-mdx/vite"
 import { defineConfig } from "vite"
-import tsConfigPaths from "vite-tsconfig-paths"
 
 // Paths that require authentication or dynamic data should not be prerendered
 const EXCLUDED_PRERENDER_PATHS = [
@@ -25,14 +24,12 @@ export default defineConfig({
     port: 3000
   },
   resolve: {
+    tsconfigPaths: true,
     noExternal: [...FumadocsDeps, "@gravity-ui/icons"]
   },
   plugins: [
     mdx(await import("./source.config")),
     tailwindcss(),
-    tsConfigPaths({
-      projects: ["./tsconfig.json"]
-    }),
     tanstackStart({
       prerender: {
         enabled: true,
