@@ -192,7 +192,10 @@ export function ChangePasswordCard({
     if (!isPending && !credentialsLinked) {
         return (
             <Form {...setPasswordForm}>
-                <form method="POST" onSubmit={setPasswordForm.handleSubmit(setPassword)}>
+                <form
+                    method="POST"
+                    onSubmit={setPasswordForm.handleSubmit(setPassword)}
+                >
                     <SettingsCard
                         title={localization.SET_PASSWORD}
                         description={localization.SET_PASSWORD_DESCRIPTION}

@@ -128,7 +128,11 @@ export function ChangeEmailCard({
     return (
         <>
             <Form {...form}>
-                <form method="POST" noValidate onSubmit={form.handleSubmit(changeEmail)}>
+                <form
+                    method="POST"
+                    noValidate
+                    onSubmit={form.handleSubmit(changeEmail)}
+                >
                     <SettingsCard
                         className={className}
                         classNames={classNames}
