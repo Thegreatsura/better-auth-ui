@@ -26,7 +26,7 @@ export type AuthHooks = {
     useListDeviceSessions: () => AuthHook<AnyAuthClient["$Infer"]["Session"][]>
     useListSessions: () => AuthHook<AnyAuthSession["session"][]>
     useListPasskeys: () => AuthHook<Passkey[]>
-    useListApiKeys: () => AuthHook<ApiKey[]>
+    useListApiKeys: () => AuthHook<{ apiKeys: ApiKey[] }>
     useActiveOrganization: () => Partial<
         ReturnType<AuthClient["useActiveOrganization"]>
     >
