@@ -59,6 +59,7 @@ export interface UpdateFieldCardProps {
         validate?: string
     }
     options?: SelectOption[]
+    onUpdateComplete?: () => void
 }
 
 export function UpdateFieldCard({
@@ -77,6 +78,7 @@ export function UpdateFieldCard({
     validate,
     errorMessage,
     options
+    onUpdateComplete
 }: UpdateFieldCardProps) {
     const {
         hooks: { useSession },
@@ -159,7 +161,6 @@ export function UpdateFieldCard({
             form.setError(name, {
                 message: errorMessage?.validate ?? errorMessage?.invalid ?? `${label} ${localization.IS_INVALID}`
             })
-
             return
         }
 
@@ -170,6 +171,7 @@ export function UpdateFieldCard({
                 variant: "success",
                 message: `${label} ${localization.UPDATED_SUCCESSFULLY}`
             })
+            onUpdateComplete?.()
         } catch (error) {
             toast({
                 variant: "error",
@@ -184,7 +186,7 @@ export function UpdateFieldCard({
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(updateField)}>
+            <form method="POST" onSubmit={form.handleSubmit(updateField)}>
                 <SettingsCard
                     className={className}
                     classNames={classNames}
