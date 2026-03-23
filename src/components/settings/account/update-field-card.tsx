@@ -178,7 +178,7 @@ export function UpdateFieldCard({
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(updateField)}>
+            <form method="POST" onSubmit={form.handleSubmit(updateField)}>
                 <SettingsCard
                     className={className}
                     classNames={classNames}
