@@ -110,7 +110,7 @@ export function SignIn({
 
   return (
     <Card
-      className={cn("w-full max-w-sm px-4 md:p-6 gap-4", className)}
+      className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
       {...props}
     >

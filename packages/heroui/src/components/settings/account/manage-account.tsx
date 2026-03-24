@@ -9,7 +9,7 @@ import {
   ArrowRightFromSquare,
   Ellipsis
 } from "@gravity-ui/icons"
-import { Button, Dropdown, toast } from "@heroui/react"
+import { Button, Dropdown, Spinner, toast } from "@heroui/react"
 import type { Session, User } from "better-auth"
 
 import { UserView } from "../../user/user-view"
@@ -58,13 +58,32 @@ export function ManageAccount({
     <div className="flex items-center justify-between gap-3">
       <UserView user={deviceSession?.user} isPending={isPending} size="md" />
 
-      {deviceSession && (
+      {deviceSession && isActive && (
+        <Button
+          className="shrink-0"
+          variant="outline"
+          size="sm"
+          onPress={() =>
+            revokeSession({ sessionToken: deviceSession.session.token })
+          }
+          isDisabled={isBusy}
+        >
+          {isRevoking ? (
+            <Spinner color="current" size="sm" />
+          ) : (
+            <ArrowRightFromSquare />
+          )}
+          {localization.auth.signOut}
+        </Button>
+      )}
+
+      {deviceSession && !isActive && (
         <Dropdown>
           <Dropdown.Trigger>
             <Button
               isIconOnly
-              variant="ghost"
-              className="ml-auto shrink-0"
+              variant="outline"
+              className="shrink-0"
               size="sm"
               isDisabled={isBusy}
             >
@@ -74,19 +93,17 @@ export function ManageAccount({
 
           <Dropdown.Popover>
             <Dropdown.Menu>
-              {!isActive && (
-                <Dropdown.Item
-                  textValue={localization.auth.switchAccount}
-                  onAction={() =>
-                    setActiveSession({
-                      sessionToken: deviceSession.session.token
-                    })
-                  }
-                >
-                  <ArrowRightArrowLeft className="text-muted" />
-                  {localization.auth.switchAccount}
-                </Dropdown.Item>
-              )}
+              <Dropdown.Item
+                textValue={localization.auth.switchAccount}
+                onAction={() =>
+                  setActiveSession({
+                    sessionToken: deviceSession.session.token
+                  })
+                }
+              >
+                <ArrowRightArrowLeft className="text-muted" />
+                {localization.auth.switchAccount}
+              </Dropdown.Item>
 
               <Dropdown.Item
                 textValue={localization.auth.signOut}
