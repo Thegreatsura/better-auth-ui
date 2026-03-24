@@ -1,6 +1,6 @@
 import { useAuth, useRevokeSession, useSession } from "@better-auth-ui/react"
 import { ArrowRightFromSquare, Display, Smartphone } from "@gravity-ui/icons"
-import { Button, Card, Chip, Spinner, toast } from "@heroui/react"
+import { Button, Chip, Spinner, toast } from "@heroui/react"
 import type { Session } from "better-auth"
 import { UAParser } from "ua-parser-js"
 
@@ -9,13 +9,13 @@ export type ActiveSessionProps = {
 }
 
 /**
- * Render a single active session card with device info and revoke control.
+ * Render a single active session row with device info and revoke control.
  *
  * Shows the session's browser, OS, IP address, and creation time. The current session is marked
  * and navigates to sign-out on click, while other sessions can be revoked individually.
  *
  * @param session - The session object containing id, token, userAgent, ipAddress, and createdAt
- * @returns A JSX element containing the active session card
+ * @returns A JSX element containing the active session row
  */
 export function ActiveSession({ session }: ActiveSessionProps) {
   const { basePaths, localization, viewPaths, navigate } = useAuth()
@@ -36,8 +36,8 @@ export function ActiveSession({ session }: ActiveSessionProps) {
     ua.device.type === "wearable"
 
   return (
-    <Card className="flex-row border items-center p-3 shadow-none">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-surface-secondary">
+    <div className="flex items-center gap-3">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-secondary">
         {isMobile ? (
           <Smartphone className="size-5" />
         ) : (
@@ -45,7 +45,7 @@ export function ActiveSession({ session }: ActiveSessionProps) {
         )}
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium truncate">
             {ua.browser.name || "Unknown Browser"}
@@ -77,9 +77,8 @@ export function ActiveSession({ session }: ActiveSessionProps) {
       </div>
 
       <Button
-        isIconOnly
-        className="ml-auto"
-        variant="ghost"
+        className="ml-auto shrink-0"
+        variant="outline"
         size="sm"
         onPress={() =>
           isCurrentSession
@@ -96,7 +95,8 @@ export function ActiveSession({ session }: ActiveSessionProps) {
         ) : (
           <ArrowRightFromSquare />
         )}
+        {localization.settings.revoke}
       </Button>
-    </Card>
+    </div>
   )
 }

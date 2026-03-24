@@ -17,6 +17,7 @@ export type ActiveSessionsProps = {
  */
 export function ActiveSessions({
   className,
+  variant,
   ...props
 }: ActiveSessionsProps & CardProps) {
   const { localization } = useAuth()
@@ -29,34 +30,40 @@ export function ActiveSessions({
     }
   })
 
-  return (
-    <Card className={cn("p-4 md:p-6 gap-4", className)} {...props}>
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.activeSessions}
-        </Card.Title>
-      </Card.Header>
+  const sortedSessions = sessions?.toSorted((session) =>
+    session.id === sessionData?.session.id ? -1 : 1
+  )
 
-      <Card.Content className="gap-3">
-        {isPending ? (
-          <SessionRowSkeleton />
-        ) : (
-          sessions
-            ?.toSorted((session) =>
-              session.id === sessionData?.session.id ? -1 : 1
-            )
-            .map((session) => (
-              <ActiveSession key={session.id} session={session} />
+  return (
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.activeSessions}
+      </h2>
+
+      <Card className={cn(className)} variant={variant} {...props}>
+        <Card.Content className="gap-0">
+          {isPending ? (
+            <SessionRowSkeleton />
+          ) : (
+            sortedSessions?.map((session, index) => (
+              <div key={session.id}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                )}
+
+                <ActiveSession session={session} />
+              </div>
             ))
-        )}
-      </Card.Content>
-    </Card>
+          )}
+        </Card.Content>
+      </Card>
+    </div>
   )
 }
 
 function SessionRowSkeleton() {
   return (
-    <div className="flex items-center rounded-3xl border p-3 justify-between">
+    <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-xl" />
 

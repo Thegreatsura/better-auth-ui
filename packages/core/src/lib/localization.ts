@@ -175,14 +175,17 @@ export const localization = {
     /** @remarks `"Light"` */
     light: "Light",
 
-    /** @remarks `"Manage Accounts"` */
-    manageAccounts: "Manage Accounts",
+    /** @remarks `"Manage accounts"` */
+    manageAccounts: "Manage accounts",
 
     /** @remarks `"Profile"` */
     profile: "Profile",
 
     /** @remarks `"Profile updated successfully"` */
     profileUpdatedSuccess: "Profile updated successfully",
+
+    /** @remarks `"Revoke"` */
+    revoke: "Revoke",
 
     /** @remarks `"Revoke Session"` */
     revokeSession: "Revoke Session",

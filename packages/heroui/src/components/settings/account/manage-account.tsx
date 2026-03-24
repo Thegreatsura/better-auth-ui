@@ -4,8 +4,12 @@ import {
   useSession,
   useSetActiveSession
 } from "@better-auth-ui/react"
-import { ArrowRightArrowLeft, ArrowRightFromSquare } from "@gravity-ui/icons"
-import { Button, Card, Spinner, toast } from "@heroui/react"
+import {
+  ArrowRightArrowLeft,
+  ArrowRightFromSquare,
+  Ellipsis
+} from "@gravity-ui/icons"
+import { Button, Dropdown, toast } from "@heroui/react"
 import type { Session, User } from "better-auth"
 
 import { UserView } from "../../user/user-view"
@@ -21,13 +25,13 @@ export type ManageAccountProps = {
 }
 
 /**
- * Render a single account card with user info and switch/revoke controls.
+ * Render a single account row with user info and a dropdown for switch/sign-out actions.
  *
- * Shows the user's avatar and info. For non-active sessions, provides a switch button.
- * All sessions have a revoke/sign-out button.
+ * Shows the user's avatar and info. A three-dot menu provides options to
+ * switch account (for non-active sessions) and sign out.
  *
  * @param deviceSession - The device session object containing session and user data
- * @returns A JSX element containing the account card
+ * @returns A JSX element containing the account row
  */
 export function ManageAccount({
   deviceSession,
@@ -38,63 +42,67 @@ export function ManageAccount({
 
   const { mutate: setActiveSession, isPending: isSwitching } =
     useSetActiveSession({
-      onError: (error) =>
-        toast.danger(error.error?.message || error.message)
+      onError: (error) => toast.danger(error.error?.message || error.message)
     })
 
   const { mutate: revokeSession, isPending: isRevoking } =
     useRevokeMultiSession({
-      onError: (error) =>
-        toast.danger(error.error?.message || error.message),
-      onSuccess: () =>
-        toast.success(localization.settings.revokeSessionSuccess)
+      onError: (error) => toast.danger(error.error?.message || error.message),
+      onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
     })
 
   const isActive = deviceSession?.session.userId === sessionData?.session.userId
+  const isBusy = isSwitching || isRevoking
 
   return (
-    <Card className="flex-row items-center border p-3 shadow-none">
+    <div className="flex items-center justify-between gap-3">
       <UserView user={deviceSession?.user} isPending={isPending} size="md" />
 
       {deviceSession && (
-        <div className="flex items-center gap-1 shrink-0 ml-auto">
-          {!isActive && (
+        <Dropdown>
+          <Dropdown.Trigger>
             <Button
               isIconOnly
               variant="ghost"
+              className="ml-auto shrink-0"
               size="sm"
-              onPress={() =>
-                setActiveSession({ sessionToken: deviceSession.session.token })
-              }
-              isPending={isSwitching || isRevoking}
-              aria-label={localization.auth.switchAccount}
+              isDisabled={isBusy}
             >
-              {isSwitching ? (
-                <Spinner color="current" size="sm" />
-              ) : (
-                <ArrowRightArrowLeft />
-              )}
+              <Ellipsis />
             </Button>
-          )}
+          </Dropdown.Trigger>
 
-          <Button
-            isIconOnly
-            variant="ghost"
-            size="sm"
-            onPress={() =>
-              revokeSession({ sessionToken: deviceSession.session.token })
-            }
-            isPending={isSwitching || isRevoking}
-            aria-label={localization.auth.signOut}
-          >
-            {isRevoking ? (
-              <Spinner color="current" size="sm" />
-            ) : (
-              <ArrowRightFromSquare />
-            )}
-          </Button>
-        </div>
+          <Dropdown.Popover>
+            <Dropdown.Menu>
+              {!isActive && (
+                <Dropdown.Item
+                  textValue={localization.auth.switchAccount}
+                  onAction={() =>
+                    setActiveSession({
+                      sessionToken: deviceSession.session.token
+                    })
+                  }
+                >
+                  <ArrowRightArrowLeft className="text-muted" />
+                  {localization.auth.switchAccount}
+                </Dropdown.Item>
+              )}
+
+              <Dropdown.Item
+                textValue={localization.auth.signOut}
+                onAction={() =>
+                  revokeSession({
+                    sessionToken: deviceSession.session.token
+                  })
+                }
+              >
+                <ArrowRightFromSquare className="text-muted" />
+                {localization.auth.signOut}
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Popover>
+        </Dropdown>
       )}
-    </Card>
+    </div>
   )
 }

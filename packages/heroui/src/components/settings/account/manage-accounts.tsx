@@ -3,15 +3,7 @@ import {
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
-import { CirclePlus } from "@gravity-ui/icons"
-import {
-  buttonVariants,
-  Card,
-  type CardProps,
-  cn,
-  Link,
-  toast
-} from "@heroui/react"
+import { Card, type CardProps, cn, toast } from "@heroui/react"
 import { ManageAccount } from "./manage-account"
 
 export type ManageAccountsProps = {
@@ -29,9 +21,10 @@ export type ManageAccountsProps = {
  */
 export function ManageAccounts({
   className,
+  variant,
   ...props
 }: ManageAccountsProps & CardProps) {
-  const { basePaths, localization, viewPaths } = useAuth()
+  const { localization } = useAuth()
   const { data: sessionData } = useSession()
 
   const { data: deviceSessions, isPending } = useListDeviceSessions({
@@ -41,43 +34,42 @@ export function ManageAccounts({
     }
   })
 
+  const otherSessions = deviceSessions?.filter(
+    (deviceSession) =>
+      deviceSession.session.id !== sessionData?.session.id
+  )
+
+  const allRows = [
+    { key: "current", deviceSession: !isPending ? sessionData : null, isPending },
+    ...(otherSessions?.map((deviceSession) => ({
+      key: deviceSession.session.id,
+      deviceSession,
+      isPending: false
+    })) ?? [])
+  ]
+
   return (
-    <Card className={cn("p-4 md:p-6 gap-4", className)} {...props}>
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.manageAccounts}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.manageAccounts}
+      </h2>
 
-      <Card.Content className="gap-3">
-        <ManageAccount
-          isPending={isPending}
-          deviceSession={!isPending ? sessionData : null}
-        />
+      <Card className={cn(className)} variant={variant} {...props}>
+        <Card.Content className="gap-0">
+          {allRows.map((row, index) => (
+            <div key={row.key}>
+              {index > 0 && (
+                <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+              )}
 
-        {deviceSessions
-          ?.filter(
-            (deviceSession) =>
-              deviceSession.session.id !== sessionData?.session.id
-          )
-          .map((deviceSession) => (
-            <ManageAccount
-              key={deviceSession.session.id}
-              deviceSession={deviceSession}
-            />
+              <ManageAccount
+                deviceSession={row.deviceSession}
+                isPending={row.isPending}
+              />
+            </div>
           ))}
-      </Card.Content>
-
-      <Card.Footer>
-        <Link
-          href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-          className={cn("gap-2", buttonVariants({ variant: "secondary" }))}
-        >
-          <CirclePlus />
-
-          {localization.auth.addAccount}
-        </Link>
-      </Card.Footer>
-    </Card>
+        </Card.Content>
+      </Card>
+    </div>
   )
 }

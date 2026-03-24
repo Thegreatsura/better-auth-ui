@@ -76,7 +76,7 @@ export function LinkedAccounts({
 
 function AccountRowSkeleton() {
   return (
-    <div className="flex items-center justify-between py-1">
+    <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-xl" />
 
