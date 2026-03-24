@@ -37,6 +37,7 @@ export const providerNames: Record<SocialProvider, string> = {
   twitter: "X",
   vercel: "Vercel",
   vk: "VK",
+  wechat: "WeChat",
   zoom: "Zoom"
 }
 

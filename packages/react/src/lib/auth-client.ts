@@ -6,6 +6,8 @@ import {
 import { createAuthClient } from "better-auth/react"
 import type { AuthConfig } from "./auth-config"
 
+export type { PathToObject } from "better-auth/client"
+
 /**
  * Type representing any auth client created with `createAuthClient`.
  *

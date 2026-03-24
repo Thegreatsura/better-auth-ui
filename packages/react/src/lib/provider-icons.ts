@@ -33,6 +33,7 @@ import {
   Twitch,
   Vercel,
   VK,
+  WeChat,
   X,
   Zoom
 } from "../components/icons"
@@ -84,5 +85,6 @@ export const providerIcons: Record<
   twitter: X,
   vercel: Vercel,
   vk: VK,
+  wechat: WeChat,
   zoom: Zoom
 }
