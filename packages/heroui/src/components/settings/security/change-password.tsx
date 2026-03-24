@@ -1,5 +1,5 @@
 import { useAuth, useChangePassword, useSession } from "@better-auth-ui/react"
-import { Check, Eye, EyeSlash } from "@gravity-ui/icons"
+import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -82,18 +82,17 @@ export function ChangePassword({
   }
 
   return (
-    <Card
-      className={cn("p-4 md:p-6 gap-4", className)}
-      variant={variant}
-      {...props}
-    >
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.changePassword}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.changePassword}
+      </h2>
 
-      <Card.Content>
+      <Card
+        className={cn("p-4 md:p-6 gap-4", className)}
+        variant={variant}
+        {...props}
+      >
+        <Card.Content>
         <Form onSubmit={handleSubmit}>
           <Fieldset className="w-full gap-4">
             <Fieldset.Group>
@@ -235,15 +234,16 @@ export function ChangePassword({
                 type="submit"
                 isPending={isPending}
                 isDisabled={!sessionData}
+                size="sm"
               >
-                {isPending ? <Spinner color="current" size="sm" /> : <Check />}
-
+                {isPending && <Spinner color="current" size="sm" />}
                 {localization.settings.updatePassword}
               </Button>
             </Fieldset.Actions>
           </Fieldset>
         </Form>
       </Card.Content>
-    </Card>
+      </Card>
+    </div>
   )
 }

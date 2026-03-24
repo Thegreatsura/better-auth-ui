@@ -47,21 +47,20 @@ export function Appearance({
   }
 
   return (
-    <Card
-      className={cn("p-4 md:p-6 gap-4", className)}
-      variant={variant}
-      {...props}
-    >
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.appearance}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.appearance}
+      </h2>
 
-      <Card.Content>
+      <Card
+        className={cn("p-4 md:p-6 gap-4", className)}
+        variant={variant}
+        {...props}
+      >
+        <Card.Content>
         <RadioGroup
           variant={variant === "transparent" ? "secondary" : "primary"}
-          value={hydrated ? theme : undefined}
+          value={hydrated ? theme : ""}
           onChange={setTheme}
           isDisabled={!hydrated || !theme}
         >
@@ -148,6 +147,7 @@ export function Appearance({
           </div>
         </RadioGroup>
       </Card.Content>
-    </Card>
+      </Card>
+    </div>
   )
 }

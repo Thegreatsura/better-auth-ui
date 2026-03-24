@@ -127,8 +127,17 @@ export const localization = {
     /** @remarks `"Active Sessions"` */
     activeSessions: "Active Sessions",
 
+    /** @remarks `"Avatar"` */
+    avatar: "Avatar",
+
+    /** @remarks `"JPG, PNG or GIF. 2 MB max."` */
+    avatarInstructions: "JPG, PNG or GIF. 2 MB max.",
+
     /** @remarks `"Current Session"` */
     currentSession: "Current Session",
+
+    /** @remarks `"Change avatar"` */
+    changeAvatar: "Change avatar",
 
     /** @remarks `"Link"` */
     link: "Link",
@@ -142,14 +151,14 @@ export const localization = {
     /** @remarks `"Appearance"` */
     appearance: "Appearance",
 
-    /** @remarks `"Change Email"` */
-    changeEmail: "Change Email",
+    /** @remarks `"Change email"` */
+    changeEmail: "Change email",
 
     /** @remarks `"Check your email to confirm the change"` */
     changeEmailSuccess: "Check your email to confirm the change",
 
-    /** @remarks `"Change Password"` */
-    changePassword: "Change Password",
+    /** @remarks `"Change password"` */
+    changePassword: "Change password",
 
     /** @remarks `"Password changed successfully"` */
     changePasswordSuccess: "Password changed successfully",
@@ -199,11 +208,11 @@ export const localization = {
     /** @remarks `"Unlink {{provider}}"` */
     unlinkProvider: "Unlink {{provider}}",
 
-    /** @remarks `"Update Email"` */
-    updateEmail: "Update Email",
+    /** @remarks `"Update email"` */
+    updateEmail: "Update email",
 
-    /** @remarks `"Update Password"` */
-    updatePassword: "Update Password"
+    /** @remarks `"Update password"` */
+    updatePassword: "Update password"
   }
 }
 
