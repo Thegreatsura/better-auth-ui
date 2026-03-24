@@ -60,10 +60,8 @@ export function SignIn({
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message),
-    onSuccess: () =>
-      toast.success(localization.auth.verificationEmailSent)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.auth.verificationEmailSent)
   })
 
   const { mutate: signInEmail, isPending: signInPending } = useSignInEmail({
@@ -89,8 +87,7 @@ export function SignIn({
   })
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message)
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,7 +110,7 @@ export function SignIn({
 
   return (
     <Card
-      className={cn("w-full max-w-sm p-4 md:p-6 gap-4", className)}
+      className={cn("w-full max-w-sm px-4 md:p-6 gap-4", className)}
       variant={variant}
       {...props}
     >

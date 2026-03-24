@@ -54,11 +54,7 @@ export function UserProfile({
         {localization.settings.profile}
       </h2>
 
-      <Card
-        className={cn("p-4 md:p-6 gap-4", className)}
-        variant={variant}
-        {...props}
-      >
+      <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
           <Label isDisabled={!sessionData}>
             {localization.settings.avatar}

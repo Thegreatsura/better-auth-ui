@@ -64,11 +64,7 @@ export function ChangeEmail({
         {localization.settings.changeEmail}
       </h2>
 
-      <Card
-        className={cn("p-4 md:p-6 gap-4", className)}
-        variant={variant}
-        {...props}
-      >
+      <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
           <Form onSubmit={handleSubmit}>
             <Fieldset className="w-full gap-4">

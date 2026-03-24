@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 
 export function FieldSeparator({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 my-1">
       <Separator className="flex-1" />
 
       <p className="text-xs text-muted shrink-0">{children}</p>

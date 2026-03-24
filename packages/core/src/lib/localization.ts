@@ -142,11 +142,11 @@ export const localization = {
     /** @remarks `"Link"` */
     link: "Link",
 
-    /** @remarks `"Linked Accounts"` */
-    linkedAccounts: "Linked Accounts",
+    /** @remarks `"Linked accounts"` */
+    linkedAccounts: "Linked accounts",
 
-    /** @remarks `"Link {{provider}}"` */
-    linkProvider: "Link {{provider}}",
+    /** @remarks `"Link your {{provider}} account"` */
+    linkProvider: "Link your {{provider}} account",
 
     /** @remarks `"Appearance"` */
     appearance: "Appearance",

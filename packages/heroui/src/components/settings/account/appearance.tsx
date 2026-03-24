@@ -52,101 +52,97 @@ export function Appearance({
         {localization.settings.appearance}
       </h2>
 
-      <Card
-        className={cn("p-4 md:p-6 gap-4", className)}
-        variant={variant}
-        {...props}
-      >
+      <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
-        <RadioGroup
-          variant={variant === "transparent" ? "secondary" : "primary"}
-          value={hydrated ? theme : ""}
-          onChange={setTheme}
-          isDisabled={!hydrated || !theme}
-        >
-          <Label className="mb-2">{localization.settings.theme}</Label>
+          <RadioGroup
+            variant={variant === "transparent" ? "secondary" : "primary"}
+            value={hydrated ? theme : ""}
+            onChange={setTheme}
+            isDisabled={!hydrated || !theme}
+          >
+            <Label className="mb-2">{localization.settings.theme}</Label>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {themes.includes("system") && (
-              <Radio
-                value="system"
-                className={cn(
-                  variant === "transparent"
-                    ? "bg-surface"
-                    : "bg-surface-secondary",
-                  "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                  "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
-                )}
-              >
-                <Radio.Control className="absolute top-3 right-3 size-5">
-                  <Radio.Indicator />
-                </Radio.Control>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {themes.includes("system") && (
+                <Radio
+                  value="system"
+                  className={cn(
+                    variant === "transparent"
+                      ? "bg-surface"
+                      : "bg-surface-secondary",
+                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                  )}
+                >
+                  <Radio.Control className="absolute top-3 right-3 size-5">
+                    <Radio.Indicator />
+                  </Radio.Control>
 
-                <Radio.Content className="flex flex-col gap-3">
-                  <Label className="cursor-pointer font-medium flex gap-2 items-center">
-                    <Display className="text-muted" />
-                    {localization.settings.system}
-                  </Label>
+                  <Radio.Content className="flex flex-col gap-3">
+                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                      <Display className="text-muted" />
+                      {localization.settings.system}
+                    </Label>
 
-                  <ThemePreviewSystem className="w-full" />
-                </Radio.Content>
-              </Radio>
-            )}
+                    <ThemePreviewSystem className="w-full" />
+                  </Radio.Content>
+                </Radio>
+              )}
 
-            {themes.includes("light") && (
-              <Radio
-                value="light"
-                className={cn(
-                  variant === "transparent"
-                    ? "bg-surface"
-                    : "bg-surface-secondary",
-                  "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                  "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
-                )}
-              >
-                <Radio.Control className="absolute top-3 right-3 size-5">
-                  <Radio.Indicator />
-                </Radio.Control>
+              {themes.includes("light") && (
+                <Radio
+                  value="light"
+                  className={cn(
+                    variant === "transparent"
+                      ? "bg-surface"
+                      : "bg-surface-secondary",
+                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                  )}
+                >
+                  <Radio.Control className="absolute top-3 right-3 size-5">
+                    <Radio.Indicator />
+                  </Radio.Control>
 
-                <Radio.Content className="flex flex-col gap-3">
-                  <Label className="cursor-pointer font-medium flex gap-2 items-center">
-                    <Sun className="text-muted" />
-                    {localization.settings.light}
-                  </Label>
+                  <Radio.Content className="flex flex-col gap-3">
+                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                      <Sun className="text-muted" />
+                      {localization.settings.light}
+                    </Label>
 
-                  <ThemePreviewLight className="w-full" />
-                </Radio.Content>
-              </Radio>
-            )}
+                    <ThemePreviewLight className="w-full" />
+                  </Radio.Content>
+                </Radio>
+              )}
 
-            {themes.includes("dark") && (
-              <Radio
-                value="dark"
-                className={cn(
-                  variant === "transparent"
-                    ? "bg-surface"
-                    : "bg-surface-secondary",
-                  "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                  "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
-                )}
-              >
-                <Radio.Control className="absolute top-3 right-3 size-5">
-                  <Radio.Indicator />
-                </Radio.Control>
+              {themes.includes("dark") && (
+                <Radio
+                  value="dark"
+                  className={cn(
+                    variant === "transparent"
+                      ? "bg-surface"
+                      : "bg-surface-secondary",
+                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                  )}
+                >
+                  <Radio.Control className="absolute top-3 right-3 size-5">
+                    <Radio.Indicator />
+                  </Radio.Control>
 
-                <Radio.Content className="flex flex-col gap-3">
-                  <Label className="cursor-pointer font-medium flex gap-2 items-center">
-                    <Moon className="text-muted" />
-                    {localization.settings.dark}
-                  </Label>
+                  <Radio.Content className="flex flex-col gap-3">
+                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                      <Moon className="text-muted" />
+                      {localization.settings.dark}
+                    </Label>
 
-                  <ThemePreviewDark className="w-full" />
-                </Radio.Content>
-              </Radio>
-            )}
-          </div>
-        </RadioGroup>
-      </Card.Content>
+                    <ThemePreviewDark className="w-full" />
+                  </Radio.Content>
+                </Radio>
+              )}
+            </div>
+          </RadioGroup>
+        </Card.Content>
       </Card>
     </div>
   )

@@ -6,8 +6,8 @@ import {
   useLinkSocial,
   useUnlinkAccount
 } from "@better-auth-ui/react"
-import { Link, PlugConnection, Xmark } from "@gravity-ui/icons"
-import { Button, Card, cn, Skeleton, Spinner, toast } from "@heroui/react"
+import { Link, LinkSlash, PlugConnection } from "@gravity-ui/icons"
+import { Button, cn, Skeleton, Spinner, toast } from "@heroui/react"
 import type { Account, SocialProvider } from "better-auth"
 
 export type LinkedAccountProps = {
@@ -16,14 +16,14 @@ export type LinkedAccountProps = {
 }
 
 /**
- * Render a single linked social account card with provider info and unlink control.
+ * Render a single linked social account row with provider info and link/unlink control.
  *
  * Fetches additional account information from the provider using the accountInfo API
- * and displays the provider name, account details, and an unlink button.
+ * and displays the provider name, account details, and a link/unlink button.
  *
  * @param account - The account object containing id, accountId, and providerId
  * @param provider - The provider id
- * @returns A JSX element containing the linked account card
+ * @returns A JSX element containing the linked account row
  */
 export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
@@ -59,21 +59,22 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
     account?.accountId
 
   return (
-    <Card
-      className={cn(
-        "flex-row items-center border p-3 shadow-none",
-        !account && "border-dashed"
-      )}
-    >
-      <div className="flex size-10 items-center justify-center rounded-xl bg-surface-secondary">
+    <div className="flex items-center gap-3">
+      <div
+        className={cn(
+          "flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-secondary"
+        )}
+      >
         {ProviderIcon ? (
-          <ProviderIcon className={cn("size-5", !account && "opacity-50")} />
+          <ProviderIcon className={cn("size-4.5", !account && "opacity-50")} />
         ) : (
-          <PlugConnection className={cn("size-5", !account && "opacity-50")} />
+          <PlugConnection
+            className={cn("size-4.5", !account && "opacity-50")}
+          />
         )}
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col min-w-0">
         <span className="text-sm font-medium leading-tight">
           {providerName}
         </span>
@@ -81,7 +82,7 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
         {account && isLoadingInfo ? (
           <Skeleton className="h-3 w-24 my-0.5 rounded-lg" />
         ) : (
-          <span className="text-xs text-muted">
+          <span className="text-xs text-muted truncate">
             {account
               ? displayName
               : localization.settings.linkProvider.replace(
@@ -94,9 +95,8 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
 
       {account ? (
         <Button
-          className="ml-auto"
-          isIconOnly
-          variant="ghost"
+          className="ml-auto shrink-0"
+          variant="outline"
           size="sm"
           onPress={() => unlinkAccount({ providerId: account.providerId })}
           isPending={isUnlinking}
@@ -105,12 +105,15 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
             providerName
           )}
         >
-          {isUnlinking ? <Spinner color="current" size="sm" /> : <Xmark />}
+          {isUnlinking ? <Spinner color="current" size="sm" /> : <LinkSlash />}
+          {localization.settings.unlinkProvider
+            .replace("{{provider}}", "")
+            .trim()}
         </Button>
       ) : (
         <Button
-          className="ml-auto"
-          variant="secondary"
+          className="ml-auto shrink-0"
+          variant="outline"
           size="sm"
           onPress={() =>
             linkSocial({
@@ -125,10 +128,9 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
           )}
         >
           {isLinking ? <Spinner color="current" size="sm" /> : <Link />}
-
           {localization.settings.link}
         </Button>
       )}
-    </Card>
+    </div>
   )
 }

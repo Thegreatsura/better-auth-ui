@@ -18,6 +18,7 @@ export type LinkedAccountsProps = {
  */
 export function LinkedAccounts({
   className,
+  variant,
   ...props
 }: LinkedAccountsProps & CardProps) {
   const { localization, socialProviders } = useAuth()
@@ -29,42 +30,53 @@ export function LinkedAccounts({
     }
   })
 
+  const linkedAccounts = accounts?.filter(
+    (account) => account.providerId !== "credential"
+  )
+
+  const allRows = [
+    ...(linkedAccounts?.map((account) => ({
+      key: account.id,
+      account,
+      provider: account.providerId
+    })) ?? []),
+    ...(socialProviders?.map((provider) => ({
+      key: provider,
+      account: undefined,
+      provider
+    })) ?? [])
+  ]
+
   return (
-    <Card className={cn("p-4 md:p-6 gap-4", className)} {...props}>
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.linkedAccounts}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.linkedAccounts}
+      </h2>
 
-      <Card.Content className="gap-3">
-        {isPending ? (
-          <AccountRowSkeleton />
-        ) : (
-          <>
-            {accounts
-              ?.filter((account) => account.providerId !== "credential")
-              .map((account) => (
-                <LinkedAccount
-                  key={account.id}
-                  account={account}
-                  provider={account.providerId}
-                />
-              ))}
+      <Card className={cn(className)} variant={variant} {...props}>
+        <Card.Content className="gap-0">
+          {isPending ? (
+            <AccountRowSkeleton />
+          ) : (
+            allRows.map((row, index) => (
+              <div key={row.key}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                )}
 
-            {socialProviders?.map((provider) => {
-              return <LinkedAccount key={provider} provider={provider} />
-            })}
-          </>
-        )}
-      </Card.Content>
-    </Card>
+                <LinkedAccount account={row.account} provider={row.provider} />
+              </div>
+            ))
+          )}
+        </Card.Content>
+      </Card>
+    </div>
   )
 }
 
 function AccountRowSkeleton() {
   return (
-    <div className="flex items-center rounded-3xl border p-3 justify-between">
+    <div className="flex items-center justify-between py-1">
       <div className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-xl" />
 
