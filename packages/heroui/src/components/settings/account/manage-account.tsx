@@ -1,8 +1,8 @@
 import {
   useAuth,
   useRevokeMultiSession,
-  useSession,
-  useSetActiveSession
+  useSetActiveSession,
+  useUser
 } from "@better-auth-ui/react"
 import {
   ArrowRightArrowLeft,
@@ -38,7 +38,7 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: user } = useUser()
 
   const { mutate: setActiveSession, isPending: isSwitching } =
     useSetActiveSession({
@@ -51,7 +51,7 @@ export function ManageAccount({
       onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
     })
 
-  const isActive = deviceSession?.session.userId === sessionData?.session.userId
+  const isActive = deviceSession?.session.userId === user?.id
   const isBusy = isSwitching || isRevoking
 
   return (
@@ -82,7 +82,7 @@ export function ManageAccount({
           <Dropdown.Trigger>
             <Button
               isIconOnly
-              variant="outline"
+              variant="ghost"
               className="shrink-0"
               size="sm"
               isDisabled={isBusy}
