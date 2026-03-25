@@ -1,3 +1,4 @@
+import { GitHub } from "@better-auth-ui/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { HomeLayout } from "fumadocs-ui/layouts/home"
 import {
@@ -11,7 +12,6 @@ import {
 import { useState } from "react"
 import { baseOptions } from "@/lib/layout.shared"
 import appCss from "@/styles/app.css?url"
-import { GitHub } from "@better-auth-ui/react"
 
 export const Route = createFileRoute("/")({
   head: () => ({

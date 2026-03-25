@@ -78,8 +78,7 @@ export function SignUp({
   })
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message)
   })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)

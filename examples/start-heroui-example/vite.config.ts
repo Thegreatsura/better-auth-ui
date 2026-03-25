@@ -12,12 +12,7 @@ const config = defineConfig({
     tsconfigPaths: true,
     noExternal: ["@gravity-ui/icons"]
   },
-  plugins: [
-    devtools(),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact()
-  ]
+  plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()]
 })
 
 export default config

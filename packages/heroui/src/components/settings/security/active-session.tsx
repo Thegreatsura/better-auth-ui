@@ -22,10 +22,8 @@ export function ActiveSession({ session }: ActiveSessionProps) {
   const { data: sessionData } = useSession()
 
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message),
-    onSuccess: () =>
-      toast.success(localization.settings.revokeSessionSuccess)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
   })
 
   const isCurrentSession = session.token === sessionData?.session.token

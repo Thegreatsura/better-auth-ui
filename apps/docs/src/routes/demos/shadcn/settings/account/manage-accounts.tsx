@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/demos/shadcn/settings/account/manage-accounts")(
-  {
-    component: RouteComponent
-  }
-)
+export const Route = createFileRoute(
+  "/demos/shadcn/settings/account/manage-accounts"
+)({
+  component: RouteComponent
+})
 
 import { ManageAccounts } from "@better-auth-ui/shadcn"
 

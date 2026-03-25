@@ -35,12 +35,15 @@ export function ManageAccounts({
   })
 
   const otherSessions = deviceSessions?.filter(
-    (deviceSession) =>
-      deviceSession.session.id !== sessionData?.session.id
+    (deviceSession) => deviceSession.session.id !== sessionData?.session.id
   )
 
   const allRows = [
-    { key: "current", deviceSession: !isPending ? sessionData : null, isPending },
+    {
+      key: "current",
+      deviceSession: !isPending ? sessionData : null,
+      isPending
+    },
     ...(otherSessions?.map((deviceSession) => ({
       key: deviceSession.session.id,
       deviceSession,

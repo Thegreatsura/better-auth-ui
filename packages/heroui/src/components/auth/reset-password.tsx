@@ -38,8 +38,7 @@ export function ResetPassword({
     useAuth()
 
   const { mutate: resetPassword, isPending } = useResetPassword({
-    onError: (error) =>
-      toast.danger(error.error?.message || error.message),
+    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => {
       toast.success(localization.auth.passwordResetSuccess)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
