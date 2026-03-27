@@ -62,7 +62,7 @@ export function UserProfile({
 
           <Form onSubmit={handleSubmit}>
             <Fieldset className="w-full gap-4">
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-4">
                 <Button
                   type="button"
                   isIconOnly
@@ -73,19 +73,9 @@ export function UserProfile({
                   <UserAvatar size="lg" />
                 </Button>
 
-                <div className="flex flex-col gap-1.5">
-                  <Button
-                    isDisabled={!sessionData}
-                    size="sm"
-                    variant="secondary"
-                  >
-                    {localization.settings.changeAvatar}
-                  </Button>
-
-                  <span className="text-xs text-muted">
-                    {localization.settings.avatarInstructions}
-                  </span>
-                </div>
+                <Button isDisabled={!sessionData} size="sm" variant="secondary">
+                  {localization.settings.changeAvatar}
+                </Button>
               </div>
 
               <Fieldset.Group>

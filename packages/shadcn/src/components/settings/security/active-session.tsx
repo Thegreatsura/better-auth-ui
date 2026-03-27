@@ -2,9 +2,9 @@
 
 import { useAuth, useRevokeSession, useSession } from "@better-auth-ui/react"
 import type { Session } from "better-auth"
+import Bowser from "bowser"
 import { LogOut, Monitor, Smartphone } from "lucide-react"
 import { toast } from "sonner"
-import { UAParser } from "ua-parser-js"
 
 import { Button } from "@/components/ui/button"
 import { Item } from "@/components/ui/item"
@@ -33,11 +33,9 @@ export function ActiveSession({ session }: ActiveSessionProps) {
   })
 
   const isCurrentSession = session.token === sessionData?.session.token
-  const ua = new UAParser(session.userAgent || "").getResult()
+  const ua = Bowser.parse(session.userAgent || "")
   const isMobile =
-    ua.device.type === "mobile" ||
-    ua.device.type === "tablet" ||
-    ua.device.type === "wearable"
+    ua.platform.type === "mobile" || ua.platform.type === "tablet"
 
   return (
     <Item className="p-3 gap-3" variant="outline">

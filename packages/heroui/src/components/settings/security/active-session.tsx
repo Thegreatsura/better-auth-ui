@@ -1,8 +1,36 @@
 import { useAuth, useRevokeSession, useSession } from "@better-auth-ui/react"
-import { ArrowRightFromSquare, Display, Smartphone } from "@gravity-ui/icons"
+import {
+  ArrowRightFromSquare,
+  Display,
+  Smartphone,
+  Xmark
+} from "@gravity-ui/icons"
 import { Button, Chip, Spinner, toast } from "@heroui/react"
 import type { Session } from "better-auth"
-import { UAParser } from "ua-parser-js"
+import Bowser from "bowser"
+
+function timeAgo(date: Date) {
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+  const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" })
+
+  const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 31536000],
+    ["month", 2592000],
+    ["week", 604800],
+    ["day", 86400],
+    ["hour", 3600],
+    ["minute", 60],
+    ["second", 1]
+  ]
+
+  for (const [unit, threshold] of UNITS) {
+    if (seconds >= threshold) {
+      return rtf.format(-Math.floor(seconds / threshold), unit)
+    }
+  }
+
+  return rtf.format(0, "second")
+}
 
 export type ActiveSessionProps = {
   session: Session
@@ -27,51 +55,37 @@ export function ActiveSession({ session }: ActiveSessionProps) {
   })
 
   const isCurrentSession = session.token === sessionData?.session.token
-  const ua = new UAParser(session.userAgent || "").getResult()
+  const ua = Bowser.parse(session.userAgent || "")
   const isMobile =
-    ua.device.type === "mobile" ||
-    ua.device.type === "tablet" ||
-    ua.device.type === "wearable"
+    ua.platform.type === "mobile" || ua.platform.type === "tablet"
 
   return (
     <div className="flex items-center gap-3">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-secondary">
         {isMobile ? (
-          <Smartphone className="size-5" />
+          <Smartphone className="size-4.5" />
         ) : (
-          <Display className="size-5" />
+          <Display className="size-4.5" />
         )}
       </div>
 
       <div className="flex flex-col min-w-0">
-        <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium truncate">
-            {ua.browser.name || "Unknown Browser"}
-            {ua.os.name ? `, ${ua.os.name}` : ""}
-          </span>
+        <span className="text-sm font-medium truncate">
+          {ua.browser.name || "Unknown Browser"}
+          {ua.os.name ? `, ${ua.os.name}` : ""}
+        </span>
 
-          {isCurrentSession && (
-            <Chip color="accent" size="sm" className="px-1.5">
-              {localization.settings.currentSession}
-            </Chip>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted">
-          {session.ipAddress && <span>{session.ipAddress}</span>}
-
-          {session.createdAt && (
-            <>
-              {session.ipAddress && <span>•</span>}
-              <span>
-                {session.createdAt.toLocaleString([], {
-                  dateStyle: "short",
-                  timeStyle: "short"
-                })}
-              </span>
-            </>
-          )}
-        </div>
+        {isCurrentSession ? (
+          <Chip color="accent" size="sm">
+            {localization.settings.currentSession}
+          </Chip>
+        ) : (
+          session.createdAt && (
+            <span className="text-xs text-muted">
+              {timeAgo(session.createdAt)}
+            </span>
+          )
+        )}
       </div>
 
       <Button
@@ -86,14 +100,23 @@ export function ActiveSession({ session }: ActiveSessionProps) {
             : revokeSession({ token: session.token })
         }
         isPending={isRevoking}
-        aria-label={localization.settings.revokeSession}
+        aria-label={
+          isCurrentSession
+            ? localization.auth.signOut
+            : localization.settings.revokeSession
+        }
       >
         {isRevoking ? (
           <Spinner color="current" size="sm" />
-        ) : (
+        ) : isCurrentSession ? (
           <ArrowRightFromSquare />
+        ) : (
+          <Xmark />
         )}
-        {localization.settings.revoke}
+
+        {isCurrentSession
+          ? localization.auth.signOut
+          : localization.settings.revoke}
       </Button>
     </div>
   )

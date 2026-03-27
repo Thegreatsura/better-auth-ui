@@ -130,9 +130,6 @@ export const localization = {
     /** @remarks `"Avatar"` */
     avatar: "Avatar",
 
-    /** @remarks `"JPG, PNG or GIF. 2 MB max."` */
-    avatarInstructions: "JPG, PNG or GIF. 2 MB max.",
-
     /** @remarks `"Current Session"` */
     currentSession: "Current Session",
 
