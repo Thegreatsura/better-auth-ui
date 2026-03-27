@@ -79,17 +79,15 @@ export function ManageAccount({
 
       {deviceSession && !isActive && (
         <Dropdown>
-          <Dropdown.Trigger>
-            <Button
-              isIconOnly
-              variant="ghost"
-              className="shrink-0"
-              size="sm"
-              isDisabled={isBusy}
-            >
-              <Ellipsis />
-            </Button>
-          </Dropdown.Trigger>
+          <Button
+            isIconOnly
+            variant="ghost"
+            className="shrink-0"
+            size="sm"
+            isDisabled={isBusy}
+          >
+            <Ellipsis />
+          </Button>
 
           <Dropdown.Popover>
             <Dropdown.Menu>
