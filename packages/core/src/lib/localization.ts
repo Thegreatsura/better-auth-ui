@@ -124,8 +124,8 @@ export const localization = {
     /** @remarks `"Active"` */
     active: "Active",
 
-    /** @remarks `"Active Sessions"` */
-    activeSessions: "Active Sessions",
+    /** @remarks `"Active sessions"` */
+    activeSessions: "Active sessions",
 
     /** @remarks `"Avatar"` */
     avatar: "Avatar",
