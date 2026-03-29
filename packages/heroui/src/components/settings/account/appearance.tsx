@@ -61,7 +61,7 @@ export function Appearance({
             onChange={setTheme}
             isDisabled={!sessionData || !theme}
           >
-            <Label className="mb-2">{localization.settings.theme}</Label>
+            <Label className="mb-1">{localization.settings.theme}</Label>
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {themes.includes("system") && (
@@ -80,7 +80,7 @@ export function Appearance({
                   </Radio.Control>
 
                   <Radio.Content className="flex flex-col gap-3">
-                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                    <Label className="flex gap-2 items-center">
                       <Display className="text-muted" />
                       {localization.settings.system}
                     </Label>
@@ -106,7 +106,7 @@ export function Appearance({
                   </Radio.Control>
 
                   <Radio.Content className="flex flex-col gap-3">
-                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                    <Label className="flex gap-2 items-center">
                       <Sun className="text-muted" />
                       {localization.settings.light}
                     </Label>
@@ -132,7 +132,7 @@ export function Appearance({
                   </Radio.Control>
 
                   <Radio.Content className="flex flex-col gap-3">
-                    <Label className="cursor-pointer font-medium flex gap-2 items-center">
+                    <Label className="flex gap-2 items-center">
                       <Moon className="text-muted" />
                       {localization.settings.dark}
                     </Label>
