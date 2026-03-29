@@ -4,9 +4,5 @@ import {
 } from "@better-auth-ui/react"
 
 export function AuthProvider({ children, ...config }: AuthProviderProps) {
-  return (
-    <AuthProviderPrimitive {...config}>
-      {children}
-    </AuthProviderPrimitive>
-  )
+  return <AuthProviderPrimitive {...config}>{children}</AuthProviderPrimitive>
 }
