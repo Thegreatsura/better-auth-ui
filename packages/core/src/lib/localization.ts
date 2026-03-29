@@ -136,8 +136,14 @@ export const localization = {
     /** @remarks `"Avatar changed successfully"` */
     avatarChangedSuccess: "Avatar changed successfully",
 
+    /** @remarks `"Avatar deleted successfully"` */
+    avatarDeletedSuccess: "Avatar deleted successfully",
+
     /** @remarks `"Change avatar"` */
     changeAvatar: "Change avatar",
+
+    /** @remarks `"Delete avatar"` */
+    deleteAvatar: "Delete avatar",
 
     /** @remarks `"Link"` */
     link: "Link",
@@ -215,7 +221,10 @@ export const localization = {
     updateEmail: "Update email",
 
     /** @remarks `"Update password"` */
-    updatePassword: "Update password"
+    updatePassword: "Update password",
+
+    /** @remarks `"Upload avatar"` */
+    uploadAvatar: "Upload avatar"
   }
 }
 

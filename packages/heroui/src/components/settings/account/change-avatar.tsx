@@ -1,6 +1,7 @@
 import { fileToBase64 } from "@better-auth-ui/core"
 import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
-import { Button, Label, Spinner, toast } from "@heroui/react"
+import { CloudArrowUpIn, TrashBin } from "@gravity-ui/icons"
+import { Button, cn, Dropdown, Label, Spinner, toast } from "@heroui/react"
 import { type ChangeEvent, useRef, useState } from "react"
 
 import { UserAvatar } from "../../user/user-avatar"
@@ -17,18 +18,14 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   const { data: sessionData } = useSession()
 
   const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
-    onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: () => toast.success(localization.settings.avatarChangedSuccess)
+    onError: (error) => toast.danger(error.error?.message || error.message)
   })
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
-  function openFilePicker() {
-    fileInputRef.current?.click()
-  }
-
-  const isPending = updatePending || isUploading
+  const isPending = updatePending || isUploading || isDeleting
 
   async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -45,7 +42,13 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
       const image =
         (await avatar.upload?.(resized)) || (await fileToBase64(resized))
 
-      updateUser({ image })
+      updateUser(
+        { image },
+        {
+          onSuccess: () =>
+            toast.success(localization.settings.avatarChangedSuccess)
+        }
+      )
     } catch (error) {
       if (error instanceof Error) {
         toast.danger(error.message)
@@ -55,8 +58,27 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
     setIsUploading(false)
   }
 
+  async function handleDelete() {
+    const currentImage = sessionData?.user?.image
+
+    updateUser(
+      { image: null },
+      {
+        onSuccess: async () => {
+          if (currentImage) {
+            setIsDeleting(true)
+            await avatar.delete?.(currentImage)
+            setIsDeleting(false)
+          }
+
+          toast.success(localization.settings.avatarDeletedSuccess)
+        }
+      }
+    )
+  }
+
   return (
-    <div className={className}>
+    <div className={cn("flex flex-col gap-1", className)}>
       <Label isDisabled={!sessionData}>{localization.settings.avatar}</Label>
 
       <input
@@ -74,21 +96,46 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
           variant="ghost"
           className="p-0 h-auto w-auto rounded-full"
           isDisabled={!sessionData || isPending}
-          onPress={openFilePicker}
+          onPress={() => fileInputRef.current?.click()}
         >
           <UserAvatar size="lg" isPending={isPending} />
         </Button>
 
-        <Button
-          isDisabled={!sessionData || isPending}
-          size="sm"
-          variant="secondary"
-          onPress={openFilePicker}
-        >
-          {isPending && <Spinner size="sm" />}
+        <Dropdown>
+          <Button
+            isDisabled={!sessionData || isPending}
+            size="sm"
+            variant="secondary"
+          >
+            {isPending && <Spinner size="sm" />}
 
-          {localization.settings.changeAvatar}
-        </Button>
+            {localization.settings.changeAvatar}
+          </Button>
+
+          <Dropdown.Popover className="min-w-fit">
+            <Dropdown.Menu>
+              <Dropdown.Item
+                textValue={localization.settings.uploadAvatar}
+                onAction={() => fileInputRef.current?.click()}
+              >
+                <CloudArrowUpIn className="text-muted" />
+
+                <Label>{localization.settings.uploadAvatar}</Label>
+              </Dropdown.Item>
+
+              <Dropdown.Item
+                textValue={localization.settings.deleteAvatar}
+                isDisabled={!sessionData?.user?.image}
+                onAction={handleDelete}
+                variant="danger"
+              >
+                <TrashBin className="text-danger" />
+
+                <Label>{localization.settings.deleteAvatar}</Label>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Popover>
+        </Dropdown>
       </div>
     </div>
   )
