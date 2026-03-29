@@ -1,7 +1,14 @@
+/**
+ * Type guard that checks whether a value is a non-null, non-array object.
+ */
 function isObject(item: unknown): item is Record<string, unknown> {
   return item !== null && typeof item === "object" && !Array.isArray(item)
 }
 
+/**
+ * Type guard that checks whether a value is a plain object suitable for deep merging.
+ * Excludes `Date`, `RegExp`, and other special object types.
+ */
 function isPlainObject(item: unknown): item is Record<string, unknown> {
   if (!isObject(item)) return false
 
@@ -12,6 +19,17 @@ function isPlainObject(item: unknown): item is Record<string, unknown> {
   return true
 }
 
+/**
+ * Resize and square-crop an image file for use as an avatar.
+ *
+ * The image is center-cropped to a square, scaled down to at most {@link size} pixels,
+ * and converted to the specified output format.
+ *
+ * @param file - The source image file.
+ * @param size - Max dimension in pixels for the output image.
+ * @param extension - Output format. Use `"inherit"` to keep the original format.
+ * @returns A promise that resolves to the processed `File`.
+ */
 export function resizeAvatar(
   file: File,
   size = 256,
@@ -59,9 +77,13 @@ export function resizeAvatar(
             return
           }
           resolve(
-            new File([blob], file.name.replace(/\.[^.]+$/, `.${resolvedExtension}`), {
-              type: mimeType
-            })
+            new File(
+              [blob],
+              file.name.replace(/\.[^.]+$/, `.${resolvedExtension}`),
+              {
+                type: mimeType
+              }
+            )
           )
         },
         mimeType,
@@ -78,6 +100,12 @@ export function resizeAvatar(
   })
 }
 
+/**
+ * Convert a `File` to a base64-encoded data URL string.
+ *
+ * @param file - The file to encode.
+ * @returns A promise that resolves to the base64 data URL.
+ */
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -87,6 +115,18 @@ export function fileToBase64(file: File): Promise<string> {
   })
 }
 
+/**
+ * Recursively merge `source` into `target`, producing a new object.
+ *
+ * - Plain objects are merged key-by-key; nested objects are merged recursively.
+ * - `undefined` values in `source` are skipped (existing `target` values are preserved).
+ * - Non-plain values (arrays, `Date`, `RegExp`, primitives, functions) in `source`
+ *   replace the corresponding `target` value outright.
+ *
+ * @param target - The base object.
+ * @param source - Partial overrides to apply on top of `target`.
+ * @returns A new merged object of type `T`.
+ */
 export function deepmerge<T>(target: T, source: Partial<T>): T {
   if (isPlainObject(target) && isPlainObject(source)) {
     const result: Record<string, unknown> = { ...target }
