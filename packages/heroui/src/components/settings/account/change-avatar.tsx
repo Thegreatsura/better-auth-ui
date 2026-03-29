@@ -1,6 +1,8 @@
+import { fileToBase64 } from "@better-auth-ui/core"
 import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
 import { Button, Label, Spinner, toast } from "@heroui/react"
 import { type ChangeEvent, useRef, useState } from "react"
+
 import { UserAvatar } from "../../user/user-avatar"
 
 export type ChangeAvatarProps = {
@@ -35,28 +37,22 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
     e.target.value = ""
 
     setIsUploading(true)
-    try {
-      const size = avatar.size
-      const extension = avatar.extension ?? "png"
-      const resized = avatar.resize
-        ? await avatar.resize(file, size, extension)
-        : file
 
-      if (avatar.upload) {
-        const imageUrl = await avatar.upload(resized)
-        updateUser({ image: imageUrl })
-      } else {
-        const { fileToBase64 } = await import("@better-auth-ui/core")
-        const base64 = await fileToBase64(resized)
-        updateUser({ image: base64 })
-      }
+    try {
+      const resized =
+        (await avatar.resize?.(file, avatar.size, avatar.extension)) || file
+
+      const image =
+        (await avatar.upload?.(resized)) || (await fileToBase64(resized))
+
+      updateUser({ image })
     } catch (error) {
-      toast.danger(
-        error instanceof Error ? error.message : "Failed to upload avatar"
-      )
-    } finally {
-      setIsUploading(false)
+      if (error instanceof Error) {
+        toast.danger(error.message)
+      }
     }
+
+    setIsUploading(false)
   }
 
   return (
