@@ -48,6 +48,7 @@ const loader = createServerFn({
 
 const clientLoader = browserCollections.docs.createClientLoader({
   component({ toc, frontmatter, lastModified, default: MDX }) {
+    // biome-ignore lint/correctness/useHookAtTopLevel: ignore
     const data = Route.useLoaderData()
 
     return (

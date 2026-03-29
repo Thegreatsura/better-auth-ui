@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -13,11 +14,11 @@ import {
   Label,
   Link,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 
-import { cn } from "../../lib/utils"
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -51,23 +52,56 @@ export function SignUp({
     emailAndPassword,
     localization,
     magicLink,
+    navigate,
+    redirectTo,
     socialProviders,
     viewPaths
   } = useAuth()
 
-  const [
-    { name, email, password, confirmPassword },
-    signUpEmail,
-    signUpPending
-  ] = useSignUpEmail()
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
-  const [_, signInSocial, socialPending] = useSignInSocial()
+  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
+    onError: (error) => {
+      setPassword("")
+      setConfirmPassword("")
+      toast.danger(error.error?.message || error.message)
+    },
+    onSuccess: () => {
+      if (emailAndPassword?.requireEmailVerification) {
+        toast.success(localization.auth.verifyYourEmail)
+        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      } else {
+        navigate({ to: redirectTo })
+      }
+    }
+  })
+
+  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
+    onError: (error) => toast.danger(error.error?.message || error.message)
+  })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
   const isPending = signUpPending || socialPending
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const name = formData.get("name") as string
+    const email = formData.get("email") as string
+
+    if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
+      toast.danger(localization.auth.passwordsDoNotMatch)
+      setPassword("")
+      setConfirmPassword("")
+      return
+    }
+
+    signUpEmail({ name, email, password })
+  }
 
   const showSeparator =
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
@@ -99,10 +133,9 @@ export function SignUp({
           )}
 
           {emailAndPassword?.enabled && (
-            <Form action={signUpEmail} className="flex flex-col gap-4">
+            <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Fieldset.Group>
                 <TextField
-                  defaultValue={name}
                   name="name"
                   type="text"
                   autoComplete="name"
@@ -122,7 +155,6 @@ export function SignUp({
                 </TextField>
 
                 <TextField
-                  defaultValue={email}
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -142,12 +174,13 @@ export function SignUp({
                 </TextField>
 
                 <TextField
-                  defaultValue={password}
                   minLength={emailAndPassword?.minPasswordLength}
                   maxLength={emailAndPassword?.maxPasswordLength}
                   name="password"
                   autoComplete="new-password"
                   isDisabled={isPending}
+                  value={password}
+                  onChange={setPassword}
                 >
                   <Label>{localization.auth.password}</Label>
 
@@ -186,12 +219,13 @@ export function SignUp({
 
                 {emailAndPassword?.confirmPassword && (
                   <TextField
-                    defaultValue={confirmPassword}
                     minLength={emailAndPassword?.minPasswordLength}
                     maxLength={emailAndPassword?.maxPasswordLength}
                     name="confirmPassword"
                     autoComplete="new-password"
                     isDisabled={isPending}
+                    value={confirmPassword}
+                    onChange={setConfirmPassword}
                   >
                     <Label>{localization.auth.confirmPassword}</Label>
 
@@ -267,9 +301,8 @@ export function SignUp({
           )}
 
           {emailAndPassword?.enabled && (
-            <Description className="flex justify-center gap-1.5 text-foreground text-sm">
-              {localization.auth.alreadyHaveAnAccount}
-
+            <Description className="text-center text-sm">
+              {localization.auth.alreadyHaveAnAccount}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="text-accent decoration-accent no-underline hover:underline"

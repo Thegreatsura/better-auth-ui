@@ -36,8 +36,8 @@ export const localization = {
     /** @remarks `"Invalid reset password token"` */
     invalidResetPasswordToken: "Invalid reset password token",
 
-    /** @remarks `"Magic link"` */
-    magicLink: "Magic link",
+    /** @remarks `"Magic Link"` */
+    magicLink: "Magic Link",
 
     /** @remarks `"Magic link sent to your email"` */
     magicLinkSent: "Magic link sent to your email",
@@ -118,39 +118,53 @@ export const localization = {
     /** @remarks `"Account"` */
     account: "Account",
 
-    /** @remarks `"Accounts"` */
-    accounts: "Accounts",
-
-    /** @remarks `"Accounts description"` */
-    accountsDescription:
-      "Manage the accounts you're currently signed in to on this device.",
-
     /** @remarks `"Account unlinked"` */
     accountUnlinked: "Account unlinked",
 
     /** @remarks `"Active"` */
     active: "Active",
 
-    /** @remarks `"Connected Accounts"` */
-    connectedAccounts: "Connected Accounts",
+    /** @remarks `"Active sessions"` */
+    activeSessions: "Active sessions",
+
+    /** @remarks `"Avatar"` */
+    avatar: "Avatar",
 
     /** @remarks `"Current Session"` */
     currentSession: "Current Session",
 
-    /** @remarks `"Connect {{provider}}"` */
-    connectProvider: "Connect {{provider}}",
+    /** @remarks `"Avatar changed successfully"` */
+    avatarChangedSuccess: "Avatar changed successfully",
+
+    /** @remarks `"Avatar deleted successfully"` */
+    avatarDeletedSuccess: "Avatar deleted successfully",
+
+    /** @remarks `"Change avatar"` */
+    changeAvatar: "Change avatar",
+
+    /** @remarks `"Delete avatar"` */
+    deleteAvatar: "Delete avatar",
+
+    /** @remarks `"Link"` */
+    link: "Link",
+
+    /** @remarks `"Linked accounts"` */
+    linkedAccounts: "Linked accounts",
+
+    /** @remarks `"Link your {{provider}} account"` */
+    linkProvider: "Link your {{provider}} account",
 
     /** @remarks `"Appearance"` */
     appearance: "Appearance",
 
-    /** @remarks `"Change Email"` */
-    changeEmail: "Change Email",
+    /** @remarks `"Change email"` */
+    changeEmail: "Change email",
 
     /** @remarks `"Check your email to confirm the change"` */
     changeEmailSuccess: "Check your email to confirm the change",
 
-    /** @remarks `"Change Password"` */
-    changePassword: "Change Password",
+    /** @remarks `"Change password"` */
+    changePassword: "Change password",
 
     /** @remarks `"Password changed successfully"` */
     changePasswordSuccess: "Password changed successfully",
@@ -167,11 +181,17 @@ export const localization = {
     /** @remarks `"Light"` */
     light: "Light",
 
+    /** @remarks `"Manage accounts"` */
+    manageAccounts: "Manage accounts",
+
     /** @remarks `"Profile"` */
     profile: "Profile",
 
     /** @remarks `"Profile updated successfully"` */
     profileUpdatedSuccess: "Profile updated successfully",
+
+    /** @remarks `"Revoke"` */
+    revoke: "Revoke",
 
     /** @remarks `"Revoke Session"` */
     revokeSession: "Revoke Session",
@@ -185,9 +205,6 @@ export const localization = {
     /** @remarks `"Security"` */
     security: "Security",
 
-    /** @remarks `"Sessions"` */
-    sessions: "Sessions",
-
     /** @remarks `"Settings"` */
     settings: "Settings",
 
@@ -200,11 +217,14 @@ export const localization = {
     /** @remarks `"Unlink {{provider}}"` */
     unlinkProvider: "Unlink {{provider}}",
 
-    /** @remarks `"Update Email"` */
-    updateEmail: "Update Email",
+    /** @remarks `"Update email"` */
+    updateEmail: "Update email",
 
-    /** @remarks `"Update Password"` */
-    updatePassword: "Update Password"
+    /** @remarks `"Update password"` */
+    updatePassword: "Update password",
+
+    /** @remarks `"Upload avatar"` */
+    uploadAvatar: "Upload avatar"
   }
 }
 

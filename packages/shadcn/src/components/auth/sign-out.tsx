@@ -1,10 +1,11 @@
 "use client"
 
+import { useAuth, useSignOut } from "@better-auth-ui/react"
 import { useEffect, useRef } from "react"
+import { toast } from "sonner"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
-import { useSignOut } from "@/hooks/auth/use-sign-out"
 import { cn } from "@/lib/utils"
 
 export type SignOutProps = {
@@ -18,7 +19,22 @@ export type SignOutProps = {
  * @returns The loading Card element shown during sign-out
  */
 export function SignOut({ className }: SignOutProps) {
-  const { signOut } = useSignOut()
+  const { basePaths, navigate, viewPaths } = useAuth()
+
+  const { mutate: signOut } = useSignOut({
+    onError: (error) => {
+      toast.error(error.error?.message || error.message)
+      navigate({
+        to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
+        replace: true
+      })
+    },
+    onSuccess: () =>
+      navigate({
+        to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
+        replace: true
+      })
+  })
 
   const hasSignedOut = useRef(false)
 
@@ -31,12 +47,9 @@ export function SignOut({ className }: SignOutProps) {
 
   return (
     <Card
-      className={cn(
-        "w-full max-w-sm py-4 md:py-6 gap-6 bg-transparent border-none",
-        className
-      )}
+      className={cn("w-full max-w-sm bg-transparent border-none", className)}
     >
-      <CardContent className="flex items-center justify-center min-h-[200px]">
+      <CardContent className="flex items-center justify-center">
         <Spinner className="mx-auto my-auto" />
       </CardContent>
     </Card>

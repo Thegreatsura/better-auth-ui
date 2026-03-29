@@ -14,5 +14,29 @@ export const auth = betterAuth({
     enabled: true
   },
   secret: process.env.BETTER_AUTH_SECRET as string,
-  plugins: [multiSession()]
+  plugins: [multiSession()],
+  session: {
+    cookieCache: {
+      enabled: false,
+      maxAge: 5 * 60 // Cache duration in seconds
+    }
+  },
+  user: {
+    additionalFields: {
+      premium: {
+        type: "boolean",
+        required: false
+      }
+    }
+  },
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    }
+  }
 })

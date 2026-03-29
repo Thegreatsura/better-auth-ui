@@ -37,7 +37,9 @@ export type AppearanceProps = {
 export function Appearance({ className }: AppearanceProps) {
   const {
     localization,
-    settings: { theme, setTheme, themes }
+    settings: {
+      appearance: { theme, setTheme, themes }
+    }
   } = useAuth()
 
   const hydrated = useHydrated()
@@ -47,7 +49,7 @@ export function Appearance({ className }: AppearanceProps) {
   }
 
   return (
-    <Card className={cn("py-4 md:py-6 gap-4 md:gap-6", className)}>
+    <Card className={cn("py-4 md:py-6 gap-4", className)}>
       <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">
           {localization.settings.appearance}
@@ -60,7 +62,7 @@ export function Appearance({ className }: AppearanceProps) {
         <RadioGroup
           value={hydrated ? theme : ""}
           onValueChange={setTheme}
-          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
           disabled={!hydrated}
         >
           {themes.includes("system") && (

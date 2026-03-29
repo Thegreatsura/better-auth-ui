@@ -2,7 +2,8 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Pencil, Save } from "lucide-react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -38,22 +39,32 @@ export type UserProfileProps = {
 export function UserProfile({ className }: UserProfileProps) {
   const { localization } = useAuth()
   const { data: sessionData } = useSession()
-  const [state, formAction, isPending] = useUpdateUser()
+
+  const { mutate: updateUser, isPending } = useUpdateUser({
+    onError: (error) => toast.error(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
+  })
 
   const [fieldErrors, setFieldErrors] = useState<{
     name?: string
   }>({})
 
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    updateUser({ name: formData.get("name") as string })
+  }
+
   return (
-    <form action={formAction}>
-      <Card className={cn("w-full py-4 md:py-6 gap-4 md:gap-6", className)}>
+    <form onSubmit={handleSubmit}>
+      <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
         <CardHeader className="px-4 md:px-6 gap-0">
           <CardTitle className="text-xl">
             {localization.settings.profile}
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="px-4 md:px-6 grid gap-4 md:gap-6">
+        <CardContent className="px-4 md:px-6 grid gap-4">
           <div className="flex items-center gap-2.5">
             <Button
               type="button"
@@ -92,7 +103,7 @@ export function UserProfile({ className }: UserProfileProps) {
             )}
           </div>
 
-          <Field className="gap-1">
+          <Field className="gap-1" data-invalid={!!fieldErrors.name}>
             <FieldLabel htmlFor="name">{localization.auth.name}</FieldLabel>
 
             {sessionData ? (
@@ -101,7 +112,7 @@ export function UserProfile({ className }: UserProfileProps) {
                 id="name"
                 name="name"
                 autoComplete="name"
-                defaultValue={sessionData?.user?.name || state.name}
+                defaultValue={sessionData?.user?.name}
                 placeholder={localization.auth.name}
                 disabled={isPending}
                 required

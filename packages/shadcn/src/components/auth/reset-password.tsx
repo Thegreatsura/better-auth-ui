@@ -2,7 +2,8 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
-import { useEffect, useState } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -41,11 +42,16 @@ export function ResetPassword({ className }: ResetPasswordProps) {
     localization,
     viewPaths,
     navigate,
-    toast,
     Link
   } = useAuth()
-  const [{ password, confirmPassword }, resetPassword, isPending] =
-    useResetPassword()
+
+  const { mutate: resetPassword, isPending } = useResetPassword({
+    onError: (error) => toast.error(error.error?.message || error.message),
+    onSuccess: () => {
+      toast.success(localization.auth.passwordResetSuccess)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+    }
+  })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -58,32 +64,55 @@ export function ResetPassword({ className }: ResetPasswordProps) {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
-    const tokenParam = searchParams.get("token")
+    const token = searchParams.get("token") as string
 
-    if (!tokenParam) {
+    if (!token) {
       toast.error(localization.auth.invalidResetPasswordToken)
-      navigate({ href: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
     }
   }, [
     basePaths.auth,
     localization.auth.invalidResetPasswordToken,
     viewPaths.auth.signIn,
-    navigate,
-    toast
+    navigate
   ])
 
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const searchParams = new URLSearchParams(window.location.search)
+    const token = searchParams.get("token") as string
+
+    if (!token) {
+      toast.error(localization.auth.invalidResetPasswordToken)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      return
+    }
+
+    const formData = new FormData(e.currentTarget)
+    const password = formData.get("password") as string
+    const confirmPassword = formData.get("confirmPassword") as string
+
+    if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
+      toast.error(localization.auth.passwordsDoNotMatch)
+      return
+    }
+
+    resetPassword({ token, newPassword: password })
+  }
+
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6", className)}>
-      <CardHeader className="px-4 md:px-6 -mb-4">
+    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
+      <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">
           {localization.auth.resetPassword}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="px-4 md:px-6">
-        <form action={resetPassword}>
+        <form onSubmit={handleSubmit}>
           <FieldGroup className="gap-4">
-            <Field className="gap-1">
+            <Field className="gap-1" data-invalid={!!fieldErrors.password}>
               <FieldLabel htmlFor="password">
                 {localization.auth.password}
               </FieldLabel>
@@ -94,7 +123,6 @@ export function ResetPassword({ className }: ResetPasswordProps) {
                   name="password"
                   type={isPasswordVisible ? "text" : "password"}
                   autoComplete="new-password"
-                  defaultValue={password}
                   placeholder={localization.auth.newPasswordPlaceholder}
                   required
                   minLength={emailAndPassword?.minPasswordLength}
@@ -141,7 +169,10 @@ export function ResetPassword({ className }: ResetPasswordProps) {
             </Field>
 
             {emailAndPassword?.confirmPassword && (
-              <Field className="gap-1">
+              <Field
+                className="gap-1"
+                data-invalid={!!fieldErrors.confirmPassword}
+              >
                 <FieldLabel htmlFor="confirmPassword">
                   {localization.auth.confirmPassword}
                 </FieldLabel>
@@ -152,7 +183,6 @@ export function ResetPassword({ className }: ResetPasswordProps) {
                     name="confirmPassword"
                     type={isConfirmPasswordVisible ? "text" : "password"}
                     autoComplete="new-password"
-                    defaultValue={confirmPassword}
                     placeholder={localization.auth.confirmPasswordPlaceholder}
                     required
                     minLength={emailAndPassword?.minPasswordLength}
@@ -208,9 +238,8 @@ export function ResetPassword({ className }: ResetPasswordProps) {
               </Button>
             </Field>
 
-            <FieldDescription className="flex justify-center gap-1">
-              {localization.auth.rememberYourPassword}
-
+            <FieldDescription className="text-center">
+              {localization.auth.rememberYourPassword}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="underline underline-offset-4"

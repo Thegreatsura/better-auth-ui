@@ -4,6 +4,9 @@ import {
   usernameClient
 } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
+import type { AuthConfig } from "./auth-config"
+
+export type { PathToObject } from "better-auth/client"
 
 /**
  * Type representing any auth client created with `createAuthClient`.
@@ -11,7 +14,7 @@ import { createAuthClient } from "better-auth/react"
  * Used for type flexibility when accepting auth clients that may have different
  * plugin configurations or feature sets.
  */
-export type AnyAuthClient = ReturnType<typeof createAuthClient>
+export type AnyAuthClient = Omit<ReturnType<typeof createAuthClient>, "signUp">
 
 const authClient = createAuthClient({
   plugins: [magicLinkClient(), multiSessionClient(), usernameClient()]
@@ -23,4 +26,12 @@ const authClient = createAuthClient({
  * This is the standard auth client type used throughout the React package
  * and includes all required plugins enabled.
  */
-export type AuthClient = typeof authClient
+
+type ResolveAuthClient<T> = "AuthClient" extends keyof T
+  ? T["AuthClient"]
+  : typeof authClient
+
+/**
+ * The resolved auth client type, either from user augmentation or the default.
+ */
+export type AuthClient = ResolveAuthClient<AuthConfig>

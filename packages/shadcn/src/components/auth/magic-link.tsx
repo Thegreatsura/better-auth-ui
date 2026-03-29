@@ -1,7 +1,8 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,13 +39,32 @@ export type MagicLinkProps = {
 export function MagicLink({
   className,
   socialLayout,
-  socialPosition = "bottom",
-  ...config
+  socialPosition = "bottom"
 }: MagicLinkProps) {
-  const { basePaths, localization, socialProviders, viewPaths, Link } =
-    useAuth()
-  const [{ email }, signInMagicLink, magicLinkPending] = useSignInMagicLink()
-  const [_, signInSocial, socialPending] = useSignInSocial()
+  const {
+    basePaths,
+    baseURL,
+    localization,
+    redirectTo,
+    socialProviders,
+    viewPaths,
+    Link
+  } = useAuth()
+
+  const [email, setEmail] = useState("")
+
+  const { mutate: signInMagicLink, isPending: magicLinkPending } =
+    useSignInMagicLink({
+      onError: (error) => toast.error(error.error?.message || error.message),
+      onSuccess: () => {
+        setEmail("")
+        toast.success(localization.auth.magicLinkSent)
+      }
+    })
+
+  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
+    onError: (error) => toast.error(error.error?.message || error.message)
+  })
 
   const isPending = magicLinkPending || socialPending
 
@@ -52,11 +72,16 @@ export function MagicLink({
     email?: string
   }>({})
 
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    signInMagicLink({ email, callbackURL: `${baseURL}${redirectTo}` })
+  }
+
   const showSeparator = socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6", className)}>
-      <CardHeader className="px-4 md:px-6 -mb-4">
+    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
+      <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
       </CardHeader>
 
@@ -66,7 +91,6 @@ export function MagicLink({
             <>
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
-                  {...config}
                   socialLayout={socialLayout}
                   signInSocial={signInSocial}
                   isPending={isPending}
@@ -81,9 +105,9 @@ export function MagicLink({
             </>
           )}
 
-          <form action={signInMagicLink}>
+          <form onSubmit={handleSubmit}>
             <FieldGroup className="gap-4">
-              <Field className="gap-1">
+              <Field className="gap-1" data-invalid={!!fieldErrors.email}>
                 <FieldLabel htmlFor="email">
                   {localization.auth.email}
                 </FieldLabel>
@@ -93,16 +117,17 @@ export function MagicLink({
                   name="email"
                   type="email"
                   autoComplete="email"
-                  defaultValue={email}
-                  placeholder={localization.auth.emailPlaceholder}
-                  required
-                  disabled={isPending}
-                  onChange={() => {
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
                     setFieldErrors((prev) => ({
                       ...prev,
                       email: undefined
                     }))
                   }}
+                  placeholder={localization.auth.emailPlaceholder}
+                  required
+                  disabled={isPending}
                   onInvalid={(e) => {
                     e.preventDefault()
                     setFieldErrors((prev) => ({
@@ -123,11 +148,7 @@ export function MagicLink({
                   {localization.auth.sendMagicLink}
                 </Button>
 
-                <MagicLinkButton
-                  {...config}
-                  view="magicLink"
-                  isPending={isPending}
-                />
+                <MagicLinkButton view="magicLink" isPending={isPending} />
               </Field>
             </FieldGroup>
           </form>
@@ -142,7 +163,6 @@ export function MagicLink({
 
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
-                  {...config}
                   socialLayout={socialLayout}
                   signInSocial={signInSocial}
                   isPending={isPending}
@@ -151,9 +171,8 @@ export function MagicLink({
             </>
           )}
 
-          <FieldDescription className="flex justify-center gap-1">
-            {localization.auth.needToCreateAnAccount}
-
+          <FieldDescription className="text-center">
+            {localization.auth.needToCreateAnAccount}{" "}
             <Link
               href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
               className="underline underline-offset-4"

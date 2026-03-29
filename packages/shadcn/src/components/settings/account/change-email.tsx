@@ -2,7 +2,8 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Check } from "lucide-react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -34,26 +35,38 @@ export type ChangeEmailProps = {
  * @returns A JSX element rendering the change-email card and form
  */
 export function ChangeEmail({ className }: ChangeEmailProps) {
-  const { localization } = useAuth()
+  const { baseURL, localization, viewPaths } = useAuth()
   const { data: sessionData } = useSession()
 
-  const [state, formAction, isPending] = useChangeEmail()
+  const { mutate: changeEmail, isPending } = useChangeEmail({
+    onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
+    onError: (error) => toast.error(error.error?.message || error.message)
+  })
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
   }>({})
 
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    changeEmail({
+      newEmail: formData.get("email") as string,
+      callbackURL: `${baseURL}/${viewPaths.settings.account}`
+    })
+  }
+
   return (
-    <form action={formAction}>
-      <Card className={cn("w-full py-4 md:py-6 gap-4 md:gap-6", className)}>
+    <form onSubmit={handleSubmit}>
+      <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
         <CardHeader className="px-4 md:px-6 gap-0">
           <CardTitle className="text-xl">
             {localization.settings.changeEmail}
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="px-4 md:px-6 grid gap-4 md:gap-6">
-          <Field className="gap-1">
+        <CardContent className="px-4 md:px-6">
+          <Field className="gap-1" data-invalid={!!fieldErrors.email}>
             <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
 
             {sessionData ? (
@@ -63,7 +76,7 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
                 name="email"
                 type="email"
                 autoComplete="email"
-                defaultValue={sessionData?.user?.email || state.email}
+                defaultValue={sessionData?.user?.email}
                 placeholder={localization.auth.emailPlaceholder}
                 disabled={isPending}
                 required

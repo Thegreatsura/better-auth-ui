@@ -1,5 +1,4 @@
-export * from "./lib/auth-config"
-export * from "./lib/auth-toast"
+export * from "./config"
 export * from "./lib/base-paths"
 export * from "./lib/localization"
 export * from "./lib/provider-names"

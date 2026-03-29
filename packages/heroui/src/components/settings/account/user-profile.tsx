@@ -1,5 +1,4 @@
 import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
-import { FloppyDisk, Pencil } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -12,10 +11,11 @@ import {
   Label,
   Skeleton,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-
-import { UserAvatar } from "../../user/user-avatar"
+import type { SyntheticEvent } from "react"
+import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
   className?: string
@@ -23,11 +23,9 @@ export type UserProfileProps = {
 }
 
 /**
- * Render a profile card that lets the authenticated user view and update their display name.
+ * Render a profile card that lets the authenticated user view and update their display name and avatar.
  *
- * The component uses auth localization for labels, reflects session loading state with skeletons, shows the best-available user identifier (display username, name, or email), and wires the form submission to the user update action from auth hooks.
- *
- * @returns A JSX element containing the user profile card and an editable name form
+ * @returns A JSX element containing the user profile card with avatar upload and an editable name form
  */
 export function UserProfile({
   className,
@@ -36,99 +34,70 @@ export function UserProfile({
 }: UserProfileProps & CardProps) {
   const { localization } = useAuth()
   const { data: sessionData } = useSession()
-  const [state, formAction, isPending] = useUpdateUser()
+
+  const { mutate: updateUser, isPending } = useUpdateUser({
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
+  })
+
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    updateUser({ name: formData.get("name") as string })
+  }
 
   return (
-    <Card
-      className={cn("p-4 md:p-6 gap-4 md:gap-6", className)}
-      variant={variant}
-      {...props}
-    >
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.profile}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.profile}
+      </h2>
 
-      <Form action={formAction}>
-        <Fieldset className="w-full gap-4 md:gap-6">
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              isIconOnly
-              variant="ghost"
-              className="p-0 h-auto w-auto rounded-full"
-              isDisabled={!sessionData}
-            >
-              <UserAvatar size="lg" />
+      <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
+        <Card.Content>
+          <Form onSubmit={handleSubmit}>
+            <Fieldset className="w-full gap-4">
+              <ChangeAvatar />
 
-              <span className="absolute right-0 bottom-0 size-3.5 rounded-full bg-background ring ring-border flex items-center justify-center">
-                <Pencil className="size-2.5 text-muted" />
-              </span>
-            </Button>
+              <Fieldset.Group>
+                <TextField
+                  key={sessionData?.user?.name}
+                  name="name"
+                  defaultValue={sessionData?.user?.name}
+                  isDisabled={isPending || !sessionData}
+                >
+                  <Label>{localization.auth.name}</Label>
 
-            {sessionData ? (
-              <div className="flex flex-col">
-                <p className="text-sm font-medium">
-                  {sessionData?.user?.displayUsername ||
-                    sessionData?.user?.name ||
-                    sessionData?.user?.email}
-                </p>
+                  {sessionData ? (
+                    <Input
+                      autoComplete="name"
+                      placeholder={localization.auth.name}
+                      variant={
+                        variant === "transparent" ? "primary" : "secondary"
+                      }
+                    />
+                  ) : (
+                    <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
+                  )}
 
-                {(sessionData?.user?.displayUsername ||
-                  sessionData?.user?.name) && (
-                  <p className="text-muted text-xs">
-                    {sessionData?.user?.email}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-1">
-                <Skeleton className="h-4 mt-0.5 w-24 rounded-lg" />
-                <Skeleton className="h-3 mt-0.5 w-32 rounded-lg" />
-              </div>
-            )}
-          </div>
+                  <FieldError />
+                </TextField>
+              </Fieldset.Group>
 
-          <Fieldset.Group>
-            <TextField
-              key={sessionData?.user?.name}
-              name="name"
-              defaultValue={sessionData?.user?.name || state.name}
-              isDisabled={isPending || !sessionData}
-            >
-              <Label>{localization.auth.name}</Label>
-
-              {sessionData ? (
-                <Input
-                  autoComplete="name"
-                  placeholder={localization.auth.name}
-                  variant={variant === "transparent" ? "primary" : "secondary"}
-                />
-              ) : (
-                <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
-              )}
-
-              <FieldError />
-            </TextField>
-          </Fieldset.Group>
-
-          <Fieldset.Actions>
-            <Button
-              type="submit"
-              isPending={isPending}
-              isDisabled={!sessionData}
-            >
-              {isPending ? (
-                <Spinner color="current" size="sm" />
-              ) : (
-                <FloppyDisk />
-              )}
-              {localization.settings.saveChanges}
-            </Button>
-          </Fieldset.Actions>
-        </Fieldset>
-      </Form>
-    </Card>
+              <Fieldset.Actions>
+                <Button
+                  type="submit"
+                  isPending={isPending}
+                  isDisabled={!sessionData}
+                  size="sm"
+                >
+                  {isPending && <Spinner color="current" size="sm" />}
+                  {localization.settings.saveChanges}
+                </Button>
+              </Fieldset.Actions>
+            </Fieldset>
+          </Form>
+        </Card.Content>
+      </Card>
+    </div>
   )
 }

@@ -1,7 +1,8 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { useForgotPassword } from "@/hooks/auth/use-forgot-password"
+import { useRequestPasswordReset } from "@/hooks/auth/use-request-password-reset"
 import { cn } from "@/lib/utils"
 
 export type ForgotPasswordProps = {
@@ -32,24 +33,34 @@ export type ForgotPasswordProps = {
  */
 export function ForgotPassword({ className }: ForgotPasswordProps) {
   const { basePaths, localization, viewPaths, Link } = useAuth()
-  const [{ email }, forgotPassword, isPending] = useForgotPassword()
+
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
+    onError: (error) => toast.error(error.message || error.statusText),
+    onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
+  })
+
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    requestPasswordReset({ email: formData.get("email") as string })
+  }
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
   }>({})
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6", className)}>
-      <CardHeader className="px-4 md:px-6 -mb-4">
+    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
+      <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">
           {localization.auth.forgotPassword}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="px-4 md:px-6">
-        <form action={forgotPassword}>
+        <form onSubmit={handleSubmit}>
           <FieldGroup className="gap-4">
-            <Field className="gap-1">
+            <Field className="gap-1" data-invalid={!!fieldErrors.email}>
               <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
 
               <Input
@@ -57,7 +68,6 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
                 name="email"
                 type="email"
                 autoComplete="email"
-                defaultValue={email}
                 placeholder={localization.auth.emailPlaceholder}
                 required
                 disabled={isPending}
@@ -88,9 +98,8 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
               </Button>
             </Field>
 
-            <FieldDescription className="flex justify-center gap-1">
-              {localization.auth.rememberYourPassword}
-
+            <FieldDescription className="text-center">
+              {localization.auth.rememberYourPassword}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="underline underline-offset-4"

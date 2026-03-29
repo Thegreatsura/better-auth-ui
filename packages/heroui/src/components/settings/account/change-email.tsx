@@ -1,5 +1,4 @@
 import { useAuth, useChangeEmail, useSession } from "@better-auth-ui/react"
-import { Check } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -12,8 +11,10 @@ import {
   Label,
   Skeleton,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
+import type { SyntheticEvent } from "react"
 
 export type ChangeEmailProps = {
   className?: string
@@ -34,62 +35,76 @@ export function ChangeEmail({
   variant,
   ...props
 }: ChangeEmailProps & CardProps) {
-  const { localization } = useAuth()
+  const { localization, baseURL, viewPaths } = useAuth()
   const { data: sessionData } = useSession()
-  const [state, formAction, isPending] = useChangeEmail()
+
+  const { mutate: changeEmail, isPending } = useChangeEmail({
+    onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
+    onError: (error) => toast.danger(error.error?.message || error.message)
+  })
+
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+
+    changeEmail({
+      newEmail: formData.get("email") as string,
+      callbackURL: `${baseURL}/${viewPaths.settings.account}`
+    })
+  }
 
   return (
-    <Card
-      className={cn("p-4 md:p-6 gap-4 md:gap-6", className)}
-      variant={variant}
-      {...props}
-    >
-      <Card.Header>
-        <Card.Title className="text-xl">
-          {localization.settings.changeEmail}
-        </Card.Title>
-      </Card.Header>
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.changeEmail}
+      </h2>
 
-      <Form action={formAction}>
-        <Fieldset className="w-full gap-4 md:gap-6">
-          <Fieldset.Group>
-            <TextField
-              key={sessionData?.user.email}
-              name="email"
-              type="email"
-              defaultValue={sessionData?.user.email || state.email}
-              isDisabled={isPending || !sessionData}
-            >
-              <Label>{localization.auth.email}</Label>
+      <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
+        <Card.Content>
+          <Form onSubmit={handleSubmit}>
+            <Fieldset className="w-full gap-4">
+              <Fieldset.Group>
+                <TextField
+                  key={sessionData?.user.email}
+                  name="email"
+                  type="email"
+                  defaultValue={sessionData?.user.email}
+                  isDisabled={isPending || !sessionData}
+                >
+                  <Label>{localization.auth.email}</Label>
 
-              {sessionData ? (
-                <Input
-                  required
-                  autoComplete="email"
-                  placeholder={localization.auth.emailPlaceholder}
-                  variant={variant === "transparent" ? "primary" : "secondary"}
-                />
-              ) : (
-                <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
-              )}
+                  {sessionData ? (
+                    <Input
+                      required
+                      variant={
+                        variant === "transparent" ? "primary" : "secondary"
+                      }
+                      autoComplete="email"
+                      placeholder={localization.auth.emailPlaceholder}
+                    />
+                  ) : (
+                    <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
+                  )}
 
-              <FieldError />
-            </TextField>
-          </Fieldset.Group>
+                  <FieldError />
+                </TextField>
+              </Fieldset.Group>
 
-          <Fieldset.Actions>
-            <Button
-              type="submit"
-              isPending={isPending}
-              isDisabled={!sessionData}
-            >
-              {isPending ? <Spinner color="current" size="sm" /> : <Check />}
-
-              {localization.settings.updateEmail}
-            </Button>
-          </Fieldset.Actions>
-        </Fieldset>
-      </Form>
-    </Card>
+              <Fieldset.Actions>
+                <Button
+                  type="submit"
+                  isPending={isPending}
+                  isDisabled={!sessionData}
+                  size="sm"
+                >
+                  {isPending && <Spinner color="current" size="sm" />}
+                  {localization.settings.updateEmail}
+                </Button>
+              </Fieldset.Actions>
+            </Fieldset>
+          </Form>
+        </Card.Content>
+      </Card>
+    </div>
   )
 }

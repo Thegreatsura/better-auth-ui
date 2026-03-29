@@ -1,7 +1,13 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
-import { useState } from "react"
+import {
+  useAuth,
+  useSendVerificationEmail,
+  useSignInEmail,
+  useSignInSocial
+} from "@better-auth-ui/react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,8 +23,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
-import { useSignInEmail } from "@/hooks/auth/use-sign-in-email"
-import { useSignInSocial } from "@/hooks/auth/use-sign-in-social"
 import { cn } from "@/lib/utils"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -44,16 +48,49 @@ export function SignIn({
 }: SignInProps) {
   const {
     basePaths,
+    baseURL,
     emailAndPassword,
     localization,
     magicLink,
+    navigate,
+    redirectTo,
     socialProviders,
     viewPaths,
     Link
   } = useAuth()
 
-  const [{ email, password }, signInEmail, signInPending] = useSignInEmail()
-  const [_, signInSocial, socialPending] = useSignInSocial()
+  const [password, setPassword] = useState("")
+
+  const { mutate: sendVerificationEmail } = useSendVerificationEmail({
+    onError: (error) => toast.error(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.auth.verificationEmailSent)
+  })
+
+  const { mutate: signInEmail, isPending: signInPending } = useSignInEmail({
+    onError: (error, { email }) => {
+      setPassword("")
+
+      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+        toast.error(error.error?.message || error.message, {
+          action: {
+            label: localization.auth.resend,
+            onClick: () =>
+              sendVerificationEmail({
+                email,
+                callbackURL: `${baseURL}${redirectTo}`
+              })
+          }
+        })
+      } else {
+        toast.error(error.error?.message || error.message)
+      }
+    },
+    onSuccess: () => navigate({ to: redirectTo })
+  })
+
+  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
+    onError: (error) => toast.error(error.error?.message || error.message)
+  })
 
   const isPending = signInPending || socialPending
 
@@ -62,12 +99,25 @@ export function SignIn({
     password?: string
   }>({})
 
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get("email") as string
+    const rememberMe = formData.get("rememberMe") === "on"
+
+    signInEmail({
+      email,
+      password,
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+    })
+  }
+
   const showSeparator =
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6", className)}>
-      <CardHeader className="px-4 md:px-6 -mb-4">
+    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
+      <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
       </CardHeader>
 
@@ -92,9 +142,9 @@ export function SignIn({
           )}
 
           {emailAndPassword?.enabled && (
-            <form action={signInEmail}>
+            <form onSubmit={handleSubmit}>
               <FieldGroup className="gap-4">
-                <Field className="gap-1">
+                <Field className="gap-1" data-invalid={!!fieldErrors.email}>
                   <FieldLabel htmlFor="email">
                     {localization.auth.email}
                   </FieldLabel>
@@ -104,7 +154,6 @@ export function SignIn({
                     name="email"
                     type="email"
                     autoComplete="email"
-                    defaultValue={email}
                     placeholder={localization.auth.emailPlaceholder}
                     required
                     disabled={isPending}
@@ -127,40 +176,29 @@ export function SignIn({
                   <FieldError>{fieldErrors.email}</FieldError>
                 </Field>
 
-                <Field className="gap-1">
-                  <div className="flex items-center">
-                    <FieldLabel htmlFor="password">
-                      {localization.auth.password}
-                    </FieldLabel>
-
-                    {!emailAndPassword?.rememberMe &&
-                      emailAndPassword?.forgotPassword && (
-                        <Link
-                          href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
-                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline text-card-foreground!"
-                        >
-                          {localization.auth.forgotPasswordLink}
-                        </Link>
-                      )}
-                  </div>
+                <Field className="gap-1" data-invalid={!!fieldErrors.password}>
+                  <FieldLabel htmlFor="password">
+                    {localization.auth.password}
+                  </FieldLabel>
 
                   <Input
                     id="password"
                     name="password"
                     type="password"
                     autoComplete="current-password"
-                    defaultValue={password}
-                    placeholder={localization.auth.passwordPlaceholder}
-                    required
-                    minLength={emailAndPassword?.minPasswordLength}
-                    maxLength={emailAndPassword?.maxPasswordLength}
-                    disabled={isPending}
-                    onChange={() => {
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
                       setFieldErrors((prev) => ({
                         ...prev,
                         password: undefined
                       }))
                     }}
+                    placeholder={localization.auth.passwordPlaceholder}
+                    required
+                    minLength={emailAndPassword?.minPasswordLength}
+                    maxLength={emailAndPassword?.maxPasswordLength}
+                    disabled={isPending}
                     onInvalid={(e) => {
                       e.preventDefault()
 
@@ -178,30 +216,19 @@ export function SignIn({
 
                 {emailAndPassword.rememberMe && (
                   <Field className="my-1">
-                    <div className="flex items-center">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="rememberMe"
-                          name="rememberMe"
-                          disabled={isPending}
-                        />
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="rememberMe"
+                        name="rememberMe"
+                        disabled={isPending}
+                      />
 
-                        <Label
-                          htmlFor="rememberMe"
-                          className="cursor-pointer text-sm font-normal"
-                        >
-                          {localization.auth.rememberMe}
-                        </Label>
-                      </div>
-
-                      {emailAndPassword?.forgotPassword && (
-                        <Link
-                          href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
-                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline text-card-foreground!"
-                        >
-                          {localization.auth.forgotPasswordLink}
-                        </Link>
-                      )}
+                      <Label
+                        htmlFor="rememberMe"
+                        className="cursor-pointer text-sm font-normal"
+                      >
+                        {localization.auth.rememberMe}
+                      </Label>
                     </div>
                   </Field>
                 )}
@@ -239,18 +266,28 @@ export function SignIn({
             </>
           )}
 
-          {emailAndPassword?.enabled && (
-            <FieldDescription className="flex justify-center gap-1">
-              {localization.auth.needToCreateAnAccount}
-
+          <div className="flex flex-col gap-3">
+            {emailAndPassword?.forgotPassword && (
               <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-                className="underline underline-offset-4"
+                href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
+                className="self-center text-sm underline-offset-4 hover:underline"
               >
-                {localization.auth.signUp}
+                {localization.auth.forgotPasswordLink}
               </Link>
-            </FieldDescription>
-          )}
+            )}
+
+            {emailAndPassword?.enabled && (
+              <FieldDescription className="text-center">
+                {localization.auth.needToCreateAnAccount}{" "}
+                <Link
+                  href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+                  className="underline underline-offset-4"
+                >
+                  {localization.auth.signUp}
+                </Link>
+              </FieldDescription>
+            )}
+          </div>
         </FieldGroup>
       </CardContent>
     </Card>

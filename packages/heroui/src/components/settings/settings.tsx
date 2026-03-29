@@ -1,7 +1,6 @@
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import type { SettingsView } from "@better-auth-ui/react/core"
-import { Person, Shield } from "@gravity-ui/icons"
-import { cn, Tabs, type TabsProps, useIsHydrated } from "@heroui/react"
+import { cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useMemo } from "react"
 
 import { AccountSettings } from "./account/account-settings"
@@ -49,80 +48,45 @@ export function Settings({
 
   const currentView = view || (path ? settingsPathViews[path] : undefined)
 
-  const isHydrated = useIsHydrated()
-
   return (
-    <div
-      key={`settings-${isHydrated}`}
-      className={cn(
-        "w-full flex flex-col md:flex-row gap-4 md:gap-6",
-        className
-      )}
+    <Tabs
+      className={cn(className)}
+      orientation="horizontal"
+      selectedKey={currentView}
       {...props}
     >
-      <ResponsiveTabs selectedKey={currentView}>
-        <Tabs.ListContainer>
-          <Tabs.List
-            aria-label={localization.settings.settings}
-            className={cn(
-              "overflow-auto md:w-64 lg:w-72 xl:w-80",
-              hideNav && "hidden"
-            )}
+      <Tabs.ListContainer>
+        <Tabs.List
+          aria-label={localization.settings.settings}
+          className="overflow-auto w-fit"
+        >
+          <Tabs.Tab
+            id="account"
+            href={`${basePaths.settings}/${viewPaths.settings.account}`}
           >
-            <Tabs.Tab
-              id="account"
-              href={`${basePaths.settings}/${viewPaths.settings.account}`}
-              className="gap-2"
-            >
-              <Person />
+            {localization.settings.account}
 
-              {localization.settings.account}
+            <Tabs.Indicator />
+          </Tabs.Tab>
 
-              <Tabs.Indicator />
-            </Tabs.Tab>
+          <Tabs.Tab
+            id="security"
+            href={`${basePaths.settings}/${viewPaths.settings.security}`}
+          >
+            {localization.settings.security}
 
-            <Tabs.Tab
-              id="security"
-              href={`${basePaths.settings}/${viewPaths.settings.security}`}
-              className="gap-2"
-            >
-              <Shield />
+            <Tabs.Indicator />
+          </Tabs.Tab>
+        </Tabs.List>
+      </Tabs.ListContainer>
 
-              {localization.settings.security}
+      <Tabs.Panel id="account" className="px-0">
+        <AccountSettings />
+      </Tabs.Panel>
 
-              <Tabs.Indicator />
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs.ListContainer>
-      </ResponsiveTabs>
-
-      {currentView === "account" && <AccountSettings />}
-      {currentView === "security" && <SecuritySettings />}
-    </div>
-  )
-}
-
-/**
- * Renders a responsive pair of Tabs components: horizontal on small screens and vertical on medium-and-up screens.
- *
- * @param className - Additional CSS classes applied to both responsive tab containers.
- * @param props - All other props are forwarded to each underlying Tabs component.
- * @returns A JSX element containing the responsive Tabs pair.
- */
-export function ResponsiveTabs({ className, ...props }: TabsProps) {
-  return (
-    <>
-      <Tabs
-        className={cn("md:hidden", className)}
-        orientation="horizontal"
-        {...props}
-      />
-
-      <Tabs
-        className={cn("hidden md:flex", className)}
-        orientation="vertical"
-        {...props}
-      />
-    </>
+      <Tabs.Panel id="security" className="px-0">
+        <SecuritySettings />
+      </Tabs.Panel>
+    </Tabs>
   )
 }

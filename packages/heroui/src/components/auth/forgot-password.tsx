@@ -1,8 +1,9 @@
-import { useAuth, useForgotPassword } from "@better-auth-ui/react"
+import { useAuth, useRequestPasswordReset } from "@better-auth-ui/react"
 import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -11,10 +12,10 @@ import {
   Label,
   Link,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-
-import { cn } from "../../lib/utils"
+import type { SyntheticEvent } from "react"
 
 export type ForgotPasswordProps = {
   className?: string
@@ -35,8 +36,21 @@ export function ForgotPassword({
   variant,
   ...props
 }: ForgotPasswordProps & CardProps) {
-  const { basePaths, localization, viewPaths } = useAuth()
-  const [{ email }, forgotPassword, isPending] = useForgotPassword()
+  const { basePaths, localization, viewPaths, navigate } = useAuth()
+
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => {
+      toast.success(localization.auth.passwordResetEmailSent)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+    }
+  })
+
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    requestPasswordReset({ email: formData.get("email") as string })
+  }
 
   return (
     <Card
@@ -45,14 +59,13 @@ export function ForgotPassword({
       {...props}
     >
       <Card.Content>
-        <Form action={forgotPassword}>
+        <Form onSubmit={handleSubmit}>
           <Fieldset className="gap-4">
             <Label className="text-xl">
               {localization.auth.forgotPassword}
             </Label>
 
             <TextField
-              defaultValue={email}
               name="email"
               type="email"
               autoComplete="email"
@@ -77,9 +90,8 @@ export function ForgotPassword({
               </Button>
             </Fieldset.Actions>
 
-            <Description className="flex justify-center gap-1.5 text-foreground text-sm">
-              {localization.auth.rememberYourPassword}
-
+            <Description className="text-center text-sm">
+              {localization.auth.rememberYourPassword}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="text-accent decoration-accent no-underline hover:underline"

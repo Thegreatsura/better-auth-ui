@@ -1,8 +1,9 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useSignInSocial, useSignUpEmail } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,8 +23,6 @@ import {
   InputGroupInput
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
-import { useSignInSocial } from "@/hooks/auth/use-sign-in-social"
-import { useSignUpEmail } from "@/hooks/auth/use-sign-up-email"
 import { cn } from "@/lib/utils"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -58,16 +57,35 @@ export function SignUp({
     emailAndPassword,
     localization,
     magicLink,
+    navigate,
+    redirectTo,
     socialProviders,
     viewPaths,
     Link
   } = useAuth()
-  const [
-    { name, email, password, confirmPassword },
-    signUpEmail,
-    signUpPending
-  ] = useSignUpEmail()
-  const [_, signInSocial, socialPending] = useSignInSocial()
+
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
+    onError: (error) => {
+      setPassword("")
+      setConfirmPassword("")
+      toast.error(error.error?.message || error.message)
+    },
+    onSuccess: () => {
+      if (emailAndPassword?.requireEmailVerification) {
+        toast.success(localization.auth.verifyYourEmail)
+        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      } else {
+        navigate({ to: redirectTo })
+      }
+    }
+  })
+
+  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
+    onError: (error) => toast.error(error.error?.message || error.message)
+  })
 
   const isPending = signUpPending || socialPending
 
@@ -82,12 +100,28 @@ export function SignUp({
     confirmPassword?: string
   }>({})
 
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const name = formData.get("name") as string
+    const email = formData.get("email") as string
+
+    if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
+      toast.error(localization.auth.passwordsDoNotMatch)
+      setPassword("")
+      setConfirmPassword("")
+      return
+    }
+
+    signUpEmail({ name, email, password })
+  }
+
   const showSeparator =
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6", className)}>
-      <CardHeader className="px-4 md:px-6 -mb-4">
+    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
+      <CardHeader className="px-4 md:px-6 gap-0">
         <CardTitle className="text-xl">{localization.auth.signUp}</CardTitle>
       </CardHeader>
 
@@ -112,9 +146,9 @@ export function SignUp({
           )}
 
           {emailAndPassword?.enabled && (
-            <form action={signUpEmail}>
+            <form onSubmit={handleSubmit}>
               <FieldGroup className="gap-4">
-                <Field className="gap-1">
+                <Field className="gap-1" data-invalid={!!fieldErrors.name}>
                   <FieldLabel htmlFor="name">
                     {localization.auth.name}
                   </FieldLabel>
@@ -124,7 +158,6 @@ export function SignUp({
                     name="name"
                     type="text"
                     autoComplete="name"
-                    defaultValue={name}
                     placeholder={localization.auth.namePlaceholder}
                     required
                     disabled={isPending}
@@ -147,7 +180,7 @@ export function SignUp({
                   <FieldError>{fieldErrors.name}</FieldError>
                 </Field>
 
-                <Field className="gap-1">
+                <Field className="gap-1" data-invalid={!!fieldErrors.email}>
                   <FieldLabel htmlFor="email">
                     {localization.auth.email}
                   </FieldLabel>
@@ -157,7 +190,6 @@ export function SignUp({
                     name="email"
                     type="email"
                     autoComplete="email"
-                    defaultValue={email}
                     placeholder={localization.auth.emailPlaceholder}
                     required
                     disabled={isPending}
@@ -180,7 +212,7 @@ export function SignUp({
                   <FieldError>{fieldErrors.email}</FieldError>
                 </Field>
 
-                <Field className="gap-1">
+                <Field className="gap-1" data-invalid={!!fieldErrors.password}>
                   <FieldLabel htmlFor="password">
                     {localization.auth.password}
                   </FieldLabel>
@@ -191,18 +223,19 @@ export function SignUp({
                       name="password"
                       type={isPasswordVisible ? "text" : "password"}
                       autoComplete="new-password"
-                      defaultValue={password}
-                      placeholder={localization.auth.passwordPlaceholder}
-                      required
-                      minLength={emailAndPassword?.minPasswordLength}
-                      maxLength={emailAndPassword?.maxPasswordLength}
-                      disabled={isPending}
-                      onChange={() => {
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value)
                         setFieldErrors((prev) => ({
                           ...prev,
                           password: undefined
                         }))
                       }}
+                      placeholder={localization.auth.passwordPlaceholder}
+                      required
+                      minLength={emailAndPassword?.minPasswordLength}
+                      maxLength={emailAndPassword?.maxPasswordLength}
+                      disabled={isPending}
                       onInvalid={(e) => {
                         e.preventDefault()
 
@@ -240,7 +273,10 @@ export function SignUp({
                 </Field>
 
                 {emailAndPassword?.confirmPassword && (
-                  <Field className="gap-1">
+                  <Field
+                    className="gap-1"
+                    data-invalid={!!fieldErrors.confirmPassword}
+                  >
                     <FieldLabel htmlFor="confirmPassword">
                       {localization.auth.confirmPassword}
                     </FieldLabel>
@@ -251,7 +287,14 @@ export function SignUp({
                         name="confirmPassword"
                         type={isConfirmPasswordVisible ? "text" : "password"}
                         autoComplete="new-password"
-                        defaultValue={confirmPassword}
+                        value={confirmPassword}
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value)
+                          setFieldErrors((prev) => ({
+                            ...prev,
+                            confirmPassword: undefined
+                          }))
+                        }}
                         placeholder={
                           localization.auth.confirmPasswordPlaceholder
                         }
@@ -259,12 +302,6 @@ export function SignUp({
                         minLength={emailAndPassword?.minPasswordLength}
                         maxLength={emailAndPassword?.maxPasswordLength}
                         disabled={isPending}
-                        onChange={() => {
-                          setFieldErrors((prev) => ({
-                            ...prev,
-                            confirmPassword: undefined
-                          }))
-                        }}
                         onInvalid={(e) => {
                           e.preventDefault()
                           setFieldErrors((prev) => ({
@@ -337,9 +374,8 @@ export function SignUp({
           )}
 
           {emailAndPassword?.enabled && (
-            <FieldDescription className="flex justify-center gap-1">
-              {localization.auth.alreadyHaveAnAccount}
-
+            <FieldDescription className="text-center">
+              {localization.auth.alreadyHaveAnAccount}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="underline underline-offset-4"

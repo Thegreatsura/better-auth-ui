@@ -1,5 +1,5 @@
-import { useAuth, useSession } from "@better-auth-ui/react"
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query"
+import { type AuthClient, useAuth, useSession } from "@better-auth-ui/react"
+import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).
@@ -9,17 +9,18 @@ import { type UseQueryOptions, useQuery } from "@tanstack/react-query"
  * @param options - Optional React Query options to customize the query behavior.
  * @returns The React Query result for the sessions list; `data` is the array of session objects, and the result includes loading and error states.
  */
-export function useListSessions(options?: Partial<UseQueryOptions>) {
+export function useListSessions(
+  options?: Partial<UseAuthQueryOptions<AuthClient["listSessions"]>>
+) {
   const { authClient } = useAuth()
-  const { data: sessionData } = useSession(options)
+  const { data: sessionData } = useSession()
 
-  return useQuery({
-    queryKey: ["auth", "listSessions"],
-    queryFn: async () =>
-      authClient.listSessions({
-        fetchOptions: { throw: true }
-      }),
-    enabled: !!sessionData,
-    ...(options as object)
+  return useAuthQuery({
+    authFn: authClient.listSessions,
+    options: {
+      queryKey: ["auth", "listSessions", sessionData?.user.id],
+      enabled: !!sessionData,
+      ...options
+    }
   })
 }

@@ -40,8 +40,8 @@ export function UserView({
       >
         <UserAvatar isPending size={size} />
 
-        <div className="flex flex-col gap-1.5 min-w-0">
-          <Skeleton className="h-4 w-24 rounded-lg" />
+        <div className="flex flex-col gap-1 min-w-0">
+          <Skeleton className="h-3.5 w-24 rounded-lg" />
           <Skeleton className="h-3 w-32 rounded-lg" />
         </div>
       </div>
@@ -56,7 +56,7 @@ export function UserView({
       <UserAvatar user={resolvedUser} size={size} />
 
       <div className="min-w-0">
-        <p className="text-sm font-medium truncate">
+        <p className="text-sm font-medium truncate leading-tight">
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}

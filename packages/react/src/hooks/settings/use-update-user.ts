@@ -1,35 +1,44 @@
-import { useAuth, useSession } from "@better-auth-ui/react"
-import { useActionState } from "react"
+import {
+  type AuthClient,
+  useAuth,
+  useAuthMutation,
+  useSession
+} from "@better-auth-ui/react"
+import { useQueryClient } from "@tanstack/react-query"
+import type {
+  UseAuthMutationOptions,
+  UseAuthMutationResult
+} from "../auth/use-auth-mutation"
 
 /**
- * Hook that creates an action state for updating the authenticated user's profile name.
+ * Hook that creates a mutation for updating the authenticated user's profile.
  *
- * The action submits the name update, refetches the session on success,
+ * The mutation submits the name update, refetches the session on success,
  * and displays success or error toasts.
  *
- * @returns The `useActionState` result whose state holds `name` (initialized to `""`).
+ * @returns The `useMutation` result.
  */
-export function useUpdateUser() {
-  const { authClient, localization, toast } = useAuth()
-  const { refetch } = useSession()
+export function useUpdateUser(
+  options?: UseAuthMutationOptions<AuthClient["updateUser"]>
+): UseAuthMutationResult<AuthClient["updateUser"]> {
+  const { authClient } = useAuth()
+  const { data: sessionData, refetch } = useSession()
+  const queryClient = useQueryClient()
 
-  const updateUser = async (_: object, formData: FormData) => {
-    const name = formData.get("name") as string
+  return useAuthMutation({
+    authFn: authClient.updateUser,
+    options: {
+      ...options,
+      onSuccess: async (data, variables, ...rest) => {
+        queryClient.setQueryData(["auth", "getSession"], {
+          ...sessionData,
+          user: { ...sessionData?.user, ...variables }
+        })
 
-    const { error } = await authClient.updateUser({
-      name
-    })
+        refetch()
 
-    if (error) {
-      toast.error(error.message || error.statusText)
-    } else {
-      await refetch()
-
-      toast.success(localization.settings.profileUpdatedSuccess)
+        await options?.onSuccess?.(data, variables, ...rest)
+      }
     }
-
-    return { name }
-  }
-
-  return useActionState(updateUser, { name: "" })
+  })
 }

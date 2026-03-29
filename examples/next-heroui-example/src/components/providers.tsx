@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
-import { RouterProvider } from "react-aria-components"
 import { Toaster } from "sonner"
 
 import { authClient } from "@/lib/auth-client"
@@ -21,22 +20,20 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-      <RouterProvider navigate={router.push}>
-        <AuthProvider
-          authClient={authClient}
-          socialProviders={["google", "github"]}
-          magicLink
-          multiSession
-          navigate={({ href, replace }) =>
-            replace ? router.replace(href) : router.push(href)
-          }
-          Link={Link}
-        >
-          {children}
+      <AuthProvider
+        authClient={authClient}
+        socialProviders={["google", "github"]}
+        magicLink
+        multiSession
+        navigate={({ to, replace }) =>
+          replace ? router.replace(to) : router.push(to)
+        }
+        Link={Link}
+      >
+        {children}
 
-          <Toaster />
-        </AuthProvider>
-      </RouterProvider>
+        <Toaster />
+      </AuthProvider>
     </ThemeProvider>
   )
 }

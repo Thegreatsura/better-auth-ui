@@ -23,6 +23,7 @@ import {
   Paybin,
   PayPal,
   Polar,
+  Railway,
   Reddit,
   Roblox,
   Salesforce,
@@ -32,6 +33,7 @@ import {
   Twitch,
   Vercel,
   VK,
+  WeChat,
   X,
   Zoom
 } from "../components/icons"
@@ -72,6 +74,7 @@ export const providerIcons: Record<
   paybin: Paybin,
   paypal: PayPal,
   polar: Polar,
+  railway: Railway,
   reddit: Reddit,
   roblox: Roblox,
   salesforce: Salesforce,
@@ -82,5 +85,6 @@ export const providerIcons: Record<
   twitter: X,
   vercel: Vercel,
   vk: VK,
+  wechat: WeChat,
   zoom: Zoom
 }

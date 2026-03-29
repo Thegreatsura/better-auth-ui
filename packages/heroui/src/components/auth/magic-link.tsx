@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -15,9 +16,11 @@ import {
   Label,
   Link,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-import { cn } from "../../lib/utils"
+import { type SyntheticEvent, useState } from "react"
+
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -44,11 +47,36 @@ export function MagicLink({
   variant,
   ...props
 }: MagicLinkProps & CardProps) {
-  const { basePaths, localization, socialProviders, viewPaths } = useAuth()
-  const [{ email }, signInMagicLink, magicLinkPending] = useSignInMagicLink()
-  const [_, signInSocial, socialPending] = useSignInSocial()
+  const {
+    basePaths,
+    baseURL,
+    localization,
+    redirectTo,
+    socialProviders,
+    viewPaths
+  } = useAuth()
+
+  const [email, setEmail] = useState("")
+
+  const { mutate: signInMagicLink, isPending: magicLinkPending } =
+    useSignInMagicLink({
+      onError: (error) => toast.danger(error.error?.message || error.message),
+      onSuccess: () => {
+        setEmail("")
+        toast.success(localization.auth.magicLinkSent)
+      }
+    })
+
+  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
+    onError: (error) => toast.danger(error.error?.message || error.message)
+  })
 
   const isPending = magicLinkPending || socialPending
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    signInMagicLink({ email, callbackURL: `${baseURL}${redirectTo}` })
+  }
 
   const showSeparator = socialProviders && socialProviders.length > 0
 
@@ -78,14 +106,15 @@ export function MagicLink({
             </>
           )}
 
-          <Form action={signInMagicLink} className="flex flex-col gap-4">
+          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Fieldset.Group>
               <TextField
-                defaultValue={email}
                 name="email"
                 type="email"
                 autoComplete="email"
                 isDisabled={isPending}
+                value={email}
+                onChange={setEmail}
               >
                 <Label>{localization.auth.email}</Label>
 
@@ -126,9 +155,8 @@ export function MagicLink({
             </>
           )}
 
-          <Description className="flex justify-center gap-1.5 text-foreground text-sm">
-            {localization.auth.needToCreateAnAccount}
-
+          <Description className="text-center text-sm">
+            {localization.auth.needToCreateAnAccount}{" "}
             <Link
               href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
               className="text-accent decoration-accent no-underline hover:underline"

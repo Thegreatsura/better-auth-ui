@@ -42,11 +42,7 @@
           "type": "registry:hook"
         },
         {
-          "path": "src/hooks/auth/use-sign-in-email.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/auth/use-sign-in-social.ts",
+          "path": "../react/src/hooks/auth/use-send-verification-email.ts",
           "type": "registry:hook"
         },
         {
@@ -92,14 +88,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-sign-up-email.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/auth/use-sign-in-social.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-sign-up-email.ts",
           "type": "registry:hook"
         },
@@ -142,14 +130,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-sign-in-magic-link.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/auth/use-sign-in-social.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-sign-in-magic-link.ts",
           "type": "registry:hook"
         },
@@ -177,10 +157,6 @@
         {
           "path": "src/components/auth/forgot-password.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/hooks/auth/use-forgot-password.ts",
-          "type": "registry:hook"
         },
         {
           "path": "../react/src/hooks/auth/use-forgot-password.ts",
@@ -212,10 +188,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-reset-password.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-reset-password.ts",
           "type": "registry:hook"
         }
@@ -232,10 +204,6 @@
         {
           "path": "src/components/auth/sign-out.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/hooks/auth/use-sign-out.ts",
-          "type": "registry:hook"
         },
         {
           "path": "../react/src/hooks/auth/use-sign-out.ts",
@@ -304,10 +272,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
           "type": "registry:hook"
         }
@@ -344,19 +308,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-list-device-sessions.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-set-active-session.ts",
           "type": "registry:hook"
         },
         {
@@ -552,15 +504,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-update-user.ts",
           "type": "registry:hook"
         },
         {
@@ -593,15 +537,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-change-email.ts",
           "type": "registry:hook"
         },
         {
@@ -706,10 +642,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
           "type": "registry:hook"
         }
@@ -736,23 +668,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-list-device-sessions.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-set-active-session.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-revoke-multi-session.ts",
           "type": "registry:hook"
         },
         {
@@ -794,15 +710,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/hooks/auth/use-session.ts",
-          "type": "registry:hook"
-        },
-        {
           "path": "../react/src/hooks/auth/use-session.tsx",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-change-password.ts",
           "type": "registry:hook"
         },
         {
@@ -815,9 +723,9 @@
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management and connected accounts.",
+      "description": "A container component that displays security settings including password management and linked accounts.",
       "dependencies": ["@better-auth-ui/react@*"],
-      "registryDependencies": ["change-password", "connected-accounts"],
+      "registryDependencies": ["change-password", "linked-accounts"],
       "files": [
         {
           "path": "src/components/settings/security/security-settings.tsx",
@@ -828,16 +736,16 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/connected-accounts.tsx",
+          "path": "src/components/settings/security/linked-accounts.tsx",
           "type": "registry:component"
         }
       ]
     },
     {
-      "name": "connected-accounts",
+      "name": "linked-accounts",
       "type": "registry:component",
-      "title": "Connected Accounts",
-      "description": "Display and manage connected social accounts. Shows all linked social accounts with the ability to unlink them, followed by available providers that can be linked.",
+      "title": "Linked Accounts",
+      "description": "Display and manage linked social accounts. Shows all linked social accounts with the ability to unlink them, followed by available providers that can be linked.",
       "dependencies": [
         "@better-auth-ui/react@*",
         "better-auth",
@@ -846,20 +754,8 @@
       "registryDependencies": ["button", "card", "skeleton", "spinner"],
       "files": [
         {
-          "path": "src/components/settings/security/connected-accounts.tsx",
+          "path": "src/components/settings/security/linked-accounts.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/hooks/settings/use-link-social.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-list-accounts.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/hooks/settings/use-unlink-account.ts",
-          "type": "registry:hook"
         },
         {
           "path": "../react/src/hooks/settings/use-link-social.ts",

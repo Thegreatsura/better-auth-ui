@@ -1,82 +1,22 @@
-import { useAuth } from "@better-auth-ui/react"
-import { useActionState } from "react"
+import {
+  type AuthClient,
+  useAuth,
+  useAuthMutation
+} from "@better-auth-ui/react"
+import type { UseAuthMutationOptions } from "./use-auth-mutation"
+
+export { useAuthMutation } from "./use-auth-mutation"
 
 /**
- * Provides an action state hook for resetting a user's password using the `token` query parameter.
+ * Hook that creates a mutation for the reset-password flow.
  *
- * When the returned action is invoked with a FormData containing `password` (and optionally `confirmPassword`),
- * it attempts to reset the password, shows success or error toasts, navigates to the sign-in view on success or when
- * the token is missing, and returns updated form field values.
+ * The mutation resets the user's password using the provided token and new password.
  *
- * @returns The `useActionState` result configured for the reset-password action. When the action is executed it
- * returns an object with `password` and, if confirm-password is enabled, `confirmPassword` (both strings).
- * On failure or missing token these fields are set to empty strings.
+ * @returns The `useMutation` result.
  */
-export function useResetPassword() {
-  const {
-    authClient,
-    basePaths,
-    emailAndPassword,
-    localization,
-    toast,
-    viewPaths,
-    navigate
-  } = useAuth()
-
-  const resetPassword = async (_: object, formData: FormData) => {
-    const password = formData.get("password") as string
-    const confirmPassword = formData.get("confirmPassword") as string
-
-    const searchParams = new URLSearchParams(window.location.search)
-    const token = searchParams.get("token")
-
-    if (!token) {
-      toast.error(localization.auth.invalidResetPasswordToken)
-      navigate({ href: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-
-      return {
-        password: "",
-        ...(emailAndPassword?.confirmPassword ? { confirmPassword: "" } : {})
-      }
-    }
-
-    // Validate confirmPassword if enabled
-    if (emailAndPassword?.confirmPassword) {
-      if (password !== confirmPassword) {
-        toast.error(localization.auth.passwordsDoNotMatch)
-
-        return {
-          password: "",
-          confirmPassword: ""
-        }
-      }
-    }
-
-    const { error } = await authClient.resetPassword({
-      token,
-      newPassword: password
-    })
-
-    if (error) {
-      toast.error(error.message || error.statusText)
-
-      return {
-        password: "",
-        confirmPassword: ""
-      }
-    }
-
-    toast.success(localization.auth.passwordResetSuccess)
-    navigate({ href: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-
-    return {
-      password,
-      confirmPassword
-    }
-  }
-
-  return useActionState(resetPassword, {
-    password: "",
-    confirmPassword: ""
-  })
+export function useResetPassword(
+  options?: UseAuthMutationOptions<AuthClient["resetPassword"]>
+) {
+  const { authClient } = useAuth()
+  return useAuthMutation({ authFn: authClient.resetPassword, options })
 }

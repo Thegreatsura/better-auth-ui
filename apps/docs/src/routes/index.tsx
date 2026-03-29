@@ -1,10 +1,10 @@
+import { GitHub } from "@better-auth-ui/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { HomeLayout } from "fumadocs-ui/layouts/home"
 import {
   ArrowRight,
   Check,
   Copy,
-  Github,
   LayoutTemplate,
   ShieldCheck,
   Zap
@@ -99,7 +99,7 @@ function Home() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white/80 px-6 py-3 text-sm font-semibold text-neutral-700 backdrop-blur-sm transition-all hover:border-neutral-300 hover:bg-white dark:border-neutral-800 dark:bg-neutral-900/80 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-900"
             >
-              <Github className="h-4 w-4" />
+              <GitHub className="h-4 w-4" />
               Star on GitHub
             </a>
           </div>

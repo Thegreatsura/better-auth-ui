@@ -4,7 +4,7 @@ description: Integrate Better Auth UI with Next.js
 icon: NextJS
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ Configure `AuthProvider` with Next.js navigation.
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/components/providers.tsx
+```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/components/providers.tsx
 ```
 </Tab>
   <Tab value="Package">
@@ -29,7 +29,7 @@ Configure `AuthProvider` with Next.js navigation.
   </Tab>
 </Tabs>
 
-The `navigate` and `Link` props integrate with Next.js's navigation system. The `navigate` prop accepts `{ href, replace }` options to handle both push and replace navigation.
+The `navigate` and `Link` props integrate with Next.js's navigation system. The `navigate` prop accepts `{ to, replace }` options to handle both push and replace navigation.
 
 </Step>
 <Step>
@@ -48,7 +48,7 @@ Create a dynamic auth page that renders the appropriate authentication view base
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/auth/[path]/page.tsx
+```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/auth/[path]/page.tsx
 ```
 </Tab>
   <Tab value="Package">
@@ -68,7 +68,7 @@ Use the `useAuthenticate` hook to protect routes and access session data.
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/dashboard/page.tsx
+```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/dashboard/page.tsx
 ```
 </Tab>
   <Tab value="Package">

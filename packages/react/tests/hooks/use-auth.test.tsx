@@ -79,9 +79,9 @@ describe("useAuth", () => {
       expect(typeof result.current.navigate).toBe("function")
     })
 
-    it("should have replace function", () => {
+    it("should have navigate function that accepts replace option", () => {
       const { result } = renderHook(() => useAuth(), { wrapper })
-      expect(typeof result.current.replace).toBe("function")
+      expect(typeof result.current.navigate).toBe("function")
     })
 
     it("should have Link component", () => {

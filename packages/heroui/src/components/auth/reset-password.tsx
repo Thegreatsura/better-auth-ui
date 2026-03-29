@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -12,12 +13,10 @@ import {
   Label,
   Link,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
-
-import { cn } from "../../lib/utils"
+import { type SyntheticEvent, useEffect, useState } from "react"
 
 export type ResetPasswordProps = {
   className?: string
@@ -37,8 +36,13 @@ export function ResetPassword({
   const { basePaths, emailAndPassword, localization, viewPaths, navigate } =
     useAuth()
 
-  const [{ password, confirmPassword }, resetPassword, isPending] =
-    useResetPassword()
+  const { mutate: resetPassword, isPending } = useResetPassword({
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => {
+      toast.success(localization.auth.passwordResetSuccess)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+    }
+  })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -46,11 +50,11 @@ export function ResetPassword({
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
-    const tokenParam = searchParams.get("token")
+    const token = searchParams.get("token") as string
 
-    if (!tokenParam) {
-      toast.error(localization.auth.invalidResetPasswordToken)
-      navigate({ href: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+    if (!token) {
+      toast.danger(localization.auth.invalidResetPasswordToken)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
     }
   }, [
     basePaths.auth,
@@ -59,6 +63,30 @@ export function ResetPassword({
     navigate
   ])
 
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const searchParams = new URLSearchParams(window.location.search)
+    const token = searchParams.get("token") as string
+
+    if (!token) {
+      toast.danger(localization.auth.invalidResetPasswordToken)
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      return
+    }
+
+    const formData = new FormData(e.currentTarget)
+    const password = formData.get("password") as string
+    const confirmPassword = formData.get("confirmPassword") as string
+
+    if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
+      toast.danger(localization.auth.passwordsDoNotMatch)
+      return
+    }
+
+    resetPassword({ token, newPassword: password })
+  }
+
   return (
     <Card
       className={cn("w-full max-w-sm p-4 md:p-6", className)}
@@ -66,12 +94,11 @@ export function ResetPassword({
       {...props}
     >
       <Card.Content>
-        <Form action={resetPassword}>
+        <Form onSubmit={handleSubmit}>
           <Fieldset className="gap-4">
             <Label className="text-xl">{localization.auth.resetPassword}</Label>
 
             <TextField
-              defaultValue={password}
               minLength={emailAndPassword?.minPasswordLength}
               maxLength={emailAndPassword?.maxPasswordLength}
               name="password"
@@ -113,7 +140,6 @@ export function ResetPassword({
 
             {emailAndPassword?.confirmPassword && (
               <TextField
-                defaultValue={confirmPassword}
                 minLength={emailAndPassword?.minPasswordLength}
                 maxLength={emailAndPassword?.maxPasswordLength}
                 name="confirmPassword"
@@ -164,9 +190,8 @@ export function ResetPassword({
               </Button>
             </Fieldset.Actions>
 
-            <Description className="flex justify-center gap-1.5 text-foreground text-sm">
-              {localization.auth.rememberYourPassword}
-
+            <Description className="text-center text-sm">
+              {localization.auth.rememberYourPassword}{" "}
               <Link
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
                 className="text-accent decoration-accent no-underline hover:underline"

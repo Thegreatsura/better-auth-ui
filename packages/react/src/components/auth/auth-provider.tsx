@@ -1,6 +1,6 @@
 "use client"
 
-import { deepmerge, defaultConfig } from "@better-auth-ui/core"
+import { deepmerge, defaultAuthConfig } from "@better-auth-ui/core"
 import {
   type AnyAuthClient,
   type AnyAuthConfig,
@@ -12,18 +12,24 @@ import {
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import type { BetterFetchError } from "better-auth/react"
-import { type PropsWithChildren, useContext, useEffect } from "react"
+import { type PropsWithChildren, useContext } from "react"
 
-const fallbackQueryClient = new QueryClient()
+const fallbackQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000
+    }
+  }
+})
 
 const baseAuthConfig: AnyAuthConfig = {
-  ...defaultConfig,
+  ...defaultAuthConfig,
   Link: (props) => <a {...props} />
 }
 
 export type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {
   authClient: AnyAuthClient
+  navigate: (options: { to: string; replace?: boolean }) => void
   queryClient?: QueryClient
 }
 
@@ -52,14 +58,6 @@ export function AuthProvider({
     (typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("redirectTo")?.trim()) ||
     mergedConfig.redirectTo
-
-  useEffect(() => {
-    resolvedQueryClient.getQueryCache().config.onError = (error) => {
-      mergedConfig.toast.error(
-        error.message || (error as BetterFetchError).statusText
-      )
-    }
-  }, [resolvedQueryClient, mergedConfig.toast.error])
 
   return (
     <AuthContext.Provider value={mergedConfig}>

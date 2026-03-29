@@ -1,33 +1,33 @@
-import { useAuth } from "@better-auth-ui/react"
-import { useActionState } from "react"
+import {
+  type AuthClient,
+  useAuth,
+  useAuthMutation,
+  useSession
+} from "@better-auth-ui/react"
+import type { UseAuthMutationOptions } from "../auth/use-auth-mutation"
 
 /**
- * Hook that creates an action state for changing the current user's email address.
+ * Hook that creates a mutation for changing the current user's email address.
  *
- * The action sends an email-change request and shows success or error toasts.
+ * The mutation sends an email-change request and shows success or error toasts.
  * On success the callback URL is set to the account settings view.
  *
- * @returns The `useActionState` result whose state holds the submitted email (initialized to `""`).
+ * @returns The `useMutation` result.
  */
-export function useChangeEmail() {
-  const { authClient, baseURL, localization, toast, viewPaths } = useAuth()
+export function useChangeEmail(
+  options?: UseAuthMutationOptions<AuthClient["changeEmail"]>
+) {
+  const { authClient } = useAuth()
+  const { refetch } = useSession()
 
-  const changeEmail = async (_: object, formData: FormData) => {
-    const email = formData.get("email") as string
-
-    const { error } = await authClient.changeEmail({
-      newEmail: email,
-      callbackURL: `${baseURL}/${viewPaths.settings.account}`
-    })
-
-    if (error) {
-      toast.error(error.message || error.statusText)
-    } else {
-      toast.success(localization.settings.changeEmailSuccess)
+  return useAuthMutation({
+    authFn: authClient.changeEmail,
+    options: {
+      ...options,
+      onSuccess: async (...args) => {
+        refetch()
+        await options?.onSuccess?.(...args)
+      }
     }
-
-    return { email }
-  }
-
-  return useActionState(changeEmail, { email: "" })
+  })
 }
