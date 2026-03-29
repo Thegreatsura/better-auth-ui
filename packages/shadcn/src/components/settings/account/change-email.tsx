@@ -2,7 +2,7 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Check } from "lucide-react"
-import { SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"

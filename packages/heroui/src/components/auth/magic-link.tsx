@@ -19,7 +19,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import { SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
