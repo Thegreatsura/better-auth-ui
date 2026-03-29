@@ -1,7 +1,9 @@
 import type { SocialProvider } from "better-auth/social-providers"
+
 import { defaultToast, type Toast } from "./auth-toast"
 import { basePaths } from "./base-paths"
 import { type Localization, localization } from "./localization"
+import { resizeAvatar } from "./utils"
 import { type ViewPaths, viewPaths } from "./view-paths"
 
 /**
@@ -43,19 +45,54 @@ export type EmailAndPasswordConfig = {
 }
 
 /**
+ * Configuration options for avatar handling.
+ */
+export type AvatarConfig = {
+  /**
+   * Delete the current avatar (e.g. remove from storage).
+   * When undefined, avatar deletion is disabled.
+   */
+  delete?: (url: string) => Promise<void>
+  /**
+   * Whether avatar changing is enabled.
+   * @default true
+   */
+  enabled?: boolean
+  /**
+   * Output image format.
+   * @default "png"
+   */
+  extension?: "png" | "jpg" | "webp" | "inherit"
+  /**
+   * Resize an image file before upload.
+   * @default Resizes to max size, square-cropped, output as configured extension.
+   */
+  resize?: (
+    file: File,
+    size?: number,
+    extension?: "png" | "jpg" | "webp" | "inherit"
+  ) => Promise<File>
+  /**
+   * Max dimension in pixels for the optimized avatar.
+   * @default 256
+   */
+  size?: number
+  /**
+   * Upload a file and return the URL where it was stored.
+   * When undefined, the image is base64-encoded and saved directly to `user.image`.
+   */
+  upload?: (file: File) => Promise<string>
+}
+
+/**
  * Available theme options for the application.
  */
 export type Theme = "system" | "light" | "dark"
 
 /**
- * Configuration options for user settings.
+ * Configuration options for appearance/theme settings.
  */
-export type SettingsConfig = {
-  /**
-   * Whether the settings section is enabled
-   * @default true
-   */
-  enabled?: boolean
+export type AppearanceConfig = {
   /**
    * Function to set the application theme
    * @param theme - The theme value to set
@@ -70,6 +107,27 @@ export type SettingsConfig = {
    * @default ["system", "light", "dark"]
    */
   themes?: Theme[]
+}
+
+/**
+ * Configuration options for user settings.
+ */
+export type SettingsConfig = {
+  /**
+   * Appearance/theme configuration
+   * @default { themes: ["system", "light", "dark"] }
+   */
+  appearance: AppearanceConfig
+  /**
+   * Avatar upload, optimization, and deletion configuration.
+   * @default { enabled: true, optimize: optimizeAvatar, size: 256 }
+   */
+  avatar: AvatarConfig
+  /**
+   * Whether the settings section is enabled
+   * @default true
+   */
+  enabled?: boolean
 }
 
 /**
@@ -106,7 +164,7 @@ export interface AuthConfig {
    * Email and password authentication configuration
    * @default { enabled: true, forgotPassword: true, minPasswordLength: 8, maxPasswordLength: 128 }
    */
-  emailAndPassword?: EmailAndPasswordConfig
+  emailAndPassword: EmailAndPasswordConfig
   /** Localization strings for UI components. */
   localization: Localization
   /** Whether magic link (passwordless) authentication is enabled */
@@ -160,8 +218,15 @@ export const defaultConfig: AuthConfig = {
   },
   redirectTo: "/",
   settings: {
-    enabled: true,
-    themes: ["system", "light", "dark"]
+    appearance: {
+      themes: ["system", "light", "dark"]
+    },
+    avatar: {
+      enabled: true,
+      resize: resizeAvatar,
+      size: 256
+    },
+    enabled: true
   },
   viewPaths,
   localization,

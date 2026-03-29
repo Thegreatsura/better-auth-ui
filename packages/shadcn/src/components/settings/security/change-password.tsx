@@ -2,7 +2,7 @@
 
 import { useAuth, useChangePassword, useSession } from "@better-auth-ui/react"
 import { Check, Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -71,10 +71,10 @@ export function ChangePassword({ className }: ChangePasswordProps) {
     confirmPassword?: string
   }>({})
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (emailAndPassword?.confirmPassword && newPassword !== confirmPassword) {
+    if (emailAndPassword.confirmPassword && newPassword !== confirmPassword) {
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
@@ -159,8 +159,8 @@ export function ChangePassword({ className }: ChangePasswordProps) {
                       newPassword: undefined
                     }))
                   }}
-                  minLength={emailAndPassword?.minPasswordLength}
-                  maxLength={emailAndPassword?.maxPasswordLength}
+                  minLength={emailAndPassword.minPasswordLength}
+                  maxLength={emailAndPassword.maxPasswordLength}
                   disabled={isPending}
                   required
                   onInvalid={(e) => {
@@ -198,7 +198,7 @@ export function ChangePassword({ className }: ChangePasswordProps) {
             <FieldError>{fieldErrors.newPassword}</FieldError>
           </Field>
 
-          {emailAndPassword?.confirmPassword && (
+          {emailAndPassword.confirmPassword && (
             <Field
               className="gap-1"
               data-invalid={!!fieldErrors.confirmPassword}
@@ -223,8 +223,8 @@ export function ChangePassword({ className }: ChangePasswordProps) {
                         confirmPassword: undefined
                       }))
                     }}
-                    minLength={emailAndPassword?.minPasswordLength}
-                    maxLength={emailAndPassword?.maxPasswordLength}
+                    minLength={emailAndPassword.minPasswordLength}
+                    maxLength={emailAndPassword.maxPasswordLength}
                     disabled={isPending}
                     required
                     onInvalid={(e) => {

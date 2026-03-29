@@ -57,7 +57,9 @@ export function UserButton({
     viewPaths,
     localization,
     multiSession,
-    settings: { theme, setTheme, themes }
+    settings: {
+      appearance: { theme, setTheme, themes }
+    }
   } = useAuth()
 
   const { data: sessionData, isPending: sessionPending } = useSession()

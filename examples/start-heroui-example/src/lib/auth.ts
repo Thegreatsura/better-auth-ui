@@ -15,6 +15,12 @@ export const auth = betterAuth({
   },
   secret: process.env.BETTER_AUTH_SECRET as string,
   plugins: [multiSession()],
+  session: {
+    cookieCache: {
+      enabled: false,
+      maxAge: 5 * 60 // Cache duration in seconds
+    }
+  },
   user: {
     additionalFields: {
       premium: {

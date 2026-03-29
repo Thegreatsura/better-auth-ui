@@ -15,7 +15,7 @@ import {
   toast
 } from "@heroui/react"
 import type { SyntheticEvent } from "react"
-import { UserAvatar } from "../../user/user-avatar"
+import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
   className?: string
@@ -23,11 +23,9 @@ export type UserProfileProps = {
 }
 
 /**
- * Render a profile card that lets the authenticated user view and update their display name.
+ * Render a profile card that lets the authenticated user view and update their display name and avatar.
  *
- * The component uses auth localization for labels, reflects session loading state with skeletons, shows the best-available user identifier (display username, name, or email), and wires the form submission to the user update action from auth hooks.
- *
- * @returns A JSX element containing the user profile card and an editable name form
+ * @returns A JSX element containing the user profile card with avatar upload and an editable name form
  */
 export function UserProfile({
   className,
@@ -56,27 +54,9 @@ export function UserProfile({
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
-          <Label isDisabled={!sessionData}>
-            {localization.settings.avatar}
-          </Label>
-
           <Form onSubmit={handleSubmit}>
             <Fieldset className="w-full gap-4">
-              <div className="flex items-center gap-4">
-                <Button
-                  type="button"
-                  isIconOnly
-                  variant="ghost"
-                  className="p-0 h-auto w-auto rounded-full"
-                  isDisabled={!sessionData}
-                >
-                  <UserAvatar size="lg" />
-                </Button>
-
-                <Button isDisabled={!sessionData} size="sm" variant="secondary">
-                  {localization.settings.changeAvatar}
-                </Button>
-              </div>
+              <ChangeAvatar />
 
               <Fieldset.Group>
                 <TextField

@@ -37,7 +37,9 @@ export type AppearanceProps = {
 export function Appearance({ className }: AppearanceProps) {
   const {
     localization,
-    settings: { theme, setTheme, themes }
+    settings: {
+      appearance: { theme, setTheme, themes }
+    }
   } = useAuth()
 
   const hydrated = useHydrated()

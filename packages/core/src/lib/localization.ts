@@ -133,6 +133,9 @@ export const localization = {
     /** @remarks `"Current Session"` */
     currentSession: "Current Session",
 
+    /** @remarks `"Avatar changed successfully"` */
+    avatarChangedSuccess: "Avatar changed successfully",
+
     /** @remarks `"Change avatar"` */
     changeAvatar: "Change avatar",
 

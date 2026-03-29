@@ -2,7 +2,8 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth
+  useAuth,
+  useSession
 } from "@better-auth-ui/react"
 import { Display, Moon, Sun } from "@gravity-ui/icons"
 import {
@@ -11,8 +12,7 @@ import {
   cn,
   Label,
   Radio,
-  RadioGroup,
-  useIsHydrated
+  RadioGroup
 } from "@heroui/react"
 
 export type AppearanceProps = {
@@ -37,10 +37,11 @@ export function Appearance({
 }: AppearanceProps & CardProps) {
   const {
     localization,
-    settings: { theme, setTheme, themes }
+    settings: {
+      appearance: { theme, setTheme, themes }
+    }
   } = useAuth()
-
-  const hydrated = useIsHydrated()
+  const { data: sessionData } = useSession()
 
   if (!setTheme || !themes?.length) {
     return null
@@ -56,9 +57,9 @@ export function Appearance({
         <Card.Content>
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
-            value={hydrated ? theme : ""}
+            value={sessionData ? theme : ""}
             onChange={setTheme}
-            isDisabled={!hydrated || !theme}
+            isDisabled={!sessionData || !theme}
           >
             <Label className="mb-2">{localization.settings.theme}</Label>
 

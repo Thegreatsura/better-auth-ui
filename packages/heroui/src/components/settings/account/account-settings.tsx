@@ -23,7 +23,14 @@ export function AccountSettings({
   className,
   ...props
 }: AccountSettingsProps & ComponentProps<"div">) {
-  const { multiSession } = useAuth()
+  const {
+    multiSession,
+    emailAndPassword,
+    magicLink,
+    settings: {
+      appearance: { setTheme }
+    }
+  } = useAuth()
 
   return (
     <div
@@ -31,9 +38,8 @@ export function AccountSettings({
       {...props}
     >
       <UserProfile />
-      <ChangeEmail />
-      <Appearance />
-
+      {(emailAndPassword?.enabled || magicLink) && <ChangeEmail />}
+      {setTheme && <Appearance />}
       {multiSession && <ManageAccounts />}
     </div>
   )

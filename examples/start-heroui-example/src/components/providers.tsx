@@ -23,8 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
       multiSession
       navigate={navigate}
       settings={{
-        theme,
-        setTheme
+        appearance: { theme, setTheme }
       }}
       Link={Link}
     >

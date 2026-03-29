@@ -19,8 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
       redirectTo="/dashboard"
       navigate={navigate}
       settings={{
-        theme,
-        setTheme
+        appearance: { theme, setTheme }
       }}
       Link={({ href, ...props }) => <Link to={href} {...props} />}
     >
