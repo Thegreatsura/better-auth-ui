@@ -1,6 +1,6 @@
 "use client"
 
-import { deepmerge, defaultConfig } from "@better-auth-ui/core"
+import { deepmerge, defaultAuthConfig } from "@better-auth-ui/core"
 import {
   type AnyAuthClient,
   type AnyAuthConfig,
@@ -18,13 +18,13 @@ import { type PropsWithChildren, useContext, useEffect } from "react"
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 250
+      staleTime: 1000
     }
   }
 })
 
 const baseAuthConfig: AnyAuthConfig = {
-  ...defaultConfig,
+  ...defaultAuthConfig,
   Link: (props) => <a {...props} />
 }
 

@@ -1,5 +1,5 @@
 import type { AnyAuthConfig, AuthConfig } from "@better-auth-ui/react"
-import { deepmerge, defaultConfig } from "@better-auth-ui/react/core"
+import { deepmerge, defaultAuthConfig } from "@better-auth-ui/react/core"
 import { useContext } from "react"
 import { toast } from "sonner"
 import { AuthContext } from "@/components/auth/auth-provider"
@@ -20,7 +20,7 @@ export function useAuth(config?: AnyAuthConfig) {
   const context = useContext(AuthContext)
 
   const authConfig = deepmerge(
-    deepmerge(defaultConfig as AnyAuthConfig, extendConfig),
+    deepmerge(defaultAuthConfig as AnyAuthConfig, extendConfig),
     deepmerge(context || {}, config || {})
   ) as AuthConfig
 

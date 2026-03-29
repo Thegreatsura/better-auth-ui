@@ -65,7 +65,7 @@ export interface AuthConfig {
   navigate: (options: { to: string; replace?: boolean }) => void
 }
 
-export const defaultConfig: AuthConfig = {
+export const defaultAuthConfig: AuthConfig = {
   basePaths,
   baseURL: "",
   emailAndPassword: {
