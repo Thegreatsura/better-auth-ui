@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -14,8 +15,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import type { FormEvent } from "react"
-import { cn } from "../../lib/utils"
+import type { SyntheticEvent } from "react"
 
 export type ForgotPasswordProps = {
   className?: string
@@ -46,7 +46,7 @@ export function ForgotPassword({
     }
   })
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({ email: formData.get("email") as string })

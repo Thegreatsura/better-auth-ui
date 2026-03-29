@@ -2,7 +2,7 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
-import { type FormEvent, useEffect, useState } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -77,7 +77,7 @@ export function ResetPassword({ className }: ResetPasswordProps) {
     navigate
   ])
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
 
     const searchParams = new URLSearchParams(window.location.search)

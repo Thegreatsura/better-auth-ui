@@ -6,7 +6,6 @@ import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
 import type { SettingsConfig } from "./settings-config"
-import { defaultToast, type ToastConfig } from "./toast-config"
 
 /**
  * Core authentication configuration interface.
@@ -48,10 +47,6 @@ export interface AuthConfig {
   socialProviders?: SocialProvider[]
   /** View path mappings for different authentication views */
   viewPaths: ViewPaths
-  /**
-   * Toast notification configuration for user feedback.
-   */
-  toast: ToastConfig
   /**
    * Function to navigate to a new path
    * @param options - Navigation options with href and optional replace flag
@@ -95,10 +90,5 @@ export const defaultAuthConfig: AuthConfig = {
     } else {
       window.location.href = to
     }
-  },
-  toast: {
-    error: defaultToast,
-    success: defaultToast,
-    info: defaultToast
   }
 }

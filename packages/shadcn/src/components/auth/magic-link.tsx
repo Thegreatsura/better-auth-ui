@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -72,7 +72,7 @@ export function MagicLink({
     email?: string
   }>({})
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     signInMagicLink({ email, callbackURL: `${baseURL}${redirectTo}` })
   }

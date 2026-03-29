@@ -1,7 +1,6 @@
 import { useAuth } from "@better-auth-ui/react"
+import { cn } from "@heroui/react"
 import type { ComponentProps } from "react"
-
-import { cn } from "../../../lib/utils"
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
 import { ManageAccounts } from "./manage-accounts"

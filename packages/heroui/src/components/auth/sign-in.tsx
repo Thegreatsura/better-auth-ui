@@ -9,6 +9,7 @@ import {
   Card,
   type CardProps,
   Checkbox,
+  cn,
   Description,
   FieldError,
   Form,
@@ -19,9 +20,8 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import { useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 
-import { cn } from "../../lib/utils"
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -90,7 +90,7 @@ export function SignIn({
     onError: (error) => toast.danger(error.error?.message || error.message)
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string

@@ -1,5 +1,4 @@
 import type { AuthConfig as BaseAuthConfig } from "@better-auth-ui/react/core"
-import type { QueryClient } from "@tanstack/react-query"
 import type { ComponentType, PropsWithChildren } from "react"
 import type { AnyAuthClient, AuthClient } from "./auth-client"
 
@@ -26,7 +25,6 @@ export interface AuthConfig extends BaseAuthConfig {
   Link: ComponentType<
     PropsWithChildren<{ className?: string; href: string; to?: string }>
   >
-  queryClient?: QueryClient
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: required for generic utility type

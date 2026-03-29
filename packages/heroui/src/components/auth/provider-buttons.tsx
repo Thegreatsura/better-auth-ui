@@ -1,10 +1,8 @@
 import { getProviderName } from "@better-auth-ui/core"
 import { providerIcons, useAuth } from "@better-auth-ui/react"
-import { Button } from "@heroui/react"
+import { Button, cn } from "@heroui/react"
 import type { SocialProvider } from "better-auth/social-providers"
 import { useMemo } from "react"
-
-import { cn } from "../../lib/utils"
 
 export type ProviderButtonsProps = {
   isPending: boolean

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   type CardProps,
+  cn,
   Description,
   FieldError,
   Fieldset,
@@ -15,9 +16,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import { type FormEvent, useEffect, useState } from "react"
-
-import { cn } from "../../lib/utils"
+import { type SyntheticEvent, useEffect, useState } from "react"
 
 export type ResetPasswordProps = {
   className?: string
@@ -64,7 +63,7 @@ export function ResetPassword({
     navigate
   ])
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
 
     const searchParams = new URLSearchParams(window.location.search)

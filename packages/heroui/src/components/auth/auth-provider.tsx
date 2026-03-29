@@ -3,7 +3,6 @@ import {
   type AuthProviderProps
 } from "@better-auth-ui/react"
 import { RouterProvider } from "@heroui/react"
-import { toast } from "sonner"
 
 /**
  * Provides an authentication context by rendering an auth provider with the sonner toast handler injected, forwarding remaining configuration and rendering `children` inside it.
@@ -17,7 +16,7 @@ export function AuthProvider({
   ...config
 }: AuthProviderProps) {
   return (
-    <AuthProviderPrimitive toast={toast} navigate={navigate} {...config}>
+    <AuthProviderPrimitive navigate={navigate} {...config}>
       <RouterProvider navigate={(path) => navigate({ to: path })}>
         {children}
       </RouterProvider>

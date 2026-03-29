@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
-import { type FormEvent, useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,7 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
     onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
   })
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({ email: formData.get("email") as string })

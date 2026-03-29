@@ -1,8 +1,6 @@
 import { useAuth, useSignOut } from "@better-auth-ui/react"
-import { Card, type CardProps, Spinner, toast } from "@heroui/react"
+import { Card, type CardProps, cn, Spinner, toast } from "@heroui/react"
 import { useEffect, useRef } from "react"
-
-import { cn } from "../../lib/utils"
 
 export type SignOutProps = {
   className?: string

@@ -2,7 +2,7 @@
 
 import { useAuth } from "@better-auth-ui/react"
 import { Pencil, Save } from "lucide-react"
-import { type FormEvent, useState } from "react"
+import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -49,7 +49,7 @@ export function UserProfile({ className }: UserProfileProps) {
     name?: string
   }>({})
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     updateUser({ name: formData.get("name") as string })
