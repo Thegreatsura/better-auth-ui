@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@better-auth-ui/react": "*",
+    "@tanstack/react-query": "^5.95.2",
     "@heroui/react": "^3.0.1",
     "@heroui/styles": "^3.0.1",
     "@radix-ui/react-checkbox": "^1.3.3",
