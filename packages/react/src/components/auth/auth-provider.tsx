@@ -12,8 +12,7 @@ import {
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import type { BetterFetchError } from "better-auth/react"
-import { type PropsWithChildren, useContext, useEffect } from "react"
+import { type PropsWithChildren, useContext } from "react"
 
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
@@ -59,14 +58,6 @@ export function AuthProvider({
     (typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("redirectTo")?.trim()) ||
     mergedConfig.redirectTo
-
-  useEffect(() => {
-    resolvedQueryClient.getQueryCache().config.onError = (error) => {
-      mergedConfig.toast.error(
-        error.message || (error as BetterFetchError).statusText
-      )
-    }
-  }, [resolvedQueryClient, mergedConfig.toast])
 
   return (
     <AuthContext.Provider value={mergedConfig}>
