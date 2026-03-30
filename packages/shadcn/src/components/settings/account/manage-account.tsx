@@ -100,7 +100,7 @@ export function ManageAccount({
                 })
               }
             >
-              <ArrowLeftRight />
+              <ArrowLeftRight className="text-muted-foreground" />
               {localization.auth.switchAccount}
             </DropdownMenuItem>
 
@@ -111,7 +111,7 @@ export function ManageAccount({
                 })
               }
             >
-              <LogOut />
+              <LogOut className="text-muted-foreground" />
               {localization.auth.signOut}
             </DropdownMenuItem>
           </DropdownMenuContent>
