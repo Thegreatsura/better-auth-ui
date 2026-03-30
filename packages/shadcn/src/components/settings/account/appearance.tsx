@@ -66,16 +66,19 @@ export function Appearance({ className }: AppearanceProps) {
             {themes.includes("system") && (
               <FieldLabel htmlFor="system">
                 <Field orientation="horizontal">
-                  <FieldContent className="gap-3">
-                    <FieldTitle>
-                      <Monitor className="size-4 text-muted-foreground" />
-                      {localization.settings.system}
-                    </FieldTitle>
+                  <FieldContent className="gap-2">
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Monitor className="size-4 text-muted-foreground" />
+
+                        {localization.settings.system}
+                      </FieldTitle>
+
+                      <RadioGroupItem value="system" id="system" />
+                    </div>
 
                     <ThemePreviewSystem className="w-full" />
                   </FieldContent>
-
-                  <RadioGroupItem value="system" id="system" />
                 </Field>
               </FieldLabel>
             )}
@@ -83,16 +86,19 @@ export function Appearance({ className }: AppearanceProps) {
             {themes.includes("light") && (
               <FieldLabel htmlFor="light">
                 <Field orientation="horizontal">
-                  <FieldContent className="gap-3">
-                    <FieldTitle>
-                      <Sun className="size-4 text-muted-foreground" />
-                      {localization.settings.light}
-                    </FieldTitle>
+                  <FieldContent className="gap-2">
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Sun className="size-4 text-muted-foreground" />
+
+                        {localization.settings.light}
+                      </FieldTitle>
+
+                      <RadioGroupItem value="light" id="light" />
+                    </div>
 
                     <ThemePreviewLight className="w-full" />
                   </FieldContent>
-
-                  <RadioGroupItem value="light" id="light" />
                 </Field>
               </FieldLabel>
             )}
@@ -101,15 +107,18 @@ export function Appearance({ className }: AppearanceProps) {
               <FieldLabel htmlFor="dark">
                 <Field orientation="horizontal">
                   <FieldContent className="gap-3">
-                    <FieldTitle>
-                      <Moon className="size-4 text-muted-foreground" />
-                      {localization.settings.dark}
-                    </FieldTitle>
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Moon className="size-4 text-muted-foreground" />
+
+                        {localization.settings.dark}
+                      </FieldTitle>
+
+                      <RadioGroupItem value="dark" id="dark" />
+                    </div>
 
                     <ThemePreviewDark className="w-full" />
                   </FieldContent>
-
-                  <RadioGroupItem value="dark" id="dark" />
                 </Field>
               </FieldLabel>
             )}

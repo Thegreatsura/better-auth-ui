@@ -106,7 +106,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
           type="button"
           variant="ghost"
           className="p-0 h-auto w-auto rounded-full"
-          disabled={!sessionData || isPending}
+          disabled={isPending}
           onClick={() => fileInputRef.current?.click()}
         >
           <UserAvatar className="size-12" isPending={isPending} />
