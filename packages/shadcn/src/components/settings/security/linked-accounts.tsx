@@ -1,11 +1,9 @@
 "use client"
 
 import { useAuth, useListAccounts } from "@better-auth-ui/react"
-import { useEffect } from "react"
 import { toast } from "sonner"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Item } from "@/components/ui/item"
+import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { LinkedAccount } from "./linked-account"
@@ -25,54 +23,69 @@ export type LinkedAccountsProps = {
  */
 export function LinkedAccounts({ className }: LinkedAccountsProps) {
   const { localization, socialProviders } = useAuth()
-  const { data: accounts, isPending, error } = useListAccounts()
 
-  useEffect(() => {
-    if (error) toast.error(error.error?.message || error.message)
-  }, [error])
+  const { data: accounts, isPending } = useListAccounts({
+    throwOnError: (error) => {
+      if (error.error) toast.error(error.error.message)
+      return false
+    }
+  })
+
+  const linkedAccounts = accounts?.filter(
+    (account) => account.providerId !== "credential"
+  )
+
+  const allRows = [
+    ...(linkedAccounts?.map((account) => ({
+      key: account.id,
+      account,
+      provider: account.providerId
+    })) ?? []),
+    ...(socialProviders?.map((provider) => ({
+      key: provider,
+      account: undefined,
+      provider
+    })) ?? [])
+  ]
 
   return (
-    <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
-          {localization.settings.linkedAccounts}
-        </CardTitle>
-      </CardHeader>
+    <div>
+      <h2 className="text-sm font-semibold mb-3">
+        {localization.settings.linkedAccounts}
+      </h2>
 
-      <CardContent className="px-4 md:px-6 grid gap-3">
-        {isPending ? (
-          <AccountRowSkeleton />
-        ) : (
-          <>
-            {accounts
-              ?.filter((account) => account.providerId !== "credential")
-              .map((account) => (
-                <LinkedAccount
-                  key={account.id}
-                  account={account}
-                  provider={account.providerId}
-                />
-              ))}
+      <Card className={cn("w-full py-4 md:py-6", className)}>
+        <CardContent className="px-4 md:px-6">
+          {isPending ? (
+            <AccountRowSkeleton />
+          ) : (
+            allRows.map((row, index) => (
+              <div key={row.key}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                )}
 
-            {socialProviders?.map((provider) => {
-              return <LinkedAccount key={provider} provider={provider} />
-            })}
-          </>
-        )}
-      </CardContent>
-    </Card>
+                <LinkedAccount account={row.account} provider={row.provider} />
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
 function AccountRowSkeleton() {
   return (
-    <Item className="p-3 gap-3" variant="outline">
-      <Skeleton className="size-10 rounded-md" />
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-10 rounded-md" />
 
-      <div className="flex flex-col gap-1">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-3 w-32" />
+        <div className="flex flex-col gap-1">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-3 w-32" />
+        </div>
       </div>
-    </Item>
+    </div>
   )
 }

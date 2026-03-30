@@ -1,18 +1,11 @@
 "use client"
 
 import { useAuth, useChangeEmail, useSession } from "@better-auth-ui/react"
-import { Check } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -55,60 +48,63 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-        <CardHeader className="px-4 md:px-6 gap-0">
-          <CardTitle className="text-xl">
-            {localization.settings.changeEmail}
-          </CardTitle>
-        </CardHeader>
+    <div>
+      <h2 className="text-sm font-semibold mb-3">
+        {localization.settings.changeEmail}
+      </h2>
 
-        <CardContent className="px-4 md:px-6">
-          <Field className="gap-1" data-invalid={!!fieldErrors.email}>
-            <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
+      <form onSubmit={handleSubmit}>
+        <Card className={cn(className)}>
+          <CardContent>
+            <Field data-invalid={!!fieldErrors.email}>
+              <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
 
-            {sessionData ? (
-              <Input
-                key={sessionData?.user?.email}
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                defaultValue={sessionData?.user?.email}
-                placeholder={localization.auth.emailPlaceholder}
-                disabled={isPending}
-                required
-                onChange={() => {
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    email: undefined
-                  }))
-                }}
-                onInvalid={(e) => {
-                  e.preventDefault()
-                  setFieldErrors((prev) => ({
-                    ...prev,
-                    email: (e.target as HTMLInputElement).validationMessage
-                  }))
-                }}
-                aria-invalid={!!fieldErrors.email}
-              />
-            ) : (
-              <Skeleton className="h-9 w-full" />
-            )}
+              {sessionData ? (
+                <Input
+                  key={sessionData?.user?.email}
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  defaultValue={sessionData?.user?.email}
+                  placeholder={localization.auth.emailPlaceholder}
+                  disabled={isPending}
+                  required
+                  onChange={() => {
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      email: undefined
+                    }))
+                  }}
+                  onInvalid={(e) => {
+                    e.preventDefault()
+                    setFieldErrors((prev) => ({
+                      ...prev,
+                      email: (e.target as HTMLInputElement).validationMessage
+                    }))
+                  }}
+                  aria-invalid={!!fieldErrors.email}
+                />
+              ) : (
+                <Skeleton className="h-9 w-full" />
+              )}
 
-            <FieldError>{fieldErrors.email}</FieldError>
-          </Field>
-        </CardContent>
+              <FieldError>{fieldErrors.email}</FieldError>
+            </Field>
+          </CardContent>
 
-        <CardFooter className="px-4 md:px-6">
-          <Button type="submit" disabled={isPending || !sessionData}>
-            {isPending ? <Spinner /> : <Check />}
-
-            {localization.settings.updateEmail}
-          </Button>
-        </CardFooter>
-      </Card>
-    </form>
+          <CardFooter>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isPending || !sessionData}
+            >
+              {isPending && <Spinner />}
+              {localization.settings.updateEmail}
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   )
 }

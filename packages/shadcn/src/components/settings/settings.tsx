@@ -2,7 +2,6 @@
 
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import type { SettingsView } from "@better-auth-ui/react/core"
-import { ShieldCheck, UserCircle2 } from "lucide-react"
 import { useMemo } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -26,7 +25,12 @@ export type SettingsProps = {
  * @param hideNav - When `true`, hides the settings navigation tabs
  * @returns A JSX element rendering the settings layout and the selected settings panel
  */
-export function Settings({ className, view, path, hideNav }: SettingsProps) {
+export function Settings({
+  className,
+  view,
+  path,
+  hideNav
+}: SettingsProps) {
   const { basePaths, localization, viewPaths, Link } = useAuth()
   useAuthenticate()
 
@@ -47,25 +51,21 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
   return (
     <Tabs
       value={currentView}
-      className={cn("w-full md:flex-row gap-4 md:gap-6", className)}
+      className={cn("w-full", className)}
     >
-      <div className={cn("overflow-auto rounded-md", hideNav && "hidden")}>
+      <div className={cn("overflow-auto", hideNav && "hidden")}>
         <TabsList
           aria-label={localization.settings.settings}
-          className="min-w-full md:w-64 lg:w-72 xl:w-80 md:flex-col md:h-fit md:items-stretch"
+          className="w-fit"
         >
           <TabsTrigger value="account" asChild>
             <Link href={`${basePaths.settings}/${viewPaths.settings.account}`}>
-              <UserCircle2 />
-
               {localization.settings.account}
             </Link>
           </TabsTrigger>
 
           <TabsTrigger value="security" asChild>
             <Link href={`${basePaths.settings}/${viewPaths.settings.security}`}>
-              <ShieldCheck />
-
               {localization.settings.security}
             </Link>
           </TabsTrigger>

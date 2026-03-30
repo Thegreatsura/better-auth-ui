@@ -1,0 +1,150 @@
+"use client"
+
+import { fileToBase64 } from "@better-auth-ui/core"
+import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
+import { Trash2, Upload } from "lucide-react"
+import { type ChangeEvent, useRef, useState } from "react"
+import { toast } from "sonner"
+
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
+import { UserAvatar } from "@/components/user/user-avatar"
+import { cn } from "@/lib/utils"
+
+export type ChangeAvatarProps = {
+  className?: string
+}
+
+export function ChangeAvatar({ className }: ChangeAvatarProps) {
+  const {
+    localization,
+    settings: { avatar }
+  } = useAuth()
+  const { data: sessionData } = useSession()
+
+  const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
+    onError: (error) => toast.error(error.error?.message || error.message)
+  })
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const isPending = updatePending || isUploading || isDeleting
+
+  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    e.target.value = ""
+
+    setIsUploading(true)
+
+    try {
+      const resized =
+        (await avatar.resize?.(file, avatar.size, avatar.extension)) || file
+
+      const image =
+        (await avatar.upload?.(resized)) || (await fileToBase64(resized))
+
+      updateUser(
+        { image },
+        {
+          onSuccess: () =>
+            toast.success(localization.settings.avatarChangedSuccess)
+        }
+      )
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
+    }
+
+    setIsUploading(false)
+  }
+
+  async function handleDelete() {
+    const currentImage = sessionData?.user?.image
+
+    updateUser(
+      { image: null },
+      {
+        onSuccess: async () => {
+          if (currentImage) {
+            setIsDeleting(true)
+            await avatar.delete?.(currentImage)
+            setIsDeleting(false)
+          }
+
+          toast.success(localization.settings.avatarDeletedSuccess)
+        }
+      }
+    )
+  }
+
+  return (
+    <div className={cn("flex flex-col gap-1", className)}>
+      <Label className={cn(!sessionData && "opacity-50")}>
+        {localization.settings.avatar}
+      </Label>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
+      <div className="flex items-center gap-4">
+        <Button
+          type="button"
+          variant="ghost"
+          className="p-0 h-auto w-auto rounded-full"
+          disabled={!sessionData || isPending}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <UserAvatar className="size-12 text-base" isPending={isPending} />
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={!sessionData || isPending}
+            >
+              {isPending && <Spinner />}
+              {localization.settings.changeAvatar}
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload />
+              {localization.settings.uploadAvatar}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              variant="destructive"
+              disabled={!sessionData?.user?.image}
+              onClick={handleDelete}
+            >
+              <Trash2 />
+              {localization.settings.deleteAvatar}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  )
+}

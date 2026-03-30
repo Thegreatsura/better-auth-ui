@@ -7,11 +7,16 @@ import {
   useSession,
   useSetActiveSession
 } from "@better-auth-ui/react"
-import { ArrowLeftRight, LogOut } from "lucide-react"
+import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Item } from "@/components/ui/item"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
 
@@ -25,14 +30,14 @@ export type ManageAccountProps = {
 }
 
 /**
- * Render a single account card with user info and switch/revoke controls.
+ * Render a single account row with user info and switch/revoke controls.
  *
- * Shows the user's avatar and info. For non-active sessions, provides a switch button.
- * All sessions have a revoke/sign-out button.
+ * Shows the user's avatar and info. For the active session, shows a sign-out button.
+ * For non-active sessions, shows a dropdown menu with switch and sign-out options.
  *
  * @param deviceSession - The device session object containing session and user data
  * @param isPending - Whether the device session is pending
- * @returns A JSX element containing the account card
+ * @returns A JSX element containing the account row
  */
 export function ManageAccount({
   deviceSession,
@@ -53,40 +58,65 @@ export function ManageAccount({
     })
 
   const isActive = deviceSession?.session.userId === sessionData?.session.userId
+  const isBusy = isSwitching || isRevoking
 
   return (
-    <Item className="p-3 gap-3" variant="outline">
+    <div className="flex items-center justify-between gap-3">
       <UserView user={deviceSession?.user} isPending={isPending} />
 
-      {deviceSession && (
-        <div className="flex items-center gap-1 shrink-0 ml-auto">
-          {!isActive && (
+      {deviceSession && isActive && (
+        <Button
+          className="shrink-0"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            revokeSession({ sessionToken: deviceSession.session.token })
+          }
+          disabled={isBusy}
+        >
+          {isRevoking ? <Spinner /> : <LogOut />}
+          {localization.auth.signOut}
+        </Button>
+      )}
+
+      {deviceSession && !isActive && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon-sm"
-              onClick={() =>
-                setActiveSession({ sessionToken: deviceSession.session.token })
-              }
-              disabled={isSwitching || isRevoking}
-              aria-label={localization.auth.switchAccount}
+              className="shrink-0"
+              disabled={isBusy}
             >
-              {isSwitching ? <Spinner /> : <ArrowLeftRight />}
+              <MoreHorizontal />
             </Button>
-          )}
+          </DropdownMenuTrigger>
 
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() =>
-              revokeSession({ sessionToken: deviceSession.session.token })
-            }
-            disabled={isSwitching || isRevoking}
-            aria-label={localization.auth.signOut}
-          >
-            {isRevoking ? <Spinner /> : <LogOut />}
-          </Button>
-        </div>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() =>
+                setActiveSession({
+                  sessionToken: deviceSession.session.token
+                })
+              }
+            >
+              <ArrowLeftRight />
+              {localization.auth.switchAccount}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() =>
+                revokeSession({
+                  sessionToken: deviceSession.session.token
+                })
+              }
+            >
+              <LogOut />
+              {localization.auth.signOut}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
-    </Item>
+    </div>
   )
 }

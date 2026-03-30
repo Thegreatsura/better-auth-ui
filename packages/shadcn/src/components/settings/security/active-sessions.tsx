@@ -1,11 +1,9 @@
 "use client"
 
 import { useAuth, useListSessions, useSession } from "@better-auth-ui/react"
-import { useEffect } from "react"
 import { toast } from "sonner"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Item } from "@/components/ui/item"
+import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { ActiveSession } from "./active-session"
@@ -25,46 +23,56 @@ export type ActiveSessionsProps = {
 export function ActiveSessions({ className }: ActiveSessionsProps) {
   const { localization } = useAuth()
   const { data: sessionData } = useSession()
-  const { data: sessions, isPending, error } = useListSessions()
 
-  useEffect(() => {
-    if (error) toast.error(error.error?.message || error.message)
-  }, [error])
+  const { data: sessions, isPending } = useListSessions({
+    throwOnError: (error) => {
+      if (error.error) toast.error(error.error.message)
+      return false
+    }
+  })
+
+  const sortedSessions = sessions?.toSorted((session) =>
+    session.id === sessionData?.session.id ? -1 : 1
+  )
 
   return (
-    <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
-          {localization.settings.activeSessions}
-        </CardTitle>
-      </CardHeader>
+    <div>
+      <h2 className="text-sm font-semibold mb-3">
+        {localization.settings.activeSessions}
+      </h2>
 
-      <CardContent className="px-4 md:px-6 grid gap-3">
-        {isPending ? (
-          <SessionRowSkeleton />
-        ) : (
-          sessions
-            ?.toSorted((session) =>
-              session.id === sessionData?.session.id ? -1 : 1
-            )
-            .map((session) => (
-              <ActiveSession key={session.id} session={session} />
+      <Card className={cn("w-full py-4 md:py-6", className)}>
+        <CardContent className="px-4 md:px-6">
+          {isPending ? (
+            <SessionRowSkeleton />
+          ) : (
+            sortedSessions?.map((session, index) => (
+              <div key={session.id}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                )}
+
+                <ActiveSession session={session} />
+              </div>
             ))
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
 function SessionRowSkeleton() {
   return (
-    <Item className="p-3 gap-3" variant="outline">
-      <Skeleton className="size-10 rounded-md" />
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-10 rounded-md" />
 
-      <div className="flex flex-col gap-1">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-3 w-24" />
+        <div className="flex flex-col gap-1">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-24" />
+        </div>
       </div>
-    </Item>
+    </div>
   )
 }
