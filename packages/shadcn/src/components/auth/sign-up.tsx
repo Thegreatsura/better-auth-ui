@@ -120,13 +120,13 @@ export function SignUp({
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">{localization.auth.signUp}</CardTitle>
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-lg">{localization.auth.signUp}</CardTitle>
       </CardHeader>
 
-      <CardContent className="px-4 md:px-6">
-        <FieldGroup className="gap-4">
+      <CardContent>
+        <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
@@ -147,8 +147,8 @@ export function SignUp({
 
           {emailAndPassword?.enabled && (
             <form onSubmit={handleSubmit}>
-              <FieldGroup className="gap-4">
-                <Field className="gap-1" data-invalid={!!fieldErrors.name}>
+              <FieldGroup>
+                <Field data-invalid={!!fieldErrors.name}>
                   <FieldLabel htmlFor="name">
                     {localization.auth.name}
                   </FieldLabel>
@@ -180,7 +180,7 @@ export function SignUp({
                   <FieldError>{fieldErrors.name}</FieldError>
                 </Field>
 
-                <Field className="gap-1" data-invalid={!!fieldErrors.email}>
+                <Field data-invalid={!!fieldErrors.email}>
                   <FieldLabel htmlFor="email">
                     {localization.auth.email}
                   </FieldLabel>
@@ -212,7 +212,7 @@ export function SignUp({
                   <FieldError>{fieldErrors.email}</FieldError>
                 </Field>
 
-                <Field className="gap-1" data-invalid={!!fieldErrors.password}>
+                <Field data-invalid={!!fieldErrors.password}>
                   <FieldLabel htmlFor="password">
                     {localization.auth.password}
                   </FieldLabel>
@@ -273,10 +273,7 @@ export function SignUp({
                 </Field>
 
                 {emailAndPassword?.confirmPassword && (
-                  <Field
-                    className="gap-1"
-                    data-invalid={!!fieldErrors.confirmPassword}
-                  >
+                  <Field data-invalid={!!fieldErrors.confirmPassword}>
                     <FieldLabel htmlFor="confirmPassword">
                       {localization.auth.confirmPassword}
                     </FieldLabel>
@@ -340,7 +337,7 @@ export function SignUp({
                   </Field>
                 )}
 
-                <Field className="mt-1">
+                <div className="flex flex-col gap-3">
                   <Button type="submit" disabled={isPending}>
                     {isPending && <Spinner />}
 
@@ -350,7 +347,7 @@ export function SignUp({
                   {magicLink && (
                     <MagicLinkButton view="signUp" isPending={isPending} />
                   )}
-                </Field>
+                </div>
               </FieldGroup>
             </form>
           )}
@@ -358,7 +355,7 @@ export function SignUp({
           {socialPosition === "bottom" && (
             <>
               {showSeparator && (
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card m-0 text-xs flex items-center">
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs flex items-center">
                   {localization.auth.or}
                 </FieldSeparator>
               )}
@@ -372,8 +369,10 @@ export function SignUp({
               )}
             </>
           )}
+        </div>
 
-          {emailAndPassword?.enabled && (
+        {emailAndPassword?.enabled && (
+          <div className="flex flex-col gap-3 items-center w-full mt-4">
             <FieldDescription className="text-center">
               {localization.auth.alreadyHaveAnAccount}{" "}
               <Link
@@ -383,8 +382,8 @@ export function SignUp({
                 {localization.auth.signIn}
               </Link>
             </FieldDescription>
-          )}
-        </FieldGroup>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

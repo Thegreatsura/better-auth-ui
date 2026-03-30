@@ -82,13 +82,13 @@ export function MagicLink({
   const showSeparator = socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-lg">{localization.auth.signIn}</CardTitle>
       </CardHeader>
 
-      <CardContent className="px-4 md:px-6">
-        <FieldGroup className="gap-4">
+      <CardContent>
+        <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
@@ -108,8 +108,8 @@ export function MagicLink({
           )}
 
           <form onSubmit={handleSubmit}>
-            <FieldGroup className="gap-4">
-              <Field className="gap-1" data-invalid={!!fieldErrors.email}>
+            <FieldGroup>
+              <Field data-invalid={!!fieldErrors.email}>
                 <FieldLabel htmlFor="email">
                   {localization.auth.email}
                 </FieldLabel>
@@ -143,22 +143,22 @@ export function MagicLink({
                 <FieldError>{fieldErrors.email}</FieldError>
               </Field>
 
-              <Field className="mt-1">
-                <Button type="submit" disabled={isPending} className="w-full">
+              <div className="flex flex-col gap-3">
+                <Button type="submit" disabled={isPending}>
                   {isPending && <Spinner />}
 
                   {localization.auth.sendMagicLink}
                 </Button>
 
                 <MagicLinkButton view="magicLink" isPending={isPending} />
-              </Field>
+              </div>
             </FieldGroup>
           </form>
 
           {socialPosition === "bottom" && (
             <>
               {showSeparator && (
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card m-0 text-xs flex items-center">
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs flex items-center">
                   {localization.auth.or}
                 </FieldSeparator>
               )}
@@ -172,7 +172,9 @@ export function MagicLink({
               )}
             </>
           )}
+        </div>
 
+        <div className="flex flex-col gap-3 items-center w-full mt-4">
           <FieldDescription className="text-center">
             {localization.auth.needToCreateAnAccount}{" "}
             <Link
@@ -182,7 +184,7 @@ export function MagicLink({
               {localization.auth.signUp}
             </Link>
           </FieldDescription>
-        </FieldGroup>
+        </div>
       </CardContent>
     </Card>
   )
