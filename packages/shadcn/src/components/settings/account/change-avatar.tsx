@@ -124,9 +124,9 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent align="start" className="min-w-fit">
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
-              <Upload />
+              <Upload className="text-muted-foreground" />
               {localization.settings.uploadAvatar}
             </DropdownMenuItem>
 
