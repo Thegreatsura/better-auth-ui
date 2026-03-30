@@ -86,7 +86,7 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
                   aria-invalid={!!fieldErrors.email}
                 />
               ) : (
-                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-8 w-full" />
               )}
 
               <FieldError>{fieldErrors.email}</FieldError>
@@ -100,6 +100,7 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
               disabled={isPending || !sessionData}
             >
               {isPending && <Spinner />}
+
               {localization.settings.updateEmail}
             </Button>
           </CardFooter>

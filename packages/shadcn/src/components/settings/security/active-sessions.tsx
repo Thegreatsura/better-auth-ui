@@ -41,15 +41,15 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
         {localization.settings.activeSessions}
       </h2>
 
-      <Card className={cn("w-full py-4 md:py-6", className)}>
-        <CardContent className="px-4 md:px-6">
+      <Card className={cn(className)}>
+        <CardContent>
           {isPending ? (
             <SessionRowSkeleton />
           ) : (
             sortedSessions?.map((session, index) => (
               <div key={session.id}>
                 {index > 0 && (
-                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                  <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
                 <ActiveSession session={session} />

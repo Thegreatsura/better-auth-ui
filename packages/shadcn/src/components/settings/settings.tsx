@@ -25,12 +25,7 @@ export type SettingsProps = {
  * @param hideNav - When `true`, hides the settings navigation tabs
  * @returns A JSX element rendering the settings layout and the selected settings panel
  */
-export function Settings({
-  className,
-  view,
-  path,
-  hideNav
-}: SettingsProps) {
+export function Settings({ className, view, path, hideNav }: SettingsProps) {
   const { basePaths, localization, viewPaths, Link } = useAuth()
   useAuthenticate()
 
@@ -49,15 +44,9 @@ export function Settings({
   const currentView = view || (path ? settingsPathViews[path] : undefined)
 
   return (
-    <Tabs
-      value={currentView}
-      className={cn("w-full", className)}
-    >
-      <div className={cn("overflow-auto", hideNav && "hidden")}>
-        <TabsList
-          aria-label={localization.settings.settings}
-          className="w-fit"
-        >
+    <Tabs value={currentView} className={cn("w-full", className)}>
+      <div className={cn("overflow-auto mb-2 md:mb-4", hideNav && "hidden")}>
+        <TabsList aria-label={localization.settings.settings} className="w-fit">
           <TabsTrigger value="account" asChild>
             <Link href={`${basePaths.settings}/${viewPaths.settings.account}`}>
               {localization.settings.account}

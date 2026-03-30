@@ -63,9 +63,9 @@ export function ActiveSession({ session }: ActiveSessionProps) {
     <div className="flex items-center gap-3">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
         {isMobile ? (
-          <Smartphone className="size-5" />
+          <Smartphone className="size-4.5" />
         ) : (
-          <Monitor className="size-5" />
+          <Monitor className="size-4.5" />
         )}
       </div>
 
@@ -106,13 +106,8 @@ export function ActiveSession({ session }: ActiveSessionProps) {
             : localization.settings.revokeSession
         }
       >
-        {isRevoking ? (
-          <Spinner />
-        ) : isCurrentSession ? (
-          <LogOut />
-        ) : (
-          <X />
-        )}
+        {isRevoking ? <Spinner /> : isCurrentSession ? <LogOut /> : <X />}
+
         {isCurrentSession
           ? localization.auth.signOut
           : localization.settings.revoke}

@@ -90,12 +90,9 @@ export function ChangePassword({ className }: ChangePasswordProps) {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-          <CardContent className="px-4 md:px-6 grid gap-4">
-            <Field
-              className="gap-1"
-              data-invalid={!!fieldErrors.currentPassword}
-            >
+        <Card className={cn(className)}>
+          <CardContent className="grid gap-4">
+            <Field data-invalid={!!fieldErrors.currentPassword}>
               <FieldLabel htmlFor="currentPassword">
                 {localization.settings.currentPassword}
               </FieldLabel>
@@ -128,13 +125,13 @@ export function ChangePassword({ className }: ChangePasswordProps) {
                   aria-invalid={!!fieldErrors.currentPassword}
                 />
               ) : (
-                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-8 w-full" />
               )}
 
               <FieldError>{fieldErrors.currentPassword}</FieldError>
             </Field>
 
-            <Field className="gap-1" data-invalid={!!fieldErrors.newPassword}>
+            <Field data-invalid={!!fieldErrors.newPassword}>
               <FieldLabel htmlFor="newPassword">
                 {localization.auth.newPassword}
               </FieldLabel>
@@ -188,17 +185,14 @@ export function ChangePassword({ className }: ChangePasswordProps) {
                   </InputGroupAddon>
                 </InputGroup>
               ) : (
-                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-8 w-full" />
               )}
 
               <FieldError>{fieldErrors.newPassword}</FieldError>
             </Field>
 
             {emailAndPassword.confirmPassword && (
-              <Field
-                className="gap-1"
-                data-invalid={!!fieldErrors.confirmPassword}
-              >
+              <Field data-invalid={!!fieldErrors.confirmPassword}>
                 <FieldLabel htmlFor="confirmPassword">
                   {localization.auth.confirmPassword}
                 </FieldLabel>
@@ -252,7 +246,7 @@ export function ChangePassword({ className }: ChangePasswordProps) {
                     </InputGroupAddon>
                   </InputGroup>
                 ) : (
-                  <Skeleton className="h-9 w-full" />
+                  <Skeleton className="h-8 w-full" />
                 )}
 
                 <FieldError>{fieldErrors.confirmPassword}</FieldError>
@@ -260,13 +254,14 @@ export function ChangePassword({ className }: ChangePasswordProps) {
             )}
           </CardContent>
 
-          <CardFooter className="px-4 md:px-6">
+          <CardFooter>
             <Button
               type="submit"
               size="sm"
               disabled={isPending || !sessionData}
             >
               {isPending && <Spinner />}
+
               {localization.settings.updatePassword}
             </Button>
           </CardFooter>

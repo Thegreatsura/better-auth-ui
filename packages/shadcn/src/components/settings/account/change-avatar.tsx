@@ -90,10 +90,8 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   }
 
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
-      <Label className={cn(!sessionData && "opacity-50")}>
-        {localization.settings.avatar}
-      </Label>
+    <div className={cn("flex flex-col gap-2", className)}>
+      <Label>{localization.settings.avatar}</Label>
 
       <input
         ref={fileInputRef}
@@ -127,9 +125,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start">
-            <DropdownMenuItem
-              onClick={() => fileInputRef.current?.click()}
-            >
+            <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
               <Upload />
               {localization.settings.uploadAvatar}
             </DropdownMenuItem>

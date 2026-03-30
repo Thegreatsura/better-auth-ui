@@ -53,9 +53,9 @@ export function Appearance({ className }: AppearanceProps) {
         {localization.settings.appearance}
       </h2>
 
-      <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-        <CardContent className="px-4 md:px-6">
-          <Label className="mb-4">{localization.settings.theme}</Label>
+      <Card className={cn(className)}>
+        <CardContent>
+          <Label className="mb-3">{localization.settings.theme}</Label>
 
           <RadioGroup
             value={sessionData ? theme : ""}

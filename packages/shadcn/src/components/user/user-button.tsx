@@ -89,7 +89,8 @@ export function UserButton({
         ) : (
           <Button
             variant={variant}
-            className={cn("h-auto font-normal", className)}
+            className={cn("py-2.5 h-auto font-normal", className)}
+            size="lg"
           >
             {sessionData || sessionPending || settingActiveSession ? (
               <UserView isPending={!!settingActiveSession} />

@@ -49,11 +49,11 @@ export function UserProfile({ className }: UserProfileProps) {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-          <CardContent className="px-4 md:px-6 grid gap-4">
+        <Card className={cn(className)}>
+          <CardContent className="grid gap-4">
             <ChangeAvatar />
 
-            <Field className="gap-1" data-invalid={!!fieldErrors.name}>
+            <Field data-invalid={!!fieldErrors.name}>
               <FieldLabel htmlFor="name">{localization.auth.name}</FieldLabel>
 
               {sessionData ? (
@@ -82,16 +82,21 @@ export function UserProfile({ className }: UserProfileProps) {
                   aria-invalid={!!fieldErrors.name}
                 />
               ) : (
-                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-8 w-full" />
               )}
 
               <FieldError>{fieldErrors.name}</FieldError>
             </Field>
           </CardContent>
 
-          <CardFooter className="px-4 md:px-6">
-            <Button type="submit" size="sm" disabled={isPending || !sessionData}>
+          <CardFooter>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isPending || !sessionData}
+            >
               {isPending && <Spinner />}
+
               {localization.settings.saveChanges}
             </Button>
           </CardFooter>
