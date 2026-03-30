@@ -14,5 +14,9 @@ export const Route = createFileRoute("/auth/$path")({
 function AuthPage() {
   const { path } = Route.useParams()
 
-  return <Auth path={path} className="mx-auto my-auto" />
+  return (
+    <div className="p-4 md:p-6 my-auto flex w-full justify-center">
+      <Auth path={path} />
+    </div>
+  )
 }

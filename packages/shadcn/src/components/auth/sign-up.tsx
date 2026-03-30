@@ -127,12 +127,12 @@ export function SignUp({
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm", className)}>
-      <CardHeader>
+    <Card className={cn("w-full max-w-sm md:py-6", className)}>
+      <CardHeader className="md:px-6">
         <CardTitle className="text-lg">{localization.auth.signUp}</CardTitle>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="md:px-6">
         <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>

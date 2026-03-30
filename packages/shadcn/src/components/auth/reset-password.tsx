@@ -101,14 +101,14 @@ export function ResetPassword({ className }: ResetPasswordProps) {
   }
 
   return (
-    <Card className={cn("w-full max-w-sm", className)}>
-      <CardHeader>
+    <Card className={cn("w-full max-w-sm md:py-6", className)}>
+      <CardHeader className="md:px-6">
         <CardTitle className="text-lg">
           {localization.auth.resetPassword}
         </CardTitle>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="md:px-6">
         <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field data-invalid={!!fieldErrors.password}>
