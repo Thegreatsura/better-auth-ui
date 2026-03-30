@@ -92,7 +92,7 @@ export function ManageAccount({
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="min-w-fit">
             <DropdownMenuItem
               onClick={() =>
                 setActiveSession({

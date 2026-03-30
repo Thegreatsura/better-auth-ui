@@ -109,7 +109,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
           disabled={!sessionData || isPending}
           onClick={() => fileInputRef.current?.click()}
         >
-          <UserAvatar className="size-12 text-base" isPending={isPending} />
+          <UserAvatar className="size-12" isPending={isPending} />
         </Button>
 
         <DropdownMenu>
