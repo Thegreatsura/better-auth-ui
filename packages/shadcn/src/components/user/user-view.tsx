@@ -46,7 +46,7 @@ export function UserView({ className, isPending, user }: UserViewProps) {
       <UserAvatar user={resolvedUser} />
 
       <div className="grid flex-1 text-left text-sm leading-tight">
-        <span className="truncate font-medium">
+        <span className="truncate font-medium text-foreground">
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}

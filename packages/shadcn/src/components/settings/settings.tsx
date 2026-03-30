@@ -45,7 +45,7 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
 
   return (
     <Tabs value={currentView} className={cn("w-full", className)}>
-      <div className={cn("overflow-auto mb-2 md:mb-4", hideNav && "hidden")}>
+      <div className={cn("mb-2 md:mb-4", hideNav && "hidden")}>
         <TabsList aria-label={localization.settings.settings} className="w-fit">
           <TabsTrigger value="account" asChild>
             <Link href={`${basePaths.settings}/${viewPaths.settings.account}`}>

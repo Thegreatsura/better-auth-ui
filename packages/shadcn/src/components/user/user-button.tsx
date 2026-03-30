@@ -131,7 +131,7 @@ export function UserButton({
               <Link
                 href={`${basePaths.settings}/${viewPaths.settings.account}`}
               >
-                <Settings />
+                <Settings className="text-muted-foreground" />
 
                 {localization.settings.settings}
               </Link>
@@ -140,7 +140,7 @@ export function UserButton({
             {multiSession && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <UsersRound />
+                  <UsersRound className="text-muted-foreground" />
 
                   {localization.auth.switchAccount}
                 </DropdownMenuSubTrigger>
@@ -160,7 +160,7 @@ export function UserButton({
                   {localization.settings.theme}
 
                   <Tabs value={theme} onValueChange={setTheme}>
-                    <TabsList className="h-6">
+                    <TabsList className="h-6!">
                       {themes.includes("system") && (
                         <TabsTrigger
                           value="system"
