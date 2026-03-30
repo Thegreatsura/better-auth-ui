@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth, useSetActiveSession } from "@better-auth-ui/react"
+import { useAuth, useSession, useSetActiveSession } from "@better-auth-ui/react"
 import {
   ChevronsUpDown,
   LogIn,
@@ -12,6 +12,7 @@ import {
   UserPlus2,
   UsersRound
 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,7 +25,6 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useSession } from "@/hooks/auth/use-session"
 import { cn } from "@/lib/utils"
 import { SwitchAccountMenu } from "./switch-account-menu"
 import { UserAvatar } from "./user-avatar"

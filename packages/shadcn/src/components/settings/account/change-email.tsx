@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useChangeEmail, useSession } from "@better-auth-ui/react"
 import { Check } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
@@ -17,8 +17,6 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
-import { useSession } from "@/hooks/auth/use-session"
-import { useChangeEmail } from "@/hooks/settings/use-change-email"
 import { cn } from "@/lib/utils"
 
 export type ChangeEmailProps = {

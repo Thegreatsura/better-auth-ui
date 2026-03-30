@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
 import { Pencil, Save } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
@@ -18,8 +18,6 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { UserAvatar } from "@/components/user/user-avatar"
-import { useSession } from "@/hooks/auth/use-session"
-import { useUpdateUser } from "@/hooks/settings/use-update-user"
 import { cn } from "@/lib/utils"
 
 export type UserProfileProps = {

@@ -45,8 +45,7 @@
     "vitest": "^4.1.2"
   },
   "dependencies": {
-    "@better-auth-ui/core": "*",
-    "@better-auth-ui/react": "*"
+    "@better-auth-ui/core": "*"
   },
   "peerDependencies": {
     "@gravity-ui/icons": ">=2.18.0",

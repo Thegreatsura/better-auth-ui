@@ -1,6 +1,6 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
 import { Toast } from "@heroui/react"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
@@ -26,7 +26,6 @@ export function Providers({ children }: { children: ReactNode }) {
       settings={{
         appearance: { theme, setTheme }
       }}
-      Link={Link}
     >
       {children}
 
