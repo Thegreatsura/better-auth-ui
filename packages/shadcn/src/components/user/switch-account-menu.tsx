@@ -53,7 +53,7 @@ export function SwitchAccountMenu() {
 
       <DropdownMenuItem asChild>
         <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
-          <CirclePlus />
+          <CirclePlus className="text-muted-foreground" />
 
           {localization.auth.addAccount}
         </Link>

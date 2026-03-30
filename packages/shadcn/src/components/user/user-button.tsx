@@ -198,7 +198,7 @@ export function UserButton({
 
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signOut}`}>
-                <LogOut />
+                <LogOut className="text-muted-foreground" />
 
                 {localization.auth.signOut}
               </Link>
@@ -208,7 +208,7 @@ export function UserButton({
           <>
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
-                <LogIn />
+                <LogIn className="text-muted-foreground" />
 
                 {localization.auth.signIn}
               </Link>
@@ -216,7 +216,7 @@ export function UserButton({
 
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signUp}`}>
-                <UserPlus2 />
+                <UserPlus2 className="text-muted-foreground" />
 
                 {localization.auth.signUp}
               </Link>
