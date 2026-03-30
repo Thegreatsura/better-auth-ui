@@ -67,11 +67,18 @@ export function MagicLink({
       }
     })
 
+  const [socialRedirecting, setSocialRedirecting] = useState(false)
+
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: async () => {
+      setSocialRedirecting(true)
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+      setSocialRedirecting(false)
+    }
   })
 
-  const isPending = magicLinkPending || socialPending
+  const isPending = magicLinkPending || socialPending || socialRedirecting
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()

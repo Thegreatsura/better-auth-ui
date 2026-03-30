@@ -86,8 +86,15 @@ export function SignIn({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
+  const [socialRedirecting, setSocialRedirecting] = useState(false)
+
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: async () => {
+      setSocialRedirecting(true)
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+      setSocialRedirecting(false)
+    }
   })
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
@@ -103,7 +110,7 @@ export function SignIn({
     })
   }
 
-  const isPending = signInPending || socialPending
+  const isPending = signInPending || socialPending || socialRedirecting
 
   const showSeparator =
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
@@ -115,7 +122,9 @@ export function SignIn({
       {...props}
     >
       <Card.Header>
-        <Card.Title className="text-xl">{localization.auth.signIn}</Card.Title>
+        <Card.Title className="text-xl mb-1">
+          {localization.auth.signIn}
+        </Card.Title>
       </Card.Header>
 
       <Card.Content className="gap-4">

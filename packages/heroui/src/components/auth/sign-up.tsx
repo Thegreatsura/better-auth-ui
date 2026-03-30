@@ -77,15 +77,22 @@ export function SignUp({
     }
   })
 
+  const [socialRedirecting, setSocialRedirecting] = useState(false)
+
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message)
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: async () => {
+      setSocialRedirecting(true)
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+      setSocialRedirecting(false)
+    }
   })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
-  const isPending = signUpPending || socialPending
+  const isPending = signUpPending || socialPending || socialRedirecting
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
