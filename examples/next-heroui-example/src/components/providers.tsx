@@ -3,9 +3,8 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
 import { ToastProvider } from "@heroui/react"
 import { useRouter } from "next/navigation"
-import { ThemeProvider } from "next-themes"
+import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
-
 import { authClient } from "@/lib/auth-client"
 
 /**
@@ -16,27 +15,25 @@ import { authClient } from "@/lib/auth-client"
  */
 export function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
+    <AuthProvider
+      authClient={authClient}
+      socialProviders={["google", "github"]}
+      magicLink
+      multiSession
+      redirectTo="/dashboard"
+      navigate={({ to, replace }) =>
+        replace ? router.replace(to) : router.push(to)
+      }
+      settings={{
+        appearance: { theme, setTheme }
+      }}
     >
-      <AuthProvider
-        authClient={authClient}
-        socialProviders={["google", "github"]}
-        magicLink
-        multiSession
-        navigate={({ to, replace }) =>
-          replace ? router.replace(to) : router.push(to)
-        }
-      >
-        {children}
+      {children}
 
-        <ToastProvider />
-      </AuthProvider>
-    </ThemeProvider>
+      <ToastProvider />
+    </AuthProvider>
   )
 }

@@ -1,4 +1,4 @@
-import { UserButton } from "@better-auth-ui/heroui"
+import { UserButton } from "@better-auth-ui/shadcn"
 import { Link } from "@heroui/react"
 
 import { Logo } from "./logo"
@@ -13,7 +13,7 @@ export function Header() {
           <h1 className="text-base">BETTER-AUTH. UI</h1>
         </Link>
 
-        <UserButton size="icon" placement="bottom right" />
+        <UserButton size="icon" />
       </div>
     </header>
   )

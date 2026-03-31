@@ -22,6 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
       socialProviders={["github", "google"]}
       magicLink
       multiSession
+      redirectTo="/dashboard"
       navigate={navigate}
       settings={{
         appearance: { theme, setTheme }

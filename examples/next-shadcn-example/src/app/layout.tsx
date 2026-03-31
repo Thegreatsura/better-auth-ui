@@ -1,10 +1,15 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Inter } from "next/font/google"
 import type { ReactNode } from "react"
 
 import "@/styles/globals.css"
 
+import { ThemeProvider } from "next-themes"
+import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
+import { cn } from "@/lib/utils"
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +32,25 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn("font-sans", inter.variable)}
+    >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-svh flex flex-col`}
       >
-        <Providers>{children}</Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   )

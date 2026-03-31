@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 
 import "@/styles/globals.css"
 
+import { ThemeProvider } from "next-themes"
 import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
 
@@ -30,12 +31,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-svh flex flex-col`}
       >
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+        <ThemeProvider
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   )
