@@ -44,6 +44,17 @@ Create a dynamic auth page that renders the appropriate authentication view base
 The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, and `magic-link`.
 
 </Step>
+<Step>
+### Create the Settings page
+
+Create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+
+```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-heroui-example/src/app/settings/[path]/page.tsx
+```
+
+The `viewPaths.settings` object contains valid settings path segments: `account` and `security`.
+
+</Step>
 </Steps>
 
 ## Protecting Routes

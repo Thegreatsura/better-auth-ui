@@ -1,8 +1,10 @@
 import {
   AuthProvider as AuthProviderPrimitive,
-  type AuthProviderProps
+  type AuthProviderProps as AuthProviderPropsPrimitive
 } from "@better-auth-ui/react"
 import { RouterProvider } from "@heroui/react"
+
+export type AuthProviderProps = Omit<AuthProviderPropsPrimitive, "Link">
 
 /**
  * Provides an authentication context by rendering an auth provider with the sonner toast handler injected, forwarding remaining configuration and rendering `children` inside it.

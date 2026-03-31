@@ -60,6 +60,25 @@ Create a dynamic auth page that renders the appropriate authentication view base
 The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, and `magic-link`.
 
 </Step>
+<Step>
+### Create the Settings page
+
+Create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+
+<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
+  <Tab value="Registry">
+```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-shadcn-example/src/routes/settings/$path.tsx
+```
+</Tab>
+  <Tab value="Package">
+```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-shadcn-example/src/routes/settings/$path.tsx
+```
+  </Tab>
+</Tabs>
+
+The `viewPaths.settings` object contains valid settings path segments: `account` and `security`.
+
+</Step>
 </Steps>
 
 ## Protecting Routes

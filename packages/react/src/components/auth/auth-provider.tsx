@@ -30,6 +30,9 @@ const baseAuthConfig: AnyAuthConfig = {
 export type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {
   authClient: AnyAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
+  /**
+   * TanStack QueryClient to use for your application's queries
+   */
   queryClient?: QueryClient
 }
 

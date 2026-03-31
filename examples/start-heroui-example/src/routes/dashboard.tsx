@@ -11,14 +11,14 @@ function Dashboard() {
 
   if (!sessionData) {
     return (
-      <div className="min-h-svh flex items-center justify-center">
+      <div className="flex justify-center my-auto">
         <Spinner color="current" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-svh flex flex-col items-center justify-center gap-4">
+    <div className="flex flex-col items-center my-auto">
       <h1 className="text-2xl">Hello, {sessionData.user.email}</h1>
 
       <Link to="/auth/$path" params={{ path: "sign-out" }}>
