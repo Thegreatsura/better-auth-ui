@@ -13,6 +13,10 @@ const html = await render(
     oldEmail="old@example.com"
     newEmail="new@example.com"
     appName="Better Auth UI"
+    logoURL={{
+      light: "/favicon-96x96.png",
+      dark: "/favicon-96x96-inverted.png"
+    }}
     supportEmail="support@example.com"
     revertURL="https://better-auth-ui.com/revert-email"
     darkMode={true}

@@ -56,7 +56,7 @@ export interface OtpEmailProps {
   appName?: string
   /** Number of minutes until the verification code expires */
   expirationMinutes?: number
-  /** Logo URL(s) - can be a single string or an object with light/dark variants */
+  /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
   /** Custom CSS class names for styling specific parts of the email */
   classNames?: EmailClassNames
@@ -68,7 +68,10 @@ export interface OtpEmailProps {
   darkMode?: boolean
   /** Additional React nodes to inject into the email head */
   head?: ReactNode
-  /** Partial localization overrides for customizing email text */
+  /**
+   * Localization overrides for customizing email text
+   * @remarks `OtpEmailEmailLocalization`
+   */
   localization?: Partial<OtpEmailEmailLocalization>
 }
 
@@ -99,7 +102,7 @@ export const OtpEmail = ({
   email,
   appName,
   expirationMinutes = 10,
-  logoURL = "https://better-auth.com/logo.png",
+  logoURL,
   colors,
   classNames,
   darkMode = true,

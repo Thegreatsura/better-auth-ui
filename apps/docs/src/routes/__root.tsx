@@ -71,6 +71,9 @@ function RootComponent() {
 function RootDocument({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isDemo = pathname.startsWith("/demos/")
+  /** Email previews use a `grow` iframe and need a definite column height from the body. */
+  const isEmailDemo = isDemo && pathname.includes("/email/")
+  const compactDemoBody = isDemo && !isEmailDemo
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -80,7 +83,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body
         className={cn(
           "flex flex-col antialiased",
-          isDemo ? "min-h-0 bg-background" : "min-h-svh"
+          compactDemoBody ? "min-h-0 bg-background" : "min-h-svh"
         )}
       >
         <RootProvider search={{ SearchDialog }}>{children}</RootProvider>

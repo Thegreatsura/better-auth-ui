@@ -80,7 +80,7 @@ export interface NewDeviceEmailProps {
   appName?: string
   /** Support email address for security concerns */
   supportEmail?: string
-  /** Logo URL(s) - can be a single string or an object with light/dark variants */
+  /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
   /** Custom CSS class names for styling specific parts of the email */
   classNames?: EmailClassNames
@@ -92,7 +92,10 @@ export interface NewDeviceEmailProps {
   darkMode?: boolean
   /** Additional React nodes to inject into the email head */
   head?: ReactNode
-  /** Partial localization overrides for customizing email text */
+  /**
+   * Localization overrides for customizing email text
+   * @remarks `NewDeviceEmailLocalization`
+   */
   localization?: Partial<NewDeviceEmailLocalization>
 }
 
@@ -130,7 +133,7 @@ export const NewDeviceEmail = ({
   secureAccountLink,
   appName,
   supportEmail,
-  logoURL = "https://better-auth.com/logo.png",
+  logoURL,
   colors,
   classNames,
   darkMode = true,

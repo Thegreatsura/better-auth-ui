@@ -11,6 +11,10 @@ const html = await render(
     verificationCode="123456"
     email="user@example.com"
     appName="Better Auth UI"
+    logoURL={{
+      light: "/favicon-96x96.png",
+      dark: "/favicon-96x96-inverted.png"
+    }}
     expirationMinutes={10}
     darkMode={true}
     poweredBy={true}

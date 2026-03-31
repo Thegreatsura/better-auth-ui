@@ -58,7 +58,7 @@ export interface EmailVerificationEmailProps {
   appName?: string
   /** Number of minutes until the verification link expires */
   expirationMinutes?: number
-  /** Logo URL(s) - can be a single string or an object with light/dark variants */
+  /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
   /** Custom CSS class names for styling specific parts of the email */
   classNames?: EmailClassNames
@@ -70,7 +70,10 @@ export interface EmailVerificationEmailProps {
   darkMode?: boolean
   /** Additional React nodes to inject into the email head */
   head?: ReactNode
-  /** Partial localization overrides for customizing email text */
+  /**
+   * Localization overrides for customizing email text
+   * @remarks `EmailVerificationEmailLocalization`
+   */
   localization?: Partial<EmailVerificationEmailLocalization>
 }
 
@@ -101,7 +104,7 @@ export const EmailVerificationEmail = ({
   email,
   appName,
   expirationMinutes = 60,
-  logoURL = "https://better-auth.com/logo.png",
+  logoURL,
   colors,
   classNames,
   darkMode = true,
