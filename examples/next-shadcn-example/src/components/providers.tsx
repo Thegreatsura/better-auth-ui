@@ -1,12 +1,13 @@
 "use client"
 
 import { AuthProvider } from "@better-auth-ui/shadcn/react"
-import { ToastProvider } from "@heroui/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { Toaster } from "./ui/sonner"
 
 /**
  * Wraps the app UI with theme, routing, authentication, and global toast providers.
@@ -31,10 +32,11 @@ export function Providers({ children }: { children: ReactNode }) {
       settings={{
         appearance: { theme, setTheme }
       }}
+      Link={Link}
     >
       {children}
 
-      <ToastProvider />
+      <Toaster />
     </AuthProvider>
   )
 }

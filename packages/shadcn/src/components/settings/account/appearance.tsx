@@ -106,7 +106,7 @@ export function Appearance({ className }: AppearanceProps) {
             {themes.includes("dark") && (
               <FieldLabel htmlFor="dark">
                 <Field orientation="horizontal">
-                  <FieldContent className="gap-3">
+                  <FieldContent className="gap-2">
                     <div className="flex items-center gap-2 justify-between">
                       <FieldTitle>
                         <Moon className="size-4 text-muted-foreground" />

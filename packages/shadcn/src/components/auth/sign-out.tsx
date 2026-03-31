@@ -12,10 +12,10 @@ export type SignOutProps = {
 }
 
 /**
- * Signs the current user out on mount and renders a centered loading card while the operation completes.
+ * Signs the current user out on mount and renders a centered spinner while the operation completes.
  *
  * @param className - Optional additional class names appended to the root element
- * @returns The loading Card element shown during sign-out
+ * @returns The spinner shown during sign-out
  */
 export function SignOut({ className }: SignOutProps) {
   const { basePaths, navigate, viewPaths } = useAuth()

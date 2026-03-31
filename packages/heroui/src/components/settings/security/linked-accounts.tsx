@@ -56,7 +56,14 @@ export function LinkedAccounts({
       <Card className={cn(className)} variant={variant} {...props}>
         <Card.Content className="gap-0">
           {isPending ? (
-            <AccountRowSkeleton />
+            socialProviders?.map((provider, index) => (
+              <div key={provider}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                )}
+                <AccountRowSkeleton />
+              </div>
+            ))
           ) : (
             allRows.map((row, index) => (
               <div key={row.key}>

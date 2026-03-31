@@ -1,5 +1,5 @@
 import { UserButton } from "@better-auth-ui/shadcn"
-import { Link } from "@heroui/react"
+import Link from "next/link"
 
 import { Logo } from "./logo"
 

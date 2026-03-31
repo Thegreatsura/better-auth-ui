@@ -57,7 +57,6 @@
     "@better-auth-ui/react": "*"
   },
   "peerDependencies": {
-    "@better-auth-ui/react": "*",
     "better-auth": ">=1.5.6",
     "bowser": ">=2.11.0",
     "class-variance-authority": ">=0.7.1",

@@ -79,8 +79,11 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
         onSuccess: async () => {
           if (currentImage) {
             setIsDeleting(true)
-            await avatar.delete?.(currentImage)
-            setIsDeleting(false)
+            try {
+              await avatar.delete?.(currentImage)
+            } finally {
+              setIsDeleting(false)
+            }
           }
 
           toast.success(localization.settings.avatarDeletedSuccess)
