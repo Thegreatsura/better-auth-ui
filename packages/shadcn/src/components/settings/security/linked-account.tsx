@@ -1,6 +1,5 @@
 "use client"
 
-import { getProviderName } from "@better-auth-ui/core"
 import {
   providerIcons,
   useAccountInfo,
@@ -8,12 +7,12 @@ import {
   useLinkSocial,
   useUnlinkAccount
 } from "@better-auth-ui/react"
+import { getProviderName } from "@better-auth-ui/react/core"
 import type { Account, SocialProvider } from "better-auth"
-import { LinkIcon, Plug, X } from "lucide-react"
+import { Link2, Link2Off, Plug } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Item } from "@/components/ui/item"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -24,20 +23,27 @@ export type LinkedAccountProps = {
 }
 
 /**
- * Render a single linked social account card with provider info and unlink control.
+ * Render a single linked social account row with provider info and link/unlink control.
  *
  * Fetches additional account information from the provider using the accountInfo API
- * and displays the provider name, account details, and an unlink button.
+ * and displays the provider name, account details, and a link/unlink button.
  *
  * @param account - The account object containing id, accountId, and providerId
  * @param provider - The provider id
- * @returns A JSX element containing the linked account card
+ * @returns A JSX element containing the linked account row
  */
 export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
 
   const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo(
-    account?.accountId
+    account?.accountId,
+    {
+      enabled: !!account,
+      throwOnError: (error) => {
+        if (error.error) toast.error(error.error.message)
+        return false
+      }
+    }
   )
 
   const { mutate: linkSocial, isPending: isLinking } = useLinkSocial({
@@ -60,25 +66,24 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
     account?.accountId
 
   return (
-    <Item
-      className={cn("p-3 gap-3", !account && "border-dashed")}
-      variant="outline"
-    >
-      <div className="flex size-10 items-center justify-center rounded-md bg-muted">
+    <div className="flex items-center gap-3">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
         {ProviderIcon ? (
-          <ProviderIcon className={cn("size-5", !account && "opacity-50")} />
+          <ProviderIcon className={cn("size-4.5", !account && "opacity-50")} />
         ) : (
-          <Plug className={cn("size-5", !account && "opacity-50")} />
+          <Plug className={cn("size-4.5", !account && "opacity-50")} />
         )}
       </div>
 
-      <div className="flex flex-col">
-        <span className="text-sm font-medium">{providerName}</span>
+      <div className="flex flex-col min-w-0">
+        <span className="text-sm font-medium leading-tight">
+          {providerName}
+        </span>
 
         {account && isLoadingInfo ? (
           <Skeleton className="my-0.5 h-3 w-24" />
         ) : (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground truncate">
             {account
               ? displayName
               : localization.settings.linkProvider.replace(
@@ -91,9 +96,9 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
 
       {account ? (
         <Button
-          className="ml-auto"
-          variant="ghost"
-          size="icon"
+          className="ml-auto shrink-0"
+          variant="outline"
+          size="sm"
           onClick={() => unlinkAccount({ providerId: account.providerId })}
           disabled={isUnlinking}
           aria-label={localization.settings.unlinkProvider.replace(
@@ -101,15 +106,14 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
             providerName
           )}
         >
-          {isUnlinking ? (
-            <Spinner className="size-4" />
-          ) : (
-            <X className="size-4" />
-          )}
+          {isUnlinking ? <Spinner /> : <Link2Off />}
+          {localization.settings.unlinkProvider
+            .replace("{{provider}}", "")
+            .trim()}
         </Button>
       ) : (
         <Button
-          className="ml-auto"
+          className="ml-auto shrink-0"
           variant="outline"
           size="sm"
           onClick={() =>
@@ -124,11 +128,10 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
             providerName
           )}
         >
-          {isLinking ? <Spinner /> : <LinkIcon className="size-3" />}
-
+          {isLinking ? <Spinner /> : <Link2 />}
           {localization.settings.link}
         </Button>
       )}
-    </Item>
+    </div>
   )
 }

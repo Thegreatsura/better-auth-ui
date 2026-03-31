@@ -1,5 +1,6 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
 import { Toaster } from "sonner"
+
 import { authClient } from "@/lib/auth-client"
 
 export function DemoProviders({ children }: { children: React.ReactNode }) {
@@ -12,8 +13,10 @@ export function DemoProviders({ children }: { children: React.ReactNode }) {
         navigate={() => {}}
         socialProviders={["github", "google"]}
         settings={{
-          theme: "system",
-          setTheme: () => {}
+          appearance: {
+            theme: "system",
+            setTheme: () => {}
+          }
         }}
         Link={({ href, ...props }) => (
           // biome-ignore lint/a11y/useValidAnchor: this is a demo

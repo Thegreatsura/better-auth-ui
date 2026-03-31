@@ -88,11 +88,18 @@ export function SignIn({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
+  const [socialRedirecting, setSocialRedirecting] = useState(false)
+
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.error(error.error?.message || error.message)
+    onError: (error) => toast.error(error.error?.message || error.message),
+    onSuccess: async () => {
+      setSocialRedirecting(true)
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+      setSocialRedirecting(false)
+    }
   })
 
-  const isPending = signInPending || socialPending
+  const isPending = signInPending || socialPending || socialRedirecting
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -116,13 +123,13 @@ export function SignIn({
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
+    <Card className={cn("w-full max-w-sm md:py-6", className)}>
+      <CardHeader className="md:px-6">
+        <CardTitle className="text-lg">{localization.auth.signIn}</CardTitle>
       </CardHeader>
 
-      <CardContent className="px-4 md:px-6">
-        <FieldGroup className="gap-4">
+      <CardContent className="md:px-6">
+        <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
@@ -143,8 +150,8 @@ export function SignIn({
 
           {emailAndPassword?.enabled && (
             <form onSubmit={handleSubmit}>
-              <FieldGroup className="gap-4">
-                <Field className="gap-1" data-invalid={!!fieldErrors.email}>
+              <FieldGroup>
+                <Field data-invalid={!!fieldErrors.email}>
                   <FieldLabel htmlFor="email">
                     {localization.auth.email}
                   </FieldLabel>
@@ -176,7 +183,7 @@ export function SignIn({
                   <FieldError>{fieldErrors.email}</FieldError>
                 </Field>
 
-                <Field className="gap-1" data-invalid={!!fieldErrors.password}>
+                <Field data-invalid={!!fieldErrors.password}>
                   <FieldLabel htmlFor="password">
                     {localization.auth.password}
                   </FieldLabel>
@@ -216,7 +223,7 @@ export function SignIn({
 
                 {emailAndPassword.rememberMe && (
                   <Field className="my-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <Checkbox
                         id="rememberMe"
                         name="rememberMe"
@@ -233,7 +240,7 @@ export function SignIn({
                   </Field>
                 )}
 
-                <Field className="mt-1">
+                <div className="flex flex-col gap-3">
                   <Button type="submit" disabled={isPending}>
                     {isPending && <Spinner />}
 
@@ -243,7 +250,7 @@ export function SignIn({
                   {magicLink && (
                     <MagicLinkButton view="signIn" isPending={isPending} />
                   )}
-                </Field>
+                </div>
               </FieldGroup>
             </form>
           )}
@@ -251,7 +258,7 @@ export function SignIn({
           {socialPosition === "bottom" && (
             <>
               {showSeparator && (
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card m-0 text-xs flex items-center">
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs flex items-center">
                   {localization.auth.or}
                 </FieldSeparator>
               )}
@@ -265,30 +272,30 @@ export function SignIn({
               )}
             </>
           )}
+        </div>
 
-          <div className="flex flex-col gap-3">
-            {emailAndPassword?.forgotPassword && (
+        <div className="flex flex-col gap-3 items-center w-full mt-4">
+          {emailAndPassword?.forgotPassword && (
+            <Link
+              href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
+              className="self-center text-sm underline-offset-4 hover:underline"
+            >
+              {localization.auth.forgotPasswordLink}
+            </Link>
+          )}
+
+          {emailAndPassword?.enabled && (
+            <FieldDescription className="text-center">
+              {localization.auth.needToCreateAnAccount}{" "}
               <Link
-                href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
-                className="self-center text-sm underline-offset-4 hover:underline"
+                href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+                className="underline underline-offset-4"
               >
-                {localization.auth.forgotPasswordLink}
+                {localization.auth.signUp}
               </Link>
-            )}
-
-            {emailAndPassword?.enabled && (
-              <FieldDescription className="text-center">
-                {localization.auth.needToCreateAnAccount}{" "}
-                <Link
-                  href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-                  className="underline underline-offset-4"
-                >
-                  {localization.auth.signUp}
-                </Link>
-              </FieldDescription>
-            )}
-          </div>
-        </FieldGroup>
+            </FieldDescription>
+          )}
+        </div>
       </CardContent>
     </Card>
   )

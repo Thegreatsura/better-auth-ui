@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useRequestPasswordReset } from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { useRequestPasswordReset } from "@/hooks/auth/use-request-password-reset"
 import { cn } from "@/lib/utils"
 
 export type ForgotPasswordProps = {
@@ -50,17 +49,17 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
   }>({})
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
+    <Card className={cn("w-full max-w-sm md:py-6", className)}>
+      <CardHeader className="md:px-6">
+        <CardTitle className="text-lg">
           {localization.auth.forgotPassword}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="px-4 md:px-6">
+      <CardContent className="md:px-6">
         <form onSubmit={handleSubmit}>
-          <FieldGroup className="gap-4">
-            <Field className="gap-1" data-invalid={!!fieldErrors.email}>
+          <FieldGroup>
+            <Field data-invalid={!!fieldErrors.email}>
               <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
 
               <Input
@@ -90,25 +89,27 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
               <FieldError>{fieldErrors.email}</FieldError>
             </Field>
 
-            <Field className="mt-1">
-              <Button type="submit" disabled={isPending} className="w-full">
+            <div className="flex flex-col gap-3">
+              <Button type="submit" disabled={isPending}>
                 {isPending && <Spinner />}
 
                 {localization.auth.sendResetLink}
               </Button>
-            </Field>
-
-            <FieldDescription className="text-center">
-              {localization.auth.rememberYourPassword}{" "}
-              <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-                className="underline underline-offset-4"
-              >
-                {localization.auth.signIn}
-              </Link>
-            </FieldDescription>
+            </div>
           </FieldGroup>
         </form>
+
+        <div className="flex flex-col gap-3 items-center w-full mt-4">
+          <FieldDescription className="text-center">
+            {localization.auth.rememberYourPassword}{" "}
+            <Link
+              href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+              className="underline underline-offset-4"
+            >
+              {localization.auth.signIn}
+            </Link>
+          </FieldDescription>
+        </div>
       </CardContent>
     </Card>
   )

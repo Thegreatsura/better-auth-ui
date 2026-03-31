@@ -1,6 +1,8 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
+import type { ComponentProps } from "react"
+
 import { cn } from "@/lib/utils"
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
@@ -12,22 +14,36 @@ export type AccountSettingsProps = {
 }
 
 /**
- * Renders the account settings layout including user profile, change email, appearance, and accounts management.
+ * Renders the account settings layout.
  *
- * UserProfile, ChangeEmail, and Appearance are always rendered; Accounts is rendered when `multiSession` is enabled.
- *
- * @param className - Optional additional CSS class names for the outer container.
- * @returns The account settings container as a JSX element.
+ * Uses `emailAndPassword`, `magicLink`, `settings.appearance.setTheme`, and
+ * `multiSession` from `useAuth()` to conditionally show sections:
+ * - `UserProfile` always renders.
+ * - `ChangeEmail` renders when `emailAndPassword?.enabled` or `magicLink` is truthy.
+ * - `Appearance` renders when `setTheme` is truthy.
+ * - `ManageAccounts` renders when `multiSession` is truthy.
  */
-export function AccountSettings({ className }: AccountSettingsProps) {
-  const { multiSession } = useAuth()
+export function AccountSettings({
+  className,
+  ...props
+}: AccountSettingsProps & ComponentProps<"div">) {
+  const {
+    multiSession,
+    emailAndPassword,
+    magicLink,
+    settings: {
+      appearance: { setTheme }
+    }
+  } = useAuth()
 
   return (
-    <div className={cn("flex w-full flex-col gap-4 md:gap-6", className)}>
+    <div
+      className={cn("flex w-full flex-col gap-4 md:gap-6", className)}
+      {...props}
+    >
       <UserProfile />
-      <ChangeEmail />
-      <Appearance />
-
+      {(emailAndPassword?.enabled || magicLink) && <ChangeEmail />}
+      {setTheme && <Appearance />}
       {multiSession && <ManageAccounts />}
     </div>
   )

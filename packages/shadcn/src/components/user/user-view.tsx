@@ -1,9 +1,9 @@
 "use client"
 
+import { useSession } from "@better-auth-ui/react"
 import type { User } from "better-auth"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { useSession } from "@/hooks/auth/use-session"
 import { cn } from "@/lib/utils"
 import { UserAvatar } from "./user-avatar"
 
@@ -46,7 +46,7 @@ export function UserView({ className, isPending, user }: UserViewProps) {
       <UserAvatar user={resolvedUser} />
 
       <div className="grid flex-1 text-left text-sm leading-tight">
-        <span className="truncate font-medium">
+        <span className="truncate font-medium text-foreground">
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}

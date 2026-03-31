@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useResetPassword } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -21,7 +21,6 @@ import {
   InputGroupInput
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
-import { useResetPassword } from "@/hooks/auth/use-reset-password"
 import { cn } from "@/lib/utils"
 
 export type ResetPasswordProps = {
@@ -102,17 +101,17 @@ export function ResetPassword({ className }: ResetPasswordProps) {
   }
 
   return (
-    <Card className={cn("w-full max-w-sm py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
+    <Card className={cn("w-full max-w-sm md:py-6", className)}>
+      <CardHeader className="md:px-6">
+        <CardTitle className="text-lg">
           {localization.auth.resetPassword}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="px-4 md:px-6">
+      <CardContent className="md:px-6">
         <form onSubmit={handleSubmit}>
-          <FieldGroup className="gap-4">
-            <Field className="gap-1" data-invalid={!!fieldErrors.password}>
+          <FieldGroup>
+            <Field data-invalid={!!fieldErrors.password}>
               <FieldLabel htmlFor="password">
                 {localization.auth.password}
               </FieldLabel>
@@ -169,10 +168,7 @@ export function ResetPassword({ className }: ResetPasswordProps) {
             </Field>
 
             {emailAndPassword?.confirmPassword && (
-              <Field
-                className="gap-1"
-                data-invalid={!!fieldErrors.confirmPassword}
-              >
+              <Field data-invalid={!!fieldErrors.confirmPassword}>
                 <FieldLabel htmlFor="confirmPassword">
                   {localization.auth.confirmPassword}
                 </FieldLabel>
@@ -230,25 +226,27 @@ export function ResetPassword({ className }: ResetPasswordProps) {
               </Field>
             )}
 
-            <Field className="mt-1">
-              <Button type="submit" disabled={isPending} className="w-full">
+            <div className="flex flex-col gap-3">
+              <Button type="submit" disabled={isPending}>
                 {isPending && <Spinner />}
 
                 {localization.auth.resetPassword}
               </Button>
-            </Field>
-
-            <FieldDescription className="text-center">
-              {localization.auth.rememberYourPassword}{" "}
-              <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-                className="underline underline-offset-4"
-              >
-                {localization.auth.signIn}
-              </Link>
-            </FieldDescription>
+            </div>
           </FieldGroup>
         </form>
+
+        <div className="flex flex-col gap-3 items-center w-full mt-4">
+          <FieldDescription className="text-center">
+            {localization.auth.rememberYourPassword}{" "}
+            <Link
+              href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+              className="underline underline-offset-4"
+            >
+              {localization.auth.signIn}
+            </Link>
+          </FieldDescription>
+        </div>
       </CardContent>
     </Card>
   )

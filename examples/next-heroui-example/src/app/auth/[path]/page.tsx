@@ -16,7 +16,7 @@ export default async function AuthPage({
   }
 
   return (
-    <div className="mx-auto my-auto flex w-full justify-center p-4">
+    <div className="mx-auto my-auto flex w-full justify-center p-4 md:p-6">
       <Auth path={path} />
     </div>
   )

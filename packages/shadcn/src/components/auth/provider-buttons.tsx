@@ -1,12 +1,11 @@
 "use client"
 
-import { getProviderName } from "@better-auth-ui/core"
 import { providerIcons, useAuth } from "@better-auth-ui/react"
+import { getProviderName } from "@better-auth-ui/react/core"
 import type { SocialProvider } from "better-auth/social-providers"
 import { useMemo } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Field } from "@/components/ui/field"
 import { cn } from "@/lib/utils"
 
 export type ProviderButtonsProps = {
@@ -50,12 +49,12 @@ export function ProviderButtons({
   }, [socialLayout, socialProviders?.length])
 
   return (
-    <Field
+    <div
       className={cn(
         "gap-3",
         resolvedSocialLayout === "grid" && "grid grid-cols-2",
-        resolvedSocialLayout === "vertical" && "flex-col",
-        resolvedSocialLayout === "horizontal" && "flex-row flex-wrap"
+        resolvedSocialLayout === "vertical" && "flex flex-col",
+        resolvedSocialLayout === "horizontal" && "flex flex-row flex-wrap"
       )}
     >
       {socialProviders?.map((provider) => {
@@ -64,10 +63,7 @@ export function ProviderButtons({
         return (
           <Button
             key={provider}
-            className={cn(
-              "flex-1",
-              resolvedSocialLayout === "horizontal" && "flex-1"
-            )}
+            className={cn(resolvedSocialLayout === "horizontal" && "flex-1")}
             variant="outline"
             disabled={isPending}
             onClick={() => signInSocial({ provider, callbackURL })}
@@ -85,6 +81,6 @@ export function ProviderButtons({
           </Button>
         )
       })}
-    </Field>
+    </div>
   )
 }

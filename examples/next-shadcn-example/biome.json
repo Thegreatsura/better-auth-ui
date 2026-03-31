@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**"]
+    "includes": ["**", "!auth-schema.ts", "!**/src/components/ui"]
   },
   "formatter": {
     "enabled": true,

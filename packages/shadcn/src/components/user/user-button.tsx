@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth, useSetActiveSession } from "@better-auth-ui/react"
+import { useAuth, useSession, useSetActiveSession } from "@better-auth-ui/react"
 import {
   ChevronsUpDown,
   LogIn,
@@ -12,6 +12,7 @@ import {
   UserPlus2,
   UsersRound
 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -24,7 +25,6 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useSession } from "@/hooks/auth/use-session"
 import { cn } from "@/lib/utils"
 import { SwitchAccountMenu } from "./switch-account-menu"
 import { UserAvatar } from "./user-avatar"
@@ -83,13 +83,20 @@ export function UserButton({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild={size === "default"}>
+      <DropdownMenuTrigger
+        className={cn(
+          size === "icon" && "rounded-full",
+          size === "icon" && className
+        )}
+        asChild={size === "default"}
+      >
         {size === "icon" ? (
           <UserAvatar />
         ) : (
           <Button
             variant={variant}
-            className={cn("h-auto font-normal", className)}
+            className={cn("py-2.5 h-auto font-normal", className)}
+            size="lg"
           >
             {sessionData || sessionPending || settingActiveSession ? (
               <UserView isPending={!!settingActiveSession} />
@@ -130,7 +137,7 @@ export function UserButton({
               <Link
                 href={`${basePaths.settings}/${viewPaths.settings.account}`}
               >
-                <Settings />
+                <Settings className="text-muted-foreground" />
 
                 {localization.settings.settings}
               </Link>
@@ -139,7 +146,7 @@ export function UserButton({
             {multiSession && (
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <UsersRound />
+                  <UsersRound className="text-muted-foreground" />
 
                   {localization.auth.switchAccount}
                 </DropdownMenuSubTrigger>
@@ -159,7 +166,7 @@ export function UserButton({
                   {localization.settings.theme}
 
                   <Tabs value={theme} onValueChange={setTheme}>
-                    <TabsList className="h-6">
+                    <TabsList className="h-6!">
                       {themes.includes("system") && (
                         <TabsTrigger
                           value="system"
@@ -197,7 +204,7 @@ export function UserButton({
 
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signOut}`}>
-                <LogOut />
+                <LogOut className="text-muted-foreground" />
 
                 {localization.auth.signOut}
               </Link>
@@ -207,7 +214,7 @@ export function UserButton({
           <>
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
-                <LogIn />
+                <LogIn className="text-muted-foreground" />
 
                 {localization.auth.signIn}
               </Link>
@@ -215,7 +222,7 @@ export function UserButton({
 
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signUp}`}>
-                <UserPlus2 />
+                <UserPlus2 className="text-muted-foreground" />
 
                 {localization.auth.signUp}
               </Link>

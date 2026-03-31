@@ -5,17 +5,9 @@ import {
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
-import { PlusCircle } from "lucide-react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { ManageAccount } from "./manage-account"
 
@@ -32,7 +24,7 @@ export type ManageAccountsProps = {
  * @returns A JSX element containing the accounts management card
  */
 export function ManageAccounts({ className }: ManageAccountsProps) {
-  const { basePaths, localization, viewPaths, Link } = useAuth()
+  const { localization } = useAuth()
   const { data: sessionData } = useSession()
 
   const { data: deviceSessions, isPending } = useListDeviceSessions({
@@ -42,45 +34,45 @@ export function ManageAccounts({ className }: ManageAccountsProps) {
     }
   })
 
+  const otherSessions = deviceSessions?.filter(
+    (deviceSession) => deviceSession.session.id !== sessionData?.session.id
+  )
+
+  const allRows = [
+    {
+      key: "current",
+      deviceSession: !isPending ? sessionData : null,
+      isPending
+    },
+    ...(otherSessions?.map((deviceSession) => ({
+      key: deviceSession.session.id,
+      deviceSession,
+      isPending: false
+    })) ?? [])
+  ]
+
   return (
-    <Card className={cn("w-full py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
-          {localization.settings.manageAccounts}
-        </CardTitle>
-      </CardHeader>
+    <div>
+      <h2 className="text-sm font-semibold mb-3">
+        {localization.settings.manageAccounts}
+      </h2>
 
-      <CardContent className="px-4 md:px-6 grid gap-3">
-        <ManageAccount
-          isPending={isPending}
-          deviceSession={!isPending ? sessionData : null}
-        />
+      <Card className={cn(className)}>
+        <CardContent>
+          {allRows.map((row, index) => (
+            <div key={row.key}>
+              {index > 0 && (
+                <div className="border-b border-dashed -mx-4 my-4" />
+              )}
 
-        {deviceSessions
-          ?.filter(
-            (deviceSession) =>
-              deviceSession.session.id !== sessionData?.session.id
-          )
-          .map((deviceSession) => (
-            <ManageAccount
-              key={deviceSession.session.id}
-              deviceSession={deviceSession}
-            />
+              <ManageAccount
+                deviceSession={row.deviceSession}
+                isPending={row.isPending}
+              />
+            </div>
           ))}
-      </CardContent>
-
-      <CardFooter className="px-4 md:px-6">
-        <Button variant="secondary" asChild disabled={isPending}>
-          <Link
-            href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-            className={cn(isPending && "opacity-50 pointer-events-none")}
-          >
-            <PlusCircle />
-
-            {localization.auth.addAccount}
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

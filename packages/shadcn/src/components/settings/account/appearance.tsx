@@ -4,11 +4,12 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth
+  useAuth,
+  useSession
 } from "@better-auth-ui/react"
 import { Monitor, Moon, Sun } from "lucide-react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Field,
   FieldContent,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useHydrated } from "@/hooks/use-hydrated"
 import { cn } from "@/lib/utils"
 
 export type AppearanceProps = {
@@ -41,83 +41,90 @@ export function Appearance({ className }: AppearanceProps) {
       appearance: { theme, setTheme, themes }
     }
   } = useAuth()
-
-  const hydrated = useHydrated()
+  const { data: sessionData } = useSession()
 
   if (!setTheme || !themes?.length) {
     return null
   }
 
   return (
-    <Card className={cn("py-4 md:py-6 gap-4", className)}>
-      <CardHeader className="px-4 md:px-6 gap-0">
-        <CardTitle className="text-xl">
-          {localization.settings.appearance}
-        </CardTitle>
-      </CardHeader>
+    <div>
+      <h2 className="text-sm font-semibold mb-3">
+        {localization.settings.appearance}
+      </h2>
 
-      <CardContent className="px-4 md:px-6">
-        <Label className="mb-4">{localization.settings.theme}</Label>
+      <Card className={cn(className)}>
+        <CardContent>
+          <Label className="mb-3">{localization.settings.theme}</Label>
 
-        <RadioGroup
-          value={hydrated ? theme : ""}
-          onValueChange={setTheme}
-          className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-          disabled={!hydrated}
-        >
-          {themes.includes("system") && (
-            <FieldLabel htmlFor="system">
-              <Field orientation="horizontal">
-                <FieldContent className="gap-3">
-                  <FieldTitle>
-                    <Monitor className="size-4 text-muted-foreground" />
-                    {localization.settings.system}
-                  </FieldTitle>
+          <RadioGroup
+            value={sessionData ? theme : ""}
+            onValueChange={setTheme}
+            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+            disabled={!sessionData || !theme}
+          >
+            {themes.includes("system") && (
+              <FieldLabel htmlFor="system">
+                <Field orientation="horizontal">
+                  <FieldContent className="gap-2">
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Monitor className="size-4 text-muted-foreground" />
 
-                  <ThemePreviewSystem className="w-full" />
-                </FieldContent>
+                        {localization.settings.system}
+                      </FieldTitle>
 
-                <RadioGroupItem value="system" id="system" />
-              </Field>
-            </FieldLabel>
-          )}
+                      <RadioGroupItem value="system" id="system" />
+                    </div>
 
-          {themes.includes("light") && (
-            <FieldLabel htmlFor="light">
-              <Field orientation="horizontal">
-                <FieldContent className="gap-3">
-                  <FieldTitle>
-                    <Sun className="size-4 text-muted-foreground" />
+                    <ThemePreviewSystem className="w-full" />
+                  </FieldContent>
+                </Field>
+              </FieldLabel>
+            )}
 
-                    {localization.settings.light}
-                  </FieldTitle>
+            {themes.includes("light") && (
+              <FieldLabel htmlFor="light">
+                <Field orientation="horizontal">
+                  <FieldContent className="gap-2">
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Sun className="size-4 text-muted-foreground" />
 
-                  <ThemePreviewLight className="w-full" />
-                </FieldContent>
+                        {localization.settings.light}
+                      </FieldTitle>
 
-                <RadioGroupItem value="light" id="light" />
-              </Field>
-            </FieldLabel>
-          )}
+                      <RadioGroupItem value="light" id="light" />
+                    </div>
 
-          {themes.includes("dark") && (
-            <FieldLabel htmlFor="dark">
-              <Field orientation="horizontal">
-                <FieldContent className="gap-3">
-                  <FieldTitle>
-                    <Moon className="size-4 text-muted-foreground" />
+                    <ThemePreviewLight className="w-full" />
+                  </FieldContent>
+                </Field>
+              </FieldLabel>
+            )}
 
-                    {localization.settings.dark}
-                  </FieldTitle>
-                  <ThemePreviewDark className="w-full" />
-                </FieldContent>
+            {themes.includes("dark") && (
+              <FieldLabel htmlFor="dark">
+                <Field orientation="horizontal">
+                  <FieldContent className="gap-2">
+                    <div className="flex items-center gap-2 justify-between">
+                      <FieldTitle>
+                        <Moon className="size-4 text-muted-foreground" />
 
-                <RadioGroupItem value="dark" id="dark" />
-              </Field>
-            </FieldLabel>
-          )}
-        </RadioGroup>
-      </CardContent>
-    </Card>
+                        {localization.settings.dark}
+                      </FieldTitle>
+
+                      <RadioGroupItem value="dark" id="dark" />
+                    </div>
+
+                    <ThemePreviewDark className="w-full" />
+                  </FieldContent>
+                </Field>
+              </FieldLabel>
+            )}
+          </RadioGroup>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

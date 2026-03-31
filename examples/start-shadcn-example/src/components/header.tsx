@@ -6,7 +6,7 @@ import { Logo } from "./logo"
 export function Header() {
   return (
     <Suspense>
-      <header className="sticky top-0 z-10 bg-background border-b shadow-xs">
+      <header className="sticky top-0 z-10 bg-background border-b">
         <div className="py-3 px-4 md:px-6 mx-auto justify-between flex items-center">
           <Link to="/" className="flex items-center gap-2.5">
             <Logo />

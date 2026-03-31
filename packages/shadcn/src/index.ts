@@ -1,7 +1,6 @@
 "use client"
 
 export * from "./components/auth/auth"
-export * from "./components/auth/auth-provider"
 export * from "./components/auth/forgot-password"
 export * from "./components/auth/magic-link"
 export * from "./components/auth/magic-link-button"

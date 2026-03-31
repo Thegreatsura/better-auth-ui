@@ -1,8 +1,9 @@
 "use client"
 
 import { useAuthenticate } from "@better-auth-ui/shadcn/react"
-import { Spinner } from "@heroui/react"
 import Link from "next/link"
+
+import { Spinner } from "@/components/ui/spinner"
 
 export default function Dashboard() {
   const { data: sessionData } = useAuthenticate()

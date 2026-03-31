@@ -1,5 +1,5 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
@@ -14,7 +14,6 @@ export function Providers({ children }: { children: ReactNode }) {
       multiSession
       navigate={navigate}
       socialProviders={["github", "google"]}
-      Link={({ href, ...props }) => <Link to={href} {...props} />}
     >
       {children}
     </AuthProvider>
