@@ -1,7 +1,7 @@
 "use client"
 
-import { fileToBase64 } from "@better-auth-ui/core"
 import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
+import { fileToBase64 } from "@better-auth-ui/react/core"
 import { Trash2, Upload } from "lucide-react"
 import { type ChangeEvent, useRef, useState } from "react"
 import { toast } from "sonner"

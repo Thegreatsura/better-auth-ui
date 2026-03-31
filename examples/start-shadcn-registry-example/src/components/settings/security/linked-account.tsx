@@ -1,4 +1,3 @@
-import { getProviderName } from "@better-auth-ui/core"
 import {
   providerIcons,
   useAccountInfo,
@@ -6,6 +5,7 @@ import {
   useLinkSocial,
   useUnlinkAccount
 } from "@better-auth-ui/react"
+import { getProviderName } from "@better-auth-ui/react/core"
 import type { Account, SocialProvider } from "better-auth"
 import { Link2, Link2Off, Plug } from "lucide-react"
 import { toast } from "sonner"
