@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react"
 
 export type SignOutProps = {
   className?: string
-  variant?: CardProps["variant"]
 }
 
 /**

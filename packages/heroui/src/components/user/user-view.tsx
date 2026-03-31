@@ -8,6 +8,7 @@ export type UserViewProps = {
   className?: string
   isPending?: boolean
   size?: AvatarProps["size"]
+  /** @remarks `User` */
   user?: User & { username?: string | null; displayUsername?: string | null }
 }
 

@@ -12,26 +12,38 @@ description: A theme selector card with visual theme previews for system, light,
 
 ## Theme Configuration
 
-The Appearance component requires theme settings to be configured in your `AuthUIProvider`. Without these settings, the component will not render.
+The Appearance section reads `settings.appearance` from `useAuth()`. It only renders when `setTheme` is defined and `themes` has at least one entry. Defaults from the library supply `themes: ["system", "light", "dark"]` via config merge, so you typically pass **`theme` and `setTheme`** from your theme library (for example [next-themes](https://github.com/pacocoursey/next-themes)).
+
+Wrap the app with `ThemeProvider` from `next-themes` (for example in your root layout), then wire the same values into `AuthProvider`:
 
 ```tsx
-import { AuthUIProvider } from "@better-auth-ui/react"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 
+import { authClient } from "@/lib/auth-client"
+
 function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   const { theme, setTheme } = useTheme()
 
   return (
-    <AuthUIProvider
+    <AuthProvider
+      authClient={authClient}
+      navigate={({ to, replace }) =>
+        replace ? router.replace(to) : router.push(to)
+      }
       settings={{
-        theme,
-        setTheme,
-        themes: ["system", "light", "dark"]
+        appearance: {
+          theme,
+          setTheme
+          // Optional: override which options appear (default: system, light, dark)
+          // themes: ["light", "dark"],
+        }
       }}
-      // ... other props
     >
       {children}
-    </AuthUIProvider>
+    </AuthProvider>
   )
 }
 ```

@@ -28,8 +28,13 @@ import { UserView } from "./user-view"
 export type UserButtonProps = {
   className?: string
   size?: "default" | "icon"
+  /**
+   * The placement of the element with respect to its anchor element.
+   * @default "bottom"
+   */
   placement?: DropdownPopoverProps["placement"]
   themeToggle?: boolean
+  /** @remarks `Variant` */
   variant?: ButtonProps["variant"]
 }
 

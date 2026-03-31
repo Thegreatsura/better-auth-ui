@@ -19,21 +19,25 @@ function preferFullTypeForSimplifiedUnion(entry: DocEntry): void {
   }
 }
 
-/** Optional props are typed as `T | undefined`; strip that for readability (required is shown separately). */
-function stripUndefinedUnionFromOptional(entry: DocEntry): void {
-  if (entry.required) return
-  entry.simplifiedType = stripUndefinedUnion(entry.simplifiedType)
-  entry.type = stripUndefinedUnion(entry.type)
+/**
+ * TypeScript prints optional fields as `prop?: T | undefined`. The `?` already
+ * implies `undefined`, and nested object shapes in the expanded "Type" row are
+ * especially noisy. Strip `| undefined` (and symmetric `undefined |`) everywhere
+ * in the displayed string — docs-only, does not affect package types.
+ */
+function stripRedundantUndefinedUnions(entry: DocEntry): void {
+  entry.simplifiedType = stripUndefinedUnionFromTypeString(entry.simplifiedType)
+  entry.type = stripUndefinedUnionFromTypeString(entry.type)
 }
 
-function stripUndefinedUnion(s: string): string {
-  let t = s.trim()
-  const suffix = /\s*\|\s*undefined\b\s*$/
-  const prefix = /^\s*undefined\s*\|\s*/
+function stripUndefinedUnionFromTypeString(s: string): string {
+  let t = s
   let previous: string
   do {
     previous = t
-    t = t.replace(suffix, "").replace(prefix, "").trim()
+    t = t
+      .replace(/\s*\|\s*undefined\b/g, "")
+      .replace(/\bundefined\s*\|\s*/g, "")
   } while (t !== previous)
   return t
 }
@@ -61,7 +65,7 @@ export default defineConfig({
           options: {
             transform(entry: DocEntry) {
               preferFullTypeForSimplifiedUnion(entry)
-              stripUndefinedUnionFromOptional(entry)
+              stripRedundantUndefinedUnions(entry)
             }
           }
           // renderType: renderTypeToHastFast
