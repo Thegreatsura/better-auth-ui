@@ -2,6 +2,7 @@
 
 import { UserButton } from "@better-auth-ui/heroui"
 import { Link } from "@heroui/react"
+
 import { Logo } from "./logo"
 
 export function Header() {
