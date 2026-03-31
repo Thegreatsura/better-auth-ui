@@ -1,4 +1,4 @@
-import { AuthProvider } from "@better-auth-ui/shadcn"
+import { AuthProvider } from "@better-auth-ui/shadcn/react"
 import { Link, useNavigate } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
@@ -12,8 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
       authClient={authClient}
       magicLink
       multiSession
-      navigate={(path) => navigate({ to: path })}
-      replace={(path) => navigate({ to: path, replace: true })}
+      navigate={navigate}
       socialProviders={["github", "google"]}
       Link={({ href, ...props }) => <Link to={href} {...props} />}
     >
