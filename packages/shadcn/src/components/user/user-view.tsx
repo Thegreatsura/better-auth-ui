@@ -10,6 +10,7 @@ import { UserAvatar } from "./user-avatar"
 export type UserViewProps = {
   className?: string
   isPending?: boolean
+  /** @remarks `User` */
   user?: User & { username?: string | null; displayUsername?: string | null }
 }
 

@@ -12,6 +12,7 @@ import { SecuritySettings } from "./security/security-settings"
 export type SettingsProps = {
   className?: string
   path?: string
+  /** @remarks `SettingsView` */
   view?: SettingsView
   hideNav?: boolean
 }

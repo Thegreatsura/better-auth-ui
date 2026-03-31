@@ -34,7 +34,6 @@ export type UserButtonProps = {
    */
   placement?: DropdownPopoverProps["placement"]
   themeToggle?: boolean
-  /** @remarks `Variant` */
   variant?: ButtonProps["variant"]
 }
 

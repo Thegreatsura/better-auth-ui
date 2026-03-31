@@ -9,12 +9,6 @@ import type { ReactNode } from "react"
 import { authClient } from "@/lib/auth-client"
 import { Toaster } from "./ui/sonner"
 
-/**
- * Wraps the app UI with theme, routing, authentication, and global toast providers.
- *
- * @param children - The application UI to render inside the providers
- * @returns A React element containing ThemeProvider > RouterProvider > AuthProvider with the provided `children` and a global `Toaster`
- */
 export function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
   const { theme, setTheme } = useTheme()

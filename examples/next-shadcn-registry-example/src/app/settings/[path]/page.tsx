@@ -1,7 +1,7 @@
 import { viewPaths } from "@better-auth-ui/react/core"
+import { notFound } from "next/navigation"
 
 import { Settings } from "@/components/settings/settings"
-import { notFound } from "next/navigation"
 
 export default async function SettingsPage({
   params

@@ -1,7 +1,7 @@
 import { viewPaths } from "@better-auth-ui/react/core"
+import { notFound } from "next/navigation"
 
 import { Auth } from "@/components/auth/auth"
-import { notFound } from "next/navigation"
 
 export default async function AuthPage({
   params
