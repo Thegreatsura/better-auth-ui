@@ -134,7 +134,7 @@ export function UserButton({
                 </Dropdown.SubmenuTrigger>
               )}
 
-              {themeToggle && theme && setTheme && themes?.length && (
+              {themeToggle && theme && setTheme && !!themes?.length && (
                 <Dropdown.Item className="py-1 pe-2">
                   <Label>{localization.settings.theme}</Label>
 

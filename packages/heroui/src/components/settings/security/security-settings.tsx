@@ -33,7 +33,7 @@ export function SecuritySettings({
       {...props}
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
-      {socialProviders?.length && <LinkedAccounts variant={variant} />}
+      {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
       <ActiveSessions variant={variant} />
     </div>
   )

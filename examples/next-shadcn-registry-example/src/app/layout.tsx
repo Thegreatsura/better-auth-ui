@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import { Inter } from "next/font/google"
 import type { ReactNode } from "react"
 
 import "@/styles/app.css"
@@ -10,16 +10,6 @@ import { Providers } from "@/components/providers"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"]
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"]
-})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,9 +27,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("font-sans", inter.variable)}
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-svh flex flex-col`}
-      >
+      <body className="antialiased min-h-svh flex flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
