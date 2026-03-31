@@ -1,6 +1,6 @@
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import type { SettingsView } from "@better-auth-ui/react/core"
-import { cn, Tabs } from "@heroui/react"
+import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useMemo } from "react"
 
 import { AccountSettings } from "./account/account-settings"
@@ -10,6 +10,8 @@ export type SettingsProps = {
   className?: string
   hideNav?: boolean
   path?: string
+  variant?: CardProps["variant"]
+  /** @remarks `SettingsView` */
   view?: SettingsView
 }
 
@@ -20,6 +22,7 @@ export type SettingsProps = {
  * @param path - Route path used to resolve which settings view to activate when `view` is not provided
  * @param view - Explicit settings view to activate, e.g. `"account"` or `"security"`
  * @param hideNav - When `true`, hide the navigation tabs
+ * @param variant - Card variant forwarded to each settings section card
  * @returns A DOM tree containing the responsive settings tabs and the currently selected settings panel
  *
  * @throws Error if neither `view` nor `path` is provided
@@ -28,6 +31,7 @@ export function Settings({
   className,
   hideNav,
   path,
+  variant,
   view,
   ...props
 }: SettingsProps & ComponentProps<"div">) {
@@ -81,11 +85,11 @@ export function Settings({
       </Tabs.ListContainer>
 
       <Tabs.Panel id="account" className="px-0">
-        <AccountSettings />
+        <AccountSettings variant={variant} />
       </Tabs.Panel>
 
       <Tabs.Panel id="security" className="px-0">
-        <SecuritySettings />
+        <SecuritySettings variant={variant} />
       </Tabs.Panel>
     </Tabs>
   )

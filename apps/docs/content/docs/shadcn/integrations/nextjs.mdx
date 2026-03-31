@@ -20,7 +20,7 @@ Configure `AuthProvider` with Next.js navigation.
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/components/providers.tsx
+```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/components/providers.tsx
 ```
 </Tab>
   <Tab value="Package">
@@ -48,7 +48,7 @@ Create a dynamic auth page that renders the appropriate authentication view base
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/auth/[path]/page.tsx
+```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/auth/[path]/page.tsx
 ```
 </Tab>
   <Tab value="Package">
@@ -60,6 +60,25 @@ Create a dynamic auth page that renders the appropriate authentication view base
 The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, and `magic-link`.
 
 </Step>
+<Step>
+### Create the Settings page
+
+Create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+
+<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
+  <Tab value="Registry">
+```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/settings/[path]/page.tsx
+```
+</Tab>
+  <Tab value="Package">
+```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/settings/[path]/page.tsx
+```
+  </Tab>
+</Tabs>
+
+The `viewPaths.settings` object contains valid settings path segments: `account` and `security`.
+
+</Step>
 </Steps>
 
 ## Protecting Routes
@@ -68,7 +87,7 @@ Use the `useAuthenticate` hook to protect routes and access session data.
 
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
-```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/dashboard/page.tsx
+```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/dashboard/page.tsx
 ```
 </Tab>
   <Tab value="Package">
@@ -81,4 +100,4 @@ The `useAuthenticate` hook will automatically redirect unauthenticated users to 
 
 ## Example Project
 
-For a complete working example, check out the [next-shadcn-example](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/next-shadcn-example) in the repository.
+For complete working examples, see [next-shadcn-example](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/next-shadcn-example) (npm package) and [next-shadcn-registry-example](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/next-shadcn-registry-example) (shadcn registry) in the repository.

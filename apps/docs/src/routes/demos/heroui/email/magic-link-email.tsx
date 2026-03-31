@@ -10,6 +10,10 @@ const html = await render(
   <MagicLinkEmail
     url="https://better-auth-ui.com/auth/verify?token=example-token"
     appName="Better Auth UI"
+    logoURL={{
+      light: "/favicon-96x96.png",
+      dark: "/favicon-96x96-inverted.png"
+    }}
     email="user@example.com"
     expirationMinutes={5}
     darkMode={true}

@@ -16,6 +16,7 @@ export type AuthProps = {
   path?: string
   socialLayout?: SocialLayout
   socialPosition?: "top" | "bottom"
+  /** @remarks `AuthView` */
   view?: AuthView
 }
 

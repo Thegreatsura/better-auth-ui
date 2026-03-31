@@ -1,5 +1,5 @@
 import { useAuth } from "@better-auth-ui/react"
-import { cn } from "@heroui/react"
+import { type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
@@ -8,6 +8,7 @@ import { UserProfile } from "./user-profile"
 
 export type AccountSettingsProps = {
   className?: string
+  variant?: CardProps["variant"]
 }
 
 /**
@@ -16,10 +17,12 @@ export type AccountSettingsProps = {
  * UserProfile, ChangeEmail, and Appearance are always rendered; Accounts is rendered when `multiSession` is enabled.
  *
  * @param className - Optional additional CSS class names for the outer container.
+ * @param variant - Card variant forwarded to each account settings card.
  * @returns The account settings container as a JSX element.
  */
 export function AccountSettings({
   className,
+  variant,
   ...props
 }: AccountSettingsProps & ComponentProps<"div">) {
   const {
@@ -36,10 +39,12 @@ export function AccountSettings({
       className={cn("flex w-full flex-col gap-4 md:gap-6", className)}
       {...props}
     >
-      <UserProfile />
-      {(emailAndPassword?.enabled || magicLink) && <ChangeEmail />}
-      {setTheme && <Appearance />}
-      {multiSession && <ManageAccounts />}
+      <UserProfile variant={variant} />
+      {(emailAndPassword?.enabled || magicLink) && (
+        <ChangeEmail variant={variant} />
+      )}
+      {setTheme && <Appearance variant={variant} />}
+      {multiSession && <ManageAccounts variant={variant} />}
     </div>
   )
 }

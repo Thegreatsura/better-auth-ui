@@ -17,38 +17,43 @@ Before you start, make sure you have the following prerequisites integrated into
 
 ## Installation
 
-<Steps>
-<Step>
-### Install the components
-
-Install the `shadcn/ui` components using shadcn CLI or your preferred package manager.
-
 <Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
   <Tab value="Registry">
+<Steps>
+<Step>
+**Install the components**
+
+Install the `shadcn/ui` components using shadcn CLI.
+
 ```npm
 npx shadcn@latest add https://better-auth-ui.com/r/auth.json
 ```
-</Tab>
+</Step>
+</Steps>
+  </Tab>
   <Tab value="Package">
+<Steps>
+<Step>
+**Install the package**
+
+Install `@better-auth-ui/shadcn` using your preferred package manager.
+
 ```package-install
 @better-auth-ui/shadcn@latest
 ```
-  </Tab>
-</Tabs>
-
 </Step>
 <Step>
-### Configure TailwindCSS
-
-**Please skip this step if you are using the registry method.**
+**Configure TailwindCSS**
 
 Add the following `@import` to your global css.
 
-```css title="styles/globals.css"
+```css title="styles/app.css"
 @import "@better-auth-ui/shadcn/styles";
 ```
 </Step>
 </Steps>
+  </Tab>
+</Tabs>
 
 ## Next Steps
 

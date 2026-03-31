@@ -8,6 +8,7 @@ export type UserAvatarProps = {
   className?: string
   fallback?: ReactNode
   isPending?: boolean
+  /** @remarks `User` */
   user?: User & { username?: string | null; displayUsername?: string | null }
   size?: AvatarProps["size"]
 }

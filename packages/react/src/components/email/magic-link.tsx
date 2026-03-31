@@ -58,7 +58,7 @@ export interface MagicLinkEmailProps {
   appName?: string
   /** Number of minutes until the magic link expires */
   expirationMinutes?: number
-  /** Logo URL(s) - can be a single string or an object with light/dark variants */
+  /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
   /** Custom CSS class names for styling specific parts of the email */
   classNames?: EmailClassNames
@@ -70,7 +70,10 @@ export interface MagicLinkEmailProps {
   darkMode?: boolean
   /** Additional React nodes to inject into the email head */
   head?: ReactNode
-  /** Partial localization overrides for customizing email text */
+  /**
+   * Localization overrides for customizing email text
+   * @remarks `MagicLinkEmailLocalization`
+   */
   localization?: Partial<MagicLinkEmailLocalization>
 }
 
@@ -102,7 +105,7 @@ export const MagicLinkEmail = ({
   email,
   appName,
   expirationMinutes = 5,
-  logoURL = "https://better-auth.com/logo.png",
+  logoURL,
   colors,
   classNames,
   darkMode = true,

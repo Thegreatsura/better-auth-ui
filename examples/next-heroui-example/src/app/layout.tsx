@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
-import "@/styles/globals.css"
+import "@/styles/app.css"
 
-import { ThemeProvider } from "next-themes"
 import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
 
@@ -40,6 +40,7 @@ export default function RootLayout({
         >
           <Providers>
             <Header />
+
             {children}
           </Providers>
         </ThemeProvider>

@@ -17,10 +17,12 @@ export type SecuritySettingsProps = {
  * ChangePassword is rendered when password authentication is enabled; LinkedAccounts is rendered when social providers are present.
  *
  * @param className - Optional additional CSS class names for the outer container.
+ * @param variant - Card variant forwarded to each security settings card.
  * @returns The security settings container as a JSX element.
  */
 export function SecuritySettings({
   className,
+  variant,
   ...props
 }: SecuritySettingsProps & ComponentProps<"div">) {
   const { emailAndPassword, socialProviders } = useAuth()
@@ -30,9 +32,9 @@ export function SecuritySettings({
       className={cn("flex w-full flex-col gap-4 md:gap-6", className)}
       {...props}
     >
-      {emailAndPassword?.enabled && <ChangePassword />}
-      {socialProviders?.length && <LinkedAccounts />}
-      <ActiveSessions />
+      {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
+      {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
+      <ActiveSessions variant={variant} />
     </div>
   )
 }

@@ -15,6 +15,7 @@ export type AuthProps = {
   socialLayout?: SocialLayout
   socialPosition?: "top" | "bottom"
   variant?: CardProps["variant"]
+  /** @remarks `AuthView` */
   view?: AuthView
 }
 

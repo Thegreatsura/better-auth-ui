@@ -28,6 +28,10 @@ import { UserView } from "./user-view"
 export type UserButtonProps = {
   className?: string
   size?: "default" | "icon"
+  /**
+   * The placement of the element with respect to its anchor element.
+   * @default "bottom"
+   */
   placement?: DropdownPopoverProps["placement"]
   themeToggle?: boolean
   variant?: ButtonProps["variant"]
@@ -130,7 +134,7 @@ export function UserButton({
                 </Dropdown.SubmenuTrigger>
               )}
 
-              {themeToggle && theme && setTheme && themes?.length && (
+              {themeToggle && theme && setTheme && !!themes?.length && (
                 <Dropdown.Item className="py-1 pe-2">
                   <Label>{localization.settings.theme}</Label>
 

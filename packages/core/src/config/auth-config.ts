@@ -14,7 +14,10 @@ import type { SettingsConfig } from "./settings-config"
  * providers, navigation functions, and feature flags.
  */
 export interface AuthConfig {
-  /** Base paths for different application sections */
+  /**
+   * Base paths for different application sections
+   * @remarks `BasePaths`
+   */
   basePaths: BasePaths
   /**
    * Base URL for API endpoints (optional)
@@ -23,9 +26,13 @@ export interface AuthConfig {
   baseURL: string
   /**
    * Email and password authentication configuration
+   * @remarks `EmailAndPasswordConfig`
    */
   emailAndPassword: EmailAndPasswordConfig
-  /** Localization strings for UI components. */
+  /**
+   * Localization strings for UI components
+   * @remarks `Localization`
+   */
   localization: Localization
   /** Whether magic link (passwordless) authentication is enabled */
   magicLink?: boolean
@@ -38,6 +45,7 @@ export interface AuthConfig {
   redirectTo: string
   /**
    * Settings section configuration
+   * @remarks `SettingsConfig`
    */
   settings: SettingsConfig
   /**
@@ -45,7 +53,10 @@ export interface AuthConfig {
    * @remarks `SocialProvider[]`
    */
   socialProviders?: SocialProvider[]
-  /** View path mappings for different authentication views */
+  /**
+   * View path mappings for different authentication views
+   * @remarks `ViewPaths`
+   */
   viewPaths: ViewPaths
   /**
    * Function to navigate to a new path

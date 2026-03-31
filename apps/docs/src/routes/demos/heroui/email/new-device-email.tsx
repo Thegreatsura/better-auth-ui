@@ -17,6 +17,10 @@ const html = await render(
       timestamp: "January 15, 2024 at 3:30 PM"
     }}
     appName="Better Auth UI"
+    logoURL={{
+      light: "/favicon-96x96.png",
+      dark: "/favicon-96x96-inverted.png"
+    }}
     supportEmail="support@example.com"
     secureAccountLink="https://better-auth-ui.com/secure-account"
     darkMode={true}
