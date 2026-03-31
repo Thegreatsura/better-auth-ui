@@ -1,7 +1,7 @@
 "use client"
 
-import { getProviderName } from "@better-auth-ui/react/core"
 import { providerIcons, useAuth } from "@better-auth-ui/react"
+import { getProviderName } from "@better-auth-ui/react/core"
 import type { SocialProvider } from "better-auth/social-providers"
 import { useMemo } from "react"
 
