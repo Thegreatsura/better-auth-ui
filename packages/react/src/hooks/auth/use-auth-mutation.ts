@@ -13,9 +13,9 @@ type MutationParams<TFn extends AuthFn> = undefined extends Parameters<TFn>[0]
     void | Omit<NonNullable<Parameters<TFn>[0]>, "fetchOptions">
   : Omit<Parameters<TFn>[0], "fetchOptions">
 
-type InferMutationData<TFn extends AuthFn> = TFn extends {
-  (...args: infer _A): infer R
-}
+type InferMutationData<TFn extends AuthFn> = TFn extends (
+  ...args: infer _A
+) => infer R
   ? Extract<Awaited<R>, { error: null }> extends { data: infer D }
     ? D
     : Awaited<R>

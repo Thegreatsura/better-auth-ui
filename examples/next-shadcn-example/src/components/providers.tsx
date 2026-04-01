@@ -17,6 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <AuthProvider
       authClient={authClient}
       socialProviders={["google", "github"]}
+      deleteUser={{ enabled: true }}
       magicLink
       multiSession
       redirectTo="/dashboard"
