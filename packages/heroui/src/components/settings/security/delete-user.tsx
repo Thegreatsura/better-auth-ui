@@ -1,9 +1,4 @@
-import {
-  useAuth,
-  useDeleteUser,
-  useListAccounts,
-  useSession
-} from "@better-auth-ui/react"
+import { useAuth, useDeleteUser, useListAccounts } from "@better-auth-ui/react"
 import { TriangleExclamation } from "@gravity-ui/icons"
 import {
   AlertDialog,
@@ -42,7 +37,6 @@ export function DeleteUser({
     viewPaths
   } = useAuth()
 
-  const { data: session } = useSession()
   const { data: accounts } = useListAccounts()
 
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -108,7 +102,7 @@ export function DeleteUser({
 
         <AlertDialog>
           <Button
-            isDisabled={!session}
+            isDisabled={!accounts}
             size="sm"
             variant="danger"
             onPress={() => setConfirmOpen(true)}
