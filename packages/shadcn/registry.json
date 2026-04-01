@@ -461,15 +461,45 @@
       ]
     },
     {
+      "name": "danger-zone",
+      "type": "registry:component",
+      "title": "Danger Zone",
+      "description": "A danger zone section with a delete user card and confirmation dialog for permanently deleting the user account.",
+      "dependencies": [
+        "@better-auth-ui/react@*",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "field",
+        "input",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/components/settings/security/danger-zone.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/settings/security/delete-user.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management, linked accounts, and active sessions.",
+      "description": "A container component that displays security settings including password management, linked accounts, active sessions, and danger zone.",
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
         "https://better-auth-ui.pages.dev/r/change-password.json",
         "https://better-auth-ui.pages.dev/r/linked-accounts.json",
-        "https://better-auth-ui.pages.dev/r/active-sessions.json"
+        "https://better-auth-ui.pages.dev/r/active-sessions.json",
+        "https://better-auth-ui.pages.dev/r/danger-zone.json"
       ],
       "files": [
         {
