@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 
+import { Providers } from "@/components/demos/shadcn/providers"
 import herouiCss from "@/styles/shadcn.css?url"
 
 export const Route = createFileRoute("/demos/shadcn")({
@@ -10,5 +11,9 @@ export const Route = createFileRoute("/demos/shadcn")({
 })
 
 function RouteComponent() {
-  return <Outlet />
+  return (
+    <Providers>
+      <Outlet />
+    </Providers>
+  )
 }
