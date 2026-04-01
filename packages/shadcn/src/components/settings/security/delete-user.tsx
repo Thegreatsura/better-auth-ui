@@ -1,12 +1,8 @@
 "use client"
 
-import {
-  useAuth,
-  useDeleteUser,
-  useListAccounts
-} from "@better-auth-ui/react"
-import { AlertDialog } from "radix-ui"
+import { useAuth, useDeleteUser, useListAccounts } from "@better-auth-ui/react"
 import { TriangleAlert } from "lucide-react"
+import { AlertDialog } from "radix-ui"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -97,11 +93,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
           onOpenChange={handleDialogOpenChange}
         >
           <AlertDialog.Trigger asChild>
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={!accounts}
-            >
+            <Button variant="destructive" size="sm" disabled={!accounts}>
               {localization.settings.deleteUser}
             </Button>
           </AlertDialog.Trigger>
@@ -156,7 +148,11 @@ export function DeleteUser({ className }: DeleteUserProps) {
                     </Button>
                   </AlertDialog.Cancel>
 
-                  <Button type="submit" variant="destructive" disabled={isPending}>
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    disabled={isPending}
+                  >
                     {isPending && <Spinner />}
                     {localization.settings.deleteUser}
                   </Button>
