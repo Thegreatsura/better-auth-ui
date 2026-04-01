@@ -27,6 +27,9 @@ export const auth = betterAuth({
         type: "boolean",
         required: false
       }
+    },
+    deleteUser: {
+      enabled: true
     }
   },
   socialProviders: {

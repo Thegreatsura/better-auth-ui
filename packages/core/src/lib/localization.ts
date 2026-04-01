@@ -157,6 +157,9 @@ export const localization = {
     /** @remarks `"Appearance"` */
     appearance: "Appearance",
 
+    /** @remarks `"Cancel"` */
+    cancel: "Cancel",
+
     /** @remarks `"Change email"` */
     changeEmail: "Change email",
 
@@ -177,6 +180,22 @@ export const localization = {
 
     /** @remarks `"Dark"` */
     dark: "Dark",
+
+    /** @remarks `"Danger zone"` */
+    dangerZone: "Danger zone",
+
+    /** @remarks `"Delete user"` */
+    deleteUser: "Delete user",
+
+    /** @remarks `"Permanently remove your account and all associated data. This cannot be undone."` */
+    deleteUserDescription:
+      "Permanently remove your account and all associated data. This cannot be undone.",
+
+    /** @remarks `"Check your email to confirm account deletion."` */
+    deleteUserVerificationSent: "Check your email to confirm account deletion.",
+
+    /** @remarks `"Your account has been deleted."` */
+    deleteUserSuccess: "Your account has been deleted.",
 
     /** @remarks `"Light"` */
     light: "Light",
@@ -201,6 +220,13 @@ export const localization = {
 
     /** @remarks `"Save changes"` */
     saveChanges: "Save changes",
+
+    /** @remarks `"Set password"` */
+    setPassword: "Set password",
+
+    /** @remarks `"You don't have a password yet. Request a reset link to set one up."` */
+    setPasswordDescription:
+      "You don't have a password yet. Request a reset link to set one up.",
 
     /** @remarks `"Security"` */
     security: "Security",

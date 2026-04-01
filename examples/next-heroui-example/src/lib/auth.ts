@@ -16,6 +16,11 @@ export const auth = betterAuth({
   },
   secret: process.env.BETTER_AUTH_SECRET as string,
   plugins: [multiSession()],
+  user: {
+    deleteUser: {
+      enabled: true
+    }
+  },
   socialProviders: {
     github: {
       clientId: process.env.GITHUB_CLIENT_ID as string,

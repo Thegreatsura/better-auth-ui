@@ -4,6 +4,7 @@ import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
+import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
 import type { SettingsConfig } from "./settings-config"
 
@@ -24,6 +25,11 @@ export interface AuthConfig {
    * @default ""
    */
   baseURL: string
+  /**
+   * Allow users to delete their account
+   * @remarks `DeleteUserConfig`
+   */
+  deleteUser?: DeleteUserConfig
   /**
    * Email and password authentication configuration
    * @remarks `EmailAndPasswordConfig`
