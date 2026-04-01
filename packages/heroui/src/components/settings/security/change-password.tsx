@@ -1,4 +1,10 @@
-import { useAuth, useChangePassword, useSession } from "@better-auth-ui/react"
+import {
+  useAuth,
+  useChangePassword,
+  useListAccounts,
+  useRequestPasswordReset,
+  useSession
+} from "@better-auth-ui/react"
 import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
@@ -26,11 +32,11 @@ export type ChangePasswordProps = {
 /**
  * Render a card form for changing the authenticated user's password.
  *
- * Displays a card with fields for current password, new password, and optionally
- * confirm password (based on `emailAndPassword.confirmPassword`). All other sessions
- * are revoked upon successful password change.
+ * When the user has a credential account, displays fields for current password,
+ * new password, and optionally confirm password. When the user only has social
+ * accounts, displays a prompt to set a password via the reset flow.
  *
- * @returns A JSX element containing the change-password card and form
+ * @returns A JSX element containing the change-password or set-password card
  */
 export function ChangePassword({
   className,
@@ -39,7 +45,87 @@ export function ChangePassword({
 }: ChangePasswordProps & CardProps) {
   const { emailAndPassword, localization } = useAuth()
   const { data: sessionData } = useSession()
+  const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
+  const hasCredentialAccount = accounts?.some(
+    (account) => account.providerId === "credential"
+  )
+
+  if (!isAccountsPending && !hasCredentialAccount) {
+    return <SetPassword className={className} variant={variant} {...props} />
+  }
+
+  return (
+    <ChangePasswordForm
+      className={className}
+      variant={variant}
+      emailAndPassword={emailAndPassword}
+      localization={localization}
+      sessionData={isAccountsPending ? undefined : sessionData}
+      {...props}
+    />
+  )
+}
+
+function SetPassword({ className, variant, ...props }: CardProps) {
+  const { localization } = useAuth()
+  const { data: sessionData } = useSession()
+
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
+    onError: (error) => toast.danger(error.error?.message || error.message),
+    onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
+  })
+
+  const handleSetPassword = () => {
+    if (!sessionData?.user.email) return
+    requestPasswordReset({ email: sessionData.user.email })
+  }
+
+  return (
+    <div>
+      <h2 className={cn("text-sm font-semibold mb-3")}>
+        {localization.settings.changePassword}
+      </h2>
+
+      <Card className={cn(className)} variant={variant} {...props}>
+        <Card.Content className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-medium leading-tight">
+              {localization.settings.setPassword}
+            </p>
+
+            <p className="text-muted text-xs mt-0.5">
+              {localization.settings.setPasswordDescription}
+            </p>
+          </div>
+
+          <Button
+            size="sm"
+            isPending={isPending}
+            isDisabled={!sessionData}
+            onPress={handleSetPassword}
+          >
+            {isPending && <Spinner color="current" size="sm" />}
+            {localization.auth.sendResetLink}
+          </Button>
+        </Card.Content>
+      </Card>
+    </div>
+  )
+}
+
+function ChangePasswordForm({
+  className,
+  variant,
+  emailAndPassword,
+  localization,
+  sessionData,
+  ...props
+}: {
+  emailAndPassword: ReturnType<typeof useAuth>["emailAndPassword"]
+  localization: ReturnType<typeof useAuth>["localization"]
+  sessionData: ReturnType<typeof useSession>["data"]
+} & CardProps) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")

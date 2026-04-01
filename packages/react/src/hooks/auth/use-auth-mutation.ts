@@ -13,9 +13,17 @@ type MutationParams<TFn extends AuthFn> = undefined extends Parameters<TFn>[0]
     void | Omit<NonNullable<Parameters<TFn>[0]>, "fetchOptions">
   : Omit<Parameters<TFn>[0], "fetchOptions">
 
+type InferMutationData<TFn extends AuthFn> = TFn extends (
+  ...args: infer _A
+) => infer R
+  ? Extract<Awaited<R>, { error: null }> extends { data: infer D }
+    ? D
+    : Awaited<R>
+  : Awaited<ReturnType<TFn>>
+
 export type UseAuthMutationOptions<TFn extends AuthFn> = Omit<
   UseMutationOptions<
-    Awaited<ReturnType<TFn>>,
+    InferMutationData<TFn>,
     BetterFetchError,
     MutationParams<TFn>
   >,
@@ -23,7 +31,7 @@ export type UseAuthMutationOptions<TFn extends AuthFn> = Omit<
 >
 
 export type UseAuthMutationResult<TFn extends AuthFn> = UseMutationResult<
-  Awaited<ReturnType<TFn>>,
+  InferMutationData<TFn>,
   BetterFetchError,
   MutationParams<TFn>
 >

@@ -22,7 +22,7 @@
     "@heroui/react": "^3.0.1",
     "@heroui/styles": "^3.0.1",
     "@tailwindcss/vite": "^4.2.2",
-    "@tanstack/react-devtools": "^0.10.0",
+    "@tanstack/react-devtools": "^0.10.1",
     "@tanstack/react-router": "^1.168.10",
     "@tanstack/react-router-devtools": "^1.166.11",
     "@tanstack/react-start": "^1.167.16",
