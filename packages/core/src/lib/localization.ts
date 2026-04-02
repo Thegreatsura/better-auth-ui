@@ -3,14 +3,14 @@ export const localization = {
     /** @remarks `"Account"` */
     account: "Account",
 
-    /** @remarks `"Add Account"` */
-    addAccount: "Add Account",
+    /** @remarks `"Add account"` */
+    addAccount: "Add account",
 
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
 
-    /** @remarks `"Confirm Password"` */
-    confirmPassword: "Confirm Password",
+    /** @remarks `"Confirm password"` */
+    confirmPassword: "Confirm password",
 
     /** @remarks `"Confirm your password"` */
     confirmPasswordPlaceholder: "Confirm your password",
@@ -24,8 +24,8 @@ export const localization = {
     /** @remarks `"Enter your email"` */
     emailPlaceholder: "Enter your email",
 
-    /** @remarks `"Forgot Password"` */
-    forgotPassword: "Forgot Password",
+    /** @remarks `"Forgot password"` */
+    forgotPassword: "Forgot password",
 
     /** @remarks `"Forgot password?"` */
     forgotPasswordLink: "Forgot password?",
@@ -51,8 +51,8 @@ export const localization = {
     /** @remarks `"Need to create an account?"` */
     needToCreateAnAccount: "Need to create an account?",
 
-    /** @remarks `"New Password"` */
-    newPassword: "New Password",
+    /** @remarks `"New password"` */
+    newPassword: "New password",
 
     /** @remarks `"Enter your new password"` */
     newPasswordPlaceholder: "Enter your new password",
@@ -84,29 +84,29 @@ export const localization = {
     /** @remarks `"Resend"` */
     resend: "Resend",
 
-    /** @remarks `"Reset Password"` */
-    resetPassword: "Reset Password",
+    /** @remarks `"Reset password"` */
+    resetPassword: "Reset password",
 
     /** @remarks `"Send Magic Link"` */
     sendMagicLink: "Send Magic Link",
 
-    /** @remarks `"Send Reset Link"` */
-    sendResetLink: "Send Reset Link",
+    /** @remarks `"Send reset link"` */
+    sendResetLink: "Send reset link",
 
     /** @remarks `"Show password"` */
     showPassword: "Show password",
 
-    /** @remarks `"Sign In"` */
-    signIn: "Sign In",
+    /** @remarks `"Sign in"` */
+    signIn: "Sign in",
 
-    /** @remarks `"Sign Out"` */
-    signOut: "Sign Out",
+    /** @remarks `"Sign out"` */
+    signOut: "Sign out",
 
-    /** @remarks `"Sign Up"` */
-    signUp: "Sign Up",
+    /** @remarks `"Sign up"` */
+    signUp: "Sign up",
 
-    /** @remarks `"Switch Account"` */
-    switchAccount: "Switch Account",
+    /** @remarks `"Switch account"` */
+    switchAccount: "Switch account",
 
     /** @remarks `"Verification email sent!"` */
     verificationEmailSent: "Verification email sent!",
@@ -130,8 +130,8 @@ export const localization = {
     /** @remarks `"Avatar"` */
     avatar: "Avatar",
 
-    /** @remarks `"Current Session"` */
-    currentSession: "Current Session",
+    /** @remarks `"Current session"` */
+    currentSession: "Current session",
 
     /** @remarks `"Avatar changed successfully"` */
     avatarChangedSuccess: "Avatar changed successfully",
@@ -172,8 +172,8 @@ export const localization = {
     /** @remarks `"Password changed successfully"` */
     changePasswordSuccess: "Password changed successfully",
 
-    /** @remarks `"Current Password"` */
-    currentPassword: "Current Password",
+    /** @remarks `"Current password"` */
+    currentPassword: "Current password",
 
     /** @remarks `"Enter your current password"` */
     currentPasswordPlaceholder: "Enter your current password",
@@ -212,8 +212,8 @@ export const localization = {
     /** @remarks `"Revoke"` */
     revoke: "Revoke",
 
-    /** @remarks `"Revoke Session"` */
-    revokeSession: "Revoke Session",
+    /** @remarks `"Revoke session"` */
+    revokeSession: "Revoke session",
 
     /** @remarks `"Session revoked successfully"` */
     revokeSessionSuccess: "Session revoked successfully",
