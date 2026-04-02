@@ -45,9 +45,12 @@ export function Settings({ className, view, path, hideNav }: SettingsProps) {
   const currentView = view || (path ? settingsPathViews[path] : undefined)
 
   return (
-    <Tabs value={currentView} className={cn("w-full", className)}>
-      <div className={cn("mb-2 md:mb-4", hideNav && "hidden")}>
-        <TabsList aria-label={localization.settings.settings} className="w-fit">
+    <Tabs
+      value={currentView}
+      className={cn("w-full gap-4 md:gap-6", className)}
+    >
+      <div className={cn(hideNav && "hidden")}>
+        <TabsList aria-label={localization.settings.settings}>
           <TabsTrigger value="account" asChild>
             <Link href={`${basePaths.settings}/${viewPaths.settings.account}`}>
               {localization.settings.account}

@@ -13,10 +13,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { Field } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { UserAvatar } from "@/components/user/user-avatar"
-import { cn } from "@/lib/utils"
 
 export type ChangeAvatarProps = {
   className?: string
@@ -93,7 +93,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   }
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <Field className={className}>
       <Label>{localization.settings.avatar}</Label>
 
       <input
@@ -123,13 +123,15 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
               disabled={!sessionData || isPending}
             >
               {isPending && <Spinner />}
+
               {localization.settings.changeAvatar}
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="start" className="min-w-fit">
+          <DropdownMenuContent className="min-w-fit">
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
               <Upload className="text-muted-foreground" />
+
               {localization.settings.uploadAvatar}
             </DropdownMenuItem>
 
@@ -139,11 +141,12 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
               onClick={handleDelete}
             >
               <Trash2 />
+
               {localization.settings.deleteAvatar}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
+    </Field>
   )
 }

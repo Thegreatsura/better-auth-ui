@@ -15,12 +15,12 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
   FieldSeparator
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { Label } from "../ui/label"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -70,8 +70,10 @@ export function MagicLink({
     onError: (error) => toast.error(error.error?.message || error.message),
     onSuccess: async () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
@@ -117,9 +119,7 @@ export function MagicLink({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field data-invalid={!!fieldErrors.email}>
-                <FieldLabel htmlFor="email">
-                  {localization.auth.email}
-                </FieldLabel>
+                <Label htmlFor="email">{localization.auth.email}</Label>
 
                 <Input
                   id="email"
@@ -129,6 +129,7 @@ export function MagicLink({
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value)
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       email: undefined
@@ -139,6 +140,7 @@ export function MagicLink({
                   disabled={isPending}
                   onInvalid={(e) => {
                     e.preventDefault()
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       email: (e.target as HTMLInputElement).validationMessage

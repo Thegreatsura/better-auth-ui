@@ -78,6 +78,7 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
                 }}
                 onInvalid={(e) => {
                   e.preventDefault()
+
                   setFieldErrors((prev) => ({
                     ...prev,
                     email: (e.target as HTMLInputElement).validationMessage

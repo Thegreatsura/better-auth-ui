@@ -7,6 +7,7 @@ import { LogOut, Monitor, Smartphone, X } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 
 function timeAgo(date: Date) {
@@ -60,58 +61,60 @@ export function ActiveSession({ session }: ActiveSessionProps) {
     ua.platform.type === "mobile" || ua.platform.type === "tablet"
 
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
-        {isMobile ? (
-          <Smartphone className="size-4.5" />
-        ) : (
-          <Monitor className="size-4.5" />
-        )}
-      </div>
+    <Card className="bg-transparent border-0 ring-0 shadow-none">
+      <CardContent className="flex items-center justify-between gap-3">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
+          {isMobile ? (
+            <Smartphone className="size-4.5" />
+          ) : (
+            <Monitor className="size-4.5" />
+          )}
+        </div>
 
-      <div className="flex flex-col min-w-0">
-        <span className="text-sm font-medium truncate">
-          {ua.browser.name || "Unknown Browser"}
-          {ua.os.name ? `, ${ua.os.name}` : ""}
-        </span>
-
-        {isCurrentSession ? (
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary w-fit">
-            {localization.settings.currentSession}
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm font-medium truncate">
+            {ua.browser.name || "Unknown Browser"}
+            {ua.os.name ? `, ${ua.os.name}` : ""}
           </span>
-        ) : (
-          session.createdAt && (
-            <span className="text-xs text-muted-foreground">
-              {timeAgo(session.createdAt)}
+
+          {isCurrentSession ? (
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary w-fit">
+              {localization.settings.currentSession}
             </span>
-          )
-        )}
-      </div>
+          ) : (
+            session.createdAt && (
+              <span className="text-xs text-muted-foreground">
+                {timeAgo(session.createdAt)}
+              </span>
+            )
+          )}
+        </div>
 
-      <Button
-        className="ml-auto shrink-0"
-        variant="outline"
-        size="sm"
-        onClick={() =>
-          isCurrentSession
-            ? navigate({
-                to: `${basePaths.auth}/${viewPaths.auth.signOut}`
-              })
-            : revokeSession({ token: session.token })
-        }
-        disabled={isRevoking}
-        aria-label={
-          isCurrentSession
+        <Button
+          className="ml-auto shrink-0"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            isCurrentSession
+              ? navigate({
+                  to: `${basePaths.auth}/${viewPaths.auth.signOut}`
+                })
+              : revokeSession({ token: session.token })
+          }
+          disabled={isRevoking}
+          aria-label={
+            isCurrentSession
+              ? localization.auth.signOut
+              : localization.settings.revokeSession
+          }
+        >
+          {isRevoking ? <Spinner /> : isCurrentSession ? <LogOut /> : <X />}
+
+          {isCurrentSession
             ? localization.auth.signOut
-            : localization.settings.revokeSession
-        }
-      >
-        {isRevoking ? <Spinner /> : isCurrentSession ? <LogOut /> : <X />}
-
-        {isCurrentSession
-          ? localization.auth.signOut
-          : localization.settings.revoke}
-      </Button>
-    </div>
+            : localization.settings.revoke}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }
