@@ -12,7 +12,6 @@
       "**",
       "!**/src/routeTree.gen.ts",
       "!**/src/components/ui",
-      "!**/src/components/auth",
       "!auth-schema.ts"
     ]
   },

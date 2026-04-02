@@ -10,12 +10,12 @@ import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
-  FieldLabel
+  FieldGroup
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { Label } from "../ui/label"
 
 export type ForgotPasswordProps = {
   className?: string
@@ -49,18 +49,18 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
   }>({})
 
   return (
-    <Card className={cn("w-full max-w-sm md:py-6", className)}>
-      <CardHeader className="md:px-6">
-        <CardTitle className="text-lg">
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-xl">
           {localization.auth.forgotPassword}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="md:px-6">
+      <CardContent>
         <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field data-invalid={!!fieldErrors.email}>
-              <FieldLabel htmlFor="email">{localization.auth.email}</FieldLabel>
+              <Label htmlFor="email">{localization.auth.email}</Label>
 
               <Input
                 id="email"

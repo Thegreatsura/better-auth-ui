@@ -17,7 +17,6 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
   FieldSeparator
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -52,10 +51,10 @@ export function SignIn({
     emailAndPassword,
     localization,
     magicLink,
-    navigate,
     redirectTo,
     socialProviders,
     viewPaths,
+    navigate,
     Link
   } = useAuth()
 
@@ -92,10 +91,12 @@ export function SignIn({
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) => toast.error(error.error?.message || error.message),
-    onSuccess: async () => {
+    onSuccess: () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
@@ -108,6 +109,7 @@ export function SignIn({
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
@@ -123,12 +125,12 @@ export function SignIn({
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm md:py-6", className)}>
-      <CardHeader className="md:px-6">
-        <CardTitle className="text-lg">{localization.auth.signIn}</CardTitle>
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-xl">{localization.auth.signIn}</CardTitle>
       </CardHeader>
 
-      <CardContent className="md:px-6">
+      <CardContent>
         <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>
@@ -152,9 +154,7 @@ export function SignIn({
             <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Field data-invalid={!!fieldErrors.email}>
-                  <FieldLabel htmlFor="email">
-                    {localization.auth.email}
-                  </FieldLabel>
+                  <Label htmlFor="email">{localization.auth.email}</Label>
 
                   <Input
                     id="email"
@@ -172,6 +172,7 @@ export function SignIn({
                     }}
                     onInvalid={(e) => {
                       e.preventDefault()
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         email: (e.target as HTMLInputElement).validationMessage
@@ -184,9 +185,7 @@ export function SignIn({
                 </Field>
 
                 <Field data-invalid={!!fieldErrors.password}>
-                  <FieldLabel htmlFor="password">
-                    {localization.auth.password}
-                  </FieldLabel>
+                  <Label htmlFor="password">{localization.auth.password}</Label>
 
                   <Input
                     id="password"
@@ -196,6 +195,7 @@ export function SignIn({
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value)
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         password: undefined
