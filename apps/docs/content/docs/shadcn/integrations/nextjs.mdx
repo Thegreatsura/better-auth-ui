@@ -18,16 +18,8 @@ Make sure you've completed the [Quick Start](/docs/shadcn) guide first.
 
 Configure `AuthProvider` with Next.js navigation.
 
-<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
-  <Tab value="Registry">
-```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/components/providers.tsx
-```
-</Tab>
-  <Tab value="Package">
 ```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/components/providers.tsx
 ```
-  </Tab>
-</Tabs>
 
 The `navigate` and `Link` props integrate with Next.js's navigation system. The `navigate` prop accepts `{ to, replace }` options to handle both push and replace navigation.
 
@@ -46,16 +38,8 @@ Wrap your application with the `Providers` component in your root layout.
 
 Create a dynamic auth page that renders the appropriate authentication view based on the path.
 
-<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
-  <Tab value="Registry">
-```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/auth/[path]/page.tsx
-```
-</Tab>
-  <Tab value="Package">
 ```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/auth/[path]/page.tsx
 ```
-</Tab>
-</Tabs>
 
 The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, and `magic-link`.
 
@@ -65,16 +49,8 @@ The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`,
 
 Create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
 
-<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
-  <Tab value="Registry">
-```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/settings/[path]/page.tsx
-```
-</Tab>
-  <Tab value="Package">
 ```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/settings/[path]/page.tsx
 ```
-  </Tab>
-</Tabs>
 
 The `viewPaths.settings` object contains valid settings path segments: `account` and `security`.
 
@@ -85,16 +61,8 @@ The `viewPaths.settings` object contains valid settings path segments: `account`
 
 Use the `useAuthenticate` hook to protect routes and access session data.
 
-<Tabs groupId="shadcn-installation" items={["Registry", "Package"]}>
-  <Tab value="Registry">
-```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-registry-example/src/app/dashboard/page.tsx
-```
-</Tab>
-  <Tab value="Package">
 ```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/dashboard/page.tsx
 ```
-</Tab>
-</Tabs>
 
 The `useAuthenticate` hook will automatically redirect unauthenticated users to the sign-in page.
 

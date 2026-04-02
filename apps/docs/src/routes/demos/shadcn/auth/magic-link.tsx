@@ -4,7 +4,7 @@ export const Route = createFileRoute("/demos/shadcn/auth/magic-link")({
   component: RouteComponent
 })
 
-import { MagicLink } from "@better-auth-ui/shadcn"
+import { MagicLink } from "@/components/auth/magic-link"
 
 function RouteComponent() {
   return (

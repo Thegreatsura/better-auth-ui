@@ -6,7 +6,7 @@ export const Route = createFileRoute(
   component: RouteComponent
 })
 
-import { ManageAccounts } from "@better-auth-ui/shadcn"
+import { ManageAccounts } from "@/components/settings/account/manage-accounts"
 
 function RouteComponent() {
   return (

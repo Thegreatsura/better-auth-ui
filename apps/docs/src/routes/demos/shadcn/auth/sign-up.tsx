@@ -4,7 +4,7 @@ export const Route = createFileRoute("/demos/shadcn/auth/sign-up")({
   component: RouteComponent
 })
 
-import { SignUp } from "@better-auth-ui/shadcn"
+import { SignUp } from "@/components/auth/sign-up"
 
 function RouteComponent() {
   return (

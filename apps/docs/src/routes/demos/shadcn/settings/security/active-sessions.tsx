@@ -6,7 +6,7 @@ export const Route = createFileRoute(
   component: RouteComponent
 })
 
-import { ActiveSessions } from "@better-auth-ui/shadcn"
+import { ActiveSessions } from "@/components/settings/security/active-sessions"
 
 function RouteComponent() {
   return (

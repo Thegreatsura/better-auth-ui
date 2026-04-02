@@ -4,7 +4,7 @@ export const Route = createFileRoute("/demos/shadcn/auth/forgot-password")({
   component: RouteComponent
 })
 
-import { ForgotPassword } from "@better-auth-ui/shadcn"
+import { ForgotPassword } from "@/components/auth/forgot-password"
 
 function RouteComponent() {
   return (
