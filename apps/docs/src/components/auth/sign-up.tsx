@@ -4,7 +4,6 @@ import { useAuth, useSignInSocial, useSignUpEmail } from "@better-auth-ui/react"
 import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -12,7 +11,6 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
   FieldSeparator
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -24,6 +22,7 @@ import {
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { Label } from "../ui/label"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -57,10 +56,10 @@ export function SignUp({
     emailAndPassword,
     localization,
     magicLink,
-    navigate,
     redirectTo,
     socialProviders,
     viewPaths,
+    navigate,
     Link
   } = useAuth()
 
@@ -89,8 +88,10 @@ export function SignUp({
     onError: (error) => toast.error(error.error?.message || error.message),
     onSuccess: async () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
@@ -109,6 +110,7 @@ export function SignUp({
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
     const email = formData.get("email") as string
@@ -127,12 +129,12 @@ export function SignUp({
     emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
 
   return (
-    <Card className={cn("w-full max-w-sm md:py-6", className)}>
-      <CardHeader className="md:px-6">
-        <CardTitle className="text-lg">{localization.auth.signUp}</CardTitle>
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-xl">{localization.auth.signUp}</CardTitle>
       </CardHeader>
 
-      <CardContent className="md:px-6">
+      <CardContent>
         <div className="flex flex-col gap-6">
           {socialPosition === "top" && (
             <>
@@ -145,7 +147,7 @@ export function SignUp({
               )}
 
               {showSeparator && (
-                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card m-0 text-xs flex items-center">
+                <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs flex items-center">
                   {localization.auth.or}
                 </FieldSeparator>
               )}
@@ -156,9 +158,7 @@ export function SignUp({
             <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Field data-invalid={!!fieldErrors.name}>
-                  <FieldLabel htmlFor="name">
-                    {localization.auth.name}
-                  </FieldLabel>
+                  <Label htmlFor="name">{localization.auth.name}</Label>
 
                   <Input
                     id="name"
@@ -176,6 +176,7 @@ export function SignUp({
                     }}
                     onInvalid={(e) => {
                       e.preventDefault()
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         name: (e.target as HTMLInputElement).validationMessage
@@ -188,9 +189,7 @@ export function SignUp({
                 </Field>
 
                 <Field data-invalid={!!fieldErrors.email}>
-                  <FieldLabel htmlFor="email">
-                    {localization.auth.email}
-                  </FieldLabel>
+                  <Label htmlFor="email">{localization.auth.email}</Label>
 
                   <Input
                     id="email"
@@ -208,6 +207,7 @@ export function SignUp({
                     }}
                     onInvalid={(e) => {
                       e.preventDefault()
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         email: (e.target as HTMLInputElement).validationMessage
@@ -220,9 +220,7 @@ export function SignUp({
                 </Field>
 
                 <Field data-invalid={!!fieldErrors.password}>
-                  <FieldLabel htmlFor="password">
-                    {localization.auth.password}
-                  </FieldLabel>
+                  <Label htmlFor="password">{localization.auth.password}</Label>
 
                   <InputGroup>
                     <InputGroupInput
@@ -281,9 +279,9 @@ export function SignUp({
 
                 {emailAndPassword?.confirmPassword && (
                   <Field data-invalid={!!fieldErrors.confirmPassword}>
-                    <FieldLabel htmlFor="confirmPassword">
+                    <Label htmlFor="confirmPassword">
                       {localization.auth.confirmPassword}
-                    </FieldLabel>
+                    </Label>
 
                     <InputGroup>
                       <InputGroupInput
@@ -294,6 +292,7 @@ export function SignUp({
                         value={confirmPassword}
                         onChange={(e) => {
                           setConfirmPassword(e.target.value)
+
                           setFieldErrors((prev) => ({
                             ...prev,
                             confirmPassword: undefined
@@ -308,6 +307,7 @@ export function SignUp({
                         disabled={isPending}
                         onInvalid={(e) => {
                           e.preventDefault()
+
                           setFieldErrors((prev) => ({
                             ...prev,
                             confirmPassword: (e.target as HTMLInputElement)

@@ -4,6 +4,7 @@ import { useAuth, useListSessions, useSession } from "@better-auth-ui/react"
 import { toast } from "sonner"
 
 import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { ActiveSession } from "./active-session"
@@ -31,7 +32,7 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
     }
   })
 
-  const sortedSessions = sessions?.toSorted((session) =>
+  const sortedSessions = [...(sessions ?? [])].sort((session) =>
     session.id === sessionData?.session.id ? -1 : 1
   )
 
@@ -41,16 +42,14 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
         {localization.settings.activeSessions}
       </h2>
 
-      <Card className={cn(className)}>
-        <CardContent>
+      <Card className={cn("p-0", className)}>
+        <CardContent className="p-0">
           {isPending ? (
             <SessionRowSkeleton />
           ) : (
             sortedSessions?.map((session, index) => (
               <div key={session.id}>
-                {index > 0 && (
-                  <div className="border-b border-dashed -mx-4 my-4" />
-                )}
+                {index > 0 && <Separator />}
 
                 <ActiveSession session={session} />
               </div>
@@ -64,15 +63,15 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
 
 function SessionRowSkeleton() {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
+    <Card className="bg-transparent border-0 ring-0 shadow-none">
+      <CardContent className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-md" />
 
         <div className="flex flex-col gap-1">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-3 w-32" />
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

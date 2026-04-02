@@ -30,7 +30,7 @@ export function SwitchAccountMenu() {
   const { data: deviceSessions, isPending } = useListDeviceSessions()
 
   return (
-    <DropdownMenuSubContent className="min-w-40 md:min-w-56 max-w-[48svw]">
+    <DropdownMenuSubContent className="min-w-48 md:min-w-56 max-w-[48svw]">
       <DropdownMenuItem>
         <UserView isPending={isPending} />
 

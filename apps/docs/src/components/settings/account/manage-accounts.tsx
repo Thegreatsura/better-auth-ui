@@ -8,6 +8,7 @@ import {
 import { toast } from "sonner"
 
 import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { ManageAccount } from "./manage-account"
 
@@ -57,13 +58,11 @@ export function ManageAccounts({ className }: ManageAccountsProps) {
         {localization.settings.manageAccounts}
       </h2>
 
-      <Card className={cn(className)}>
-        <CardContent>
+      <Card className={cn("p-0", className)}>
+        <CardContent className="p-0">
           {allRows.map((row, index) => (
             <div key={row.key}>
-              {index > 0 && (
-                <div className="border-b border-dashed -mx-4 my-4" />
-              )}
+              {index > 0 && <Separator />}
 
               <ManageAccount
                 deviceSession={row.deviceSession}

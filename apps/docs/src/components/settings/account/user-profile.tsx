@@ -6,8 +6,9 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -38,6 +39,7 @@ export function UserProfile({ className }: UserProfileProps) {
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     updateUser({ name: formData.get("name") as string })
   }
@@ -50,11 +52,11 @@ export function UserProfile({ className }: UserProfileProps) {
 
       <form onSubmit={handleSubmit}>
         <Card className={cn(className)}>
-          <CardContent className="grid gap-4">
+          <CardContent className="flex flex-col gap-6">
             <ChangeAvatar />
 
             <Field data-invalid={!!fieldErrors.name}>
-              <FieldLabel htmlFor="name">{localization.auth.name}</FieldLabel>
+              <Label htmlFor="name">{localization.auth.name}</Label>
 
               {sessionData ? (
                 <Input
@@ -74,6 +76,7 @@ export function UserProfile({ className }: UserProfileProps) {
                   }}
                   onInvalid={(e) => {
                     e.preventDefault()
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       name: (e.target as HTMLInputElement).validationMessage
@@ -82,7 +85,9 @@ export function UserProfile({ className }: UserProfileProps) {
                   aria-invalid={!!fieldErrors.name}
                 />
               ) : (
-                <Skeleton className="h-8 w-full" />
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
               )}
 
               <FieldError>{fieldErrors.name}</FieldError>

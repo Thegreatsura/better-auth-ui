@@ -17,7 +17,7 @@ export function DangerZone({ className }: DangerZoneProps) {
   const { localization } = useAuth()
 
   return (
-    <div className={cn("flex w-full flex-col", className)}>
+    <div className={cn(className)}>
       <h2 className="text-sm font-semibold mb-3">
         {localization.settings.dangerZone}
       </h2>

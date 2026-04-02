@@ -43,10 +43,6 @@ export function Appearance({ className }: AppearanceProps) {
   } = useAuth()
   const { data: sessionData } = useSession()
 
-  if (!setTheme || !themes?.length) {
-    return null
-  }
-
   return (
     <div>
       <h2 className="text-sm font-semibold mb-3">
@@ -55,74 +51,76 @@ export function Appearance({ className }: AppearanceProps) {
 
       <Card className={cn(className)}>
         <CardContent>
-          <Label className="mb-3">{localization.settings.theme}</Label>
+          <Field>
+            <Label>{localization.settings.theme}</Label>
 
-          <RadioGroup
-            value={sessionData ? theme : ""}
-            onValueChange={setTheme}
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-            disabled={!sessionData || !theme}
-          >
-            {themes.includes("system") && (
-              <FieldLabel htmlFor="system">
-                <Field orientation="horizontal">
-                  <FieldContent className="gap-2">
-                    <div className="flex items-center gap-2 justify-between">
-                      <FieldTitle>
-                        <Monitor className="size-4 text-muted-foreground" />
+            <RadioGroup
+              value={sessionData ? theme : ""}
+              onValueChange={setTheme}
+              className="grid gap-3 grid-cols-2 sm:grid-cols-3"
+              disabled={!sessionData || !theme}
+            >
+              {themes.includes("system") && (
+                <FieldLabel htmlFor="system">
+                  <Field orientation="horizontal">
+                    <FieldContent className="gap-2">
+                      <div className="flex items-center gap-2 justify-between">
+                        <FieldTitle>
+                          <Monitor className="size-4 text-muted-foreground" />
 
-                        {localization.settings.system}
-                      </FieldTitle>
+                          {localization.settings.system}
+                        </FieldTitle>
 
-                      <RadioGroupItem value="system" id="system" />
-                    </div>
+                        <RadioGroupItem value="system" id="system" />
+                      </div>
 
-                    <ThemePreviewSystem className="w-full" />
-                  </FieldContent>
-                </Field>
-              </FieldLabel>
-            )}
+                      <ThemePreviewSystem className="w-full" />
+                    </FieldContent>
+                  </Field>
+                </FieldLabel>
+              )}
 
-            {themes.includes("light") && (
-              <FieldLabel htmlFor="light">
-                <Field orientation="horizontal">
-                  <FieldContent className="gap-2">
-                    <div className="flex items-center gap-2 justify-between">
-                      <FieldTitle>
-                        <Sun className="size-4 text-muted-foreground" />
+              {themes.includes("light") && (
+                <FieldLabel htmlFor="light">
+                  <Field orientation="horizontal">
+                    <FieldContent className="gap-2">
+                      <div className="flex items-center gap-2 justify-between">
+                        <FieldTitle>
+                          <Sun className="size-4 text-muted-foreground" />
 
-                        {localization.settings.light}
-                      </FieldTitle>
+                          {localization.settings.light}
+                        </FieldTitle>
 
-                      <RadioGroupItem value="light" id="light" />
-                    </div>
+                        <RadioGroupItem value="light" id="light" />
+                      </div>
 
-                    <ThemePreviewLight className="w-full" />
-                  </FieldContent>
-                </Field>
-              </FieldLabel>
-            )}
+                      <ThemePreviewLight className="w-full" />
+                    </FieldContent>
+                  </Field>
+                </FieldLabel>
+              )}
 
-            {themes.includes("dark") && (
-              <FieldLabel htmlFor="dark">
-                <Field orientation="horizontal">
-                  <FieldContent className="gap-2">
-                    <div className="flex items-center gap-2 justify-between">
-                      <FieldTitle>
-                        <Moon className="size-4 text-muted-foreground" />
+              {themes.includes("dark") && (
+                <FieldLabel htmlFor="dark">
+                  <Field orientation="horizontal">
+                    <FieldContent className="gap-2">
+                      <div className="flex items-center gap-2 justify-between">
+                        <FieldTitle>
+                          <Moon className="size-4 text-muted-foreground" />
 
-                        {localization.settings.dark}
-                      </FieldTitle>
+                          {localization.settings.dark}
+                        </FieldTitle>
 
-                      <RadioGroupItem value="dark" id="dark" />
-                    </div>
+                        <RadioGroupItem value="dark" id="dark" />
+                      </div>
 
-                    <ThemePreviewDark className="w-full" />
-                  </FieldContent>
-                </Field>
-              </FieldLabel>
-            )}
-          </RadioGroup>
+                      <ThemePreviewDark className="w-full" />
+                    </FieldContent>
+                  </Field>
+                </FieldLabel>
+              )}
+            </RadioGroup>
+          </Field>
         </CardContent>
       </Card>
     </div>

@@ -2,15 +2,15 @@
 
 import {
   useAuth,
-  type useListDeviceSessions,
   useRevokeMultiSession,
   useSession,
   useSetActiveSession
 } from "@better-auth-ui/react"
+import type { Session, User } from "better-auth"
 import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,9 +20,10 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
 
-export type DeviceSession = NonNullable<
-  ReturnType<typeof useListDeviceSessions>["data"]
->[number]
+export type DeviceSession = {
+  session: Session
+  user: User
+}
 
 export type ManageAccountProps = {
   deviceSession?: DeviceSession | null
@@ -61,62 +62,64 @@ export function ManageAccount({
   const isBusy = isSwitching || isRevoking
 
   return (
-    <div className="flex items-center justify-between gap-3">
-      <UserView user={deviceSession?.user} isPending={isPending} />
+    <Card className="bg-transparent border-0 ring-0 shadow-none">
+      <CardContent className="flex items-center justify-between gap-3">
+        <UserView user={deviceSession?.user} isPending={isPending} />
 
-      {deviceSession && isActive && (
-        <Button
-          className="shrink-0"
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            revokeSession({ sessionToken: deviceSession.session.token })
-          }
-          disabled={isBusy}
-        >
-          {isRevoking ? <Spinner /> : <LogOut />}
-          {localization.auth.signOut}
-        </Button>
-      )}
+        {deviceSession && isActive && (
+          <Button
+            className="shrink-0"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              revokeSession({ sessionToken: deviceSession.session.token })
+            }
+            disabled={isBusy}
+          >
+            {isRevoking ? <Spinner /> : <LogOut />}
+            {localization.auth.signOut}
+          </Button>
+        )}
 
-      {deviceSession && !isActive && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="shrink-0"
-              disabled={isBusy}
-            >
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
+        {deviceSession && !isActive && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="shrink-0"
+                disabled={isBusy}
+              >
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="min-w-fit">
-            <DropdownMenuItem
-              onClick={() =>
-                setActiveSession({
-                  sessionToken: deviceSession.session.token
-                })
-              }
-            >
-              <ArrowLeftRight className="text-muted-foreground" />
-              {localization.auth.switchAccount}
-            </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="min-w-fit">
+              <DropdownMenuItem
+                onClick={() =>
+                  setActiveSession({
+                    sessionToken: deviceSession.session.token
+                  })
+                }
+              >
+                <ArrowLeftRight className="text-muted-foreground" />
+                {localization.auth.switchAccount}
+              </DropdownMenuItem>
 
-            <DropdownMenuItem
-              onClick={() =>
-                revokeSession({
-                  sessionToken: deviceSession.session.token
-                })
-              }
-            >
-              <LogOut className="text-muted-foreground" />
-              {localization.auth.signOut}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
-    </div>
+              <DropdownMenuItem
+                onClick={() =>
+                  revokeSession({
+                    sessionToken: deviceSession.session.token
+                  })
+                }
+              >
+                <LogOut className="text-muted-foreground" />
+                {localization.auth.signOut}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </CardContent>
+    </Card>
   )
 }

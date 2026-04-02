@@ -13,7 +13,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
   InputGroup,
@@ -21,6 +21,7 @@ import {
   InputGroupButton,
   InputGroupInput
 } from "@/components/ui/input-group"
+import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -63,7 +64,7 @@ export function ChangePassword({ className }: ChangePasswordProps) {
 
 function SetPassword({ className }: { className?: string }) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
     onError: (error) => toast.error(error.error?.message || error.message),
@@ -71,8 +72,9 @@ function SetPassword({ className }: { className?: string }) {
   })
 
   const handleSetPassword = () => {
-    if (!sessionData?.user.email) return
-    requestPasswordReset({ email: sessionData.user.email })
+    if (!session) return
+
+    requestPasswordReset({ email: session.user.email })
   }
 
   return (
@@ -95,10 +97,11 @@ function SetPassword({ className }: { className?: string }) {
 
           <Button
             size="sm"
-            disabled={isPending || !sessionData}
+            disabled={isPending || !session}
             onClick={handleSetPassword}
           >
             {isPending && <Spinner />}
+
             {localization.auth.sendResetLink}
           </Button>
         </CardContent>
@@ -173,11 +176,11 @@ function ChangePasswordForm({
 
       <form onSubmit={handleSubmit}>
         <Card className={cn(className)}>
-          <CardContent className="grid gap-4">
+          <CardContent className="flex flex-col gap-6">
             <Field data-invalid={!!fieldErrors.currentPassword}>
-              <FieldLabel htmlFor="currentPassword">
+              <Label htmlFor="currentPassword">
                 {localization.settings.currentPassword}
-              </FieldLabel>
+              </Label>
 
               {sessionData ? (
                 <Input
@@ -189,6 +192,7 @@ function ChangePasswordForm({
                   value={currentPassword}
                   onChange={(e) => {
                     setCurrentPassword(e.target.value)
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       currentPassword: undefined
@@ -198,6 +202,7 @@ function ChangePasswordForm({
                   required
                   onInvalid={(e) => {
                     e.preventDefault()
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       currentPassword: (e.target as HTMLInputElement)
@@ -207,16 +212,18 @@ function ChangePasswordForm({
                   aria-invalid={!!fieldErrors.currentPassword}
                 />
               ) : (
-                <Skeleton className="h-8 w-full" />
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
               )}
 
               <FieldError>{fieldErrors.currentPassword}</FieldError>
             </Field>
 
             <Field data-invalid={!!fieldErrors.newPassword}>
-              <FieldLabel htmlFor="newPassword">
+              <Label htmlFor="newPassword">
                 {localization.auth.newPassword}
-              </FieldLabel>
+              </Label>
 
               {sessionData ? (
                 <InputGroup>
@@ -229,6 +236,7 @@ function ChangePasswordForm({
                     value={newPassword}
                     onChange={(e) => {
                       setNewPassword(e.target.value)
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         newPassword: undefined
@@ -267,7 +275,9 @@ function ChangePasswordForm({
                   </InputGroupAddon>
                 </InputGroup>
               ) : (
-                <Skeleton className="h-8 w-full" />
+                <Skeleton>
+                  <Input className="invisible" />
+                </Skeleton>
               )}
 
               <FieldError>{fieldErrors.newPassword}</FieldError>
@@ -275,9 +285,9 @@ function ChangePasswordForm({
 
             {emailAndPassword.confirmPassword && (
               <Field data-invalid={!!fieldErrors.confirmPassword}>
-                <FieldLabel htmlFor="confirmPassword">
+                <Label htmlFor="confirmPassword">
                   {localization.auth.confirmPassword}
-                </FieldLabel>
+                </Label>
 
                 {sessionData ? (
                   <InputGroup>
@@ -290,6 +300,7 @@ function ChangePasswordForm({
                       value={confirmPassword}
                       onChange={(e) => {
                         setConfirmPassword(e.target.value)
+
                         setFieldErrors((prev) => ({
                           ...prev,
                           confirmPassword: undefined
@@ -301,6 +312,7 @@ function ChangePasswordForm({
                       required
                       onInvalid={(e) => {
                         e.preventDefault()
+
                         setFieldErrors((prev) => ({
                           ...prev,
                           confirmPassword: (e.target as HTMLInputElement)
@@ -328,7 +340,9 @@ function ChangePasswordForm({
                     </InputGroupAddon>
                   </InputGroup>
                 ) : (
-                  <Skeleton className="h-8 w-full" />
+                  <Skeleton>
+                    <Input className="invisible" />
+                  </Skeleton>
                 )}
 
                 <FieldError>{fieldErrors.confirmPassword}</FieldError>

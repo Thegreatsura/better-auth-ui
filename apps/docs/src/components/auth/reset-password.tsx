@@ -11,8 +11,7 @@ import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
-  FieldLabel
+  FieldGroup
 } from "@/components/ui/field"
 import {
   InputGroup,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { Label } from "../ui/label"
 
 export type ResetPasswordProps = {
   className?: string
@@ -101,20 +101,18 @@ export function ResetPassword({ className }: ResetPasswordProps) {
   }
 
   return (
-    <Card className={cn("w-full max-w-sm md:py-6", className)}>
-      <CardHeader className="md:px-6">
-        <CardTitle className="text-lg">
+    <Card className={cn("w-full max-w-sm", className)}>
+      <CardHeader>
+        <CardTitle className="text-xl">
           {localization.auth.resetPassword}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="md:px-6">
+      <CardContent>
         <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field data-invalid={!!fieldErrors.password}>
-              <FieldLabel htmlFor="password">
-                {localization.auth.password}
-              </FieldLabel>
+              <Label htmlFor="password">{localization.auth.password}</Label>
 
               <InputGroup>
                 <InputGroupInput
@@ -135,6 +133,7 @@ export function ResetPassword({ className }: ResetPasswordProps) {
                   }}
                   onInvalid={(e) => {
                     e.preventDefault()
+
                     setFieldErrors((prev) => ({
                       ...prev,
                       password: (e.target as HTMLInputElement).validationMessage
@@ -169,9 +168,9 @@ export function ResetPassword({ className }: ResetPasswordProps) {
 
             {emailAndPassword?.confirmPassword && (
               <Field data-invalid={!!fieldErrors.confirmPassword}>
-                <FieldLabel htmlFor="confirmPassword">
+                <Label htmlFor="confirmPassword">
                   {localization.auth.confirmPassword}
-                </FieldLabel>
+                </Label>
 
                 <InputGroup>
                   <InputGroupInput
@@ -192,6 +191,7 @@ export function ResetPassword({ className }: ResetPasswordProps) {
                     }}
                     onInvalid={(e) => {
                       e.preventDefault()
+
                       setFieldErrors((prev) => ({
                         ...prev,
                         confirmPassword: (e.target as HTMLInputElement)

@@ -2,14 +2,25 @@
 
 import { useAuth, useDeleteUser, useListAccounts } from "@better-auth-ui/react"
 import { TriangleAlert } from "lucide-react"
-import { AlertDialog } from "radix-ui"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 
@@ -25,8 +36,8 @@ export function DeleteUser({ className }: DeleteUserProps) {
     basePaths,
     deleteUser: deleteUserConfig,
     localization,
-    navigate,
-    viewPaths
+    viewPaths,
+    navigate
   } = useAuth()
 
   const { data: accounts } = useListAccounts()
@@ -77,7 +88,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
 
   return (
     <Card className={cn("border-destructive", className)}>
-      <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium leading-tight">
             {localization.settings.deleteUser}
@@ -88,79 +99,65 @@ export function DeleteUser({ className }: DeleteUserProps) {
           </p>
         </div>
 
-        <AlertDialog.Root
-          open={confirmOpen}
-          onOpenChange={handleDialogOpenChange}
-        >
-          <AlertDialog.Trigger asChild>
+        <AlertDialog open={confirmOpen} onOpenChange={handleDialogOpenChange}>
+          <AlertDialogTrigger asChild>
             <Button variant="destructive" size="sm" disabled={!accounts}>
               {localization.settings.deleteUser}
             </Button>
-          </AlertDialog.Trigger>
+          </AlertDialogTrigger>
 
-          <AlertDialog.Portal>
-            <AlertDialog.Overlay className="fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <AlertDialogContent>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <AlertDialogHeader>
+                <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+                  <TriangleAlert />
+                </AlertDialogMedia>
 
-            <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:max-w-md">
-              <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-                      <TriangleAlert className="size-4" />
-                    </div>
+                <AlertDialogTitle>
+                  {localization.settings.deleteUser}
+                </AlertDialogTitle>
 
-                    <AlertDialog.Title className="text-base font-semibold">
-                      {localization.settings.deleteUser}
-                    </AlertDialog.Title>
-                  </div>
+                <AlertDialogDescription>
+                  {localization.settings.deleteUserDescription}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
 
-                  <AlertDialog.Description className="text-sm text-muted-foreground">
-                    {localization.settings.deleteUserDescription}
-                  </AlertDialog.Description>
-                </div>
+              {needsPassword && (
+                <Field>
+                  <Label htmlFor="delete-password">
+                    {localization.auth.password}
+                  </Label>
 
-                {needsPassword && (
-                  <Field className="mt-4">
-                    <FieldLabel htmlFor="delete-password">
-                      {localization.auth.password}
-                    </FieldLabel>
-
-                    <Input
-                      id="delete-password"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      placeholder={localization.auth.passwordPlaceholder}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      disabled={isPending}
-                      required
-                    />
-
-                    <FieldError />
-                  </Field>
-                )}
-
-                <div className="mt-4 flex justify-end gap-2">
-                  <AlertDialog.Cancel asChild>
-                    <Button variant="outline" disabled={isPending}>
-                      {localization.settings.cancel}
-                    </Button>
-                  </AlertDialog.Cancel>
-
-                  <Button
-                    type="submit"
-                    variant="destructive"
+                  <Input
+                    id="delete-password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder={localization.auth.passwordPlaceholder}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     disabled={isPending}
-                  >
-                    {isPending && <Spinner />}
-                    {localization.settings.deleteUser}
-                  </Button>
-                </div>
-              </form>
-            </AlertDialog.Content>
-          </AlertDialog.Portal>
-        </AlertDialog.Root>
+                    required
+                  />
+
+                  <FieldError />
+                </Field>
+              )}
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  {localization.settings.cancel}
+                </AlertDialogCancel>
+
+                <AlertDialogAction variant="destructive">
+                  {isPending && <Spinner />}
+
+                  {localization.settings.deleteUser}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   )

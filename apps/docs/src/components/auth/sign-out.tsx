@@ -23,6 +23,7 @@ export function SignOut({ className }: SignOutProps) {
   const { mutate: signOut } = useSignOut({
     onError: (error) => {
       toast.error(error.error?.message || error.message)
+
       navigate({
         to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
         replace: true
