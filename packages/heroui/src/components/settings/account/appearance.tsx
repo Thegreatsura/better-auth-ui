@@ -55,35 +55,38 @@ export function Appearance({
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
+          <Label>{localization.settings.theme}</Label>
+
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
             value={sessionData ? theme : ""}
             onChange={setTheme}
             isDisabled={!sessionData || !theme}
           >
-            <Label className="mb-1">{localization.settings.theme}</Label>
-
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-2 sm:grid-cols-3">
               {themes.includes("system") && (
                 <Radio
                   value="system"
                   className={cn(
+                    "mt-0 px-4 pb-4 pt-3 rounded-xl",
+                    "border border-transparent data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10",
                     variant === "transparent"
                       ? "bg-surface"
-                      : "bg-surface-secondary",
-                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                      : "bg-surface-secondary"
                   )}
                 >
-                  <Radio.Control className="absolute top-3 right-3 size-5">
-                    <Radio.Indicator />
-                  </Radio.Control>
+                  <Radio.Content className="gap-2">
+                    <div className="flex gap-2 justify-between">
+                      <Label className="flex gap-2 items-center">
+                        <Display className="text-muted" />
+                        {localization.settings.system}
+                      </Label>
 
-                  <Radio.Content className="flex flex-col gap-3">
-                    <Label className="flex gap-2 items-center">
-                      <Display className="text-muted" />
-                      {localization.settings.system}
-                    </Label>
+                      <Radio.Control>
+                        <Radio.Indicator />
+                      </Radio.Control>
+                    </div>
 
                     <ThemePreviewSystem className="w-full" />
                   </Radio.Content>
@@ -94,22 +97,25 @@ export function Appearance({
                 <Radio
                   value="light"
                   className={cn(
+                    "mt-0 px-4 pb-4 pt-3 rounded-xl",
+                    "border border-transparent data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10",
                     variant === "transparent"
                       ? "bg-surface"
-                      : "bg-surface-secondary",
-                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                      : "bg-surface-secondary"
                   )}
                 >
-                  <Radio.Control className="absolute top-3 right-3 size-5">
-                    <Radio.Indicator />
-                  </Radio.Control>
+                  <Radio.Content className="gap-2">
+                    <div className="flex gap-2 justify-between">
+                      <Label className="flex gap-2 items-center">
+                        <Sun className="text-muted" />
+                        {localization.settings.light}
+                      </Label>
 
-                  <Radio.Content className="flex flex-col gap-3">
-                    <Label className="flex gap-2 items-center">
-                      <Sun className="text-muted" />
-                      {localization.settings.light}
-                    </Label>
+                      <Radio.Control>
+                        <Radio.Indicator />
+                      </Radio.Control>
+                    </div>
 
                     <ThemePreviewLight className="w-full" />
                   </Radio.Content>
@@ -120,22 +126,25 @@ export function Appearance({
                 <Radio
                   value="dark"
                   className={cn(
+                    "mt-0 px-4 pb-4 pt-3 rounded-xl",
+                    "border border-transparent data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
+                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10",
                     variant === "transparent"
                       ? "bg-surface"
-                      : "bg-surface-secondary",
-                    "mt-0 group relative flex-col gap-4 rounded-xl border border-transparent px-5 py-4 transition-all data-[selected=true]:border-accent data-[selected=true]:bg-accent/10",
-                    "data-[focus-visible=true]:border-accent data-[focus-visible=true]:bg-accent/10"
+                      : "bg-surface-secondary"
                   )}
                 >
-                  <Radio.Control className="absolute top-3 right-3 size-5">
-                    <Radio.Indicator />
-                  </Radio.Control>
+                  <Radio.Content className="gap-2">
+                    <div className="flex gap-2 justify-between">
+                      <Label className="flex gap-2 items-center">
+                        <Moon className="text-muted" />
+                        {localization.settings.dark}
+                      </Label>
 
-                  <Radio.Content className="flex flex-col gap-3">
-                    <Label className="flex gap-2 items-center">
-                      <Moon className="text-muted" />
-                      {localization.settings.dark}
-                    </Label>
+                      <Radio.Control>
+                        <Radio.Indicator />
+                      </Radio.Control>
+                    </div>
 
                     <ThemePreviewDark className="w-full" />
                   </Radio.Content>
