@@ -81,7 +81,7 @@ export function ActiveSession({ session }: ActiveSessionProps) {
           </Chip>
         ) : (
           session.createdAt && (
-            <span className="text-xs text-muted">
+            <span className="text-xs text-muted capitalize">
               {timeAgo(session.createdAt)}
             </span>
           )
