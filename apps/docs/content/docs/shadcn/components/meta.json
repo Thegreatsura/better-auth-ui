@@ -27,6 +27,7 @@
     "settings/security/change-password",
     "settings/security/linked-accounts",
     "settings/security/active-sessions",
+    "settings/security/danger-zone",
     "---Email---",
     "email/email-verification-email",
     "email/magic-link-email",
