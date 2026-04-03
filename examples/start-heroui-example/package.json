@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "^0.6.0",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@better-auth-ui/heroui": "*",
-    "@heroui/react": "^3.0.1",
-    "@heroui/styles": "^3.0.1",
+    "@heroui/react": "^3.0.2",
+    "@heroui/styles": "^3.0.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-devtools": "^0.10.1",
     "@tanstack/react-router": "^1.168.10",
