@@ -3,8 +3,8 @@ export const localization = {
     /** @remarks `"Account"` */
     account: "Account",
 
-    /** @remarks `"Add account"` */
-    addAccount: "Add account",
+    /** @remarks `"Add Account"` */
+    addAccount: "Add Account",
 
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
@@ -24,8 +24,8 @@ export const localization = {
     /** @remarks `"Enter your email"` */
     emailPlaceholder: "Enter your email",
 
-    /** @remarks `"Forgot password"` */
-    forgotPassword: "Forgot password",
+    /** @remarks `"Forgot Password"` */
+    forgotPassword: "Forgot Password",
 
     /** @remarks `"Forgot password?"` */
     forgotPasswordLink: "Forgot password?",
@@ -84,8 +84,8 @@ export const localization = {
     /** @remarks `"Resend"` */
     resend: "Resend",
 
-    /** @remarks `"Reset password"` */
-    resetPassword: "Reset password",
+    /** @remarks `"Reset Password"` */
+    resetPassword: "Reset Password",
 
     /** @remarks `"Send Magic Link"` */
     sendMagicLink: "Send Magic Link",
@@ -96,17 +96,17 @@ export const localization = {
     /** @remarks `"Show password"` */
     showPassword: "Show password",
 
-    /** @remarks `"Sign in"` */
-    signIn: "Sign in",
+    /** @remarks `"Sign In"` */
+    signIn: "Sign In",
 
-    /** @remarks `"Sign out"` */
-    signOut: "Sign out",
+    /** @remarks `"Sign Out"` */
+    signOut: "Sign Out",
 
-    /** @remarks `"Sign up"` */
-    signUp: "Sign up",
+    /** @remarks `"Sign Up"` */
+    signUp: "Sign Up",
 
-    /** @remarks `"Switch account"` */
-    switchAccount: "Switch account",
+    /** @remarks `"Switch Account"` */
+    switchAccount: "Switch Account",
 
     /** @remarks `"Verification email sent!"` */
     verificationEmailSent: "Verification email sent!",

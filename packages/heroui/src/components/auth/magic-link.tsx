@@ -10,7 +10,6 @@ import {
   cn,
   Description,
   FieldError,
-  Fieldset,
   Form,
   Input,
   Label,
@@ -71,10 +70,12 @@ export function MagicLink({
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: async () => {
+    onSuccess: () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
@@ -85,7 +86,7 @@ export function MagicLink({
     signInMagicLink({ email, callbackURL: `${baseURL}${redirectTo}` })
   }
 
-  const showSeparator = socialProviders && socialProviders.length > 0
+  const showSeparator = !!socialProviders?.length
 
   return (
     <Card
@@ -93,86 +94,88 @@ export function MagicLink({
       variant={variant}
       {...props}
     >
-      <Card.Content>
-        <Fieldset className="gap-4">
-          <Label className="text-xl">{localization.auth.signIn}</Label>
+      <Card.Header>
+        <Card.Title className="text-xl font-semibold mb-1">
+          {localization.auth.signIn}
+        </Card.Title>
+      </Card.Header>
 
-          {socialPosition === "top" && (
-            <>
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  signInSocial={signInSocial}
-                  isPending={isPending}
-                />
-              )}
+      <Card.Content className="gap-4">
+        {socialPosition === "top" && (
+          <>
+            {!!socialProviders?.length && (
+              <ProviderButtons
+                socialLayout={socialLayout}
+                signInSocial={signInSocial}
+                isPending={isPending}
+              />
+            )}
 
-              {showSeparator && (
-                <FieldSeparator>{localization.auth.or}</FieldSeparator>
-              )}
-            </>
-          )}
+            {showSeparator && (
+              <FieldSeparator>{localization.auth.or}</FieldSeparator>
+            )}
+          </>
+        )}
 
-          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Fieldset.Group>
-              <TextField
-                name="email"
-                type="email"
-                autoComplete="email"
-                isDisabled={isPending}
-                value={email}
-                onChange={setEmail}
-              >
-                <Label>{localization.auth.email}</Label>
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <TextField
+            name="email"
+            type="email"
+            autoComplete="email"
+            isDisabled={isPending}
+            value={email}
+            onChange={setEmail}
+          >
+            <Label>{localization.auth.email}</Label>
 
-                <Input
-                  placeholder={localization.auth.emailPlaceholder}
-                  required
-                  variant={variant === "transparent" ? "primary" : "secondary"}
-                />
+            <Input
+              placeholder={localization.auth.emailPlaceholder}
+              required
+              variant={variant === "transparent" ? "primary" : "secondary"}
+            />
 
-                <FieldError className="text-wrap" />
-              </TextField>
-            </Fieldset.Group>
+            <FieldError />
+          </TextField>
 
-            <Fieldset.Actions className="flex-col gap-3">
-              <Button type="submit" className="w-full" isPending={isPending}>
-                {isPending && <Spinner color="current" size="sm" />}
+          <div className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" isPending={isPending}>
+              {isPending && <Spinner color="current" size="sm" />}
 
-                {localization.auth.sendMagicLink}
-              </Button>
+              {localization.auth.sendMagicLink}
+            </Button>
 
-              <MagicLinkButton view="magicLink" isPending={isPending} />
-            </Fieldset.Actions>
-          </Form>
+            <MagicLinkButton view="magicLink" isPending={isPending} />
+          </div>
+        </Form>
 
-          {socialPosition === "bottom" && (
-            <>
-              {showSeparator && (
-                <FieldSeparator>{localization.auth.or}</FieldSeparator>
-              )}
+        {socialPosition === "bottom" && (
+          <>
+            {showSeparator && (
+              <FieldSeparator>{localization.auth.or}</FieldSeparator>
+            )}
 
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  signInSocial={signInSocial}
-                  isPending={isPending}
-                />
-              )}
-            </>
-          )}
-
-          <Description className="text-center text-sm">
-            {localization.auth.needToCreateAnAccount}{" "}
-            <Link
-              href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-              className="text-accent decoration-accent no-underline hover:underline"
-            >
-              {localization.auth.signUp}
-            </Link>
-          </Description>
-        </Fieldset>
+            {!!socialProviders?.length && (
+              <ProviderButtons
+                socialLayout={socialLayout}
+                signInSocial={signInSocial}
+                isPending={isPending}
+              />
+            )}
+          </>
+        )}
       </Card.Content>
+
+      <Card.Footer className="flex-col">
+        <Description className="text-sm">
+          {localization.auth.needToCreateAnAccount}{" "}
+          <Link
+            href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+            className="text-accent decoration-accent no-underline hover:underline"
+          >
+            {localization.auth.signUp}
+          </Link>
+        </Description>
+      </Card.Footer>
     </Card>
   )
 }
