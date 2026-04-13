@@ -14,13 +14,7 @@ import {
 } from "@tanstack/react-query"
 import { type PropsWithChildren, useContext } from "react"
 
-const fallbackQueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: undefined
-    }
-  }
-})
+const fallbackQueryClient = new QueryClient()
 
 const baseAuthConfig: AnyAuthConfig = {
   ...defaultAuthConfig,
