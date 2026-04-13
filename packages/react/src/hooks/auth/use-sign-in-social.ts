@@ -18,5 +18,6 @@ export function useSignInSocial(
   options?: UseAuthMutationOptions<AuthClient["signIn"]["social"]>
 ) {
   const { authClient } = useAuth()
+
   return useAuthMutation({ authFn: authClient.signIn.social, options })
 }

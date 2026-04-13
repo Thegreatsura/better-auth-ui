@@ -47,7 +47,7 @@ export type ActiveSessionProps = {
  */
 export function ActiveSession({ session }: ActiveSessionProps) {
   const { basePaths, localization, viewPaths, navigate } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: sessionData } = useSession({ refetchOnMount: false })
 
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession({
     onError: (error) => toast.danger(error.error?.message || error.message),

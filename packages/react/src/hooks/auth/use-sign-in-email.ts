@@ -20,7 +20,7 @@ export function useSignInEmail(
   options?: UseAuthMutationOptions<AuthClient["signIn"]["email"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch } = useSession()
+  const { refetch } = useSession({ refetchOnMount: false })
 
   return useAuthMutation({
     authFn: authClient.signIn.email,

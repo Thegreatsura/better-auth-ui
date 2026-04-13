@@ -18,7 +18,7 @@ export function useChangeEmail(
   options?: UseAuthMutationOptions<AuthClient["changeEmail"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch } = useSession()
+  const { refetch } = useSession({ refetchOnMount: false })
 
   return useAuthMutation({
     authFn: authClient.changeEmail,

@@ -16,5 +16,6 @@ export function useDeleteUser(
   options?: UseAuthMutationOptions<AuthClient["deleteUser"]>
 ) {
   const { authClient } = useAuth()
+
   return useAuthMutation({ authFn: authClient.deleteUser, options })
 }
