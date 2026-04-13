@@ -14,12 +14,12 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.4.10",
-    "@nx/js": "22.6.4",
+    "@biomejs/biome": "2.4.11",
+    "@nx/js": "22.6.5",
     "@swc-node/register": "~1.11.1",
-    "@swc/core": "~1.15.21",
+    "@swc/core": "~1.15.24",
     "@swc/helpers": "~0.5.21",
-    "nx": "22.6.4",
+    "nx": "22.6.5",
     "typescript": "^6.0.2"
   }
 }

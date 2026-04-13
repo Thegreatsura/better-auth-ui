@@ -17,7 +17,7 @@ import { type PropsWithChildren, useContext } from "react"
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000
+      staleTime: undefined
     }
   }
 })
