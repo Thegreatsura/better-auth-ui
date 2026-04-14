@@ -41,13 +41,13 @@ Built with **shadcn/ui** and **HeroUI**. Drop in and go.
 ### shadcn/ui
 
 ```bash
-bunx shadcn@latest add https://better-auth-ui.com/r/auth.json
+bun x shadcn@latest add https://better-auth-ui.com/r/auth.json
 ```
 
 ### HeroUI
 
 ```bash
-bunx install @better-auth-ui/heroui
+bun add @better-auth-ui/heroui@latest
 ```
 
 ## License

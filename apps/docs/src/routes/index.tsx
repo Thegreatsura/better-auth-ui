@@ -114,7 +114,7 @@ function Home() {
               <div className="flex min-w-0 items-center gap-2">
                 <span className="shrink-0 text-orange-500">$</span>
                 <span className="truncate text-neutral-600 dark:text-neutral-400">
-                  bunx shadcn@latest add https://better-auth-ui.com/r/auth.json
+                  bun x shadcn@latest add https://better-auth-ui.com/r/auth.json
                 </span>
               </div>
               <span className="shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-600 dark:group-hover:text-neutral-400">
@@ -133,7 +133,7 @@ function Home() {
               <div className="flex min-w-0 items-center gap-2">
                 <span className="shrink-0 text-orange-500">$</span>
                 <span className="truncate text-neutral-600 dark:text-neutral-400">
-                  bun add @better-auth-ui/heroui
+                  bun add @better-auth-ui/heroui@latest
                 </span>
               </div>
               <span className="shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-600 dark:group-hover:text-neutral-400">
