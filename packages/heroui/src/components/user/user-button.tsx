@@ -61,12 +61,10 @@ export function UserButton({
     viewPaths,
     localization,
     multiSession,
-    settings: {
-      appearance: { theme, setTheme, themes }
-    }
+    appearance: { theme, setTheme, themes }
   } = useAuth()
 
-  const { data: sessionData, isPending: sessionPending } = useSession()
+  const { data: session, isPending: sessionPending } = useSession()
 
   return (
     <Dropdown>
@@ -82,7 +80,7 @@ export function UserButton({
             className
           )}
         >
-          {sessionData || sessionPending ? (
+          {session || sessionPending ? (
             <UserView isPending={sessionPending} />
           ) : (
             <>
@@ -100,14 +98,14 @@ export function UserButton({
         placement={placement}
         className="min-w-40 md:min-w-56 max-w-[48svw]"
       >
-        {sessionData && (
+        {session && (
           <div className="px-3 pt-3 pb-1">
             <UserView />
           </div>
         )}
 
         <Dropdown.Menu>
-          {sessionData ? (
+          {session ? (
             <>
               <Dropdown.Item
                 textValue={localization.settings.settings}

@@ -20,7 +20,7 @@ import { UserView } from "./user-view"
  */
 export function SwitchAccountMenu() {
   const { basePaths, viewPaths, localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const { data: deviceSessions, isPending } = useListDeviceSessions({
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
@@ -39,8 +39,7 @@ export function SwitchAccountMenu() {
 
         {deviceSessions
           ?.filter(
-            (deviceSession) =>
-              deviceSession.session.id !== sessionData?.session?.id
+            (deviceSession) => deviceSession.session.id !== session?.session?.id
           )
           .map((deviceSession) => (
             <SwitchAccountItem

@@ -19,9 +19,9 @@ export function useSetActiveSession(
   const queryClient = useQueryClient()
   const { authClient } = useAuth()
 
-  const { refetch: refetchSession } = useSession()
+  const { refetch: refetchSession } = useSession({ refetchOnMount: false })
   const { data: deviceSessions, refetch: refetchDeviceSessions } =
-    useListDeviceSessions()
+    useListDeviceSessions({ refetchOnMount: false })
 
   return useAuthMutation({
     authFn: authClient.multiSession.setActive,

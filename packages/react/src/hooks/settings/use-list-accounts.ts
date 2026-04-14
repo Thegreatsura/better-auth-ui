@@ -14,13 +14,13 @@ export function useListAccounts(
   options?: Partial<UseAuthQueryOptions<AuthClient["listAccounts"]>>
 ) {
   const { authClient } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession({ refetchOnMount: false })
 
   return useAuthQuery({
     authFn: authClient.listAccounts,
     options: {
-      queryKey: ["auth", "listAccounts", sessionData?.user.id],
-      enabled: !!sessionData,
+      queryKey: ["auth", "listAccounts", session?.user.id],
+      enabled: !!session,
       ...options
     }
   })

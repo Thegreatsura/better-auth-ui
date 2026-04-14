@@ -6,7 +6,7 @@ export const Route = createFileRoute(
   component: RouteComponent
 })
 
-import { Appearance } from "@better-auth-ui/shadcn"
+import { Appearance } from "@/components/settings/account/appearance"
 
 function RouteComponent() {
   return (

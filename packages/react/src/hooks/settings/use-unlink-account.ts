@@ -16,7 +16,7 @@ export function useUnlinkAccount(
   options?: UseAuthMutationOptions<AuthClient["unlinkAccount"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch } = useListAccounts()
+  const { refetch } = useListAccounts({ refetchOnMount: false })
 
   return useAuthMutation({
     authFn: authClient.unlinkAccount,

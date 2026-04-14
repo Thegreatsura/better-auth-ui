@@ -51,10 +51,10 @@ export function SignIn({
     emailAndPassword,
     localization,
     magicLink,
-    navigate,
     redirectTo,
     socialProviders,
-    viewPaths
+    viewPaths,
+    navigate
   } = useAuth()
 
   const [password, setPassword] = useState("")
@@ -90,15 +90,18 @@ export function SignIn({
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: async () => {
+    onSuccess: () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
@@ -112,8 +115,7 @@ export function SignIn({
 
   const isPending = signInPending || socialPending || socialRedirecting
 
-  const showSeparator =
-    emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
+  const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
   return (
     <Card
@@ -122,7 +124,7 @@ export function SignIn({
       {...props}
     >
       <Card.Header>
-        <Card.Title className="text-xl mb-1">
+        <Card.Title className="text-xl font-semibold mb-1">
           {localization.auth.signIn}
         </Card.Title>
       </Card.Header>
@@ -130,7 +132,7 @@ export function SignIn({
       <Card.Content className="gap-4">
         {socialPosition === "top" && (
           <>
-            {socialProviders && socialProviders.length > 0 && (
+            {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
                 signInSocial={signInSocial}
@@ -160,7 +162,7 @@ export function SignIn({
                 required
               />
 
-              <FieldError className="text-wrap" />
+              <FieldError />
             </TextField>
 
             <TextField
@@ -181,7 +183,7 @@ export function SignIn({
                 required
               />
 
-              <FieldError className="text-wrap" />
+              <FieldError />
             </TextField>
 
             {emailAndPassword?.rememberMe && (
@@ -220,7 +222,7 @@ export function SignIn({
               <FieldSeparator>{localization.auth.or}</FieldSeparator>
             )}
 
-            {socialProviders && socialProviders.length > 0 && (
+            {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
                 signInSocial={signInSocial}
@@ -235,14 +237,14 @@ export function SignIn({
         {emailAndPassword?.forgotPassword && (
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
-            className="no-underline hover:underline self-center"
+            className="no-underline hover:underline"
           >
             {localization.auth.forgotPasswordLink}
           </Link>
         )}
 
         {emailAndPassword?.enabled && (
-          <Description className="justify-center text-sm">
+          <Description className="text-sm">
             {localization.auth.needToCreateAnAccount}{" "}
             <Link
               href={`${basePaths.auth}/${viewPaths.auth.signUp}`}

@@ -9,8 +9,8 @@ export const localization = {
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
 
-    /** @remarks `"Confirm Password"` */
-    confirmPassword: "Confirm Password",
+    /** @remarks `"Confirm password"` */
+    confirmPassword: "Confirm password",
 
     /** @remarks `"Confirm your password"` */
     confirmPasswordPlaceholder: "Confirm your password",
@@ -51,8 +51,8 @@ export const localization = {
     /** @remarks `"Need to create an account?"` */
     needToCreateAnAccount: "Need to create an account?",
 
-    /** @remarks `"New Password"` */
-    newPassword: "New Password",
+    /** @remarks `"New password"` */
+    newPassword: "New password",
 
     /** @remarks `"Enter your new password"` */
     newPasswordPlaceholder: "Enter your new password",
@@ -90,8 +90,8 @@ export const localization = {
     /** @remarks `"Send Magic Link"` */
     sendMagicLink: "Send Magic Link",
 
-    /** @remarks `"Send Reset Link"` */
-    sendResetLink: "Send Reset Link",
+    /** @remarks `"Send reset link"` */
+    sendResetLink: "Send reset link",
 
     /** @remarks `"Show password"` */
     showPassword: "Show password",
@@ -130,8 +130,8 @@ export const localization = {
     /** @remarks `"Avatar"` */
     avatar: "Avatar",
 
-    /** @remarks `"Current Session"` */
-    currentSession: "Current Session",
+    /** @remarks `"Current session"` */
+    currentSession: "Current session",
 
     /** @remarks `"Avatar changed successfully"` */
     avatarChangedSuccess: "Avatar changed successfully",
@@ -172,8 +172,8 @@ export const localization = {
     /** @remarks `"Password changed successfully"` */
     changePasswordSuccess: "Password changed successfully",
 
-    /** @remarks `"Current Password"` */
-    currentPassword: "Current Password",
+    /** @remarks `"Current password"` */
+    currentPassword: "Current password",
 
     /** @remarks `"Enter your current password"` */
     currentPasswordPlaceholder: "Enter your current password",
@@ -212,8 +212,8 @@ export const localization = {
     /** @remarks `"Revoke"` */
     revoke: "Revoke",
 
-    /** @remarks `"Revoke Session"` */
-    revokeSession: "Revoke Session",
+    /** @remarks `"Revoke session"` */
+    revokeSession: "Revoke session",
 
     /** @remarks `"Session revoked successfully"` */
     revokeSessionSuccess: "Session revoked successfully",

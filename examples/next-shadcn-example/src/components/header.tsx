@@ -1,7 +1,7 @@
-import { UserButton } from "@better-auth-ui/shadcn"
 import Link from "next/link"
 
 import { Logo } from "./logo"
+import { UserButton } from "./user/user-button"
 
 export function Header() {
   return (

@@ -7,7 +7,6 @@ import {
   cn,
   Description,
   FieldError,
-  Fieldset,
   Form,
   Input,
   InputGroup,
@@ -52,10 +51,10 @@ export function SignUp({
     emailAndPassword,
     localization,
     magicLink,
-    navigate,
     redirectTo,
     socialProviders,
-    viewPaths
+    viewPaths,
+    navigate
   } = useAuth()
 
   const [password, setPassword] = useState("")
@@ -81,10 +80,12 @@ export function SignUp({
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
     onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: async () => {
+    onSuccess: () => {
       setSocialRedirecting(true)
-      await new Promise((resolve) => setTimeout(resolve, 5000))
-      setSocialRedirecting(false)
+
+      setTimeout(() => {
+        setSocialRedirecting(false)
+      }, 5000)
     }
   })
 
@@ -96,6 +97,7 @@ export function SignUp({
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
     const email = formData.get("email") as string
@@ -110,8 +112,7 @@ export function SignUp({
     signUpEmail({ name, email, password })
   }
 
-  const showSeparator =
-    emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
+  const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
   return (
     <Card
@@ -119,207 +120,195 @@ export function SignUp({
       variant={variant}
       {...props}
     >
-      <Card.Content>
-        <Fieldset className="gap-4">
-          <Label className="text-xl">{localization.auth.signUp}</Label>
+      <Card.Header>
+        <Card.Title className="text-xl font-semibold mb-1">
+          {localization.auth.signUp}
+        </Card.Title>
+      </Card.Header>
 
-          {socialPosition === "top" && (
-            <>
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  isPending={isPending}
-                  socialLayout={socialLayout}
-                  signInSocial={signInSocial}
-                />
-              )}
+      <Card.Content className="gap-4">
+        {socialPosition === "top" && (
+          <>
+            {!!socialProviders?.length && (
+              <ProviderButtons
+                isPending={isPending}
+                socialLayout={socialLayout}
+                signInSocial={signInSocial}
+              />
+            )}
 
-              {showSeparator && (
-                <FieldSeparator>{localization.auth.or}</FieldSeparator>
-              )}
-            </>
-          )}
+            {showSeparator && (
+              <FieldSeparator>{localization.auth.or}</FieldSeparator>
+            )}
+          </>
+        )}
 
-          {emailAndPassword?.enabled && (
-            <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <Fieldset.Group>
-                <TextField
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  isDisabled={isPending}
-                >
-                  <Label>{localization.auth.name}</Label>
+        {emailAndPassword?.enabled && (
+          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <TextField
+              name="name"
+              type="text"
+              autoComplete="name"
+              isDisabled={isPending}
+            >
+              <Label>{localization.auth.name}</Label>
 
-                  <Input
-                    placeholder={localization.auth.namePlaceholder}
-                    required
-                    variant={
-                      variant === "transparent" ? "primary" : "secondary"
-                    }
-                  />
+              <Input
+                placeholder={localization.auth.namePlaceholder}
+                required
+                variant={variant === "transparent" ? "primary" : "secondary"}
+              />
 
-                  <FieldError className="text-wrap" />
-                </TextField>
+              <FieldError />
+            </TextField>
 
-                <TextField
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  isDisabled={isPending}
-                >
-                  <Label>{localization.auth.email}</Label>
+            <TextField
+              name="email"
+              type="email"
+              autoComplete="email"
+              isDisabled={isPending}
+            >
+              <Label>{localization.auth.email}</Label>
 
-                  <Input
-                    placeholder={localization.auth.emailPlaceholder}
-                    required
-                    variant={
-                      variant === "transparent" ? "primary" : "secondary"
-                    }
-                  />
+              <Input
+                placeholder={localization.auth.emailPlaceholder}
+                required
+                variant={variant === "transparent" ? "primary" : "secondary"}
+              />
 
-                  <FieldError className="text-wrap" />
-                </TextField>
+              <FieldError />
+            </TextField>
 
-                <TextField
-                  minLength={emailAndPassword?.minPasswordLength}
-                  maxLength={emailAndPassword?.maxPasswordLength}
-                  name="password"
-                  autoComplete="new-password"
-                  isDisabled={isPending}
-                  value={password}
-                  onChange={setPassword}
-                >
-                  <Label>{localization.auth.password}</Label>
+            <TextField
+              minLength={emailAndPassword?.minPasswordLength}
+              maxLength={emailAndPassword?.maxPasswordLength}
+              name="password"
+              autoComplete="new-password"
+              isDisabled={isPending}
+              value={password}
+              onChange={setPassword}
+            >
+              <Label>{localization.auth.password}</Label>
 
-                  <InputGroup
-                    variant={
-                      variant === "transparent" ? "primary" : "secondary"
-                    }
-                  >
-                    <InputGroup.Input
-                      placeholder={localization.auth.passwordPlaceholder}
-                      type={isPasswordVisible ? "text" : "password"}
-                      name="password"
-                      required
-                    />
-
-                    <InputGroup.Suffix className="px-0">
-                      <Button
-                        isIconOnly
-                        aria-label={
-                          isPasswordVisible
-                            ? localization.auth.hidePassword
-                            : localization.auth.showPassword
-                        }
-                        size="sm"
-                        variant="ghost"
-                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                        isDisabled={isPending}
-                      >
-                        {isPasswordVisible ? <EyeSlash /> : <Eye />}
-                      </Button>
-                    </InputGroup.Suffix>
-                  </InputGroup>
-
-                  <FieldError className="text-wrap" />
-                </TextField>
-
-                {emailAndPassword?.confirmPassword && (
-                  <TextField
-                    minLength={emailAndPassword?.minPasswordLength}
-                    maxLength={emailAndPassword?.maxPasswordLength}
-                    name="confirmPassword"
-                    autoComplete="new-password"
-                    isDisabled={isPending}
-                    value={confirmPassword}
-                    onChange={setConfirmPassword}
-                  >
-                    <Label>{localization.auth.confirmPassword}</Label>
-
-                    <InputGroup
-                      variant={
-                        variant === "transparent" ? "primary" : "secondary"
-                      }
-                    >
-                      <InputGroup.Input
-                        name="confirmPassword"
-                        placeholder={
-                          localization.auth.confirmPasswordPlaceholder
-                        }
-                        type={isConfirmPasswordVisible ? "text" : "password"}
-                        required
-                      />
-
-                      <InputGroup.Suffix className="px-0">
-                        <Button
-                          isIconOnly
-                          aria-label={
-                            isConfirmPasswordVisible
-                              ? localization.auth.hidePassword
-                              : localization.auth.showPassword
-                          }
-                          size="sm"
-                          variant="ghost"
-                          onPress={() =>
-                            setIsConfirmPasswordVisible(
-                              !isConfirmPasswordVisible
-                            )
-                          }
-                          isDisabled={isPending}
-                        >
-                          {isConfirmPasswordVisible ? <EyeSlash /> : <Eye />}
-                        </Button>
-                      </InputGroup.Suffix>
-                    </InputGroup>
-
-                    <FieldError className="text-wrap" />
-                  </TextField>
-                )}
-              </Fieldset.Group>
-
-              <Fieldset.Actions className="flex-col gap-3">
-                <Button type="submit" className="w-full" isPending={isPending}>
-                  {isPending && <Spinner color="current" size="sm" />}
-
-                  {localization.auth.signUp}
-                </Button>
-
-                {magicLink && (
-                  <MagicLinkButton view="signUp" isPending={isPending} />
-                )}
-              </Fieldset.Actions>
-            </Form>
-          )}
-
-          {socialPosition === "bottom" && (
-            <>
-              {showSeparator && (
-                <FieldSeparator>{localization.auth.or}</FieldSeparator>
-              )}
-
-              {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  signInSocial={signInSocial}
-                  isPending={isPending}
-                />
-              )}
-            </>
-          )}
-
-          {emailAndPassword?.enabled && (
-            <Description className="text-center text-sm">
-              {localization.auth.alreadyHaveAnAccount}{" "}
-              <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-                className="text-accent decoration-accent no-underline hover:underline"
+              <InputGroup
+                variant={variant === "transparent" ? "primary" : "secondary"}
               >
-                {localization.auth.signIn}
-              </Link>
-            </Description>
-          )}
-        </Fieldset>
+                <InputGroup.Input
+                  placeholder={localization.auth.passwordPlaceholder}
+                  type={isPasswordVisible ? "text" : "password"}
+                  name="password"
+                  required
+                />
+
+                <InputGroup.Suffix className="px-0">
+                  <Button
+                    isIconOnly
+                    aria-label={
+                      isPasswordVisible
+                        ? localization.auth.hidePassword
+                        : localization.auth.showPassword
+                    }
+                    size="sm"
+                    variant="ghost"
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    isDisabled={isPending}
+                  >
+                    {isPasswordVisible ? <EyeSlash /> : <Eye />}
+                  </Button>
+                </InputGroup.Suffix>
+              </InputGroup>
+
+              <FieldError />
+            </TextField>
+
+            {emailAndPassword?.confirmPassword && (
+              <TextField
+                minLength={emailAndPassword?.minPasswordLength}
+                maxLength={emailAndPassword?.maxPasswordLength}
+                name="confirmPassword"
+                autoComplete="new-password"
+                isDisabled={isPending}
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+              >
+                <Label>{localization.auth.confirmPassword}</Label>
+
+                <InputGroup
+                  variant={variant === "transparent" ? "primary" : "secondary"}
+                >
+                  <InputGroup.Input
+                    name="confirmPassword"
+                    placeholder={localization.auth.confirmPasswordPlaceholder}
+                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    required
+                  />
+
+                  <InputGroup.Suffix className="px-0">
+                    <Button
+                      isIconOnly
+                      aria-label={
+                        isConfirmPasswordVisible
+                          ? localization.auth.hidePassword
+                          : localization.auth.showPassword
+                      }
+                      size="sm"
+                      variant="ghost"
+                      onPress={() =>
+                        setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                      }
+                      isDisabled={isPending}
+                    >
+                      {isConfirmPasswordVisible ? <EyeSlash /> : <Eye />}
+                    </Button>
+                  </InputGroup.Suffix>
+                </InputGroup>
+
+                <FieldError />
+              </TextField>
+            )}
+
+            <div className="flex flex-col gap-3">
+              <Button type="submit" className="w-full" isPending={isPending}>
+                {isPending && <Spinner color="current" size="sm" />}
+
+                {localization.auth.signUp}
+              </Button>
+
+              {magicLink && (
+                <MagicLinkButton view="signUp" isPending={isPending} />
+              )}
+            </div>
+          </Form>
+        )}
+
+        {socialPosition === "bottom" && (
+          <>
+            {showSeparator && (
+              <FieldSeparator>{localization.auth.or}</FieldSeparator>
+            )}
+
+            {!!socialProviders?.length && (
+              <ProviderButtons
+                socialLayout={socialLayout}
+                signInSocial={signInSocial}
+                isPending={isPending}
+              />
+            )}
+          </>
+        )}
       </Card.Content>
+
+      <Card.Footer className="flex-col">
+        <Description className="text-sm">
+          {localization.auth.alreadyHaveAnAccount}{" "}
+          <Link
+            href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+            className="text-accent decoration-accent no-underline hover:underline"
+          >
+            {localization.auth.signIn}
+          </Link>
+        </Description>
+      </Card.Footer>
     </Card>
   )
 }

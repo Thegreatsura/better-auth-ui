@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
 import "@/styles/app.css"
 
+import { ThemeProvider } from "next-themes"
 import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
 import { cn } from "@/lib/utils"
@@ -36,6 +36,7 @@ export default function RootLayout({
         >
           <Providers>
             <Header />
+
             {children}
           </Providers>
         </ThemeProvider>

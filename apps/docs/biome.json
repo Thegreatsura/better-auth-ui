@@ -9,7 +9,13 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.source", "!public"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.source",
+      "!public",
+      "!src/components/ui"
+    ]
   },
   "formatter": {
     "enabled": true,

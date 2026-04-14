@@ -1,6 +1,7 @@
-import { Settings } from "@better-auth-ui/shadcn"
-import { viewPaths } from "@better-auth-ui/shadcn/core"
+import { viewPaths } from "@better-auth-ui/react/core"
 import { notFound } from "next/navigation"
+
+import { Settings } from "@/components/settings/settings"
 
 export default async function SettingsPage({
   params

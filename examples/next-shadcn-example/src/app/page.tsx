@@ -1,4 +1,4 @@
-import { UserButton } from "@better-auth-ui/shadcn"
+import { UserButton } from "@/components/user/user-button"
 
 export default function Home() {
   return (

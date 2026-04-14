@@ -1,6 +1,7 @@
-import { UserButton } from "@better-auth-ui/shadcn"
 import { Link } from "@tanstack/react-router"
+
 import { Logo } from "./logo"
+import { UserButton } from "./user/user-button"
 
 export function Header() {
   return (

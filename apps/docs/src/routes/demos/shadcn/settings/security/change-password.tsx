@@ -6,7 +6,7 @@ export const Route = createFileRoute(
   component: RouteComponent
 })
 
-import { ChangePassword } from "@better-auth-ui/shadcn"
+import { ChangePassword } from "@/components/settings/security/change-password"
 
 function RouteComponent() {
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { AuthProvider } from "@better-auth-ui/shadcn/react"
+import { AuthProvider } from "@better-auth-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -16,17 +16,15 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthProvider
       authClient={authClient}
-      socialProviders={["google", "github"]}
+      appearance={{ theme, setTheme }}
       deleteUser={{ enabled: true }}
       magicLink
       multiSession
       redirectTo="/dashboard"
+      socialProviders={["google", "github"]}
       navigate={({ to, replace }) =>
         replace ? router.replace(to) : router.push(to)
       }
-      settings={{
-        appearance: { theme, setTheme }
-      }}
       Link={Link}
     >
       {children}

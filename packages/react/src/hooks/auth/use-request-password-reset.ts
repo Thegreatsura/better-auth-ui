@@ -19,5 +19,6 @@ export function useRequestPasswordReset(
   options?: UseAuthMutationOptions<AuthClient["requestPasswordReset"]>
 ) {
   const { authClient } = useAuth()
+
   return useAuthMutation({ authFn: authClient.requestPasswordReset, options })
 }

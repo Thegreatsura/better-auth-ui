@@ -6,7 +6,6 @@ import {
   cn,
   Description,
   FieldError,
-  Fieldset,
   Form,
   Input,
   Label,
@@ -48,6 +47,7 @@ export function ForgotPassword({
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({ email: formData.get("email") as string })
   }
@@ -58,50 +58,50 @@ export function ForgotPassword({
       variant={variant}
       {...props}
     >
+      <Card.Header>
+        <Card.Title className="text-xl font-semibold mb-1">
+          {localization.auth.forgotPassword}
+        </Card.Title>
+      </Card.Header>
+
       <Card.Content>
-        <Form onSubmit={handleSubmit}>
-          <Fieldset className="gap-4">
-            <Label className="text-xl">
-              {localization.auth.forgotPassword}
-            </Label>
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <TextField
+            name="email"
+            type="email"
+            autoComplete="email"
+            isDisabled={isPending}
+          >
+            <Label>{localization.auth.email}</Label>
 
-            <TextField
-              name="email"
-              type="email"
-              autoComplete="email"
-              isDisabled={isPending}
-            >
-              <Label>{localization.auth.email}</Label>
+            <Input
+              placeholder={localization.auth.emailPlaceholder}
+              required
+              variant={variant === "transparent" ? "primary" : "secondary"}
+            />
 
-              <Input
-                placeholder={localization.auth.emailPlaceholder}
-                required
-                variant={variant === "transparent" ? "primary" : "secondary"}
-              />
+            <FieldError />
+          </TextField>
 
-              <FieldError className="text-wrap" />
-            </TextField>
+          <Button type="submit" className="w-full" isPending={isPending}>
+            {isPending && <Spinner color="current" size="sm" />}
 
-            <Fieldset.Actions>
-              <Button type="submit" className="w-full" isPending={isPending}>
-                {isPending && <Spinner color="current" size="sm" />}
-
-                {localization.auth.sendResetLink}
-              </Button>
-            </Fieldset.Actions>
-
-            <Description className="text-center text-sm">
-              {localization.auth.rememberYourPassword}{" "}
-              <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-                className="text-accent decoration-accent no-underline hover:underline"
-              >
-                {localization.auth.signIn}
-              </Link>
-            </Description>
-          </Fieldset>
+            {localization.auth.sendResetLink}
+          </Button>
         </Form>
       </Card.Content>
+
+      <Card.Footer className="flex-col">
+        <Description className="text-sm">
+          {localization.auth.rememberYourPassword}{" "}
+          <Link
+            href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+            className="text-accent decoration-accent no-underline hover:underline"
+          >
+            {localization.auth.signIn}
+          </Link>
+        </Description>
+      </Card.Footer>
     </Card>
   )
 }

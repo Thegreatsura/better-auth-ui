@@ -1,5 +1,6 @@
-import { UserButton } from "@better-auth-ui/shadcn"
 import { createFileRoute } from "@tanstack/react-router"
+
+import { UserButton } from "@/components/user/user-button"
 
 export const Route = createFileRoute("/")({ component: App })
 

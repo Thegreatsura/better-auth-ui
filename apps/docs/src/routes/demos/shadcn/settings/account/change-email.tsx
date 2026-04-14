@@ -6,7 +6,7 @@ export const Route = createFileRoute(
   component: RouteComponent
 })
 
-import { ChangeEmail } from "@better-auth-ui/shadcn"
+import { ChangeEmail } from "@/components/settings/account/change-email"
 
 function RouteComponent() {
   return (

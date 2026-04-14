@@ -4,9 +4,10 @@ import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
+import type { AppearanceConfig } from "./appearance-config"
+import type { AvatarConfig } from "./avatar-config"
 import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
-import type { SettingsConfig } from "./settings-config"
 
 /**
  * Core authentication configuration interface.
@@ -15,6 +16,18 @@ import type { SettingsConfig } from "./settings-config"
  * providers, navigation functions, and feature flags.
  */
 export interface AuthConfig {
+  /**
+   * Appearance/theme configuration
+   * @remarks `AppearanceConfig`
+   * @default { themes: ["system", "light", "dark"] }
+   */
+  appearance: AppearanceConfig
+  /**
+   * Avatar upload, optimization, and deletion configuration.
+   * @remarks `AvatarConfig`
+   * @default { enabled: true, resize: resizeAvatar, size: 256, extension: "png" }
+   */
+  avatar: AvatarConfig
   /**
    * Base paths for different application sections
    * @remarks `BasePaths`
@@ -50,11 +63,6 @@ export interface AuthConfig {
    */
   redirectTo: string
   /**
-   * Settings section configuration
-   * @remarks `SettingsConfig`
-   */
-  settings: SettingsConfig
-  /**
    * List of enabled social authentication providers
    * @remarks `SocialProvider[]`
    */
@@ -78,6 +86,15 @@ export interface AuthConfig {
 }
 
 export const defaultAuthConfig: AuthConfig = {
+  appearance: {
+    themes: ["system", "light", "dark"]
+  },
+  avatar: {
+    enabled: true,
+    resize: resizeAvatar,
+    size: 256,
+    extension: "png"
+  },
   basePaths,
   baseURL: "",
   emailAndPassword: {
@@ -88,17 +105,6 @@ export const defaultAuthConfig: AuthConfig = {
     maxPasswordLength: 128
   },
   redirectTo: "/",
-  settings: {
-    appearance: {
-      themes: ["system", "light", "dark"]
-    },
-    avatar: {
-      enabled: true,
-      resize: resizeAvatar,
-      size: 256,
-      extension: "png"
-    }
-  },
   viewPaths,
   localization,
   navigate: ({ to, replace }) => {

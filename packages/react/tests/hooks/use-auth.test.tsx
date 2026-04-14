@@ -36,7 +36,9 @@ describe("useAuth", () => {
 
     it("should return config when authClient is provided via context", () => {
       const wrapper = ({ children }: { children: ReactNode }) => (
-        <AuthProvider authClient={mockAuthClient}>{children}</AuthProvider>
+        <AuthProvider authClient={mockAuthClient} navigate={() => {}}>
+          {children}
+        </AuthProvider>
       )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
@@ -49,7 +51,9 @@ describe("useAuth", () => {
 
   describe("default configuration", () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
-      <AuthProvider authClient={mockAuthClient}>{children}</AuthProvider>
+      <AuthProvider authClient={mockAuthClient} navigate={() => {}}>
+        {children}
+      </AuthProvider>
     )
 
     it("should have default basePaths", () => {
@@ -97,6 +101,7 @@ describe("useAuth", () => {
           authClient={mockAuthClient}
           baseURL="http://example.com"
           redirectTo="/dashboard"
+          navigate={() => {}}
         >
           {children}
         </AuthProvider>
@@ -113,6 +118,7 @@ describe("useAuth", () => {
         <AuthProvider
           authClient={mockAuthClient}
           emailAndPassword={{ enabled: true, rememberMe: true }}
+          navigate={() => {}}
         >
           {children}
         </AuthProvider>
@@ -131,6 +137,7 @@ describe("useAuth", () => {
         <AuthProvider
           authClient={mockAuthClient}
           socialProviders={["github", "google"]}
+          navigate={() => {}}
         >
           {children}
         </AuthProvider>
@@ -145,7 +152,11 @@ describe("useAuth", () => {
   describe("magic link configuration", () => {
     it("should accept magicLink boolean", () => {
       const wrapper = ({ children }: { children: ReactNode }) => (
-        <AuthProvider authClient={mockAuthClient} magicLink={true}>
+        <AuthProvider
+          authClient={mockAuthClient}
+          magicLink={true}
+          navigate={() => {}}
+        >
           {children}
         </AuthProvider>
       )

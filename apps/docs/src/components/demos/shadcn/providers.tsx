@@ -1,20 +1,26 @@
-import { AuthProvider } from "@better-auth-ui/shadcn/react"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { AuthProvider } from "@better-auth-ui/react"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
 
 export function Providers({ children }: { children: ReactNode }) {
-  const navigate = useNavigate()
-
   return (
     <AuthProvider
       authClient={authClient}
       magicLink
       multiSession
-      navigate={navigate}
+      deleteUser={{ enabled: true }}
+      navigate={() => {}}
       socialProviders={["github", "google"]}
-      Link={({ href, ...props }) => <Link to={href} {...props} />}
+      appearance={{
+        theme: "system",
+        setTheme: () => {}
+      }}
+      Link={(props) => (
+        // biome-ignore lint/a11y/noStaticElementInteractions: ignore
+        // biome-ignore lint/a11y/useValidAnchor: ignore
+        <a {...props} onClick={(e) => e.preventDefault()} />
+      )}
     >
       {children}
     </AuthProvider>

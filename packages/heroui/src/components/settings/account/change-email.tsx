@@ -36,7 +36,7 @@ export function ChangeEmail({
   ...props
 }: ChangeEmailProps & CardProps) {
   const { localization, baseURL, viewPaths } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
     onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
@@ -65,15 +65,15 @@ export function ChangeEmail({
             <Fieldset className="w-full gap-4">
               <Fieldset.Group>
                 <TextField
-                  key={sessionData?.user.email}
+                  key={session?.user.email}
                   name="email"
                   type="email"
-                  defaultValue={sessionData?.user.email}
-                  isDisabled={isPending || !sessionData}
+                  defaultValue={session?.user.email}
+                  isDisabled={isPending || !session}
                 >
                   <Label>{localization.auth.email}</Label>
 
-                  {sessionData ? (
+                  {session ? (
                     <Input
                       required
                       variant={
@@ -94,10 +94,11 @@ export function ChangeEmail({
                 <Button
                   type="submit"
                   isPending={isPending}
-                  isDisabled={!sessionData}
+                  isDisabled={!session}
                   size="sm"
                 >
                   {isPending && <Spinner color="current" size="sm" />}
+
                   {localization.settings.updateEmail}
                 </Button>
               </Fieldset.Actions>

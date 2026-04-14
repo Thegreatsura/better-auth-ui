@@ -1,5 +1,5 @@
 import { useAuth, useSignOut } from "@better-auth-ui/react"
-import { Card, type CardProps, cn, Spinner, toast } from "@heroui/react"
+import { cn, Spinner, toast } from "@heroui/react"
 import { useEffect, useRef } from "react"
 
 export type SignOutProps = {
@@ -11,7 +11,7 @@ export type SignOutProps = {
  *
  * @returns A Card containing a centered Spinner shown during the sign-out process
  */
-export function SignOut({ className, ...props }: SignOutProps & CardProps) {
+export function SignOut({ className }: SignOutProps) {
   const { basePaths, navigate, viewPaths } = useAuth()
 
   const { mutate: signOut } = useSignOut({
@@ -39,12 +39,6 @@ export function SignOut({ className, ...props }: SignOutProps & CardProps) {
   }, [signOut])
 
   return (
-    <Card
-      variant="transparent"
-      className={cn("w-full max-w-sm", className)}
-      {...props}
-    >
-      <Spinner className="mx-auto my-auto" color="current" />
-    </Card>
+    <Spinner className={cn("mx-auto my-auto", className)} color="current" />
   )
 }

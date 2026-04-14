@@ -18,5 +18,6 @@ export function useSendVerificationEmail(
   options?: UseAuthMutationOptions<AuthClient["sendVerificationEmail"]>
 ) {
   const { authClient } = useAuth()
+
   return useAuthMutation({ authFn: authClient.sendVerificationEmail, options })
 }

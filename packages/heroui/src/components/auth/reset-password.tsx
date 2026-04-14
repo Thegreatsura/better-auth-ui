@@ -7,7 +7,6 @@ import {
   cn,
   Description,
   FieldError,
-  Fieldset,
   Form,
   InputGroup,
   Label,
@@ -93,115 +92,119 @@ export function ResetPassword({
       variant={variant}
       {...props}
     >
-      <Card.Content>
-        <Form onSubmit={handleSubmit}>
-          <Fieldset className="gap-4">
-            <Label className="text-xl">{localization.auth.resetPassword}</Label>
+      <Card.Header>
+        <Card.Title className="text-xl font-semibold mb-1">
+          {localization.auth.resetPassword}
+        </Card.Title>
+      </Card.Header>
 
+      <Card.Content>
+        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <TextField
+            minLength={emailAndPassword?.minPasswordLength}
+            maxLength={emailAndPassword?.maxPasswordLength}
+            name="password"
+            autoComplete="new-password"
+            isDisabled={isPending}
+          >
+            <Label>{localization.auth.password}</Label>
+
+            <InputGroup
+              variant={variant === "transparent" ? "primary" : "secondary"}
+            >
+              <InputGroup.Input
+                name="password"
+                placeholder={localization.auth.newPasswordPlaceholder}
+                type={isPasswordVisible ? "text" : "password"}
+                required
+              />
+
+              <InputGroup.Suffix className="px-0">
+                <Button
+                  isIconOnly
+                  aria-label={
+                    isPasswordVisible
+                      ? localization.auth.hidePassword
+                      : localization.auth.showPassword
+                  }
+                  size="sm"
+                  variant="ghost"
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                  isDisabled={isPending}
+                >
+                  {isPasswordVisible ? <EyeSlash /> : <Eye />}
+                </Button>
+              </InputGroup.Suffix>
+            </InputGroup>
+
+            <FieldError />
+          </TextField>
+
+          {emailAndPassword?.confirmPassword && (
             <TextField
               minLength={emailAndPassword?.minPasswordLength}
               maxLength={emailAndPassword?.maxPasswordLength}
-              name="password"
+              name="confirmPassword"
               autoComplete="new-password"
               isDisabled={isPending}
             >
-              <Label>{localization.auth.password}</Label>
+              <Label>{localization.auth.confirmPassword}</Label>
 
               <InputGroup
                 variant={variant === "transparent" ? "primary" : "secondary"}
               >
                 <InputGroup.Input
-                  name="password"
-                  placeholder={localization.auth.newPasswordPlaceholder}
-                  type={isPasswordVisible ? "text" : "password"}
+                  placeholder={localization.auth.confirmPasswordPlaceholder}
+                  type={isConfirmPasswordVisible ? "text" : "password"}
                   required
+                  name="confirmPassword"
                 />
 
                 <InputGroup.Suffix className="px-0">
                   <Button
                     isIconOnly
                     aria-label={
-                      isPasswordVisible
+                      isConfirmPasswordVisible
                         ? localization.auth.hidePassword
                         : localization.auth.showPassword
                     }
                     size="sm"
                     variant="ghost"
-                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                    onPress={() =>
+                      setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                    }
                     isDisabled={isPending}
                   >
-                    {isPasswordVisible ? <EyeSlash /> : <Eye />}
+                    {isConfirmPasswordVisible ? <EyeSlash /> : <Eye />}
                   </Button>
                 </InputGroup.Suffix>
               </InputGroup>
 
-              <FieldError className="text-wrap" />
+              <FieldError />
             </TextField>
+          )}
 
-            {emailAndPassword?.confirmPassword && (
-              <TextField
-                minLength={emailAndPassword?.minPasswordLength}
-                maxLength={emailAndPassword?.maxPasswordLength}
-                name="confirmPassword"
-                autoComplete="new-password"
-                isDisabled={isPending}
-              >
-                <Label>{localization.auth.confirmPassword}</Label>
+          <div className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" isPending={isPending}>
+              {isPending && <Spinner color="current" size="sm" />}
 
-                <InputGroup
-                  variant={variant === "transparent" ? "primary" : "secondary"}
-                >
-                  <InputGroup.Input
-                    placeholder={localization.auth.confirmPasswordPlaceholder}
-                    type={isConfirmPasswordVisible ? "text" : "password"}
-                    required
-                    name="confirmPassword"
-                  />
-
-                  <InputGroup.Suffix className="px-0">
-                    <Button
-                      isIconOnly
-                      aria-label={
-                        isConfirmPasswordVisible
-                          ? localization.auth.hidePassword
-                          : localization.auth.showPassword
-                      }
-                      size="sm"
-                      variant="ghost"
-                      onPress={() =>
-                        setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                      }
-                      isDisabled={isPending}
-                    >
-                      {isConfirmPasswordVisible ? <EyeSlash /> : <Eye />}
-                    </Button>
-                  </InputGroup.Suffix>
-                </InputGroup>
-
-                <FieldError className="text-wrap" />
-              </TextField>
-            )}
-
-            <Fieldset.Actions>
-              <Button type="submit" className="w-full" isPending={isPending}>
-                {isPending && <Spinner color="current" size="sm" />}
-
-                {localization.auth.resetPassword}
-              </Button>
-            </Fieldset.Actions>
-
-            <Description className="text-center text-sm">
-              {localization.auth.rememberYourPassword}{" "}
-              <Link
-                href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-                className="text-accent decoration-accent no-underline hover:underline"
-              >
-                {localization.auth.signIn}
-              </Link>
-            </Description>
-          </Fieldset>
+              {localization.auth.resetPassword}
+            </Button>
+          </div>
         </Form>
       </Card.Content>
+
+      <Card.Footer className="flex-col">
+        <Description className="text-sm">
+          {localization.auth.rememberYourPassword}{" "}
+          <Link
+            href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
+            className="text-accent decoration-accent no-underline hover:underline"
+          >
+            {localization.auth.signIn}
+          </Link>
+        </Description>
+      </Card.Footer>
     </Card>
   )
 }

@@ -1,6 +1,7 @@
-import { Settings } from "@better-auth-ui/shadcn"
-import { viewPaths } from "@better-auth-ui/shadcn/core"
+import { viewPaths } from "@better-auth-ui/react/core"
 import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { Settings } from "@/components/settings/settings"
 
 export const Route = createFileRoute("/settings/$path")({
   beforeLoad({ params: { path } }) {

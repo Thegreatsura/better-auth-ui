@@ -4,7 +4,7 @@ export const Route = createFileRoute("/demos/shadcn/settings/settings")({
   component: RouteComponent
 })
 
-import { Settings } from "@better-auth-ui/shadcn"
+import { Settings } from "@/components/settings/settings"
 
 function RouteComponent() {
   return (
