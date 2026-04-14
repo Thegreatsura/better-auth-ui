@@ -28,7 +28,7 @@ export type ChangeEmailProps = {
  */
 export function ChangeEmail({ className }: ChangeEmailProps) {
   const { baseURL, localization, viewPaths } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
     onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
@@ -61,14 +61,14 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
             <Field data-invalid={!!fieldErrors.email}>
               <Label htmlFor="email">{localization.auth.email}</Label>
 
-              {sessionData ? (
+              {session ? (
                 <Input
-                  key={sessionData?.user?.email}
+                  key={session?.user.email}
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
-                  defaultValue={sessionData?.user?.email}
+                  defaultValue={session?.user.email}
                   placeholder={localization.auth.emailPlaceholder}
                   disabled={isPending}
                   required
@@ -98,11 +98,7 @@ export function ChangeEmail({ className }: ChangeEmailProps) {
           </CardContent>
 
           <CardFooter>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={isPending || !sessionData}
-            >
+            <Button type="submit" size="sm" disabled={isPending || !session}>
               {isPending && <Spinner />}
 
               {localization.settings.updateEmail}

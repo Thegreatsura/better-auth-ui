@@ -21,7 +21,7 @@ export function ActiveSessions({
   ...props
 }: ActiveSessionsProps & CardProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { data: sessions, isPending } = useListSessions({
     throwOnError: (error) => {
@@ -30,8 +30,8 @@ export function ActiveSessions({
     }
   })
 
-  const sortedSessions = sessions?.toSorted((session) =>
-    session.id === sessionData?.session.id ? -1 : 1
+  const activeSessions = sessions?.toSorted((activeSession) =>
+    activeSession.id === session?.session.id ? -1 : 1
   )
 
   return (
@@ -45,13 +45,13 @@ export function ActiveSessions({
           {isPending ? (
             <SessionRowSkeleton />
           ) : (
-            sortedSessions?.map((session, index) => (
-              <div key={session.id}>
+            activeSessions?.map((activeSession, index) => (
+              <div key={activeSession.id}>
                 {index > 0 && (
                   <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
                 )}
 
-                <ActiveSession session={session} />
+                <ActiveSession activeSession={activeSession} />
               </div>
             ))
           )}

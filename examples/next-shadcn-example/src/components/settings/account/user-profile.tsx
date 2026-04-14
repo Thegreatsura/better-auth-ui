@@ -26,7 +26,7 @@ export type UserProfileProps = {
  */
 export function UserProfile({ className }: UserProfileProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: updateUser, isPending } = useUpdateUser({
     onError: (error) => toast.error(error.error?.message || error.message),
@@ -58,13 +58,13 @@ export function UserProfile({ className }: UserProfileProps) {
             <Field data-invalid={!!fieldErrors.name}>
               <Label htmlFor="name">{localization.auth.name}</Label>
 
-              {sessionData ? (
+              {session ? (
                 <Input
-                  key={sessionData?.user?.name}
+                  key={session?.user.name}
                   id="name"
                   name="name"
                   autoComplete="name"
-                  defaultValue={sessionData?.user?.name}
+                  defaultValue={session?.user.name}
                   placeholder={localization.auth.name}
                   disabled={isPending}
                   required
@@ -95,11 +95,7 @@ export function UserProfile({ className }: UserProfileProps) {
           </CardContent>
 
           <CardFooter>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={isPending || !sessionData}
-            >
+            <Button type="submit" size="sm" disabled={isPending || !session}>
               {isPending && <Spinner />}
 
               {localization.settings.saveChanges}

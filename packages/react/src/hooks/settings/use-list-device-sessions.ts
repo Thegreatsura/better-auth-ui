@@ -19,13 +19,13 @@ export function useListDeviceSessions(
   >
 ): UseAuthQueryResult<AuthClient["multiSession"]["listDeviceSessions"]> {
   const { authClient } = useAuth()
-  const { data: sessionData } = useSession({ refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
 
   return useAuthQuery({
     authFn: authClient.multiSession.listDeviceSessions,
     options: {
       queryKey: ["auth", "multiSession", "listDeviceSessions"],
-      enabled: !!sessionData,
+      enabled: !!session,
       ...options
     }
   })

@@ -33,7 +33,7 @@ function timeAgo(date: Date) {
 }
 
 export type ActiveSessionProps = {
-  session: Session
+  activeSession: Session
 }
 
 /**
@@ -45,17 +45,17 @@ export type ActiveSessionProps = {
  * @param session - The session object containing id, token, userAgent, ipAddress, and createdAt
  * @returns A JSX element containing the active session row
  */
-export function ActiveSession({ session }: ActiveSessionProps) {
+export function ActiveSession({ activeSession }: ActiveSessionProps) {
   const { basePaths, localization, viewPaths, navigate } = useAuth()
-  const { data: sessionData } = useSession({ refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
 
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession({
     onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
   })
 
-  const isCurrentSession = session.token === sessionData?.session.token
-  const ua = Bowser.parse(session.userAgent || "")
+  const isCurrentSession = activeSession.token === session?.session.token
+  const ua = Bowser.parse(activeSession.userAgent || "")
   const isMobile =
     ua.platform.type === "mobile" || ua.platform.type === "tablet"
 
@@ -80,9 +80,9 @@ export function ActiveSession({ session }: ActiveSessionProps) {
             {localization.settings.currentSession}
           </Chip>
         ) : (
-          session.createdAt && (
+          activeSession.createdAt && (
             <span className="text-xs text-muted capitalize">
-              {timeAgo(session.createdAt)}
+              {timeAgo(activeSession.createdAt)}
             </span>
           )
         )}
@@ -97,7 +97,7 @@ export function ActiveSession({ session }: ActiveSessionProps) {
             ? navigate({
                 to: `${basePaths.auth}/${viewPaths.auth.signOut}`
               })
-            : revokeSession({ token: session.token })
+            : revokeSession(activeSession)
         }
         isPending={isRevoking}
         aria-label={

@@ -44,7 +44,7 @@ export function ChangePassword({
   ...props
 }: ChangePasswordProps & CardProps) {
   const { emailAndPassword, localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
   const hasCredentialAccount = accounts?.some(
@@ -61,7 +61,7 @@ export function ChangePassword({
       variant={variant}
       emailAndPassword={emailAndPassword}
       localization={localization}
-      sessionData={isAccountsPending ? undefined : sessionData}
+      session={isAccountsPending ? undefined : session}
       {...props}
     />
   )
@@ -69,7 +69,7 @@ export function ChangePassword({
 
 function SetPassword({ className, variant, ...props }: CardProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
     onError: (error) => toast.danger(error.error?.message || error.message),
@@ -77,8 +77,8 @@ function SetPassword({ className, variant, ...props }: CardProps) {
   })
 
   const handleSetPassword = () => {
-    if (!sessionData?.user.email) return
-    requestPasswordReset({ email: sessionData.user.email })
+    if (!session?.user.email) return
+    requestPasswordReset({ email: session.user.email })
   }
 
   return (
@@ -102,7 +102,7 @@ function SetPassword({ className, variant, ...props }: CardProps) {
           <Button
             size="sm"
             isPending={isPending}
-            isDisabled={!sessionData}
+            isDisabled={!session}
             onPress={handleSetPassword}
           >
             {isPending && <Spinner color="current" size="sm" />}
@@ -119,12 +119,12 @@ function ChangePasswordForm({
   variant,
   emailAndPassword,
   localization,
-  sessionData,
+  session,
   ...props
 }: {
   emailAndPassword: ReturnType<typeof useAuth>["emailAndPassword"]
   localization: ReturnType<typeof useAuth>["localization"]
-  sessionData: ReturnType<typeof useSession>["data"]
+  session: ReturnType<typeof useSession>["data"]
 } & CardProps) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -181,13 +181,13 @@ function ChangePasswordForm({
                 <TextField
                   name="currentPassword"
                   type="password"
-                  isDisabled={isPending || !sessionData}
+                  isDisabled={isPending || !session}
                   value={currentPassword}
                   onChange={setCurrentPassword}
                 >
                   <Label>{localization.settings.currentPassword}</Label>
 
-                  {sessionData ? (
+                  {session ? (
                     <Input
                       autoComplete="current-password"
                       placeholder={
@@ -208,13 +208,13 @@ function ChangePasswordForm({
                 <TextField
                   minLength={emailAndPassword?.minPasswordLength}
                   maxLength={emailAndPassword?.maxPasswordLength}
-                  isDisabled={isPending || !sessionData}
+                  isDisabled={isPending || !session}
                   value={newPassword}
                   onChange={setNewPassword}
                 >
                   <Label>{localization.auth.newPassword}</Label>
 
-                  {sessionData ? (
+                  {session ? (
                     <InputGroup
                       variant={
                         variant === "transparent" ? "primary" : "secondary"
@@ -258,14 +258,14 @@ function ChangePasswordForm({
                   <TextField
                     minLength={emailAndPassword?.minPasswordLength}
                     maxLength={emailAndPassword?.maxPasswordLength}
-                    isDisabled={isPending || !sessionData}
+                    isDisabled={isPending || !session}
                     isRequired
                     value={confirmPassword}
                     onChange={setConfirmPassword}
                   >
                     <Label>{localization.auth.confirmPassword}</Label>
 
-                    {sessionData ? (
+                    {session ? (
                       <InputGroup
                         variant={
                           variant === "transparent" ? "primary" : "secondary"
@@ -315,7 +315,7 @@ function ChangePasswordForm({
                 <Button
                   type="submit"
                   isPending={isPending}
-                  isDisabled={!sessionData}
+                  isDisabled={!session}
                   size="sm"
                 >
                   {isPending && <Spinner color="current" size="sm" />}

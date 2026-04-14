@@ -34,7 +34,7 @@ export function UserAvatar({
   isPending,
   fallback
 }: UserAvatarProps) {
-  const { data: sessionData, isPending: sessionPending } = useSession({
+  const { data: session, isPending: sessionPending } = useSession({
     enabled: !user && !isPending
   })
 
@@ -42,7 +42,7 @@ export function UserAvatar({
     return <Skeleton className={cn("size-8 rounded-full", className)} />
   }
 
-  const resolvedUser = user ?? sessionData?.user
+  const resolvedUser = user ?? session?.user
 
   const initials = (
     resolvedUser?.username ||

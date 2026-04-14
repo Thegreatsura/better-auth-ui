@@ -24,7 +24,7 @@ export type ChangeAvatarProps = {
 
 export function ChangeAvatar({ className }: ChangeAvatarProps) {
   const { localization, avatar } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
     onError: (error) => toast.error(error.error?.message || error.message)
@@ -68,7 +68,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   }
 
   async function handleDelete() {
-    const currentImage = sessionData?.user?.image
+    const currentImage = session?.user.image
 
     updateUser(
       { image: null },
@@ -117,7 +117,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
             <Button
               variant="secondary"
               size="sm"
-              disabled={!sessionData || isPending}
+              disabled={!session || isPending}
             >
               {isPending && <Spinner />}
 
@@ -134,7 +134,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
 
             <DropdownMenuItem
               variant="destructive"
-              disabled={!sessionData?.user?.image}
+              disabled={!session?.user.image}
               onClick={handleDelete}
             >
               <Trash2 />

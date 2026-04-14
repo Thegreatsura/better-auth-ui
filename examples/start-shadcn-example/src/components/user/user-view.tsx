@@ -23,11 +23,11 @@ export type UserViewProps = {
  * @returns A React element showing the user's avatar with their identifying information
  */
 export function UserView({ className, isPending, user }: UserViewProps) {
-  const { data: sessionData, isPending: sessionPending } = useSession({
+  const { data: session, isPending: sessionPending } = useSession({
     enabled: !user && !isPending
   })
 
-  const resolvedUser = user ?? sessionData?.user
+  const resolvedUser = user ?? session?.user
 
   if ((isPending || sessionPending) && !user) {
     return (

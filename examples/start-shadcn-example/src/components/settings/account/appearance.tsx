@@ -39,7 +39,7 @@ export function Appearance({ className }: AppearanceProps) {
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   return (
     <div>
@@ -53,10 +53,10 @@ export function Appearance({ className }: AppearanceProps) {
             <Label>{localization.settings.theme}</Label>
 
             <RadioGroup
-              value={sessionData ? theme : ""}
+              value={session ? theme : ""}
               onValueChange={setTheme}
               className="grid gap-3 grid-cols-2 sm:grid-cols-3"
-              disabled={!sessionData || !theme}
+              disabled={!session || !theme}
             >
               {themes.includes("system") && (
                 <FieldLabel htmlFor="system">

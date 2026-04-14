@@ -39,7 +39,7 @@ export function Appearance({
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   if (!setTheme || !themes?.length) {
     return null
@@ -57,9 +57,9 @@ export function Appearance({
 
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
-            value={sessionData ? theme : ""}
+            value={session ? theme : ""}
             onChange={setTheme}
-            isDisabled={!sessionData || !theme}
+            isDisabled={!session || !theme}
           >
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3">
               {themes.includes("system") && (

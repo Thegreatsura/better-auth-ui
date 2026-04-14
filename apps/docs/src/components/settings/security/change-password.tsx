@@ -41,7 +41,7 @@ export type ChangePasswordProps = {
  */
 export function ChangePassword({ className }: ChangePasswordProps) {
   const { emailAndPassword, localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
 
   const hasCredentialAccount = accounts?.some(
@@ -57,7 +57,7 @@ export function ChangePassword({ className }: ChangePasswordProps) {
       className={className}
       emailAndPassword={emailAndPassword}
       localization={localization}
-      sessionData={isAccountsPending ? undefined : sessionData}
+      session={isAccountsPending ? undefined : session}
     />
   )
 }
@@ -114,12 +114,12 @@ function ChangePasswordForm({
   className,
   emailAndPassword,
   localization,
-  sessionData
+  session
 }: {
   className?: string
   emailAndPassword: ReturnType<typeof useAuth>["emailAndPassword"]
   localization: ReturnType<typeof useAuth>["localization"]
-  sessionData: ReturnType<typeof useSession>["data"]
+  session: ReturnType<typeof useSession>["data"]
 }) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -182,7 +182,7 @@ function ChangePasswordForm({
                 {localization.settings.currentPassword}
               </Label>
 
-              {sessionData ? (
+              {session ? (
                 <Input
                   id="currentPassword"
                   name="currentPassword"
@@ -225,7 +225,7 @@ function ChangePasswordForm({
                 {localization.auth.newPassword}
               </Label>
 
-              {sessionData ? (
+              {session ? (
                 <InputGroup>
                   <InputGroupInput
                     id="newPassword"
@@ -289,7 +289,7 @@ function ChangePasswordForm({
                   {localization.auth.confirmPassword}
                 </Label>
 
-                {sessionData ? (
+                {session ? (
                   <InputGroup>
                     <InputGroupInput
                       id="confirmPassword"
@@ -351,11 +351,7 @@ function ChangePasswordForm({
           </CardContent>
 
           <CardFooter>
-            <Button
-              type="submit"
-              size="sm"
-              disabled={isPending || !sessionData}
-            >
+            <Button type="submit" size="sm" disabled={isPending || !session}>
               {isPending && <Spinner />}
 
               {localization.settings.updatePassword}

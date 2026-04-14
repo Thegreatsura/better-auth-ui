@@ -12,7 +12,7 @@ export type ChangeAvatarProps = {
 
 export function ChangeAvatar({ className }: ChangeAvatarProps) {
   const { localization, avatar } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
     onError: (error) => toast.danger(error.error?.message || error.message)
@@ -56,7 +56,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   }
 
   async function handleDelete() {
-    const currentImage = sessionData?.user?.image
+    const currentImage = session?.user.image
 
     updateUser(
       { image: null },
@@ -79,7 +79,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
 
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      <Label isDisabled={!sessionData}>{localization.settings.avatar}</Label>
+      <Label isDisabled={!session}>{localization.settings.avatar}</Label>
 
       <input
         ref={fileInputRef}
@@ -95,7 +95,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
           isIconOnly
           variant="ghost"
           className="p-0 h-auto w-auto rounded-full"
-          isDisabled={!sessionData || isPending}
+          isDisabled={!session || isPending}
           onPress={() => fileInputRef.current?.click()}
         >
           <UserAvatar size="lg" isPending={isPending} />
@@ -103,7 +103,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
 
         <Dropdown>
           <Button
-            isDisabled={!sessionData || isPending}
+            isDisabled={!session || isPending}
             size="sm"
             variant="secondary"
           >
@@ -125,7 +125,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
 
               <Dropdown.Item
                 textValue={localization.settings.deleteAvatar}
-                isDisabled={!sessionData?.user?.image}
+                isDisabled={!session?.user.image}
                 onAction={handleDelete}
                 variant="danger"
               >

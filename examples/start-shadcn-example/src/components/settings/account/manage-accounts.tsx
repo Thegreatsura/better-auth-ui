@@ -26,7 +26,7 @@ export type ManageAccountsProps = {
  */
 export function ManageAccounts({ className }: ManageAccountsProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { data: deviceSessions, isPending } = useListDeviceSessions({
     throwOnError: (error) => {
@@ -36,13 +36,13 @@ export function ManageAccounts({ className }: ManageAccountsProps) {
   })
 
   const otherSessions = deviceSessions?.filter(
-    (deviceSession) => deviceSession.session.id !== sessionData?.session.id
+    (deviceSession) => deviceSession.session.id !== session?.session.id
   )
 
   const allRows = [
     {
       key: "current",
-      deviceSession: !isPending ? sessionData : null,
+      deviceSession: !isPending ? session : null,
       isPending
     },
     ...(otherSessions?.map((deviceSession) => ({

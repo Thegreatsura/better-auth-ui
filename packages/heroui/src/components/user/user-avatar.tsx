@@ -32,7 +32,7 @@ export function UserAvatar({
   style,
   ...props
 }: UserAvatarProps & AvatarProps) {
-  const { data: sessionData, isPending: sessionPending } = useSession({
+  const { data: session, isPending: sessionPending } = useSession({
     enabled: !user && !isPending
   })
 
@@ -49,7 +49,7 @@ export function UserAvatar({
     )
   }
 
-  const resolvedUser = user ?? sessionData?.user
+  const resolvedUser = user ?? session?.user
 
   const initials = (
     resolvedUser?.username ||

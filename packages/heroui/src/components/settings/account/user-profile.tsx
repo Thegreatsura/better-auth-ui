@@ -33,7 +33,7 @@ export function UserProfile({
   ...props
 }: UserProfileProps & CardProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: updateUser, isPending } = useUpdateUser({
     onError: (error) => toast.danger(error.error?.message || error.message),
@@ -60,14 +60,14 @@ export function UserProfile({
 
               <Fieldset.Group>
                 <TextField
-                  key={sessionData?.user?.name}
+                  key={session?.user?.name}
                   name="name"
-                  defaultValue={sessionData?.user?.name}
-                  isDisabled={isPending || !sessionData}
+                  defaultValue={session?.user.name}
+                  isDisabled={isPending || !session}
                 >
                   <Label>{localization.auth.name}</Label>
 
-                  {sessionData ? (
+                  {session ? (
                     <Input
                       autoComplete="name"
                       placeholder={localization.auth.name}
@@ -87,7 +87,7 @@ export function UserProfile({
                 <Button
                   type="submit"
                   isPending={isPending}
-                  isDisabled={!sessionData}
+                  isDisabled={!session}
                   size="sm"
                 >
                   {isPending && <Spinner color="current" size="sm" />}

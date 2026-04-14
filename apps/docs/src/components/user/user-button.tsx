@@ -77,7 +77,7 @@ export function UserButton({
   } = useAuth()
 
   const { isPending: settingActiveSession } = useSetActiveSession()
-  const { data: sessionData, isPending: sessionPending } = useSession()
+  const { data: session, isPending: sessionPending } = useSession()
 
   return (
     <DropdownMenu>
@@ -96,7 +96,7 @@ export function UserButton({
             className={cn("py-2.5 h-auto font-normal", className)}
             size="lg"
           >
-            {sessionData || sessionPending || settingActiveSession ? (
+            {session || sessionPending || settingActiveSession ? (
               <UserView isPending={!!settingActiveSession} />
             ) : (
               <>
@@ -119,7 +119,7 @@ export function UserButton({
         align={align}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        {sessionData && (
+        {session && (
           <>
             <DropdownMenuLabel className="text-sm font-normal">
               <UserView />
@@ -129,7 +129,7 @@ export function UserButton({
           </>
         )}
 
-        {sessionData ? (
+        {session ? (
           <>
             <DropdownMenuItem asChild>
               <Link

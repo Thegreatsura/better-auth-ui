@@ -45,7 +45,7 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { mutate: setActiveSession, isPending: isSwitching } =
     useSetActiveSession({
@@ -58,7 +58,7 @@ export function ManageAccount({
       onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
     })
 
-  const isActive = deviceSession?.session.userId === sessionData?.session.userId
+  const isActive = deviceSession?.session.userId === session?.session.userId
   const isBusy = isSwitching || isRevoking
 
   return (

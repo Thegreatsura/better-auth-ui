@@ -23,7 +23,7 @@ export type ActiveSessionsProps = {
  */
 export function ActiveSessions({ className }: ActiveSessionsProps) {
   const { localization } = useAuth()
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
 
   const { data: sessions, isPending } = useListSessions({
     throwOnError: (error) => {
@@ -32,8 +32,8 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
     }
   })
 
-  const sortedSessions = [...(sessions ?? [])].sort((session) =>
-    session.id === sessionData?.session.id ? -1 : 1
+  const activeSessions = [...(sessions ?? [])].sort((activeSession) =>
+    activeSession.id === session?.session.id ? -1 : 1
   )
 
   return (
@@ -47,11 +47,11 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
           {isPending ? (
             <SessionRowSkeleton />
           ) : (
-            sortedSessions?.map((session, index) => (
-              <div key={session.id}>
+            activeSessions?.map((activeSession, index) => (
+              <div key={activeSession.id}>
                 {index > 0 && <Separator />}
 
-                <ActiveSession session={session} />
+                <ActiveSession activeSession={activeSession} />
               </div>
             ))
           )}
