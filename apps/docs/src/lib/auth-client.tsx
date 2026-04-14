@@ -16,6 +16,15 @@ const customFetchImpl: typeof fetch = async (input, _init) => {
     return new Response(
       JSON.stringify([
         {
+          id: "acc_demo_credential",
+          providerId: "credential",
+          accountId: "123",
+          userId: "123",
+          createdAt: now,
+          updatedAt: now,
+          scopes: []
+        },
+        {
           id: "acc_demo_github",
           providerId: "github",
           accountId: "12345678",
