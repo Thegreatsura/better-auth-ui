@@ -13,16 +13,13 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthProvider
       authClient={authClient}
+      appearance={{ theme, setTheme }}
       deleteUser={{ enabled: true }}
-      emailAndPassword={{
-        confirmPassword: true
-      }}
       magicLink
       multiSession
       socialProviders={["github", "google"]}
       redirectTo="/dashboard"
       navigate={navigate}
-      appearance={{ theme, setTheme }}
       Link={Link}
     >
       {children}
