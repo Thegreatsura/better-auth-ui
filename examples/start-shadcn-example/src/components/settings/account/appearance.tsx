@@ -37,9 +37,7 @@ export type AppearanceProps = {
 export function Appearance({ className }: AppearanceProps) {
   const {
     localization,
-    settings: {
-      appearance: { theme, setTheme, themes }
-    }
+    appearance: { theme, setTheme, themes }
   } = useAuth()
   const { data: sessionData } = useSession()
 

@@ -23,9 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
       navigate={({ to, replace }) =>
         replace ? router.replace(to) : router.push(to)
       }
-      settings={{
-        appearance: { theme, setTheme }
-      }}
+      appearance={{ theme, setTheme }}
     >
       {children}
 

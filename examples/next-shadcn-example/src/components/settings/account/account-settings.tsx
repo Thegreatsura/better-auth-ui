@@ -16,7 +16,7 @@ export type AccountSettingsProps = {
 /**
  * Renders the account settings layout.
  *
- * Uses `emailAndPassword`, `magicLink`, `settings.appearance.setTheme`, and
+ * Uses `emailAndPassword`, `magicLink`, `appearance.setTheme`, and
  * `multiSession` from `useAuth()` to conditionally show sections:
  * - `UserProfile` always renders.
  * - `ChangeEmail` renders when `emailAndPassword?.enabled` or `magicLink` is truthy.
@@ -31,9 +31,7 @@ export function AccountSettings({
     multiSession,
     emailAndPassword,
     magicLink,
-    settings: {
-      appearance: { setTheme }
-    }
+    appearance: { setTheme }
   } = useAuth()
 
   return (

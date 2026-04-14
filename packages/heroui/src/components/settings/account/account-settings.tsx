@@ -29,9 +29,7 @@ export function AccountSettings({
     multiSession,
     emailAndPassword,
     magicLink,
-    settings: {
-      appearance: { setTheme }
-    }
+    appearance: { setTheme }
   } = useAuth()
 
   return (

@@ -19,9 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
       multiSession
       redirectTo="/dashboard"
       navigate={navigate}
-      settings={{
-        appearance: { theme, setTheme }
-      }}
+      appearance={{ theme, setTheme }}
     >
       {children}
 

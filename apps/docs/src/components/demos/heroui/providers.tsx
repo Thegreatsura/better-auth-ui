@@ -12,11 +12,9 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       navigate={() => {}}
       socialProviders={["github", "google"]}
-      settings={{
-        appearance: {
-          theme: "system",
-          setTheme: () => {}
-        }
+      appearance={{
+        theme: "system",
+        setTheme: () => {}
       }}
     >
       {children}

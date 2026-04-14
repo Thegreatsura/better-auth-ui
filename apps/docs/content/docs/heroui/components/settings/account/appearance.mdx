@@ -12,7 +12,7 @@ description: A theme selector card with visual theme previews for system, light,
 
 ## Theme Configuration
 
-The Appearance section reads `settings.appearance` from `useAuth()`. It only renders when `setTheme` is defined and `themes` has at least one entry. Defaults from the library supply `themes: ["system", "light", "dark"]` via config merge, so you typically pass **`theme` and `setTheme`** from your theme library (for example [next-themes](https://github.com/pacocoursey/next-themes)).
+The Appearance section reads `appearance` from `useAuth()`. It only renders when `setTheme` is defined and `themes` has at least one entry. Defaults from the library supply `themes: ["system", "light", "dark"]` via config merge, so you typically pass **`theme` and `setTheme`** from your theme library (for example [next-themes](https://github.com/pacocoursey/next-themes)).
 
 Wrap the app with `ThemeProvider` from `next-themes` (for example in your root layout), then wire the same values into `AuthProvider`:
 
@@ -33,13 +33,11 @@ function Providers({ children }: { children: React.ReactNode }) {
       navigate={({ to, replace }) =>
         replace ? router.replace(to) : router.push(to)
       }
-      settings={{
-        appearance: {
-          theme,
-          setTheme
-          // Optional: override which options appear (default: system, light, dark)
-          // themes: ["light", "dark"],
-        }
+      appearance={{
+        theme,
+        setTheme
+        // Optional: override which options appear (default: system, light, dark)
+        // themes: ["light", "dark"],
       }}
     >
       {children}

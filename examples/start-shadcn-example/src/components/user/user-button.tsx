@@ -73,9 +73,7 @@ export function UserButton({
     localization,
     multiSession,
     Link,
-    settings: {
-      appearance: { theme, setTheme, themes }
-    }
+    appearance: { theme, setTheme, themes }
   } = useAuth()
 
   const { isPending: settingActiveSession } = useSetActiveSession()

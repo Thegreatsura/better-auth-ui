@@ -11,10 +11,7 @@ export type ChangeAvatarProps = {
 }
 
 export function ChangeAvatar({ className }: ChangeAvatarProps) {
-  const {
-    localization,
-    settings: { avatar }
-  } = useAuth()
+  const { localization, avatar } = useAuth()
   const { data: sessionData } = useSession()
 
   const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
