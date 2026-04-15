@@ -36,7 +36,11 @@ Wrap your application with the `Providers` component in your root route.
 <Step>
 ### Create the Auth Page
 
-Create a dynamic auth page that renders the appropriate authentication view based on the path.
+Install the auth components and create a dynamic auth page that renders the appropriate authentication view based on the path.
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/auth.json
+```
 
 ```tsx title="routes/auth/$path.tsx" file=<rootDir>/../../examples/start-shadcn-example/src/routes/auth/$path.tsx
 ```
@@ -47,7 +51,11 @@ The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`,
 <Step>
 ### Create the Settings page
 
-Create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+If you installed the `settings` component, create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/settings.json
+```
 
 ```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-shadcn-example/src/routes/settings/$path.tsx
 ```

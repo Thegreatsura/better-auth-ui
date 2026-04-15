@@ -19,12 +19,23 @@ Before you start, make sure you have the following prerequisites integrated into
 
 <Steps>
 <Step>
-### Install the components
+### Install the auth components
 
-Install the `shadcn/ui` components using shadcn CLI.
+Install the authentication page components using shadcn CLI.
 
 ```npm
 npx shadcn@latest add https://better-auth-ui.com/r/auth.json
+```
+
+This installs the `<Auth />` component and its views: sign-in, sign-up, magic-link, forgot-password, reset-password, and sign-out.
+</Step>
+<Step>
+### Install settings and user button (optional)
+
+If you need the settings page and user button, install them separately.
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/settings.json https://better-auth-ui.com/r/user-button.json
 ```
 </Step>
 </Steps>
