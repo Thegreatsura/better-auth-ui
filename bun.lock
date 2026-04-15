@@ -139,6 +139,7 @@
         "tailwindcss": "^4.2.2",
       },
       "devDependencies": {
+        "@cloudflare/vite-plugin": "^1.32.3",
         "@tanstack/devtools-vite": "^0.6.0",
         "@types/node": "^25.6.0",
         "@types/react": "^19.2.14",
@@ -147,6 +148,7 @@
         "drizzle-kit": "^0.31.10",
         "typescript": "^6.0.2",
         "vite": "^8.0.8",
+        "wrangler": "^4.83.0",
       },
     },
     "examples/start-shadcn-example": {
