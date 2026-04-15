@@ -1,6 +1,6 @@
 {
   "name": "@better-auth-ui/react",
-  "version": "0.0.0-alpha.0",
+  "version": "1.6.0",
   "type": "module",
   "scripts": {
     "build": "tsc",

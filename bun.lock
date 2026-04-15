@@ -192,7 +192,7 @@
     },
     "packages/core": {
       "name": "@better-auth-ui/core",
-      "version": "0.0.0-alpha.0",
+      "version": "1.6.0",
       "devDependencies": {
         "better-auth": "^1.6.4",
         "vitest": "^4.1.4",
@@ -203,7 +203,7 @@
     },
     "packages/heroui": {
       "name": "@better-auth-ui/heroui",
-      "version": "0.0.0-alpha.0",
+      "version": "1.6.0",
       "dependencies": {
         "@better-auth-ui/core": "*",
         "@better-auth-ui/react": "*",
@@ -237,7 +237,7 @@
     },
     "packages/react": {
       "name": "@better-auth-ui/react",
-      "version": "0.0.0-alpha.0",
+      "version": "1.6.0",
       "dependencies": {
         "@better-auth-ui/core": "*",
       },
