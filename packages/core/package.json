@@ -1,0 +1,32 @@
+{
+  "name": "@better-auth-ui/core",
+  "version": "1.6.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "better-auth": "^1.6.4",
+    "vitest": "^4.1.4"
+  },
+  "peerDependencies": {
+    "better-auth": ">=1.6.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

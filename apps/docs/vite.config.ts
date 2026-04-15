@@ -1,0 +1,45 @@
+import tailwindcss from "@tailwindcss/vite"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import react from "@vitejs/plugin-react"
+import mdx from "fumadocs-mdx/vite"
+import { defineConfig } from "vite"
+
+// Paths that require authentication or dynamic data should not be prerendered
+const EXCLUDED_PRERENDER_PATHS = [
+  "/settings",
+  "/auth",
+  "/organization"
+] as const
+
+const FumadocsDeps = [
+  "fumadocs-core",
+  "fumadocs-ui",
+  "fumadocs-openapi",
+  "@fumadocs/base-ui",
+  "@fumadocs/ui"
+]
+
+export default defineConfig({
+  server: {
+    port: 3000
+  },
+  resolve: {
+    tsconfigPaths: true,
+    noExternal: [...FumadocsDeps, "@gravity-ui/icons"]
+  },
+  plugins: [
+    mdx(await import("./source.config")),
+    tailwindcss(),
+    tanstackStart({
+      prerender: {
+        enabled: true,
+        autoSubfolderIndex: false,
+        filter: ({ path }) =>
+          !EXCLUDED_PRERENDER_PATHS.some((excludedPath) =>
+            path.startsWith(excludedPath)
+          )
+      }
+    }),
+    react()
+  ]
+})

@@ -1,0 +1,39 @@
+name: Release
+
+# Add manual trigger
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    # prevents this action from running on forks
+    if: github.repository == 'better-auth-ui/better-auth-ui'
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write #allows to push commits to the repo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Config git user
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+
+      - name: Release
+        run: |
+          nx release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
