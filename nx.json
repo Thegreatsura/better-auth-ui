@@ -36,6 +36,7 @@
     }
   ],
   "release": {
+    "projects": ["packages/*"],
     "version": {
       "preVersionCommand": "nx registry:build start-shadcn-example",
       "conventionalCommits": true
