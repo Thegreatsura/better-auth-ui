@@ -8,8 +8,8 @@
   ],
   "registryDependencies": [
     "tabs",
-    "https://better-auth-ui.pages.dev/r/account-settings.json",
-    "https://better-auth-ui.pages.dev/r/security-settings.json"
+    "https://better-auth-ui.com/r/account-settings.json",
+    "https://better-auth-ui.com/r/security-settings.json"
   ],
   "files": [
     {

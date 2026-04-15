@@ -7,10 +7,10 @@
     "@better-auth-ui/react@*"
   ],
   "registryDependencies": [
-    "https://better-auth-ui.pages.dev/r/change-password.json",
-    "https://better-auth-ui.pages.dev/r/linked-accounts.json",
-    "https://better-auth-ui.pages.dev/r/active-sessions.json",
-    "https://better-auth-ui.pages.dev/r/danger-zone.json"
+    "https://better-auth-ui.com/r/change-password.json",
+    "https://better-auth-ui.com/r/linked-accounts.json",
+    "https://better-auth-ui.com/r/active-sessions.json",
+    "https://better-auth-ui.com/r/danger-zone.json"
   ],
   "files": [
     {

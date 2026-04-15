@@ -7,10 +7,10 @@
     "@better-auth-ui/react@*"
   ],
   "registryDependencies": [
-    "https://better-auth-ui.pages.dev/r/user-profile.json",
-    "https://better-auth-ui.pages.dev/r/change-email.json",
-    "https://better-auth-ui.pages.dev/r/appearance.json",
-    "https://better-auth-ui.pages.dev/r/manage-accounts.json"
+    "https://better-auth-ui.com/r/user-profile.json",
+    "https://better-auth-ui.com/r/change-email.json",
+    "https://better-auth-ui.com/r/appearance.json",
+    "https://better-auth-ui.com/r/manage-accounts.json"
   ],
   "files": [
     {

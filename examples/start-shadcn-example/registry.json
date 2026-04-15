@@ -174,12 +174,12 @@
       "description": "A unified authentication component that renders the appropriate auth view based on path or view prop.",
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
-        "https://better-auth-ui.pages.dev/r/sign-in.json",
-        "https://better-auth-ui.pages.dev/r/sign-up.json",
-        "https://better-auth-ui.pages.dev/r/magic-link.json",
-        "https://better-auth-ui.pages.dev/r/forgot-password.json",
-        "https://better-auth-ui.pages.dev/r/reset-password.json",
-        "https://better-auth-ui.pages.dev/r/sign-out.json"
+        "https://better-auth-ui.com/r/sign-in.json",
+        "https://better-auth-ui.com/r/sign-up.json",
+        "https://better-auth-ui.com/r/magic-link.json",
+        "https://better-auth-ui.com/r/forgot-password.json",
+        "https://better-auth-ui.com/r/reset-password.json",
+        "https://better-auth-ui.com/r/sign-out.json"
       ],
       "files": [
         {
@@ -214,7 +214,7 @@
       "dependencies": ["@better-auth-ui/react@*", "better-auth"],
       "registryDependencies": [
         "skeleton",
-        "https://better-auth-ui.pages.dev/r/user-avatar.json"
+        "https://better-auth-ui.com/r/user-avatar.json"
       ],
       "files": [
         {
@@ -238,7 +238,7 @@
         "dropdown-menu",
         "spinner",
         "tabs",
-        "https://better-auth-ui.pages.dev/r/user-view.json"
+        "https://better-auth-ui.com/r/user-view.json"
       ],
       "files": [
         {
@@ -276,7 +276,7 @@
         "skeleton",
         "sonner",
         "spinner",
-        "https://better-auth-ui.pages.dev/r/user-avatar.json"
+        "https://better-auth-ui.com/r/user-avatar.json"
       ],
       "files": [
         {
@@ -341,7 +341,7 @@
         "dropdown-menu",
         "sonner",
         "spinner",
-        "https://better-auth-ui.pages.dev/r/user-view.json"
+        "https://better-auth-ui.com/r/user-view.json"
       ],
       "files": [
         {
@@ -361,10 +361,10 @@
       "description": "A container component that displays account settings including user profile, change email, appearance, and accounts management.",
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
-        "https://better-auth-ui.pages.dev/r/user-profile.json",
-        "https://better-auth-ui.pages.dev/r/change-email.json",
-        "https://better-auth-ui.pages.dev/r/appearance.json",
-        "https://better-auth-ui.pages.dev/r/manage-accounts.json"
+        "https://better-auth-ui.com/r/user-profile.json",
+        "https://better-auth-ui.com/r/change-email.json",
+        "https://better-auth-ui.com/r/appearance.json",
+        "https://better-auth-ui.com/r/manage-accounts.json"
       ],
       "files": [
         {
@@ -494,10 +494,10 @@
       "description": "A container component that displays security settings including password management, linked accounts, active sessions, and danger zone.",
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
-        "https://better-auth-ui.pages.dev/r/change-password.json",
-        "https://better-auth-ui.pages.dev/r/linked-accounts.json",
-        "https://better-auth-ui.pages.dev/r/active-sessions.json",
-        "https://better-auth-ui.pages.dev/r/danger-zone.json"
+        "https://better-auth-ui.com/r/change-password.json",
+        "https://better-auth-ui.com/r/linked-accounts.json",
+        "https://better-auth-ui.com/r/active-sessions.json",
+        "https://better-auth-ui.com/r/danger-zone.json"
       ],
       "files": [
         {
@@ -514,8 +514,8 @@
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
         "tabs",
-        "https://better-auth-ui.pages.dev/r/account-settings.json",
-        "https://better-auth-ui.pages.dev/r/security-settings.json"
+        "https://better-auth-ui.com/r/account-settings.json",
+        "https://better-auth-ui.com/r/security-settings.json"
       ],
       "files": [
         {
