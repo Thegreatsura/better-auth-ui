@@ -25,5 +25,8 @@
   },
   "peerDependencies": {
     "better-auth": ">=1.6.4"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

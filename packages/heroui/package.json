@@ -56,5 +56,8 @@
     "react": ">=19.2.5",
     "react-dom": ">=19.2.5",
     "bowser": ">=2.11.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
