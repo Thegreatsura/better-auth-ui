@@ -8,7 +8,10 @@ Built with **shadcn/ui** and **HeroUI**. Drop in and go.
 
 [Documentation](https://better-auth-ui.com/docs) • [Demo](https://better-auth-ui.com)
 
+---
+
 Looking for the legacy package? [Legacy Branch](https://github.com/better-auth-ui/better-auth-ui/tree/legacy) • [Legacy Docs](https://legacy.better-auth-ui.com)
+
 ---
 
 ## Screenshots
