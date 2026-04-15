@@ -10,7 +10,7 @@
     "format": "biome format --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.11",
+    "@biomejs/biome": "^2.4.12",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@better-auth-ui/react": "*",
-    "better-auth": "^1.6.2",
+    "better-auth": "^1.6.4",
     "bowser": "^2.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
