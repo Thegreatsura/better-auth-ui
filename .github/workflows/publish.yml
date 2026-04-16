@@ -40,5 +40,8 @@ jobs:
       - name: Print Environment Info
         run: bun nx report
 
+      - name: Build packages
+        run: bun nx run-many -t build --projects='packages/*'
+
       - name: Publish packages
         run: rm -f bun.lock bun.lockb && npx nx release publish

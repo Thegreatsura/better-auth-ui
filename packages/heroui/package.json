@@ -57,6 +57,11 @@
     "react-dom": ">=19.2.5",
     "bowser": ">=2.11.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/better-auth-ui/better-auth-ui",
+    "directory": "packages/heroui"
+  },
   "publishConfig": {
     "access": "public"
   }

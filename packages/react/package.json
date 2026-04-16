@@ -60,6 +60,11 @@
     "tailwindcss": ">=4.2.2",
     "zod": ">=4.3.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/better-auth-ui/better-auth-ui",
+    "directory": "packages/react"
+  },
   "publishConfig": {
     "access": "public"
   }
