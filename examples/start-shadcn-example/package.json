@@ -25,6 +25,7 @@
     "wrangler": "^4.83.0"
   },
   "dependencies": {
+    "@better-auth/passkey": "^1.6.4",
     "@better-auth-ui/react": "workspace:*",
     "@fontsource-variable/inter": "^5.2.8",
     "@tailwindcss/vite": "^4.2.2",

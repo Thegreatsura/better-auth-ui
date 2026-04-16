@@ -6,6 +6,7 @@ import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
 import { DangerZone } from "./danger-zone"
 import { LinkedAccounts } from "./linked-accounts"
+import { Passkeys } from "./passkeys"
 
 export type SecuritySettingsProps = {
   className?: string
@@ -27,7 +28,7 @@ export function SecuritySettings({
   variant,
   ...props
 }: SecuritySettingsProps & ComponentProps<"div">) {
-  const { deleteUser, emailAndPassword, socialProviders } = useAuth()
+  const { deleteUser, emailAndPassword, passkey, socialProviders } = useAuth()
 
   return (
     <div
@@ -36,6 +37,7 @@ export function SecuritySettings({
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
       {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
+      {passkey && <Passkeys variant={variant} />}
       <ActiveSessions variant={variant} />
       {deleteUser?.enabled && <DangerZone variant={variant} />}
     </div>

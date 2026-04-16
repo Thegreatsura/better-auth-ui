@@ -53,10 +53,12 @@ export interface AuthConfig {
    * @remarks `Localization`
    */
   localization: Localization
-  /** Whether magic link (passwordless) authentication is enabled */
+  /** Whether Magic Link plugin is enabled */
   magicLink?: boolean
-  /** Whether multi-session support is enabled */
+  /** Whether Multi Session plugin is enabled */
   multiSession?: boolean
+  /** Whether Passkey plugin is enabled */
+  passkey?: boolean
   /**
    * Default redirect path after successful authentication
    * @default "/"
