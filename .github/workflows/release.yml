@@ -34,6 +34,6 @@ jobs:
 
       - name: Release
         run: |
-          nx release
+          bun nx release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
