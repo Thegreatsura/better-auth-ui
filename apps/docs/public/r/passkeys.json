@@ -1,0 +1,32 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "passkeys",
+  "title": "Passkeys",
+  "description": "Display and manage registered passkeys for the current user. Shows each passkey with name, creation date, and delete control.",
+  "dependencies": [
+    "@better-auth-ui/react@*",
+    "@better-auth/passkey",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button",
+    "card",
+    "separator",
+    "skeleton",
+    "sonner",
+    "spinner"
+  ],
+  "files": [
+    {
+      "path": "src/components/settings/security/passkeys.tsx",
+      "content": "\"use client\"\n\nimport {\n  useAddPasskey,\n  useAuth,\n  useListUserPasskeys\n} from \"@better-auth-ui/react\"\nimport { toast } from \"sonner\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { Card, CardContent } from \"@/components/ui/card\"\nimport { Separator } from \"@/components/ui/separator\"\nimport { Skeleton } from \"@/components/ui/skeleton\"\nimport { Spinner } from \"@/components/ui/spinner\"\nimport { cn } from \"@/lib/utils\"\nimport { Passkey } from \"./passkey\"\n\nexport type PasskeysProps = {\n  className?: string\n}\n\nexport function Passkeys({ className }: PasskeysProps) {\n  const { localization } = useAuth()\n\n  const { data: passkeys, isPending } = useListUserPasskeys({\n    throwOnError: (error) => {\n      if (error.error) toast.error(error.error.message)\n      return false\n    }\n  })\n\n  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey({\n    onError: (error) => toast.error(error.error?.message || error.message)\n  })\n\n  return (\n    <div>\n      <h2 className=\"text-sm font-semibold mb-3\">\n        {localization.settings.passkeys}\n      </h2>\n\n      <Card className={cn(\"p-0\", className)}>\n        <CardContent className=\"p-0\">\n          <Card className=\"bg-transparent border-0 ring-0 shadow-none\">\n            <CardContent className=\"flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between\">\n              <div>\n                <p className=\"text-sm font-medium leading-tight\">\n                  {localization.settings.passkeysDescription}\n                </p>\n\n                <p className=\"text-muted-foreground text-xs mt-0.5\">\n                  {localization.settings.passkeysInstructions}\n                </p>\n              </div>\n\n              <Button\n                className=\"shrink-0\"\n                size=\"sm\"\n                disabled={isPending || isAdding}\n                onClick={() => addPasskey()}\n              >\n                {isAdding && <Spinner />}\n                {localization.settings.addPasskey}\n              </Button>\n            </CardContent>\n          </Card>\n\n          {isPending ? (\n            <>\n              <Separator />\n              <PasskeySkeleton />\n            </>\n          ) : (\n            passkeys?.map((passkey) => (\n              <div key={passkey.id}>\n                <Separator />\n                <Passkey passkey={passkey} />\n              </div>\n            ))\n          )}\n        </CardContent>\n      </Card>\n    </div>\n  )\n}\n\nfunction PasskeySkeleton() {\n  return (\n    <Card className=\"bg-transparent border-0 ring-0 shadow-none\">\n      <CardContent className=\"flex items-center gap-3\">\n        <Skeleton className=\"size-10 rounded-md\" />\n\n        <div className=\"flex flex-col gap-1\">\n          <Skeleton className=\"h-4 w-24\" />\n          <Skeleton className=\"h-3 w-20\" />\n        </div>\n      </CardContent>\n    </Card>\n  )\n}\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "src/components/settings/security/passkey.tsx",
+      "content": "\"use client\"\n\nimport { useAuth, useDeletePasskey } from \"@better-auth-ui/react\"\nimport { Fingerprint, X } from \"lucide-react\"\nimport { toast } from \"sonner\"\n\nimport { Button } from \"@/components/ui/button\"\nimport { Card, CardContent } from \"@/components/ui/card\"\nimport { Spinner } from \"@/components/ui/spinner\"\n\nexport type PasskeyProps = {\n  passkey: {\n    id: string\n    name?: string | null\n    createdAt: Date\n  }\n}\n\nexport function Passkey({ passkey }: PasskeyProps) {\n  const { localization } = useAuth()\n\n  const { mutate: deletePasskey, isPending } = useDeletePasskey({\n    onError: (error) => toast.error(error.error?.message || error.message)\n  })\n\n  return (\n    <Card className=\"bg-transparent border-0 ring-0 shadow-none\">\n      <CardContent className=\"flex items-center justify-between gap-3\">\n        <div className=\"flex size-10 shrink-0 items-center justify-center rounded-md bg-muted\">\n          <Fingerprint className=\"size-4.5\" />\n        </div>\n\n        <div className=\"flex flex-col min-w-0\">\n          <span className=\"text-sm font-medium leading-tight\">\n            {passkey.name || localization.auth.passkey}\n          </span>\n\n          <span className=\"text-xs text-muted-foreground\">\n            {new Date(passkey.createdAt).toLocaleString(undefined, {\n              dateStyle: \"medium\",\n              timeStyle: \"short\"\n            })}\n          </span>\n        </div>\n\n        <Button\n          className=\"ml-auto shrink-0\"\n          variant=\"outline\"\n          size=\"sm\"\n          disabled={isPending}\n          onClick={() => deletePasskey({ id: passkey.id })}\n        >\n          {isPending ? <Spinner /> : <X />}\n          {localization.settings.delete}\n        </Button>\n      </CardContent>\n    </Card>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

@@ -22,6 +22,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
 import { MagicLinkButton } from "./magic-link-button"
+import { PasskeyButton } from "./passkey-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type MagicLinkProps = {
@@ -47,6 +48,7 @@ export function MagicLink({
     basePaths,
     baseURL,
     localization,
+    passkey,
     redirectTo,
     socialProviders,
     viewPaths,
@@ -160,6 +162,8 @@ export function MagicLink({
                 </Button>
 
                 <MagicLinkButton view="magicLink" isPending={isPending} />
+
+                {passkey && <PasskeyButton isPending={isPending} />}
               </div>
             </FieldGroup>
           </form>
