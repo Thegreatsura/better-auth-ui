@@ -122,6 +122,23 @@ const customFetchImpl: typeof fetch = async (input, _init) => {
     })
   }
 
+  if (endpoint === "/api/auth/passkey/list-user-passkeys") {
+    return new Response(
+      JSON.stringify([
+        {
+          id: "passkey_demo_1",
+          name: "Passkey",
+          userId: "123",
+          publicKey: "demo-public-key",
+          credentialID: "demo-credential-id",
+          counter: 42,
+          createdAt: new Date(Date.now() - 86_400_000 * 14).toISOString()
+        }
+      ]),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
   if (endpoint === "/api/auth/multi-session/list-device-sessions") {
     return new Response(
       JSON.stringify([
