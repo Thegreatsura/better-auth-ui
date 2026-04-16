@@ -25,9 +25,6 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
-      - name: Install Bun
-        uses: oven-sh/setup-bun@v2
-
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -35,13 +32,10 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: bun install
+        run: npm install
 
       - name: Print Environment Info
-        run: bun nx report
-
-      - name: Override package manager for trusted publishing
-        run: node -e "const fs=require('fs'),p='nx.json',c=JSON.parse(fs.readFileSync(p));c.cli={packageManager:'npm'};fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n')"
+        run: npx nx report
 
       - name: Publish packages
         run: npx nx release publish
