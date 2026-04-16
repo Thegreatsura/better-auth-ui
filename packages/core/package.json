@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "dev": "tsc --watch",
     "test": "vitest"
   },

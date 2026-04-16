@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "dev": "tsc --watch",
     "email": "email dev --dir src/components/email -p 9000",
     "test": "vitest"

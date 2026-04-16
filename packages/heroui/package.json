@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc && bun styles",
+    "build": "vite build && bun styles",
     "dev": "bun styles && tsc --watch",
     "styles": "cpy src/styles.css dist/ --flat",
     "test": "vitest"
@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "@better-auth-ui/core": "*",
-    "@better-auth-ui/react": "*"
+    "@better-auth-ui/react": "*",
+    "@tanstack/react-pacer": "^0.21.1"
   },
   "peerDependencies": {
     "@gravity-ui/icons": ">=2.18.0",
