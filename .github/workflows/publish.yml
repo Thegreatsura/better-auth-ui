@@ -25,6 +25,9 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -32,10 +35,10 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
-        run: npm install
+        run: bun install
 
       - name: Print Environment Info
-        run: npx nx report
+        run: bun nx report
 
       - name: Publish packages
-        run: npx nx release publish
+        run: rm -f bun.lock bun.lockb && npx nx release publish
