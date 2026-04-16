@@ -40,5 +40,8 @@ jobs:
       - name: Print Environment Info
         run: bun nx report
 
+      - name: Override package manager for trusted publishing
+        run: node -e "const fs=require('fs'),p='nx.json',c=JSON.parse(fs.readFileSync(p));c.cli={packageManager:'npm'};fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n')"
+
       - name: Publish packages
         run: npx nx release publish
