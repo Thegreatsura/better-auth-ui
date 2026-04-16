@@ -6,6 +6,7 @@ import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
 import { DangerZone } from "./danger-zone"
 import { LinkedAccounts } from "./linked-accounts"
+import { Passkeys } from "./passkeys"
 
 export type SecuritySettingsProps = {
   className?: string
@@ -21,12 +22,13 @@ export type SecuritySettingsProps = {
  * @returns The security settings container as a JSX element.
  */
 export function SecuritySettings({ className }: SecuritySettingsProps) {
-  const { deleteUser, emailAndPassword, socialProviders } = useAuth()
+  const { deleteUser, emailAndPassword, passkey, socialProviders } = useAuth()
 
   return (
     <div className={cn("flex w-full flex-col gap-4 md:gap-6", className)}>
       {emailAndPassword?.enabled && <ChangePassword />}
       {!!socialProviders?.length && <LinkedAccounts />}
+      {passkey && <Passkeys />}
       <ActiveSessions />
       {deleteUser?.enabled && <DangerZone />}
     </div>

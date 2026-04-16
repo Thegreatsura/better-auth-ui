@@ -1,3 +1,4 @@
+import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { multiSession } from "better-auth/plugins"
@@ -13,7 +14,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true
   },
-  plugins: [multiSession()],
+  plugins: [multiSession(), passkey()],
   user: {
     deleteUser: {
       enabled: true

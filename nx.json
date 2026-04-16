@@ -52,12 +52,6 @@
       "types": {
         "feat": {
           "semverBump": "patch"
-        },
-        "__INVALID__": {
-          "semverBump": "patch",
-          "changelog": {
-            "title": "🔄 Changes"
-          }
         }
       }
     }

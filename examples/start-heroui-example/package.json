@@ -22,6 +22,7 @@
     "wrangler": "^4.83.0"
   },
   "dependencies": {
+    "@better-auth/passkey": "^1.6.4",
     "@better-auth-ui/heroui": "*",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",

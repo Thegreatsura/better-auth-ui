@@ -1,9 +1,10 @@
 import {
   type AuthClient,
   useAuth,
-  useAuthMutation,
-  useSession
+  useAuthMutation
 } from "@better-auth-ui/react"
+import { useQueryClient } from "@tanstack/react-query"
+
 import type { UseAuthMutationOptions } from "./use-auth-mutation"
 
 export { useAuthMutation } from "./use-auth-mutation"
@@ -20,14 +21,14 @@ export function useSignUpEmail(
   options?: UseAuthMutationOptions<AuthClient["signUp"]["email"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch } = useSession({ refetchOnMount: false })
+  const queryClient = useQueryClient()
 
   return useAuthMutation({
     authFn: authClient.signUp.email,
     options: {
       ...options,
       onSuccess: async (...args) => {
-        await refetch()
+        queryClient.resetQueries({ queryKey: ["auth", "getSession"] })
         await options?.onSuccess?.(...args)
       }
     }

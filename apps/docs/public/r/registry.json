@@ -10,6 +10,7 @@
       "description": "A complete sign-in form component with email/password, magic link, and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@*",
+        "@better-auth/passkey",
         "better-auth",
         "lucide-react"
       ],
@@ -31,6 +32,10 @@
         },
         {
           "path": "src/components/auth/magic-link-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey-button.tsx",
           "type": "registry:component"
         },
         {
@@ -80,6 +85,7 @@
       "description": "A magic link sign-in form component with email input and optional social provider support.",
       "dependencies": [
         "@better-auth-ui/react@*",
+        "@better-auth/passkey",
         "better-auth",
         "lucide-react"
       ],
@@ -99,6 +105,10 @@
         },
         {
           "path": "src/components/auth/magic-link-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey-button.tsx",
           "type": "registry:component"
         },
         {
@@ -488,14 +498,44 @@
       ]
     },
     {
+      "name": "passkeys",
+      "type": "registry:component",
+      "title": "Passkeys",
+      "description": "Display and manage registered passkeys for the current user. Shows each passkey with name, creation date, and delete control.",
+      "dependencies": [
+        "@better-auth-ui/react@*",
+        "@better-auth/passkey",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "separator",
+        "skeleton",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/components/settings/security/passkeys.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/settings/security/passkey.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management, linked accounts, active sessions, and danger zone.",
+      "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
       "dependencies": ["@better-auth-ui/react@*"],
       "registryDependencies": [
         "https://better-auth-ui.com/r/change-password.json",
         "https://better-auth-ui.com/r/linked-accounts.json",
+        "https://better-auth-ui.com/r/passkeys.json",
         "https://better-auth-ui.com/r/active-sessions.json",
         "https://better-auth-ui.com/r/danger-zone.json"
       ],

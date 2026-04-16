@@ -1,3 +1,4 @@
+import { passkeyClient } from "@better-auth/passkey/client"
 import {
   magicLinkClient,
   multiSessionClient,
@@ -17,7 +18,12 @@ export type { PathToObject } from "better-auth/client"
 export type AnyAuthClient = Omit<ReturnType<typeof createAuthClient>, "signUp">
 
 const authClient = createAuthClient({
-  plugins: [magicLinkClient(), multiSessionClient(), usernameClient()]
+  plugins: [
+    magicLinkClient(),
+    multiSessionClient(),
+    passkeyClient(),
+    usernameClient()
+  ]
 })
 
 /**

@@ -17,6 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       magicLink
       multiSession
+      passkey
       socialProviders={["github", "google"]}
       redirectTo="/dashboard"
       navigate={navigate}
