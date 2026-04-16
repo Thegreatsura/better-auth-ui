@@ -1,11 +1,14 @@
 name: Publish
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/package.json'
+  workflow_dispatch:
+
+#on:
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - '**/package.json'
 
 jobs:
   publish:
@@ -29,7 +32,7 @@ jobs:
         run: bun install
 
       - name: Print Environment Info
-        run: nx report
+        run: bun nx report
 
       - name: Publish packages
-        run: nx release publish
+        run: bun nx release publish
