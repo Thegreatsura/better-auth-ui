@@ -25,6 +25,7 @@
     "@better-auth-ui/heroui": "*",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
+    "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-devtools": "^0.10.2",
     "@tanstack/react-router": "^1.168.22",
