@@ -6,7 +6,12 @@ Built with **shadcn/ui** and **HeroUI**. Drop in and go.
 
 ## [better-auth-ui.com](https://better-auth-ui.com)
 
-[Documentation](https://better-auth-ui.com/docs) • [Demo](https://better-auth-ui.com)
+[Documentation](https://better-auth-ui.com/docs) • [Demo](https://demo.better-auth-ui.com)
+
+---
+
+*Looking for the legacy package?*
+[Legacy Branch](https://github.com/better-auth-ui/better-auth-ui/tree/legacy) • [Legacy Docs](https://legacy.better-auth-ui.com)
 
 ---
 

@@ -26,14 +26,14 @@ function Home() {
 
   const copyShadcnCommand = () => {
     navigator.clipboard.writeText(
-      "bunx shadcn@latest add https://better-auth-ui.com/r/auth.json"
+      "bun x shadcn@latest add https://better-auth-ui.com/r/auth.json"
     )
     setCopiedShadcn(true)
     setTimeout(() => setCopiedShadcn(false), 2000)
   }
 
   const copyHeroUiCommand = () => {
-    navigator.clipboard.writeText("bun add @better-auth-ui/heroui")
+    navigator.clipboard.writeText("bun add @better-auth-ui/heroui@latest")
     setCopiedHeroui(true)
     setTimeout(() => setCopiedHeroui(false), 2000)
   }

@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "bun run build && wrangler deploy",
+    "cf-typegen": "wrangler types"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.32.3",
     "@tanstack/devtools-vite": "^0.6.0",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -15,12 +18,14 @@
     "@vitejs/plugin-react": "^6.0.1",
     "drizzle-kit": "^0.31.10",
     "typescript": "^6.0.2",
-    "vite": "^8.0.8"
+    "vite": "^8.0.8",
+    "wrangler": "^4.83.0"
   },
   "dependencies": {
     "@better-auth-ui/heroui": "*",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
+    "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-devtools": "^0.10.2",
     "@tanstack/react-router": "^1.168.22",
