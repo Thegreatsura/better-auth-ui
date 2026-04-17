@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { UserButtonIconDemo } from "@/demos/shadcn/user/user-button-icon"
 
 export const Route = createFileRoute("/demos/shadcn/user/user-button-icon")({
   component: RouteComponent
 })
 
-import { UserButton } from "@/components/user/user-button"
-
 function RouteComponent() {
   return (
-    <div className="flex flex-col p-4 md:p-6 items-center">
-      <UserButton size="icon" />
+    <div className="flex flex-col items-center p-4 md:p-6">
+      <UserButtonIconDemo />
     </div>
   )
 }
