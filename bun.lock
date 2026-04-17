@@ -165,6 +165,7 @@
         "@neondatabase/serverless": "^1.0.2",
         "@tailwindcss/vite": "^4.2.2",
         "@tanstack/react-devtools": "^0.10.2",
+        "@tanstack/react-pacer": "^0.21.1",
         "@tanstack/react-router": "^1.168.22",
         "@tanstack/react-router-devtools": "^1.166.13",
         "@tanstack/react-start": "^1.167.41",

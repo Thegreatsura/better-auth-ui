@@ -51,6 +51,7 @@
       "description": "A complete sign-up form component with name, email, password fields, magic link, and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@*",
+        "@tanstack/react-pacer",
         "better-auth",
         "lucide-react"
       ],
@@ -273,6 +274,7 @@
       "dependencies": [
         "@better-auth-ui/react@*",
         "@better-auth-ui/core@*",
+        "@tanstack/react-pacer",
         "better-auth",
         "lucide-react"
       ],
@@ -282,6 +284,7 @@
         "dropdown-menu",
         "field",
         "input",
+        "input-group",
         "label",
         "skeleton",
         "sonner",
