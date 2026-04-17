@@ -16,13 +16,14 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@better-auth-ui/heroui": "*",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
-    "better-auth": "^1.6.4",
+    "@neondatabase/serverless": "^1.0.2",
+    "better-auth": "^1.6.5",
     "drizzle-orm": "^0.45.2",
     "next": "^16.2.4",
     "next-themes": "^0.4.6",

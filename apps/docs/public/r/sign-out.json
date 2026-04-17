@@ -4,7 +4,7 @@
   "title": "Sign Out",
   "description": "A component that signs the user out when mounted and displays a loading state.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "better-auth"
   ],
   "registryDependencies": [

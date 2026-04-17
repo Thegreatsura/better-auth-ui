@@ -8,6 +8,7 @@ import type { AppearanceConfig } from "./appearance-config"
 import type { AvatarConfig } from "./avatar-config"
 import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
+import type { UsernameConfig } from "./username-config"
 
 /**
  * Core authentication configuration interface.
@@ -75,6 +76,11 @@ export interface AuthConfig {
    */
   viewPaths: ViewPaths
   /**
+   * Username plugin configuration
+   * @remarks `UsernameConfig`
+   */
+  username: UsernameConfig
+  /**
    * Function to navigate to a new path
    * @param options - Navigation options with href and optional replace flag
    * @default window.location.href = href (or window.location.replace if replace: true)
@@ -109,6 +115,13 @@ export const defaultAuthConfig: AuthConfig = {
   redirectTo: "/",
   viewPaths,
   localization,
+  username: {
+    enabled: false,
+    displayUsername: true,
+    isUsernameAvailable: true,
+    minUsernameLength: 3,
+    maxUsernameLength: 30
+  },
   navigate: ({ to, replace }) => {
     if (replace) {
       window.location.replace(to)

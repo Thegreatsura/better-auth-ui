@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "dev": "tsc --watch",
     "email": "email dev --dir src/components/email -p 9000",
     "test": "vitest"
@@ -16,12 +16,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./core": {
-      "import": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
     }
   },
   "devDependencies": {
@@ -33,13 +33,13 @@
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^4.1.4",
-    "@better-auth/passkey": "^1.6.4",
-    "better-auth": "^1.6.4",
+    "@better-auth/passkey": "^1.6.5",
+    "better-auth": "^1.6.5",
     "clsx": "^2.1.1",
     "playwright": "^1.59.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-email": "^5.2.10",
+    "react-email": "^6.0.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
     "vitest": "^4.1.4",
@@ -51,8 +51,8 @@
   "peerDependencies": {
     "@react-email/components": ">=1.0.12",
     "@tanstack/react-query": ">=5.99.0",
-    "@better-auth/passkey": ">=1.6.4",
-    "better-auth": ">=1.6.4",
+    "@better-auth/passkey": ">=1.6.5",
+    "better-auth": ">=1.6.5",
     "clsx": ">=2.0.0",
     "react": ">=19.2.5",
     "react-dom": ">=19.2.5",

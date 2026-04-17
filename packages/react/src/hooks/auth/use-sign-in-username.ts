@@ -8,21 +8,21 @@ import {
 } from "./use-auth-mutation"
 
 /**
- * Hook that creates a mutation for email/password sign-up.
+ * Hook that creates a mutation for username/password sign-in.
  *
- * The mutation sends an email/password sign-up request and
- * refetches the session on success.
+ * The mutation sends a username/password sign-in request and
+ * refetches the session on completion.
  *
  * @returns The `useMutation` result.
  */
-export function useSignUpEmail(
-  options?: UseAuthMutationOptions<AuthClient["signUp"]["email"]>
+export function useSignInUsername(
+  options?: UseAuthMutationOptions<AuthClient["signIn"]["username"]>
 ) {
   const { authClient } = useAuth()
   const queryClient = useQueryClient()
 
   return useAuthMutation({
-    authFn: authClient.signUp.email,
+    authFn: authClient.signIn.username,
     options: {
       ...options,
       onSuccess: async (...args) => {

@@ -1,5 +1,7 @@
-import { type AuthClient, useAuth, useSession } from "@better-auth-ui/react"
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { useSession } from "../auth/use-session"
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).

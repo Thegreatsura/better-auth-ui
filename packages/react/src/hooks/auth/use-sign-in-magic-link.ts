@@ -1,11 +1,9 @@
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import {
-  type AuthClient,
-  useAuth,
+  type UseAuthMutationOptions,
   useAuthMutation
-} from "@better-auth-ui/react"
-import type { UseAuthMutationOptions } from "./use-auth-mutation"
-
-export { useAuthMutation } from "./use-auth-mutation"
+} from "./use-auth-mutation"
 
 /**
  * Hook that creates a mutation for magic-link sign-in.

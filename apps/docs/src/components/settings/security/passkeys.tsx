@@ -24,7 +24,7 @@ export function Passkeys({ className }: PasskeysProps) {
 
   const { data: passkeys, isPending } = useListUserPasskeys({
     throwOnError: (error) => {
-      toast.error(error.error?.message || error.message)
+      if (error.error) toast.error(error.error.message)
       return false
     }
   })

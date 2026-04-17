@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc && bun styles",
+    "build": "vite build && bun styles",
     "dev": "bun styles && tsc --watch",
     "styles": "cpy src/styles.css dist/ --flat",
     "test": "vitest"
@@ -14,16 +14,16 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./core": {
-      "import": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
     },
     "./react": {
-      "import": "./dist/react-exports.js",
-      "types": "./dist/react-exports.d.ts"
+      "types": "./dist/react-exports.d.ts",
+      "import": "./dist/react-exports.js"
     },
     "./styles": "./dist/styles.css"
   },
@@ -31,12 +31,13 @@
     "@gravity-ui/icons": "^2.18.0",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
+    "@tanstack/react-pacer": "^0.21.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^4.1.4",
-    "better-auth": "^1.6.4",
+    "better-auth": "^1.6.5",
     "cpy-cli": "^7.0.0",
     "playwright": "^1.59.1",
     "react": "^19.2.5",
@@ -52,7 +53,8 @@
     "@gravity-ui/icons": ">=2.18.0",
     "@heroui/react": ">=3.0.2",
     "@heroui/styles": ">=3.0.2",
-    "better-auth": ">=1.6.4",
+    "@tanstack/react-pacer": ">=0.21.0",
+    "better-auth": ">=1.6.5",
     "react": ">=19.2.5",
     "react-dom": ">=19.2.5",
     "bowser": ">=2.11.0"

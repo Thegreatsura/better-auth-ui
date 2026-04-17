@@ -1,5 +1,5 @@
+import type { SettingsView } from "@better-auth-ui/core"
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
-import type { SettingsView } from "@better-auth-ui/react/core"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useMemo } from "react"
 

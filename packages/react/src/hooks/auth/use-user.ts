@@ -1,6 +1,5 @@
-import type { AuthClient } from "@better-auth-ui/react"
+import type { AuthClient } from "../../lib/auth-client"
 import type { UseAuthQueryOptions } from "./use-auth-query"
-
 import { useSession } from "./use-session"
 
 /**

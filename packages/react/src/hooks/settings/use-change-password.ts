@@ -1,11 +1,9 @@
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import {
-  type AuthClient,
-  useAuth,
+  type UseAuthMutationOptions,
   useAuthMutation
-} from "@better-auth-ui/react"
-import type { UseAuthMutationOptions } from "../auth/use-auth-mutation"
-
-export { useAuthMutation } from "../auth/use-auth-mutation"
+} from "../auth/use-auth-mutation"
 
 /**
  * Hook that creates a mutation for changing the authenticated user's password.

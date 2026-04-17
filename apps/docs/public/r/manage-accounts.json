@@ -4,7 +4,7 @@
   "title": "Manage Accounts",
   "description": "Display and manage multiple signed-in accounts for multi-session support. Shows all device sessions with actions to switch between or revoke sessions.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "better-auth",
     "lucide-react"
   ],

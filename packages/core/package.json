@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "dev": "tsc --watch",
     "test": "vitest"
   },
@@ -15,16 +15,16 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "devDependencies": {
-    "better-auth": "^1.6.4",
+    "better-auth": "^1.6.5",
     "vitest": "^4.1.4"
   },
   "peerDependencies": {
-    "better-auth": ">=1.6.4"
+    "better-auth": ">=1.6.5"
   },
   "repository": {
     "type": "git",

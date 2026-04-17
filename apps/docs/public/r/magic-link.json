@@ -4,7 +4,7 @@
   "title": "Magic Link",
   "description": "A magic link sign-in form component with email input and optional social provider support.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "@better-auth/passkey",
     "better-auth",
     "lucide-react"

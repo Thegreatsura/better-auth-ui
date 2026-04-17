@@ -4,7 +4,7 @@
   "title": "Settings",
   "description": "A unified settings component that renders the appropriate settings view based on path or view prop with tab navigation.",
   "dependencies": [
-    "@better-auth-ui/react@*"
+    "@better-auth-ui/react@latest"
   ],
   "registryDependencies": [
     "tabs",

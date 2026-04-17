@@ -4,7 +4,7 @@
   "title": "Email Changed Email",
   "description": "Email template component that notifies users when their email address has been changed.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "@react-email/components"
   ],
   "registryDependencies": [],

@@ -4,7 +4,7 @@
   "title": "Appearance",
   "description": "A theme selector card with visual theme previews for system, light, and dark themes.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "lucide-react"
   ],
   "registryDependencies": [

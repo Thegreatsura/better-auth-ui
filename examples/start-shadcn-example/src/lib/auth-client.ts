@@ -1,7 +1,24 @@
 import { passkeyClient } from "@better-auth/passkey/client"
-import { multiSessionClient } from "better-auth/client/plugins"
+import {
+  inferAdditionalFields,
+  multiSessionClient,
+  usernameClient
+} from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
+import type { auth } from "./auth"
+
 export const authClient = createAuthClient({
-  plugins: [multiSessionClient(), passkeyClient()]
+  plugins: [
+    inferAdditionalFields<typeof auth>(),
+    multiSessionClient(),
+    passkeyClient(),
+    usernameClient()
+  ]
 })
+
+declare module "@better-auth-ui/react" {
+  interface AuthConfig {
+    AuthClient: typeof authClient
+  }
+}

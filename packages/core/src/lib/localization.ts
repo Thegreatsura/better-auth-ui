@@ -111,6 +111,21 @@ export const localization = {
     /** @remarks `"Switch Account"` */
     switchAccount: "Switch Account",
 
+    /** @remarks `"Username"` */
+    username: "Username",
+
+    /** @remarks `"Username is available"` */
+    usernameAvailable: "Username is available",
+
+    /** @remarks `"Enter your username or email"` */
+    usernameOrEmailPlaceholder: "Enter your username or email",
+
+    /** @remarks `"Enter your username"` */
+    usernamePlaceholder: "Enter your username",
+
+    /** @remarks `"Username is already taken. Please try another."` */
+    usernameTaken: "Username is already taken. Please try another.",
+
     /** @remarks `"Verification email sent!"` */
     verificationEmailSent: "Verification email sent!",
 

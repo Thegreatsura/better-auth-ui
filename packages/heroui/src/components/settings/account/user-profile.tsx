@@ -1,4 +1,10 @@
-import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
+import {
+  useAuth,
+  useIsUsernameAvailable,
+  useSession,
+  useUpdateUser
+} from "@better-auth-ui/react"
+import { Check, Xmark } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -8,13 +14,16 @@ import {
   Fieldset,
   Form,
   Input,
+  InputGroup,
   Label,
   Skeleton,
   Spinner,
   TextField,
   toast
 } from "@heroui/react"
-import type { SyntheticEvent } from "react"
+import { useDebouncer } from "@tanstack/react-pacer"
+import { type SyntheticEvent, useEffect, useState } from "react"
+
 import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
@@ -23,17 +32,56 @@ export type UserProfileProps = {
 }
 
 /**
- * Render a profile card that lets the authenticated user view and update their display name and avatar.
+ * Render a profile card that lets the authenticated user view and update their display name, username, and avatar.
  *
- * @returns A JSX element containing the user profile card with avatar upload and an editable name form
+ * @returns A JSX element containing the user profile card with avatar upload and editable form fields
  */
 export function UserProfile({
   className,
   variant,
   ...props
 }: UserProfileProps & CardProps) {
-  const { localization } = useAuth()
+  const { localization, username: usernameConfig } = useAuth()
   const { data: session } = useSession()
+
+  const currentUsername =
+    (usernameConfig?.displayUsername
+      ? session?.user?.displayUsername
+      : session?.user?.username) || ""
+
+  const [username, setUsername] = useState(currentUsername)
+
+  useEffect(() => {
+    setUsername(currentUsername)
+  }, [currentUsername])
+
+  const {
+    mutate: isUsernameAvailable,
+    data: usernameData,
+    error: usernameError,
+    reset: resetUsername
+  } = useIsUsernameAvailable()
+
+  const usernameDebouncer = useDebouncer(
+    (value: string) => {
+      if (!value.trim() || value.trim() === currentUsername) {
+        resetUsername()
+        return
+      }
+
+      isUsernameAvailable({ username: value.trim() })
+    },
+    { wait: 500 }
+  )
+
+  function handleUsernameChange(value: string) {
+    setUsername(value)
+    resetUsername()
+
+    if (usernameConfig?.isUsernameAvailable) {
+      usernameDebouncer.maybeExecute(value)
+    }
+  }
 
   const { mutate: updateUser, isPending } = useUpdateUser({
     onError: (error) => toast.danger(error.error?.message || error.message),
@@ -43,7 +91,19 @@ export function UserProfile({
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    updateUser({ name: formData.get("name") as string })
+    const name = formData.get("name") as string
+
+    updateUser({
+      name,
+      ...(usernameConfig?.enabled
+        ? {
+            username: username.trim(),
+            ...(usernameConfig.displayUsername
+              ? { displayUsername: username.trim() }
+              : {})
+          }
+        : {})
+    })
   }
 
   return (
@@ -59,6 +119,61 @@ export function UserProfile({
               <ChangeAvatar />
 
               <Fieldset.Group>
+                {usernameConfig?.enabled && (
+                  <TextField
+                    type="text"
+                    autoComplete="username"
+                    minLength={usernameConfig.minUsernameLength}
+                    maxLength={usernameConfig.maxUsernameLength}
+                    isDisabled={isPending || !session}
+                    value={username}
+                    onChange={handleUsernameChange}
+                    isInvalid={
+                      !!usernameError ||
+                      (usernameData && !usernameData.available)
+                    }
+                  >
+                    <Label>{localization.auth.username}</Label>
+
+                    {session ? (
+                      <InputGroup
+                        variant={
+                          variant === "transparent" ? "primary" : "secondary"
+                        }
+                      >
+                        <InputGroup.Input
+                          placeholder={localization.auth.usernamePlaceholder}
+                          name="username"
+                        />
+
+                        {usernameConfig.isUsernameAvailable &&
+                          username.trim() &&
+                          username.trim() !== currentUsername && (
+                            <InputGroup.Suffix className="px-2">
+                              {usernameData?.available ? (
+                                <Check className="text-success" />
+                              ) : usernameError ||
+                                usernameData?.available === false ? (
+                                <Xmark className="text-danger" />
+                              ) : (
+                                <Spinner size="sm" color="current" />
+                              )}
+                            </InputGroup.Suffix>
+                          )}
+                      </InputGroup>
+                    ) : (
+                      <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
+                    )}
+
+                    <FieldError>
+                      {usernameError?.error?.message ||
+                        usernameError?.message ||
+                        (usernameData?.available === false &&
+                          localization.auth.usernameTaken)}
+                    </FieldError>
+                  </TextField>
+                )}
+
                 <TextField
                   key={session?.user?.name}
                   name="name"

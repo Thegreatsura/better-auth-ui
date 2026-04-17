@@ -1,7 +1,13 @@
 "use client"
 
-import { useAuth, useSignInSocial, useSignUpEmail } from "@better-auth-ui/react"
-import { Eye, EyeOff } from "lucide-react"
+import {
+  useAuth,
+  useIsUsernameAvailable,
+  useSignInSocial,
+  useSignUpEmail
+} from "@better-auth-ui/react"
+import { useDebouncer } from "@tanstack/react-pacer"
+import { Check, Eye, EyeOff, X } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -58,6 +64,7 @@ export function SignUp({
     magicLink,
     redirectTo,
     socialProviders,
+    username: usernameConfig,
     viewPaths,
     navigate,
     Link
@@ -65,6 +72,35 @@ export function SignUp({
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [username, setUsername] = useState("")
+
+  const {
+    mutate: isUsernameAvailable,
+    data: usernameData,
+    error: usernameError,
+    reset: resetUsername
+  } = useIsUsernameAvailable()
+
+  const usernameDebouncer = useDebouncer(
+    (value: string) => {
+      if (!value.trim()) {
+        resetUsername()
+        return
+      }
+
+      isUsernameAvailable({ username: value.trim() })
+    },
+    { wait: 500 }
+  )
+
+  function handleUsernameChange(value: string) {
+    setUsername(value)
+    resetUsername()
+
+    if (usernameConfig?.isUsernameAvailable) {
+      usernameDebouncer.maybeExecute(value)
+    }
+  }
 
   const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
     onError: (error) => {
@@ -122,7 +158,19 @@ export function SignUp({
       return
     }
 
-    signUpEmail({ name, email, password })
+    signUpEmail({
+      name,
+      email,
+      password,
+      ...(usernameConfig?.enabled
+        ? {
+            username: username.trim(),
+            ...(usernameConfig.displayUsername
+              ? { displayUsername: username.trim() }
+              : {})
+          }
+        : {})
+    })
   }
 
   const showSeparator =
@@ -189,6 +237,60 @@ export function SignUp({
 
                   <FieldError>{fieldErrors.name}</FieldError>
                 </Field>
+
+                {usernameConfig?.enabled && (
+                  <Field
+                    data-invalid={
+                      !!usernameError ||
+                      (usernameData && !usernameData.available)
+                    }
+                  >
+                    <Label htmlFor="username">
+                      {localization.auth.username}
+                    </Label>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="username"
+                        name="username"
+                        type="text"
+                        autoComplete="username"
+                        placeholder={localization.auth.usernamePlaceholder}
+                        required
+                        minLength={usernameConfig.minUsernameLength}
+                        maxLength={usernameConfig.maxUsernameLength}
+                        disabled={isPending}
+                        value={username}
+                        onChange={(e) => handleUsernameChange(e.target.value)}
+                        aria-invalid={
+                          !!usernameError ||
+                          (usernameData && !usernameData.available)
+                        }
+                      />
+
+                      {usernameConfig.isUsernameAvailable &&
+                        username.trim() && (
+                          <InputGroupAddon align="inline-end">
+                            {usernameData?.available ? (
+                              <Check className="text-foreground" />
+                            ) : usernameError ||
+                              usernameData?.available === false ? (
+                              <X className="text-destructive" />
+                            ) : (
+                              <Spinner />
+                            )}
+                          </InputGroupAddon>
+                        )}
+                    </InputGroup>
+
+                    <FieldError>
+                      {usernameError?.error?.message ||
+                        usernameError?.message ||
+                        (usernameData?.available === false &&
+                          localization.auth.usernameTaken)}
+                    </FieldError>
+                  </Field>
+                )}
 
                 <Field data-invalid={!!fieldErrors.email}>
                   <Label htmlFor="email">{localization.auth.email}</Label>

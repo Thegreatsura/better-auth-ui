@@ -4,7 +4,7 @@
   "title": "Magic Link Email",
   "description": "Email template component that sends magic link authentication emails for passwordless sign-in.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "@react-email/components"
   ],
   "registryDependencies": [],
