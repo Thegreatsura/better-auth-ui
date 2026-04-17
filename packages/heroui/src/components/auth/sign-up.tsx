@@ -1,5 +1,10 @@
-import { useAuth, useSignInSocial, useSignUpEmail } from "@better-auth-ui/react"
-import { Eye, EyeSlash } from "@gravity-ui/icons"
+import {
+  useAuth,
+  useIsUsernameAvailable,
+  useSignInSocial,
+  useSignUpEmail
+} from "@better-auth-ui/react"
+import { Check, Eye, EyeSlash, Xmark } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -16,6 +21,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useState } from "react"
 
 import { FieldSeparator } from "./field-separator"
@@ -53,12 +59,42 @@ export function SignUp({
     magicLink,
     redirectTo,
     socialProviders,
+    username: usernameConfig,
     viewPaths,
     navigate
   } = useAuth()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [username, setUsername] = useState("")
+
+  const {
+    mutate: isUsernameAvailable,
+    data: usernameData,
+    error: usernameError,
+    reset: resetUsername
+  } = useIsUsernameAvailable()
+
+  const usernameDebouncer = useDebouncer(
+    (value: string) => {
+      if (!value.trim()) {
+        resetUsername()
+        return
+      }
+
+      isUsernameAvailable({ username: value.trim() })
+    },
+    { wait: 500 }
+  )
+
+  function handleUsernameChange(value: string) {
+    setUsername(value)
+    resetUsername()
+
+    if (usernameConfig?.isUsernameAvailable) {
+      usernameDebouncer.maybeExecute(value)
+    }
+  }
 
   const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
     onError: (error) => {
@@ -109,7 +145,19 @@ export function SignUp({
       return
     }
 
-    signUpEmail({ name, email, password })
+    signUpEmail({
+      name,
+      email,
+      password,
+      ...(usernameConfig?.enabled
+        ? {
+            username: username.trim(),
+            ...(usernameConfig.displayUsername
+              ? { displayUsername: username.trim() }
+              : {})
+          }
+        : {})
+    })
   }
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
@@ -161,6 +209,51 @@ export function SignUp({
 
               <FieldError />
             </TextField>
+
+            {usernameConfig?.enabled && (
+              <TextField
+                name="username"
+                type="text"
+                autoComplete="username"
+                isDisabled={isPending}
+                value={username}
+                onChange={handleUsernameChange}
+                isInvalid={
+                  !!usernameError || (usernameData && !usernameData.available)
+                }
+              >
+                <Label>{localization.auth.username}</Label>
+
+                <InputGroup
+                  variant={variant === "transparent" ? "primary" : "secondary"}
+                >
+                  <InputGroup.Input
+                    placeholder={localization.auth.usernamePlaceholder}
+                    name="username"
+                    required
+                  />
+
+                  {usernameConfig.isUsernameAvailable && username.trim() && (
+                    <InputGroup.Suffix className="px-2">
+                      {usernameData?.available ? (
+                        <Check className="text-success" />
+                      ) : usernameError || usernameData?.available === false ? (
+                        <Xmark className="text-danger" />
+                      ) : (
+                        <Spinner size="sm" color="current" />
+                      )}
+                    </InputGroup.Suffix>
+                  )}
+                </InputGroup>
+
+                <FieldError>
+                  {usernameError?.error?.message ||
+                    usernameError?.message ||
+                    (usernameData?.available === false &&
+                      localization.auth.usernameTaken)}
+                </FieldError>
+              </TextField>
+            )}
 
             <TextField
               name="email"

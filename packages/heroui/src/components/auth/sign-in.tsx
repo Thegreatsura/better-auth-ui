@@ -2,7 +2,8 @@ import {
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
-  useSignInSocial
+  useSignInSocial,
+  useSignInUsername
 } from "@better-auth-ui/react"
 import {
   Button,
@@ -34,6 +35,10 @@ export interface SignInProps {
   variant?: CardProps["variant"]
 }
 
+function isEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
 /**
  * Render the sign-in UI using auth context for configuration and localization.
  *
@@ -55,6 +60,7 @@ export function SignIn({
     passkey,
     redirectTo,
     socialProviders,
+    username: usernameConfig,
     viewPaths,
     navigate
   } = useAuth()
@@ -66,27 +72,38 @@ export function SignIn({
     onSuccess: () => toast.success(localization.auth.verificationEmailSent)
   })
 
-  const { mutate: signInEmail, isPending: signInPending } = useSignInEmail({
-    onError: (error, { email }) => {
-      setPassword("")
+  const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
+    {
+      onError: (error, { email }) => {
+        setPassword("")
 
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.danger(error.error?.message || error.message, {
-          actionProps: {
-            children: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
+        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          toast.danger(error.error?.message || error.message, {
+            actionProps: {
+              children: localization.auth.resend,
+              onClick: () =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+            }
+          })
+        } else {
+          toast.danger(error.error?.message || error.message)
+        }
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    }
+  )
+
+  const { mutate: signInUsername, isPending: signInUsernamePending } =
+    useSignInUsername({
+      onError: (error) => {
+        setPassword("")
         toast.danger(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    })
 
   const [socialRedirecting, setSocialRedirecting] = useState(false)
 
@@ -108,13 +125,21 @@ export function SignIn({
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    signInEmail({
-      email,
-      password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
-    })
+    if (usernameConfig?.enabled && !isEmail(email)) {
+      signInUsername({
+        username: email,
+        password
+      })
+    } else {
+      signInEmail({
+        email,
+        password,
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      })
+    }
   }
 
+  const signInPending = signInEmailPending || signInUsernamePending
   const isPending = signInPending || socialPending || socialRedirecting
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
@@ -152,14 +177,24 @@ export function SignIn({
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <TextField
               name="email"
-              type="email"
-              autoComplete="email"
+              type={usernameConfig?.enabled ? "text" : "email"}
+              autoComplete={
+                usernameConfig?.enabled ? "username email" : "email"
+              }
               isDisabled={isPending}
             >
-              <Label>{localization.auth.email}</Label>
+              <Label>
+                {usernameConfig?.enabled
+                  ? localization.auth.username
+                  : localization.auth.email}
+              </Label>
 
               <Input
-                placeholder={localization.auth.emailPlaceholder}
+                placeholder={
+                  usernameConfig?.enabled
+                    ? localization.auth.usernameOrEmailPlaceholder
+                    : localization.auth.emailPlaceholder
+                }
                 variant={variant === "transparent" ? "primary" : "secondary"}
                 required
               />

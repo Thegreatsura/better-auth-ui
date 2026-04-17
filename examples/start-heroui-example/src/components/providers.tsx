@@ -18,6 +18,7 @@ export function Providers({ children }: { children: ReactNode }) {
       magicLink
       multiSession
       passkey
+      username={{ enabled: true }}
       redirectTo="/dashboard"
       socialProviders={["github"]}
       navigate={navigate}
