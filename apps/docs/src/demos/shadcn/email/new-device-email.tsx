@@ -1,3 +1,15 @@
+import { EmailFrame } from "@/components/email-frame"
+
+export function NewDeviceEmailDemo() {
+  return (
+    <EmailFrame
+      title="New Device Email Preview"
+      srcDoc={html}
+      className="h-[840px]"
+    />
+  )
+}
+
 import { NewDeviceEmail } from "@better-auth-ui/react"
 import { render } from "@react-email/render"
 
@@ -22,13 +34,3 @@ const html = await render(
     poweredBy={true}
   />
 )
-
-export function NewDeviceEmailDemo() {
-  return (
-    <iframe
-      title="New Device Email Preview"
-      srcDoc={html}
-      className="h-[840px] w-full rounded-xl border-0 bg-background"
-    />
-  )
-}

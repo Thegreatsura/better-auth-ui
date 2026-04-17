@@ -1,3 +1,15 @@
+import { EmailFrame } from "@/components/email-frame"
+
+export function EmailChangedEmailDemo() {
+  return (
+    <EmailFrame
+      title="Email Changed Email Preview"
+      srcDoc={html}
+      className="h-[740px]"
+    />
+  )
+}
+
 import { EmailChangedEmail } from "@better-auth-ui/react"
 import { render } from "@react-email/render"
 
@@ -16,13 +28,3 @@ const html = await render(
     poweredBy={true}
   />
 )
-
-export function EmailChangedEmailDemo() {
-  return (
-    <iframe
-      title="Email Changed Email Preview"
-      srcDoc={html}
-      className="h-[740px] w-full rounded-xl border-0 bg-background"
-    />
-  )
-}

@@ -1,3 +1,15 @@
+import { EmailFrame } from "@/components/email-frame"
+
+export function OtpEmailDemo() {
+  return (
+    <EmailFrame
+      title="One-Time Password Email Preview"
+      srcDoc={html}
+      className="h-[620px]"
+    />
+  )
+}
+
 import { OtpEmail } from "@better-auth-ui/heroui"
 import { render } from "@react-email/render"
 
@@ -15,13 +27,3 @@ const html = await render(
     poweredBy={true}
   />
 )
-
-export function OtpEmailDemo() {
-  return (
-    <iframe
-      title="OTP Email Preview"
-      srcDoc={html}
-      className="h-[620px] w-full rounded-xl border-0 bg-background"
-    />
-  )
-}

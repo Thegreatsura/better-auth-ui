@@ -7,20 +7,7 @@ description: Email template component that sends one-time password (OTP) verific
 
 <ComponentPreview name="heroui-otp-email" />
 
-```tsx
-import { OtpEmail } from "@better-auth-ui/heroui"
-
-export function OTPVerificationEmail() {
-  return (
-    <OtpEmail
-      verificationCode="123456"
-      email="user@example.com"
-      appName="My App"
-      expirationMinutes={10}
-      darkMode={true}
-    />
-  )
-}
+```tsx file=<rootDir>/src/demos/heroui/email/otp-email.tsx#L13-
 ```
 
 ## Props

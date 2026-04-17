@@ -7,21 +7,7 @@ description: Email template component that sends email verification links to use
 
 <ComponentPreview name="shadcn-email-verification-email" />
 
-```tsx
-import { EmailVerificationEmail } from "@better-auth-ui/react"
-
-export function VerificationEmail() {
-  return (
-    <EmailVerificationEmail
-      url="https://example.com/verify?token=example-token"
-      email="user@example.com"
-      appName="My App"
-      expirationMinutes={60}
-      logoURL="https://example.com/logo.png"
-      darkMode={true}
-    />
-  )
-}
+```tsx file=<rootDir>/src/demos/shadcn/email/email-verification-email.tsx#L13-
 ```
 
 ## Installation

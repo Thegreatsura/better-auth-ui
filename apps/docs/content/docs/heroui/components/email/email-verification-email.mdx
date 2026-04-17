@@ -7,20 +7,7 @@ description: Email template component that sends email verification links to use
 
 <ComponentPreview name="heroui-email-verification-email" />
 
-```tsx
-import { EmailVerificationEmail } from "@better-auth-ui/heroui"
-
-export function VerificationEmail() {
-  return (
-    <EmailVerificationEmail
-      url="https://example.com/verify?token=example-token"
-      email="user@example.com"
-      appName="My App"
-      expirationMinutes={60}
-      darkMode={true}
-    />
-  )
-}
+```tsx file=<rootDir>/src/demos/heroui/email/email-verification-email.tsx#L13-
 ```
 
 ## Props

@@ -1,3 +1,15 @@
+import { EmailFrame } from "@/components/email-frame"
+
+export function EmailVerificationEmailDemo() {
+  return (
+    <EmailFrame
+      title="Email Verification Email Preview"
+      srcDoc={html}
+      className="h-[620px]"
+    />
+  )
+}
+
 import { EmailVerificationEmail } from "@better-auth-ui/react"
 import { render } from "@react-email/render"
 
@@ -15,13 +27,3 @@ const html = await render(
     poweredBy={true}
   />
 )
-
-export function EmailVerificationEmailDemo() {
-  return (
-    <iframe
-      title="Email Verification Email Preview"
-      srcDoc={html}
-      className="h-[620px] w-full rounded-xl border-0 bg-background"
-    />
-  )
-}

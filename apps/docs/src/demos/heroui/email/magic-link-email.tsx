@@ -1,3 +1,15 @@
+import { EmailFrame } from "@/components/email-frame"
+
+export function MagicLinkEmailDemo() {
+  return (
+    <EmailFrame
+      title="Magic Link Email Preview"
+      srcDoc={html}
+      className="h-[600px]"
+    />
+  )
+}
+
 import { MagicLinkEmail } from "@better-auth-ui/heroui"
 import { render } from "@react-email/render"
 
@@ -15,13 +27,3 @@ const html = await render(
     poweredBy={true}
   />
 )
-
-export function MagicLinkEmailDemo() {
-  return (
-    <iframe
-      title="Magic Link Email Preview"
-      srcDoc={html}
-      className="h-[600px] w-full rounded-xl border-0 bg-background"
-    />
-  )
-}

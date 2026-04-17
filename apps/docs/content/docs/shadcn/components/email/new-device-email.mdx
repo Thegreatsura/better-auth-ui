@@ -7,28 +7,7 @@ description: Email template component that notifies users when a new device sign
 
 <ComponentPreview name="shadcn-new-device-email" />
 
-```tsx
-import { NewDeviceEmail } from "@better-auth-ui/react"
-
-export function NewDeviceNotificationEmail() {
-  return (
-    <NewDeviceEmail
-      userEmail="user@example.com"
-      deviceInfo={{
-        browser: "Chrome 120.0",
-        os: "macOS 14.2",
-        location: "San Francisco, CA",
-        ipAddress: "192.168.1.1",
-        timestamp: "January 15, 2024 at 3:30 PM"
-      }}
-      appName="My App"
-      supportEmail="support@example.com"
-      secureAccountLink="https://example.com/secure-account"
-      logoURL="https://example.com/logo.png"
-      darkMode={true}
-    />
-  )
-}
+```tsx file=<rootDir>/src/demos/shadcn/email/new-device-email.tsx#L13-
 ```
 
 ## Installation

@@ -7,20 +7,7 @@ description: Email template component that sends magic link authentication email
 
 <ComponentPreview name="heroui-magic-link-email" />
 
-```tsx
-import { MagicLinkEmail } from "@better-auth-ui/heroui"
-
-export function MagicLinkAuthEmail() {
-  return (
-    <MagicLinkEmail
-      url="https://example.com/auth/verify?token=example-token"
-      email="user@example.com"
-      appName="My App"
-      expirationMinutes={5}
-      darkMode={true}
-    />
-  )
-}
+```tsx file=<rootDir>/src/demos/heroui/email/magic-link-email.tsx#L13-
 ```
 
 ## Props
