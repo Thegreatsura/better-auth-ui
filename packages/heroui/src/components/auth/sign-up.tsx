@@ -215,6 +215,8 @@ export function SignUp({
                 name="username"
                 type="text"
                 autoComplete="username"
+                minLength={usernameConfig.minUsernameLength}
+                maxLength={usernameConfig.maxUsernameLength}
                 isDisabled={isPending}
                 value={username}
                 onChange={handleUsernameChange}

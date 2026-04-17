@@ -118,7 +118,9 @@ export const defaultAuthConfig: AuthConfig = {
   username: {
     enabled: false,
     displayUsername: true,
-    isUsernameAvailable: true
+    isUsernameAvailable: true,
+    minUsernameLength: 3,
+    maxUsernameLength: 30
   },
   navigate: ({ to, replace }) => {
     if (replace) {

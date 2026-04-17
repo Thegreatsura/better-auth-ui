@@ -124,6 +124,8 @@ export function UserProfile({
                     name="username"
                     type="text"
                     autoComplete="username"
+                    minLength={usernameConfig.minUsernameLength}
+                    maxLength={usernameConfig.maxUsernameLength}
                     isDisabled={isPending || !session}
                     value={username}
                     onChange={handleUsernameChange}

@@ -5,4 +5,14 @@ export interface UsernameConfig {
   displayUsername: boolean
   /** Whether to check username availability on sign-up and user profile */
   isUsernameAvailable: boolean
+  /**
+   * Minimum allowed username length
+   * @default 3
+   */
+  minUsernameLength: number
+  /**
+   * Maximum allowed username length
+   * @default 30
+   */
+  maxUsernameLength: number
 }
