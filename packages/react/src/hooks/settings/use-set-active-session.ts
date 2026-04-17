@@ -1,12 +1,13 @@
-import {
-  type AuthClient,
-  useAuth,
-  useAuthMutation,
-  useListDeviceSessions,
-  useSession
-} from "@better-auth-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
-import type { UseAuthMutationOptions } from "../auth/use-auth-mutation"
+
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
+import {
+  type UseAuthMutationOptions,
+  useAuthMutation
+} from "../auth/use-auth-mutation"
+import { useSession } from "../auth/use-session"
+import { useListDeviceSessions } from "./use-list-device-sessions"
 
 /**
  * Hook that sets an active device session in multi-session mode.

@@ -1,9 +1,11 @@
-import { type AuthClient, useAuth, useSession } from "@better-auth-ui/react"
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import {
   type UseAuthQueryOptions,
   type UseAuthQueryResult,
   useAuthQuery
 } from "../auth/use-auth-query"
+import { useSession } from "../auth/use-session"
 
 /**
  * Retrieve device sessions for multi-session account switching.

@@ -1,14 +1,13 @@
-import {
-  type AuthClient,
-  useAuth,
-  useAuthMutation,
-  useSession
-} from "@better-auth-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
-import type {
-  UseAuthMutationOptions,
-  UseAuthMutationResult
+
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
+import {
+  type UseAuthMutationOptions,
+  type UseAuthMutationResult,
+  useAuthMutation
 } from "../auth/use-auth-mutation"
+import { useSession } from "../auth/use-session"
 
 /**
  * Hook that creates a mutation for updating the authenticated user's profile.

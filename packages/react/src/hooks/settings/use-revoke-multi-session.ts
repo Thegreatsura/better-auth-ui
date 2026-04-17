@@ -1,10 +1,10 @@
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import {
-  type AuthClient,
-  useAuth,
-  useAuthMutation,
-  useListDeviceSessions
-} from "@better-auth-ui/react"
-import type { UseAuthMutationOptions } from "../auth/use-auth-mutation"
+  type UseAuthMutationOptions,
+  useAuthMutation
+} from "../auth/use-auth-mutation"
+import { useListDeviceSessions } from "./use-list-device-sessions"
 
 /**
  * Hook that creates a mutation for revoking a device session in multi-session mode.

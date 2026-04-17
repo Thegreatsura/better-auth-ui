@@ -1,10 +1,10 @@
+import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import {
-  type AuthClient,
-  useAuth,
-  useAuthMutation,
-  useSession
-} from "@better-auth-ui/react"
-import type { UseAuthMutationOptions } from "../auth/use-auth-mutation"
+  type UseAuthMutationOptions,
+  useAuthMutation
+} from "../auth/use-auth-mutation"
+import { useSession } from "../auth/use-session"
 
 /**
  * Hook that creates a mutation for changing the current user's email address.

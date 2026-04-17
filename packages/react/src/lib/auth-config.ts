@@ -1,4 +1,4 @@
-import type { AuthConfig as BaseAuthConfig } from "@better-auth-ui/react/core"
+import type { AuthConfig as BaseAuthConfig } from "@better-auth-ui/core"
 import type { ComponentType, PropsWithChildren } from "react"
 import type { AnyAuthClient, AuthClient } from "./auth-client"
 

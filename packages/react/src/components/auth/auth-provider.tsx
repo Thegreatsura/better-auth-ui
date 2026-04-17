@@ -2,17 +2,15 @@
 
 import { deepmerge, defaultAuthConfig } from "@better-auth-ui/core"
 import {
-  type AnyAuthClient,
-  type AnyAuthConfig,
-  type AuthConfig,
-  AuthContext
-} from "@better-auth-ui/react"
-import {
   QueryClient,
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
 import { type PropsWithChildren, useContext } from "react"
+
+import type { AnyAuthClient } from "../../lib/auth-client"
+import type { AnyAuthConfig, AuthConfig } from "../../lib/auth-config"
+import { AuthContext } from "../../lib/auth-context"
 
 const fallbackQueryClient = new QueryClient()
 
