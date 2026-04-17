@@ -231,7 +231,6 @@ export function SignUp({
                 >
                   <InputGroup.Input
                     placeholder={localization.auth.usernamePlaceholder}
-                    name="username"
                     required
                   />
 

@@ -121,7 +121,6 @@ export function UserProfile({
               <Fieldset.Group>
                 {usernameConfig?.enabled && (
                   <TextField
-                    name="username"
                     type="text"
                     autoComplete="username"
                     minLength={usernameConfig.minUsernameLength}

@@ -178,9 +178,7 @@ export function SignIn({
             <TextField
               name="email"
               type={usernameConfig?.enabled ? "text" : "email"}
-              autoComplete={
-                usernameConfig?.enabled ? "username email" : "email"
-              }
+              autoComplete={usernameConfig?.enabled ? "username" : "email"}
               isDisabled={isPending}
             >
               <Label>
