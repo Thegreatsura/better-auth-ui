@@ -5,7 +5,6 @@ import defaultComponents from "fumadocs-ui/mdx"
 import type { MDXComponents } from "mdx/types"
 
 import { ComponentPreview } from "@/components/component-preview"
-import { DemoIframe } from "@/components/demo-iframe"
 import { HeroUI } from "@/components/icons/heroui"
 import { NextJS } from "@/components/icons/nextjs"
 import { Shadcn } from "@/components/icons/shadcn"
@@ -21,7 +20,6 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
         <Pre>{props.children}</Pre>
       </CodeBlock>
     ),
-    Demo: DemoIframe,
     TypeTable: (props) => <TypeTable {...props} />,
     HeroUI,
     NextJS,

@@ -2,10 +2,3 @@
 @import "./app.css";
 @import "@heroui/styles";
 @import "@better-auth-ui/heroui/styles";
-
-/* Override md breakpoint for iframe demos - show desktop styles at smaller widths */
-@theme inline {
-  --breakpoint-md: 28rem;
-  --breakpoint-lg: 54rem;
-  --breakpoint-xl: 64rem;
-}
