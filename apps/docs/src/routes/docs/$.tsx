@@ -20,6 +20,8 @@ import { source } from "@/lib/source"
 const owner = "better-auth-ui"
 const repo = "better-auth-ui"
 
+import herouiCss from "@/styles/heroui.css?url"
+
 export const Route = createFileRoute("/docs/$")({
   component: Page,
   loader: async ({ params }) => {
@@ -27,6 +29,17 @@ export const Route = createFileRoute("/docs/$")({
     const data = await loader({ data: slugs })
     await clientLoader.preload(data.path)
     return data
+  },
+  head: ({ params }) => {
+    const slugs = params._splat?.split("/") ?? []
+
+    if (slugs.includes("heroui")) {
+      return {
+        links: [{ rel: "stylesheet", href: herouiCss }]
+      }
+    }
+
+    return {}
   }
 })
 

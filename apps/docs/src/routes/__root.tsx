@@ -8,7 +8,7 @@ import {
 import { RootProvider } from "fumadocs-ui/provider/tanstack"
 import type * as React from "react"
 import { Toaster } from "sonner"
-
+import { Providers } from "@/components/demos/heroui/providers"
 import SearchDialog from "@/components/search"
 import { cn } from "@/lib/utils"
 
@@ -86,7 +86,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           compactDemoBody ? "min-h-0 bg-background" : "min-h-svh"
         )}
       >
-        <RootProvider search={{ SearchDialog }}>{children}</RootProvider>
+        <RootProvider search={{ SearchDialog }}>
+          <Providers>{children}</Providers>
+        </RootProvider>
         <Toaster />
         <Scripts />
       </body>
