@@ -17,9 +17,8 @@ export function Providers({ children }: { children: ReactNode }) {
         setTheme: () => {}
       }}
       Link={(props) => (
-        // biome-ignore lint/a11y/noStaticElementInteractions: ignore
         // biome-ignore lint/a11y/useValidAnchor: ignore
-        <a {...props} onClick={(e) => e.preventDefault()} />
+        <a {...props} href={undefined} />
       )}
     >
       {children}

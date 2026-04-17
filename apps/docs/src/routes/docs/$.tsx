@@ -11,7 +11,7 @@ import {
   DocsTitle,
   PageLastUpdate
 } from "fumadocs-ui/layouts/docs/page"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
 import { baseOptions } from "@/lib/layout.shared"
 import { getMDXComponents } from "@/lib/mdx-components"
@@ -20,6 +20,9 @@ import { source } from "@/lib/source"
 const owner = "better-auth-ui"
 const repo = "better-auth-ui"
 
+import herouiCss from "@/styles/heroui.css?url"
+import shadcnCss from "@/styles/shadcn.css?url"
+
 export const Route = createFileRoute("/docs/$")({
   component: Page,
   loader: async ({ params }) => {
@@ -27,6 +30,23 @@ export const Route = createFileRoute("/docs/$")({
     const data = await loader({ data: slugs })
     await clientLoader.preload(data.path)
     return data
+  },
+  head: ({ params }) => {
+    const slugs = params._splat?.split("/") ?? []
+
+    if (slugs.includes("heroui")) {
+      return {
+        links: [{ id: "heroui-stylesheet", rel: "stylesheet", href: herouiCss }]
+      }
+    }
+
+    if (slugs.includes("shadcn")) {
+      return {
+        links: [{ id: "shadcn-stylesheet", rel: "stylesheet", href: shadcnCss }]
+      }
+    }
+
+    return {}
   }
 })
 
@@ -85,11 +105,32 @@ const clientLoader = browserCollections.docs.createClientLoader({
 
 function Page() {
   const data = Route.useLoaderData()
-  const Content = clientLoader.getComponent(data.path)
+  const Content = clientLoader.getComponent(
+    data.path
+  ) as React.ComponentType<unknown>
   const tree = useMemo(
-    () => transformPageTree(data.tree as PageTree.Folder),
+    () => transformPageTree(data.tree as PageTree.Root),
     [data.tree]
   )
+
+  const slugs = data.path.split("/")
+
+  useEffect(() => {
+    if (slugs.includes("heroui")) {
+      // add heroui stylesheet
+      document
+        .getElementById("heroui-stylesheet")
+        ?.setAttribute("href", herouiCss)
+      document.getElementById("shadcn-stylesheet")?.setAttribute("href", "")
+    }
+
+    if (slugs.includes("shadcn")) {
+      document
+        .getElementById("shadcn-stylesheet")
+        ?.setAttribute("href", shadcnCss)
+      document.getElementById("heroui-stylesheet")?.setAttribute("href", "")
+    }
+  }, [slugs])
 
   return (
     <DocsLayout {...baseOptions()} tree={tree}>

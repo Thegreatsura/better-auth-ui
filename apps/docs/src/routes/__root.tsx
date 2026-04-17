@@ -2,15 +2,12 @@ import {
   createRootRoute,
   HeadContent,
   Outlet,
-  Scripts,
-  useRouterState
+  Scripts
 } from "@tanstack/react-router"
 import { RootProvider } from "fumadocs-ui/provider/tanstack"
 import type * as React from "react"
 import { Toaster } from "sonner"
-
 import SearchDialog from "@/components/search"
-import { cn } from "@/lib/utils"
 
 export const Route = createRootRoute({
   head: () => ({
@@ -69,23 +66,12 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
-  const isDemo = pathname.startsWith("/demos/")
-  /** Email previews use a `grow` iframe and need a definite column height from the body. */
-  const isEmailDemo = isDemo && pathname.includes("/email/")
-  const compactDemoBody = isDemo && !isEmailDemo
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body
-        className={cn(
-          "flex flex-col antialiased",
-          compactDemoBody ? "min-h-0 bg-background" : "min-h-svh"
-        )}
-      >
+      <body className="flex min-h-svh flex-col antialiased">
         <RootProvider search={{ SearchDialog }}>{children}</RootProvider>
         <Toaster />
         <Scripts />
