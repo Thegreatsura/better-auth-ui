@@ -4,7 +4,7 @@
   "title": "User Avatar",
   "description": "Renders the current user's avatar using session data. Shows a skeleton while loading and falls back to initials when no image is available.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "better-auth",
     "lucide-react"
   ],

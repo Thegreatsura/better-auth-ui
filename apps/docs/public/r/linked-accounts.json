@@ -4,8 +4,8 @@
   "title": "Linked Accounts",
   "description": "Display and manage linked social accounts. Shows all linked social accounts with the ability to unlink them, followed by available providers that can be linked.",
   "dependencies": [
-    "@better-auth-ui/react@*",
-    "@better-auth-ui/core@*",
+    "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth",
     "lucide-react"
   ],

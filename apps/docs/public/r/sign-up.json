@@ -4,7 +4,7 @@
   "title": "Sign Up",
   "description": "A complete sign-up form component with name, email, password fields, magic link, and social provider support.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "@tanstack/react-pacer",
     "better-auth",
     "lucide-react"

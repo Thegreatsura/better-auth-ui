@@ -4,7 +4,7 @@
   "title": "Passkeys",
   "description": "Display and manage registered passkeys for the current user. Shows each passkey with name, creation date, and delete control.",
   "dependencies": [
-    "@better-auth-ui/react@*",
+    "@better-auth-ui/react@latest",
     "@better-auth/passkey",
     "lucide-react"
   ],

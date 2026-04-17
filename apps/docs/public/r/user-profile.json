@@ -4,8 +4,8 @@
   "title": "User Profile",
   "description": "A form component for editing user profile information including name and avatar.",
   "dependencies": [
-    "@better-auth-ui/react@*",
-    "@better-auth-ui/core@*",
+    "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "@tanstack/react-pacer",
     "better-auth",
     "lucide-react"

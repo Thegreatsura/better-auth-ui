@@ -4,7 +4,7 @@
   "title": "Security Settings",
   "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
   "dependencies": [
-    "@better-auth-ui/react@*"
+    "@better-auth-ui/react@latest"
   ],
   "registryDependencies": [
     "https://better-auth-ui.com/r/change-password.json",
