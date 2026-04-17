@@ -105,9 +105,11 @@ const clientLoader = browserCollections.docs.createClientLoader({
 
 function Page() {
   const data = Route.useLoaderData()
-  const Content = clientLoader.getComponent(data.path)
+  const Content = clientLoader.getComponent(
+    data.path
+  ) as React.ComponentType<unknown>
   const tree = useMemo(
-    () => transformPageTree(data.tree as PageTree.Folder),
+    () => transformPageTree(data.tree as PageTree.Root),
     [data.tree]
   )
 
