@@ -14,16 +14,16 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./core": {
-      "import": "./dist/core.js",
-      "types": "./dist/core.d.ts"
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
     },
     "./react": {
-      "import": "./dist/react-exports.js",
-      "types": "./dist/react-exports.d.ts"
+      "types": "./dist/react-exports.d.ts",
+      "import": "./dist/react-exports.js"
     },
     "./styles": "./dist/styles.css"
   },
