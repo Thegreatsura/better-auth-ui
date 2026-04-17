@@ -30,6 +30,23 @@ export const Route = createFileRoute("/docs/$")({
     const data = await loader({ data: slugs })
     await clientLoader.preload(data.path)
     return data
+  },
+  head: ({ params }) => {
+    const slugs = params._splat?.split("/") ?? []
+
+    if (slugs.includes("heroui")) {
+      return {
+        links: [{ id: "heroui-stylesheet", rel: "stylesheet", href: herouiCss }]
+      }
+    }
+
+    if (slugs.includes("shadcn")) {
+      return {
+        links: [{ id: "shadcn-stylesheet", rel: "stylesheet", href: shadcnCss }]
+      }
+    }
+
+    return {}
   }
 })
 
