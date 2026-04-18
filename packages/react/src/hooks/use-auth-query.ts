@@ -1,5 +1,5 @@
 import { type QueryKey, useQuery } from "@tanstack/react-query"
-import { type AuthFn, authQueryOptions } from "../../queries/auth-query-options"
+import { type AuthFn, authQueryOptions } from "../queries/auth-query-options"
 
 /**
  * Escape-hatch hook for Better Auth endpoints that don't have a purpose-built

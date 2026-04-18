@@ -1,7 +1,7 @@
 import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { accountInfoOptions } from "../../queries/account-info-options"
+import { accountInfoOptions } from "../../queries/settings/account-info-options"
 import { useSession } from "../auth/use-session"
 
 export type UseAccountInfoOptions = Omit<

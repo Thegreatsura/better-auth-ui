@@ -1,48 +1,45 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-client"
-import { sessionOptions } from "../../queries/session-options"
-import {
-  type UseAuthMutationOptions,
-  type UseAuthMutationResult,
-  useAuthMutation
-} from "../auth/use-auth-mutation"
+import { updateUserOptions } from "../../mutations/settings/update-user-options"
+import { sessionOptions } from "../../queries/auth/session-options"
 import { useSession } from "../auth/use-session"
+
+export type UseUpdateUserOptions = Omit<
+  ReturnType<typeof updateUserOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation for updating the authenticated user's profile.
  *
- * The mutation submits the name update, refetches the session on success,
- * and displays success or error toasts.
+ * Optimistically merges the update into the cached session, then refetches
+ * the session to reconcile with the server.
  *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useUpdateUser(
-  options?: UseAuthMutationOptions<AuthClient["updateUser"]>
-): UseAuthMutationResult<AuthClient["updateUser"]> {
+export function useUpdateUser(options?: UseUpdateUserOptions) {
   const { authClient } = useAuth()
   const { data: session, refetch: refetchSession } = useSession(undefined, {
     refetchOnMount: false
   })
   const queryClient = useQueryClient()
 
-  return useAuthMutation({
-    authFn: authClient.updateUser,
-    options: {
-      ...options,
-      onSuccess: async (data, variables, ...rest) => {
-        if (session) {
-          queryClient.setQueryData(sessionOptions(authClient).queryKey, {
-            ...session,
-            user: { ...session.user, ...variables }
-          })
-        }
-
-        refetchSession()
-
-        await options?.onSuccess?.(data, variables, ...rest)
+  return useMutation({
+    ...updateUserOptions(authClient),
+    ...options,
+    onSuccess: async (data, variables, ...rest) => {
+      if (session) {
+        queryClient.setQueryData(sessionOptions(authClient).queryKey, {
+          ...session,
+          user: { ...session.user, ...variables }
+        })
       }
+
+      refetchSession()
+
+      await options?.onSuccess?.(data, variables, ...rest)
     }
   })
 }

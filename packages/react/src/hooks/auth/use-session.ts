@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { sessionOptions } from "../../queries/session-options"
+import { sessionOptions } from "../../queries/auth/session-options"
 
 export type UseSessionOptions = Omit<
   ReturnType<typeof sessionOptions>,

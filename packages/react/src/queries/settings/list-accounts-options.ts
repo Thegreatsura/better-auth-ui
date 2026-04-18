@@ -1,5 +1,5 @@
-import type { AuthClient } from "../lib/auth-client"
-import { authQueryOptions } from "./auth-query-options"
+import type { AuthClient } from "../../lib/auth-client"
+import { authQueryOptions } from "../auth-query-options"
 
 /**
  * Query options factory for a user's linked social accounts.
