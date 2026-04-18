@@ -32,7 +32,7 @@ export function UserAvatar({
   style,
   ...props
 }: UserAvatarProps & AvatarProps) {
-  const { data: session, isPending: sessionPending } = useSession(undefined, {
+  const { data: session, isPending: sessionPending } = useSession({
     enabled: !user && !isPending
   })
 

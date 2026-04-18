@@ -19,7 +19,7 @@ export type UseRevokeSessionOptions = Omit<
  */
 export function useRevokeSession(options?: UseRevokeSessionOptions) {
   const { authClient } = useAuth()
-  const { refetch: refetchSessions } = useListSessions(undefined, {
+  const { refetch: refetchSessions } = useListSessions({
     refetchOnMount: false
   })
 

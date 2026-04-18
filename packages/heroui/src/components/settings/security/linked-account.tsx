@@ -28,15 +28,13 @@ export type LinkedAccountProps = {
 export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
 
-  const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo(
-    { query: { accountId: account?.accountId } },
-    {
-      throwOnError: (error) => {
-        if (error.error) toast.danger(error.error.message)
-        return false
-      }
+  const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo({
+    query: { accountId: account?.accountId },
+    throwOnError: (error) => {
+      if (error.error) toast.danger(error.error.message)
+      return false
     }
-  )
+  })
 
   const { mutate: linkSocial, isPending: isLinking } = useLinkSocial({
     onError: (error) => toast.danger(error.error?.message || error.message)

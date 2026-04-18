@@ -1,0 +1,31 @@
+---
+title: Delete User
+description: Delete the authenticated user's account.
+---
+
+Depending on your Better Auth server config, this either deletes the account immediately or sends a confirmation email.
+
+## Usage
+
+```tsx
+import { useDeleteUser } from "@better-auth-ui/react"
+
+const { mutate: deleteUser } = useDeleteUser()
+
+deleteUser({ password: "hunter2", callbackURL: "/" })
+```
+
+After a successful immediate deletion you'll typically want to pair this with `useSignOut` (or call `queryClient.removeQueries({ queryKey: ["auth"] })` yourself) to clear the cache.
+
+## Options factory
+
+```tsx
+import { deleteUserOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(deleteUserOptions(authClient))
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-delete-user.ts" name="UseDeleteUserOptions" />

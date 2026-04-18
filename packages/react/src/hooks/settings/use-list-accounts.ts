@@ -7,29 +7,29 @@ import { useSession } from "../auth/use-session"
 export type UseListAccountsOptions = Omit<
   ReturnType<typeof listAccountsOptions>,
   "queryKey" | "queryFn"
->
+> &
+  NonNullable<Parameters<AuthClient["listAccounts"]>[0]>
 
 /**
  * Retrieve the current user's linked social accounts.
  *
  * Keyed per-user; waits for the active session before firing.
  *
- * @param params - Parameters forwarded to `authClient.listAccounts`.
- * @param options - React Query options forwarded to `useQuery`.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
  * @returns React Query result for the user's linked accounts.
  */
-export function useListAccounts(
-  params?: Parameters<AuthClient["listAccounts"]>[0],
-  options?: UseListAccountsOptions
-) {
+export function useListAccounts(options?: UseListAccountsOptions) {
   const { authClient } = useAuth()
-  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
   const userId = session?.user.id
   const disabled = !userId
 
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
   return useQuery({
-    ...listAccountsOptions(authClient, userId, params),
+    ...listAccountsOptions(authClient, userId, { fetchOptions }),
     ...(disabled && { queryFn: skipToken }),
-    ...options
+    ...queryOptions
   })
 }

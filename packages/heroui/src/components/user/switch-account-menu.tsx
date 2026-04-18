@@ -21,7 +21,7 @@ import { UserView } from "./user-view"
 export function SwitchAccountMenu() {
   const { basePaths, viewPaths, localization } = useAuth()
   const { data: session } = useSession()
-  const { data: deviceSessions, isPending } = useListDeviceSessions(undefined, {
+  const { data: deviceSessions, isPending } = useListDeviceSessions({
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
       return false

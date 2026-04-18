@@ -1,0 +1,106 @@
+---
+title: Mutations
+description: TanStack Query primitives for every Better Auth write endpoint.
+---
+
+Every mutation exposes a hook and an options factory. The factory's `.mutationKey` is the canonical key.
+
+```ts
+import { useSignInEmail, signInEmailOptions } from "@better-auth-ui/react"
+```
+
+Use the hook in components. Use the factory anywhere TanStack Query takes a `mutationOptions` object — `useMutation`, `useIsMutating`, or a global `MutationCache` observer.
+
+## Error handling
+
+Every mutation wires `throw: true` into `fetchOptions`, so the promise rejects with a `BetterFetchError` on failure instead of resolving with `{ error }`. This means you can rely on `error`, `isError`, `throwOnError`, and standard `onError` handlers from `useMutation`.
+
+```tsx
+const { mutate, error } = useSignInEmail({
+  onError: (err) => toast.error(err.message)
+})
+```
+
+## Cache side effects
+
+Hooks that change auth state update the cache for you. Override `onSuccess` in the hook options and it runs *after* the built-in side effect:
+
+- Sign-in / sign-up / passkey sign-in — reset the session query.
+- Sign-out — remove every `["auth", ...]` query.
+- `useUpdateUser` — optimistically merge the update into the cached session, then refetch.
+- `useSetActiveSession` — optimistically swap the cached session, scroll to top, and refetch.
+- `useChangeEmail` — refetch the session.
+- Passkey mutations (`useAddPasskey`, `useDeletePasskey`) — refetch the passkey list.
+- `useRevokeSession` — refetch the sessions list.
+- `useRevokeMultiSession` — refetch the device sessions list.
+- `useUnlinkAccount` — refetch the accounts list.
+
+## Tracking mutation state globally
+
+All mutation keys are prefixed with `"auth"`:
+
+```ts
+const authPending = useIsMutating({ mutationKey: ["auth"] })
+const signInPending = useIsMutating({ mutationKey: ["auth", "signIn"] })
+```
+
+Match inside a `MutationCache` observer for global toasts or analytics:
+
+```ts
+new MutationCache({
+  onError: (error, _vars, _ctx, mutation) => {
+    if (mutation.options.mutationKey?.[0] === "auth") {
+      toast.error(error.message)
+    }
+  }
+})
+```
+
+## Escape hatch
+
+For Better Auth write endpoints without a purpose-built hook, use `useAuthMutation`:
+
+```tsx
+import { useAuthMutation } from "@better-auth-ui/react"
+import { useAuth } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const { mutate } = useAuthMutation(
+  authClient.emailOtp.sendVerificationOtp,
+  ["auth", "emailOtp", "sendVerificationOtp"]
+)
+```
+
+## Available mutations
+
+### Auth
+
+<Cards>
+  <Card title="Sign In (Email)" href="/docs/react/mutations/sign-in-email" />
+  <Card title="Sign In (Username)" href="/docs/react/mutations/sign-in-username" />
+  <Card title="Sign In (Magic Link)" href="/docs/react/mutations/sign-in-magic-link" />
+  <Card title="Sign In (Passkey)" href="/docs/react/mutations/sign-in-passkey" />
+  <Card title="Sign In (Social)" href="/docs/react/mutations/sign-in-social" />
+  <Card title="Sign Up (Email)" href="/docs/react/mutations/sign-up-email" />
+  <Card title="Sign Out" href="/docs/react/mutations/sign-out" />
+  <Card title="Request Password Reset" href="/docs/react/mutations/request-password-reset" />
+  <Card title="Reset Password" href="/docs/react/mutations/reset-password" />
+  <Card title="Send Verification Email" href="/docs/react/mutations/send-verification-email" />
+  <Card title="Is Username Available" href="/docs/react/mutations/is-username-available" />
+</Cards>
+
+### Settings
+
+<Cards>
+  <Card title="Update User" href="/docs/react/mutations/update-user" />
+  <Card title="Change Email" href="/docs/react/mutations/change-email" />
+  <Card title="Change Password" href="/docs/react/mutations/change-password" />
+  <Card title="Delete User" href="/docs/react/mutations/delete-user" />
+  <Card title="Link Social" href="/docs/react/mutations/link-social" />
+  <Card title="Unlink Account" href="/docs/react/mutations/unlink-account" />
+  <Card title="Add Passkey" href="/docs/react/mutations/add-passkey" />
+  <Card title="Delete Passkey" href="/docs/react/mutations/delete-passkey" />
+  <Card title="Revoke Session" href="/docs/react/mutations/revoke-session" />
+  <Card title="Revoke Multi Session" href="/docs/react/mutations/revoke-multi-session" />
+  <Card title="Set Active Session" href="/docs/react/mutations/set-active-session" />
+</Cards>

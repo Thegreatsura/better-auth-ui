@@ -1,6 +1,6 @@
 ---
 title: Queries
-description: TanStack Query primitives for every Better Auth endpoint.
+description: TanStack Query primitives for every Better Auth read endpoint.
 ---
 
 Every query exposes a hook and an options factory. The factory's `.queryKey` is the canonical key.
@@ -13,11 +13,30 @@ Use the hook in components. Use the factory anywhere TanStack Query takes a `que
 
 ## Invalidation
 
-Keys follow a `["auth", ...]` prefix, with per-user queries nested under `["auth", "user", userId, ...]`. Invalidate by prefix for hierarchical cache control:
+Keys follow an `["auth", ...]` prefix, with per-user queries nested under `["auth", "user", userId, ...]`. Invalidate by prefix for hierarchical cache control:
 
 ```ts
 queryClient.invalidateQueries({ queryKey: ["auth"] })
 queryClient.invalidateQueries({ queryKey: ["auth", "user", userId] })
+```
+
+## Per-user queries
+
+Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListUserPasskeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
+
+## Escape hatch
+
+For endpoints without a purpose-built hook, use `useAuthQuery`:
+
+```tsx
+import { useAuthQuery } from "@better-auth-ui/react"
+import { useAuth } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const { data } = useAuthQuery(
+  authClient.magicLink.list,
+  ["auth", "magicLink", "list"]
+)
 ```
 
 ## Available queries
@@ -26,10 +45,25 @@ queryClient.invalidateQueries({ queryKey: ["auth", "user", userId] })
   <Card title="Session" href="/docs/react/queries/session">
     The current authenticated session.
   </Card>
+  <Card title="User" href="/docs/react/queries/user">
+    The current authenticated user (sugar over useSession).
+  </Card>
+  <Card title="Authenticate" href="/docs/react/queries/authenticate">
+    Session query that redirects unauthenticated users to sign-in.
+  </Card>
   <Card title="List Accounts" href="/docs/react/queries/list-accounts">
     The current user's linked social accounts.
   </Card>
   <Card title="Account Info" href="/docs/react/queries/account-info">
     Provider-specific info for a linked account.
+  </Card>
+  <Card title="List Sessions" href="/docs/react/queries/list-sessions">
+    Active sessions (devices) for the current user.
+  </Card>
+  <Card title="List Device Sessions" href="/docs/react/queries/list-device-sessions">
+    Device sessions for the multi-session account switcher.
+  </Card>
+  <Card title="List User Passkeys" href="/docs/react/queries/list-user-passkeys">
+    Passkeys registered for the current user.
   </Card>
 </Cards>

@@ -1,0 +1,29 @@
+---
+title: Revoke Multi Session
+description: Revoke a device session in multi-session mode.
+---
+
+Refetches the device sessions list on success.
+
+## Usage
+
+```tsx
+import { useRevokeMultiSession } from "@better-auth-ui/react"
+
+const { mutate: revokeMultiSession } = useRevokeMultiSession()
+
+revokeMultiSession({ sessionToken: deviceSession.session.token })
+```
+
+## Options factory
+
+```tsx
+import { revokeMultiSessionOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(revokeMultiSessionOptions(authClient))
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-revoke-multi-session.ts" name="UseRevokeMultiSessionOptions" />

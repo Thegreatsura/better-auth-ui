@@ -27,7 +27,7 @@ export function Passkeys({
 }: PasskeysProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
 
-  const { data: passkeys, isPending } = useListUserPasskeys(undefined, {
+  const { data: passkeys, isPending } = useListUserPasskeys({
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
       return false

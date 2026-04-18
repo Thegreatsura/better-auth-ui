@@ -3,7 +3,7 @@ title: Account Info
 description: Retrieve provider-specific info for a linked account.
 ---
 
-Keyed per-user; waits for the active session and `accountId` before firing.
+Keyed per-user; waits for the active session and `query.accountId` before firing.
 
 ## Usage
 
@@ -12,6 +12,12 @@ import { useAccountInfo } from "@better-auth-ui/react"
 
 const { data: accountInfo } = useAccountInfo({
   query: { accountId: "acc_123" }
+})
+
+// With React Query options in the same object
+const { data: accountInfo } = useAccountInfo({
+  query: { accountId: "acc_123" },
+  staleTime: 60_000
 })
 ```
 

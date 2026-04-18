@@ -23,11 +23,9 @@ export type UseSetActiveSessionOptions = Omit<
 export function useSetActiveSession(options?: UseSetActiveSessionOptions) {
   const queryClient = useQueryClient()
   const { authClient } = useAuth()
-  const { refetch: refetchSession } = useSession(undefined, {
-    refetchOnMount: false
-  })
+  const { refetch: refetchSession } = useSession({ refetchOnMount: false })
   const { data: deviceSessions, refetch: refetchDeviceSessions } =
-    useListDeviceSessions(undefined, { refetchOnMount: false })
+    useListDeviceSessions({ refetchOnMount: false })
 
   return useMutation({
     ...setActiveSessionOptions(authClient),

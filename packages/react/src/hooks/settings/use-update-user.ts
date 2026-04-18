@@ -21,7 +21,7 @@ export type UseUpdateUserOptions = Omit<
  */
 export function useUpdateUser(options?: UseUpdateUserOptions) {
   const { authClient } = useAuth()
-  const { data: session, refetch: refetchSession } = useSession(undefined, {
+  const { data: session, refetch: refetchSession } = useSession({
     refetchOnMount: false
   })
   const queryClient = useQueryClient()

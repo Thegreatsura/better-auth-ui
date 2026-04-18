@@ -7,29 +7,29 @@ import { useSession } from "../auth/use-session"
 export type UseListUserPasskeysOptions = Omit<
   ReturnType<typeof listUserPasskeysOptions>,
   "queryKey" | "queryFn"
->
+> &
+  NonNullable<Parameters<AuthClient["passkey"]["listUserPasskeys"]>[0]>
 
 /**
  * Retrieve the passkeys registered for the current user.
  *
  * Keyed per-user; waits for the active session before firing.
  *
- * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
- * @param options - React Query options forwarded to `useQuery`.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
  * @returns React Query result for the passkeys list.
  */
-export function useListUserPasskeys(
-  params?: Parameters<AuthClient["passkey"]["listUserPasskeys"]>[0],
-  options?: UseListUserPasskeysOptions
-) {
+export function useListUserPasskeys(options?: UseListUserPasskeysOptions) {
   const { authClient } = useAuth()
-  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
   const userId = session?.user.id
   const disabled = !userId
 
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
   return useQuery({
-    ...listUserPasskeysOptions(authClient, userId, params),
+    ...listUserPasskeysOptions(authClient, userId, { fetchOptions }),
     ...(disabled && { queryFn: skipToken }),
-    ...options
+    ...queryOptions
   })
 }

@@ -19,7 +19,7 @@ export type UseUnlinkAccountOptions = Omit<
  */
 export function useUnlinkAccount(options?: UseUnlinkAccountOptions) {
   const { authClient } = useAuth()
-  const { refetch } = useListAccounts(undefined, { refetchOnMount: false })
+  const { refetch } = useListAccounts({ refetchOnMount: false })
 
   return useMutation({
     ...unlinkAccountOptions(authClient),

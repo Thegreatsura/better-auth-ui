@@ -1,0 +1,32 @@
+---
+title: Sign In (Magic Link)
+description: Send a magic-link sign-in email.
+---
+
+The session is established when the user clicks the emailed link, so no session-cache side effects run here.
+
+## Usage
+
+```tsx
+import { useSignInMagicLink } from "@better-auth-ui/react"
+
+const { mutate: signInMagicLink } = useSignInMagicLink()
+
+signInMagicLink({
+  email: "alice@example.com",
+  callbackURL: "/dashboard"
+})
+```
+
+## Options factory
+
+```tsx
+import { signInMagicLinkOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(signInMagicLinkOptions(authClient))
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-magic-link.ts" name="UseSignInMagicLinkOptions" />

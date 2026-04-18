@@ -19,7 +19,7 @@ export type UseRevokeMultiSessionOptions = Omit<
  */
 export function useRevokeMultiSession(options?: UseRevokeMultiSessionOptions) {
   const { authClient } = useAuth()
-  const { refetch } = useListDeviceSessions(undefined, {
+  const { refetch } = useListDeviceSessions({
     refetchOnMount: false
   })
 

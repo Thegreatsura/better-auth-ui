@@ -7,30 +7,30 @@ import { useSession } from "../auth/use-session"
 export type UseAccountInfoOptions = Omit<
   ReturnType<typeof accountInfoOptions>,
   "queryKey" | "queryFn"
->
+> &
+  NonNullable<Parameters<AuthClient["accountInfo"]>[0]>
 
 /**
  * Retrieve provider-specific info for a linked account.
  *
- * Keyed per-user; waits for the active session and `params.query.accountId`
+ * Keyed per-user; waits for the active session and `options.query.accountId`
  * before firing.
  *
- * @param params - Parameters forwarded to `authClient.accountInfo`.
- * @param options - React Query options forwarded to `useQuery`.
+ * @param options - Better Auth params (`query`, `fetchOptions`) and React
+ *   Query options forwarded to `useQuery`.
  */
-export function useAccountInfo(
-  params?: Parameters<AuthClient["accountInfo"]>[0],
-  options?: UseAccountInfoOptions
-) {
+export function useAccountInfo(options?: UseAccountInfoOptions) {
   const { authClient } = useAuth()
-  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
   const userId = session?.user.id
-  const accountId = params?.query?.accountId
+
+  const { query, fetchOptions, ...queryOptions } = options ?? {}
+  const accountId = query?.accountId
   const disabled = !userId || !accountId
 
   return useQuery({
-    ...accountInfoOptions(authClient, userId, params),
+    ...accountInfoOptions(authClient, userId, { query, fetchOptions }),
     ...(disabled && { queryFn: skipToken }),
-    ...options
+    ...queryOptions
   })
 }

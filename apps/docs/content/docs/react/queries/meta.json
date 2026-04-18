@@ -1,4 +1,14 @@
 {
   "title": "Queries",
-  "pages": ["index", "session", "list-accounts", "account-info"]
+  "pages": [
+    "index",
+    "session",
+    "user",
+    "authenticate",
+    "list-accounts",
+    "account-info",
+    "list-sessions",
+    "list-device-sessions",
+    "list-user-passkeys"
+  ]
 }

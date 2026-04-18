@@ -1,0 +1,32 @@
+---
+title: Sign In (Social)
+description: Start a social (OAuth) sign-in flow.
+---
+
+Initiates the OAuth redirect flow — the session lands once the provider redirects back, so no session-cache side effects run here.
+
+## Usage
+
+```tsx
+import { useSignInSocial } from "@better-auth-ui/react"
+
+const { mutate: signInSocial } = useSignInSocial()
+
+signInSocial({
+  provider: "github",
+  callbackURL: "/dashboard"
+})
+```
+
+## Options factory
+
+```tsx
+import { signInSocialOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(signInSocialOptions(authClient))
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-social.ts" name="UseSignInSocialOptions" />

@@ -7,29 +7,29 @@ import { useSession } from "../auth/use-session"
 export type UseListDeviceSessionsOptions = Omit<
   ReturnType<typeof listDeviceSessionsOptions>,
   "queryKey" | "queryFn"
->
+> &
+  NonNullable<Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]>
 
 /**
- * Retrieve device sessions for multi-session account switching.
+ * Retrieve the device sessions (multi-session account switcher).
  *
  * Keyed per-user; waits for the active session before firing.
  *
- * @param params - Parameters forwarded to `authClient.multiSession.listDeviceSessions`.
- * @param options - React Query options forwarded to `useQuery`.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
  * @returns React Query result for the device sessions list.
  */
-export function useListDeviceSessions(
-  params?: Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0],
-  options?: UseListDeviceSessionsOptions
-) {
+export function useListDeviceSessions(options?: UseListDeviceSessionsOptions) {
   const { authClient } = useAuth()
-  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
   const userId = session?.user.id
   const disabled = !userId
 
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
   return useQuery({
-    ...listDeviceSessionsOptions(authClient, userId, params),
+    ...listDeviceSessionsOptions(authClient, userId, { fetchOptions }),
     ...(disabled && { queryFn: skipToken }),
-    ...options
+    ...queryOptions
   })
 }

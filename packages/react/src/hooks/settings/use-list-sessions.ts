@@ -7,29 +7,29 @@ import { useSession } from "../auth/use-session"
 export type UseListSessionsOptions = Omit<
   ReturnType<typeof listSessionsOptions>,
   "queryKey" | "queryFn"
->
+> &
+  NonNullable<Parameters<AuthClient["listSessions"]>[0]>
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).
  *
  * Keyed per-user; waits for the active session before firing.
  *
- * @param params - Parameters forwarded to `authClient.listSessions`.
- * @param options - React Query options forwarded to `useQuery`.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
  * @returns React Query result for the sessions list.
  */
-export function useListSessions(
-  params?: Parameters<AuthClient["listSessions"]>[0],
-  options?: UseListSessionsOptions
-) {
+export function useListSessions(options?: UseListSessionsOptions) {
   const { authClient } = useAuth()
-  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const { data: session } = useSession({ refetchOnMount: false })
   const userId = session?.user.id
   const disabled = !userId
 
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
   return useQuery({
-    ...listSessionsOptions(authClient, userId, params),
+    ...listSessionsOptions(authClient, userId, { fetchOptions }),
     ...(disabled && { queryFn: skipToken }),
-    ...options
+    ...queryOptions
   })
 }

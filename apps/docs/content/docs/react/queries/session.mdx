@@ -11,12 +11,18 @@ import { useSession } from "@better-auth-ui/react"
 // No args — most common
 const { data: session } = useSession()
 
-// With React Query options
-const { data: session } = useSession(undefined, { staleTime: 30_000 })
+// React Query options
+const { data: session } = useSession({ staleTime: 30_000 })
 
-// With Better Auth params
+// Better Auth params
 const { data: session } = useSession({
   query: { disableCookieCache: true }
+})
+
+// Both in one object
+const { data: session } = useSession({
+  query: { disableCookieCache: true },
+  staleTime: 30_000
 })
 ```
 
