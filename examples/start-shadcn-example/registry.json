@@ -4,6 +4,28 @@
   "homepage": "https://better-auth-ui.com",
   "items": [
     {
+      "name": "auth-provider",
+      "type": "registry:component",
+      "title": "Auth Provider",
+      "description": "Wraps the Better Auth UI provider and mounts an ErrorToaster that surfaces query and mutation failures via sonner.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@tanstack/react-query",
+        "better-auth"
+      ],
+      "registryDependencies": ["sonner"],
+      "files": [
+        {
+          "path": "src/components/auth/auth-provider.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/error-toaster.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "sign-in",
       "type": "registry:component",
       "title": "Sign In",
@@ -185,6 +207,7 @@
       "description": "A unified authentication component that renders the appropriate auth view based on path or view prop.",
       "dependencies": ["@better-auth-ui/react@latest"],
       "registryDependencies": [
+        "https://better-auth-ui.com/r/auth-provider.json",
         "https://better-auth-ui.com/r/sign-in.json",
         "https://better-auth-ui.com/r/sign-up.json",
         "https://better-auth-ui.com/r/magic-link.json",

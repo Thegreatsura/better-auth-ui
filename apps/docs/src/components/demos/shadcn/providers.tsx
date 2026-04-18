@@ -1,6 +1,6 @@
-import { AuthProvider } from "@better-auth-ui/react"
 import type { ReactNode } from "react"
 
+import { AuthProvider } from "@/components/auth/auth-provider"
 import { authClient } from "@/lib/auth-client"
 
 export function Providers({ children }: { children: ReactNode }) {
