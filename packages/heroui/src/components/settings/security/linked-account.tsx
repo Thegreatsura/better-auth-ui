@@ -29,9 +29,8 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
 
   const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo(
-    account?.accountId,
+    { query: { accountId: account?.accountId } },
     {
-      enabled: !!account,
       throwOnError: (error) => {
         if (error.error) toast.danger(error.error.message)
         return false

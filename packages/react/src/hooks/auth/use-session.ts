@@ -1,27 +1,28 @@
+import { useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthQueryOptions,
-  type UseAuthQueryResult,
-  useAuthQuery
-} from "./use-auth-query"
+import { sessionOptions } from "../../queries/session-options"
+
+export type UseSessionOptions = Omit<
+  ReturnType<typeof sessionOptions>,
+  "queryKey" | "queryFn"
+>
 
 /**
  * Retrieve the current authentication session.
  *
- * @param options - Options to merge into the React Query configuration for the session query.
- * @returns The React Query result for the session query: `data` contains session information, `isLoading`/`isFetching` indicate loading state, and `error` contains any fetch error.
+ * @param params - Parameters forwarded to `authClient.getSession`.
+ * @param options - React Query options forwarded to `useQuery`.
+ * @returns React Query result for the session.
  */
 export function useSession(
-  options?: Partial<UseAuthQueryOptions<AuthClient["getSession"]>>
-): UseAuthQueryResult<AuthClient["getSession"]> {
+  params?: Parameters<AuthClient["getSession"]>[0],
+  options?: UseSessionOptions
+) {
   const { authClient } = useAuth()
 
-  return useAuthQuery({
-    authFn: authClient.getSession,
-    options: {
-      queryKey: ["auth", "getSession"],
-      ...options
-    }
+  return useQuery({
+    ...sessionOptions(authClient, params),
+    ...options
   })
 }

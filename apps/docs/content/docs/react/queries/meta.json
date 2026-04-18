@@ -1,0 +1,4 @@
+{
+  "title": "Queries",
+  "pages": ["index", "session", "list-accounts", "account-info"]
+}

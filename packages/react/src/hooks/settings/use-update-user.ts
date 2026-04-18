@@ -21,7 +21,9 @@ export function useUpdateUser(
   options?: UseAuthMutationOptions<AuthClient["updateUser"]>
 ): UseAuthMutationResult<AuthClient["updateUser"]> {
   const { authClient } = useAuth()
-  const { data: session, refetch } = useSession({ refetchOnMount: false })
+  const { data: session, refetch: refetchSession } = useSession(undefined, {
+    refetchOnMount: false
+  })
   const queryClient = useQueryClient()
 
   return useAuthMutation({
@@ -34,7 +36,7 @@ export function useUpdateUser(
           user: { ...session?.user, ...variables }
         })
 
-        refetch()
+        refetchSession()
 
         await options?.onSuccess?.(data, variables, ...rest)
       }

@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
+import { sessionOptions } from "../../queries/session-options"
 import {
   type UseAuthMutationOptions,
   useAuthMutation
@@ -19,8 +20,9 @@ export function useSetActiveSession(
 ) {
   const queryClient = useQueryClient()
   const { authClient } = useAuth()
-
-  const { refetch: refetchSession } = useSession({ refetchOnMount: false })
+  const { refetch: refetchSession } = useSession(undefined, {
+    refetchOnMount: false
+  })
   const { data: deviceSessions, refetch: refetchDeviceSessions } =
     useListDeviceSessions({ refetchOnMount: false })
 
@@ -34,7 +36,10 @@ export function useSetActiveSession(
         )
 
         if (deviceSession)
-          queryClient.setQueryData(["auth", "getSession"], deviceSession)
+          queryClient.setQueryData(
+            sessionOptions(authClient).queryKey,
+            deviceSession
+          )
 
         window.scrollTo({ top: 0 })
 

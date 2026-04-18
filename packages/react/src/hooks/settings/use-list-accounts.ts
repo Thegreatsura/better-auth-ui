@@ -1,29 +1,35 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { listAccountsOptions } from "../../queries/list-accounts-options"
 import { useSession } from "../auth/use-session"
+
+export type UseListAccountsOptions = Omit<
+  ReturnType<typeof listAccountsOptions>,
+  "queryKey" | "queryFn"
+>
 
 /**
  * Retrieve the current user's linked social accounts.
  *
- * The query runs only when at least one social provider is configured and a session exists.
- * The provided `options` are forwarded to both `useSession` and `useQuery`, allowing customization of initial data and query behavior.
+ * Keyed per-user; waits for the active session before firing.
  *
- * @param options - Optional react-query / initial-data options forwarded to `useSession` and `useQuery`
- * @returns The react-query result containing linked accounts data, loading state, and error state
+ * @param params - Parameters forwarded to `authClient.listAccounts`.
+ * @param options - React Query options forwarded to `useQuery`.
+ * @returns React Query result for the user's linked accounts.
  */
 export function useListAccounts(
-  options?: Partial<UseAuthQueryOptions<AuthClient["listAccounts"]>>
+  params?: Parameters<AuthClient["listAccounts"]>[0],
+  options?: UseListAccountsOptions
 ) {
   const { authClient } = useAuth()
-  const { data: session } = useSession({ refetchOnMount: false })
+  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const userId = session?.user.id
+  const disabled = !userId
 
-  return useAuthQuery({
-    authFn: authClient.listAccounts,
-    options: {
-      queryKey: ["auth", "listAccounts", session?.user.id],
-      enabled: !!session,
-      ...options
-    }
+  return useQuery({
+    ...listAccountsOptions(authClient, userId, params),
+    ...(disabled && { queryFn: skipToken }),
+    ...options
   })
 }

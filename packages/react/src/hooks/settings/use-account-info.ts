@@ -1,31 +1,36 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { accountInfoOptions } from "../../queries/account-info-options"
+import { useSession } from "../auth/use-session"
+
+export type UseAccountInfoOptions = Omit<
+  ReturnType<typeof accountInfoOptions>,
+  "queryKey" | "queryFn"
+>
 
 /**
- * Retrieve provider-specific account info for a given account ID.
+ * Retrieve provider-specific info for a linked account.
  *
- * Uses the `accountInfo` API endpoint to fetch detailed information
- * from the social provider. The provider is automatically detected
- * from the account ID.
+ * Keyed per-user; waits for the active session and `params.query.accountId`
+ * before firing.
  *
- * @param accountId - The provider-given account ID to fetch info for
- * @param options - Optional react-query options forwarded to `useQuery`
- * @returns The react-query result containing account info data, loading state, and error state
+ * @param params - Parameters forwarded to `authClient.accountInfo`.
+ * @param options - React Query options forwarded to `useQuery`.
  */
 export function useAccountInfo(
-  accountId?: string,
-  options?: Partial<UseAuthQueryOptions<AuthClient["accountInfo"]>>
+  params?: Parameters<AuthClient["accountInfo"]>[0],
+  options?: UseAccountInfoOptions
 ) {
   const { authClient } = useAuth()
+  const { data: session } = useSession(undefined, { refetchOnMount: false })
+  const userId = session?.user.id
+  const accountId = params?.query?.accountId
+  const disabled = !userId || !accountId
 
-  return useAuthQuery({
-    authFn: authClient.accountInfo,
-    params: { query: { accountId } },
-    options: {
-      queryKey: ["auth", "accountInfo", accountId],
-      enabled: !!accountId,
-      ...options
-    }
+  return useQuery({
+    ...accountInfoOptions(authClient, userId, params),
+    ...(disabled && { queryFn: skipToken }),
+    ...options
   })
 }

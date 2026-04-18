@@ -1,0 +1,28 @@
+---
+title: Overview
+description: Shared React hooks, query primitives, and components used by both shadcn/ui and HeroUI.
+icon: React
+---
+
+The `@better-auth-ui/react` package ships the data layer behind every Better Auth UI component. It's built on [TanStack Query](https://tanstack.com/query) and exposes two kinds of primitives per endpoint:
+
+- **Hooks** — `useSession`, `useListAccounts`, …
+- **Options factories** — `sessionOptions`, `listAccountsOptions`, …
+
+Access a query's key via the options object: `sessionOptions(authClient).queryKey`.
+
+## Prerequisites
+
+Wrap your app with a `QueryClientProvider` above `<AuthProvider>`.
+
+```package-install
+@tanstack/react-query
+```
+
+## Next
+
+<Cards>
+  <Card title="Queries" href="/docs/react/queries">
+    Every auth read, with usage and server-side recipes.
+  </Card>
+</Cards>

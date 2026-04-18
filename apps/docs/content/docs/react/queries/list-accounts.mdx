@@ -1,0 +1,37 @@
+---
+title: List Accounts
+description: Retrieve the current user's linked social accounts.
+---
+
+Keyed per-user; waits for the active session before firing.
+
+## Usage
+
+```tsx
+import { useListAccounts } from "@better-auth-ui/react"
+
+const { data: accounts } = useListAccounts()
+```
+
+## Options factory
+
+```tsx
+import { listAccountsOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: accounts } = useQuery(listAccountsOptions(authClient, userId))
+```
+
+## Invalidation
+
+```ts
+import { listAccountsOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: listAccountsOptions(authClient, userId).queryKey
+})
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-accounts.ts" name="UseListAccountsOptions" />

@@ -1,0 +1,35 @@
+---
+title: Queries
+description: TanStack Query primitives for every Better Auth endpoint.
+---
+
+Every query exposes a hook and an options factory. The factory's `.queryKey` is the canonical key.
+
+```ts
+import { useSession, sessionOptions } from "@better-auth-ui/react"
+```
+
+Use the hook in components. Use the factory anywhere TanStack Query takes a `queryOptions` object (`useQuery`, `useQueries`, `prefetchQuery`, loaders). Read `.queryKey` off the factory for cache seeding or invalidation.
+
+## Invalidation
+
+Keys follow a `["auth", ...]` prefix, with per-user queries nested under `["auth", "user", userId, ...]`. Invalidate by prefix for hierarchical cache control:
+
+```ts
+queryClient.invalidateQueries({ queryKey: ["auth"] })
+queryClient.invalidateQueries({ queryKey: ["auth", "user", userId] })
+```
+
+## Available queries
+
+<Cards>
+  <Card title="Session" href="/docs/react/queries/session">
+    The current authenticated session.
+  </Card>
+  <Card title="List Accounts" href="/docs/react/queries/list-accounts">
+    The current user's linked social accounts.
+  </Card>
+  <Card title="Account Info" href="/docs/react/queries/account-info">
+    Provider-specific info for a linked account.
+  </Card>
+</Cards>

@@ -1,17 +1,20 @@
 import type { AuthClient } from "../../lib/auth-client"
-import type { UseAuthQueryOptions } from "./use-auth-query"
-import { useSession } from "./use-session"
+import { type UseSessionOptions, useSession } from "./use-session"
 
 /**
  * Retrieve the current authenticated user.
  *
- * @param options - Options to merge into the React Query configuration for the session query.
- * @returns The React Query result with `data` containing the user object from the session.
+ * Thin wrapper over `useSession` that returns `session.user` as `data`.
+ *
+ * @param params - Parameters forwarded to `authClient.getSession`.
+ * @param options - React Query options forwarded to `useQuery`.
+ * @returns React Query result with `data` narrowed to the user object.
  */
 export function useUser(
-  options?: Partial<UseAuthQueryOptions<AuthClient["getSession"]>>
+  params?: Parameters<AuthClient["getSession"]>[0],
+  options?: UseSessionOptions
 ) {
-  const { data, ...rest } = useSession(options)
+  const { data, ...rest } = useSession(params, options)
 
   return {
     data: data?.user,

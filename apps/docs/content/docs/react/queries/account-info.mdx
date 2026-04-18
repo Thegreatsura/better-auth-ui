@@ -1,0 +1,45 @@
+---
+title: Account Info
+description: Retrieve provider-specific info for a linked account.
+---
+
+Keyed per-user; waits for the active session and `accountId` before firing.
+
+## Usage
+
+```tsx
+import { useAccountInfo } from "@better-auth-ui/react"
+
+const { data: accountInfo } = useAccountInfo({
+  query: { accountId: "acc_123" }
+})
+```
+
+## Options factory
+
+```tsx
+import { accountInfoOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: accountInfo } = useQuery(
+  accountInfoOptions(authClient, userId, {
+    query: { accountId: "acc_123" }
+  })
+)
+```
+
+## Invalidation
+
+```ts
+import { accountInfoOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: accountInfoOptions(authClient, userId, {
+    query: { accountId: "acc_123" }
+  }).queryKey
+})
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-account-info.ts" name="UseAccountInfoOptions" />

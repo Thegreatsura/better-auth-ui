@@ -1,0 +1,54 @@
+---
+title: Session
+description: Read, prefetch, and invalidate the current authenticated session.
+---
+
+## Usage
+
+```tsx
+import { useSession } from "@better-auth-ui/react"
+
+// No args — most common
+const { data: session } = useSession()
+
+// With React Query options
+const { data: session } = useSession(undefined, { staleTime: 30_000 })
+
+// With Better Auth params
+const { data: session } = useSession({
+  query: { disableCookieCache: true }
+})
+```
+
+## Options factory
+
+```tsx
+import { sessionOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: session } = useQuery(sessionOptions(authClient))
+```
+
+## Server-side prefetching
+
+Seed the cache from an already-resolved session.
+
+```tsx
+import { sessionOptions } from "@better-auth-ui/react"
+
+queryClient.setQueryData(sessionOptions(authClient).queryKey, session)
+```
+
+## Invalidation
+
+```ts
+import { sessionOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: sessionOptions(authClient).queryKey
+})
+```
+
+## Props
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-session.ts" name="UseSessionOptions" />

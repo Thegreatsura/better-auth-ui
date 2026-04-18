@@ -15,7 +15,7 @@ export function useListSessions(
   options?: Partial<UseAuthQueryOptions<AuthClient["listSessions"]>>
 ) {
   const { authClient } = useAuth()
-  const { data: session } = useSession({ refetchOnMount: false })
+  const { data: session } = useSession(undefined, { refetchOnMount: false })
 
   return useAuthQuery({
     authFn: authClient.listSessions,

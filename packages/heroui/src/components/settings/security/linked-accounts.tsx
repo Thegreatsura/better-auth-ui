@@ -23,7 +23,7 @@ export function LinkedAccounts({
 }: LinkedAccountsProps & CardProps) {
   const { localization, socialProviders } = useAuth()
 
-  const { data: accounts, isPending } = useListAccounts({
+  const { data: accounts, isPending } = useListAccounts(undefined, {
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
       return false
