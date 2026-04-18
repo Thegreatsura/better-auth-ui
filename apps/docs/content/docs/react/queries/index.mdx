@@ -41,29 +41,36 @@ const { data } = useAuthQuery(
 
 ## Available queries
 
+### Auth
+
 <Cards>
-  <Card title="Session" href="/docs/react/queries/session">
+  <Card title="useSession" href="/docs/react/queries/session">
     The current authenticated session.
   </Card>
-  <Card title="User" href="/docs/react/queries/user">
-    The current authenticated user (sugar over useSession).
+  <Card title="useUser" href="/docs/react/queries/user">
+    The current authenticated user (sugar over `useSession`).
   </Card>
-  <Card title="Authenticate" href="/docs/react/queries/authenticate">
+  <Card title="useAuthenticate" href="/docs/react/queries/authenticate">
     Session query that redirects unauthenticated users to sign-in.
   </Card>
-  <Card title="List Accounts" href="/docs/react/queries/list-accounts">
+</Cards>
+
+### Settings
+
+<Cards>
+  <Card title="useListAccounts" href="/docs/react/queries/list-accounts">
     The current user's linked social accounts.
   </Card>
-  <Card title="Account Info" href="/docs/react/queries/account-info">
+  <Card title="useAccountInfo" href="/docs/react/queries/account-info">
     Provider-specific info for a linked account.
   </Card>
-  <Card title="List Sessions" href="/docs/react/queries/list-sessions">
+  <Card title="useListSessions" href="/docs/react/queries/list-sessions">
     Active sessions (devices) for the current user.
   </Card>
-  <Card title="List Device Sessions" href="/docs/react/queries/list-device-sessions">
+  <Card title="useListDeviceSessions" href="/docs/react/queries/list-device-sessions">
     Device sessions for the multi-session account switcher.
   </Card>
-  <Card title="List User Passkeys" href="/docs/react/queries/list-user-passkeys">
+  <Card title="useListUserPasskeys" href="/docs/react/queries/list-user-passkeys">
     Passkeys registered for the current user.
   </Card>
 </Cards>

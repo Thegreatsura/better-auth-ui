@@ -25,15 +25,15 @@ const { mutate, error } = useSignInEmail({
 
 Hooks that change auth state update the cache for you. Override `onSuccess` in the hook options and it runs *after* the built-in side effect:
 
-- Sign-in / sign-up / passkey sign-in — reset the session query.
-- Sign-out — remove every `["auth", ...]` query.
+- `useSignInEmail` / `useSignInUsername` / `useSignInPasskey` / `useSignUpEmail` — reset the session query so the new session is refetched. (`useSignInSocial` and `useSignInMagicLink` redirect instead, so they leave the cache alone.)
+- `useSignOut` — remove every `["auth", ...]` query.
 - `useUpdateUser` — optimistically merge the update into the cached session, then refetch.
-- `useSetActiveSession` — optimistically swap the cached session, scroll to top, and refetch.
+- `useSetActiveSession` — optimistically swap the cached session, scroll to top, and refetch both the session and device-session queries.
 - `useChangeEmail` — refetch the session.
-- Passkey mutations (`useAddPasskey`, `useDeletePasskey`) — refetch the passkey list.
+- `useAddPasskey` / `useDeletePasskey` — refetch the passkey list.
 - `useRevokeSession` — refetch the sessions list.
 - `useRevokeMultiSession` — refetch the device sessions list.
-- `useUnlinkAccount` — refetch the accounts list.
+- `useUnlinkAccount` — refetch the linked accounts list.
 
 ## Tracking mutation state globally
 
@@ -76,31 +76,31 @@ const { mutate } = useAuthMutation(
 ### Auth
 
 <Cards>
-  <Card title="Sign In (Email)" href="/docs/react/mutations/sign-in-email" />
-  <Card title="Sign In (Username)" href="/docs/react/mutations/sign-in-username" />
-  <Card title="Sign In (Magic Link)" href="/docs/react/mutations/sign-in-magic-link" />
-  <Card title="Sign In (Passkey)" href="/docs/react/mutations/sign-in-passkey" />
-  <Card title="Sign In (Social)" href="/docs/react/mutations/sign-in-social" />
-  <Card title="Sign Up (Email)" href="/docs/react/mutations/sign-up-email" />
-  <Card title="Sign Out" href="/docs/react/mutations/sign-out" />
-  <Card title="Request Password Reset" href="/docs/react/mutations/request-password-reset" />
-  <Card title="Reset Password" href="/docs/react/mutations/reset-password" />
-  <Card title="Send Verification Email" href="/docs/react/mutations/send-verification-email" />
-  <Card title="Is Username Available" href="/docs/react/mutations/is-username-available" />
+  <Card title="useSignInEmail" href="/docs/react/mutations/sign-in-email" />
+  <Card title="useSignInUsername" href="/docs/react/mutations/sign-in-username" />
+  <Card title="useSignInMagicLink" href="/docs/react/mutations/sign-in-magic-link" />
+  <Card title="useSignInPasskey" href="/docs/react/mutations/sign-in-passkey" />
+  <Card title="useSignInSocial" href="/docs/react/mutations/sign-in-social" />
+  <Card title="useSignUpEmail" href="/docs/react/mutations/sign-up-email" />
+  <Card title="useSignOut" href="/docs/react/mutations/sign-out" />
+  <Card title="useRequestPasswordReset" href="/docs/react/mutations/request-password-reset" />
+  <Card title="useResetPassword" href="/docs/react/mutations/reset-password" />
+  <Card title="useSendVerificationEmail" href="/docs/react/mutations/send-verification-email" />
+  <Card title="useIsUsernameAvailable" href="/docs/react/mutations/is-username-available" />
 </Cards>
 
 ### Settings
 
 <Cards>
-  <Card title="Update User" href="/docs/react/mutations/update-user" />
-  <Card title="Change Email" href="/docs/react/mutations/change-email" />
-  <Card title="Change Password" href="/docs/react/mutations/change-password" />
-  <Card title="Delete User" href="/docs/react/mutations/delete-user" />
-  <Card title="Link Social" href="/docs/react/mutations/link-social" />
-  <Card title="Unlink Account" href="/docs/react/mutations/unlink-account" />
-  <Card title="Add Passkey" href="/docs/react/mutations/add-passkey" />
-  <Card title="Delete Passkey" href="/docs/react/mutations/delete-passkey" />
-  <Card title="Revoke Session" href="/docs/react/mutations/revoke-session" />
-  <Card title="Revoke Multi Session" href="/docs/react/mutations/revoke-multi-session" />
-  <Card title="Set Active Session" href="/docs/react/mutations/set-active-session" />
+  <Card title="useUpdateUser" href="/docs/react/mutations/update-user" />
+  <Card title="useChangeEmail" href="/docs/react/mutations/change-email" />
+  <Card title="useChangePassword" href="/docs/react/mutations/change-password" />
+  <Card title="useDeleteUser" href="/docs/react/mutations/delete-user" />
+  <Card title="useLinkSocial" href="/docs/react/mutations/link-social" />
+  <Card title="useUnlinkAccount" href="/docs/react/mutations/unlink-account" />
+  <Card title="useAddPasskey" href="/docs/react/mutations/add-passkey" />
+  <Card title="useDeletePasskey" href="/docs/react/mutations/delete-passkey" />
+  <Card title="useRevokeSession" href="/docs/react/mutations/revoke-session" />
+  <Card title="useRevokeMultiSession" href="/docs/react/mutations/revoke-multi-session" />
+  <Card title="useSetActiveSession" href="/docs/react/mutations/set-active-session" />
 </Cards>
