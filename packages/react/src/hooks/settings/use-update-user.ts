@@ -42,6 +42,8 @@ export function useUpdateUser(options?: UseUpdateUserOptions) {
         })
       }
 
+      variables?.name
+
       refetchSession()
 
       await options?.onSuccess?.(data, variables, ...rest)

@@ -11,10 +11,6 @@ type AuthFnData<TFn> = TFn extends AuthFn<infer TData> ? TData : never
 /**
  * Build `queryOptions` for a Better Auth endpoint.
  *
- * Appends `params.query` (or `null`) to the supplied `queryKey` so cache
- * identity tracks endpoint inputs. Wires `throw: true` and the React Query
- * `AbortSignal` into `fetchOptions`.
- *
  * @param authFn - Better Auth client method (e.g. `authClient.getSession`).
  * @param queryKey - Scope prefix for the key. `params.query` is appended automatically.
  * @param params - Parameters forwarded to `authFn`.

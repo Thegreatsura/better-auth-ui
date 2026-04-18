@@ -1,5 +1,8 @@
 import { type MutationKey, useMutation } from "@tanstack/react-query"
-import { authMutationOptions } from "../mutations/auth-mutation-options"
+import {
+  type AuthMutationFn,
+  authMutationOptions
+} from "../mutations/auth-mutation-options"
 
 /**
  * Escape-hatch hook for Better Auth endpoints that don't have a purpose-built
@@ -11,8 +14,7 @@ import { authMutationOptions } from "../mutations/auth-mutation-options"
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useAuthMutation<
-  // biome-ignore lint/suspicious/noExplicitAny: matches authMutationOptions' widened constraint
-  TFn extends (...args: any) => any,
+  TFn extends AuthMutationFn,
   const TMutationKey extends MutationKey
 >(
   authFn: TFn,

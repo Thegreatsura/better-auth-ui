@@ -18,7 +18,6 @@ export type UseSessionOptions = Omit<
  *
  * @param options - Better Auth params (`query`, `fetchOptions`) and React
  *   Query options forwarded to `useQuery`.
- * @returns React Query result for the session.
  */
 export function useSession(options?: UseSessionOptions) {
   const { authClient } = useAuth()
