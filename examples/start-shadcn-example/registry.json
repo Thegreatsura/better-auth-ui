@@ -61,6 +61,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/provider-button.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/auth/provider-buttons.tsx",
           "type": "registry:component"
         }
@@ -93,6 +97,10 @@
         },
         {
           "path": "src/components/auth/magic-link-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/provider-button.tsx",
           "type": "registry:component"
         },
         {
@@ -132,6 +140,10 @@
         },
         {
           "path": "src/components/auth/passkey-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/provider-button.tsx",
           "type": "registry:component"
         },
         {

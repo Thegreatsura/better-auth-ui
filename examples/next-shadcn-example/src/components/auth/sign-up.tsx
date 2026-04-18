@@ -3,7 +3,6 @@
 import {
   useAuth,
   useIsUsernameAvailable,
-  useSignInSocial,
   useSignUpEmail
 } from "@better-auth-ui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
@@ -118,19 +117,7 @@ export function SignUp({
     }
   })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onSuccess: async () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
-  const isPending = signUpPending || socialPending || socialRedirecting
+  const isPending = signUpPending
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -190,7 +177,6 @@ export function SignUp({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}
@@ -474,7 +460,6 @@ export function SignUp({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}

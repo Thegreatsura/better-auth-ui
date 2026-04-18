@@ -1,7 +1,6 @@
 import {
   useAuth,
   useIsUsernameAvailable,
-  useSignInSocial,
   useSignUpEmail
 } from "@better-auth-ui/react"
 import { Check, Eye, EyeSlash, Xmark } from "@gravity-ui/icons"
@@ -112,23 +111,11 @@ export function SignUp({
     }
   })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
-  const isPending = signUpPending || socialPending || socialRedirecting
+  const isPending = signUpPending
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -180,7 +167,6 @@ export function SignUp({
               <ProviderButtons
                 isPending={isPending}
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
               />
             )}
 
@@ -384,7 +370,6 @@ export function SignUp({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}

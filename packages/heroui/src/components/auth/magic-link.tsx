@@ -1,8 +1,4 @@
-import {
-  useAuth,
-  useSignInMagicLink,
-  useSignInSocial
-} from "@better-auth-ui/react"
+import { useAuth, useSignInMagicLink } from "@better-auth-ui/react"
 import {
   Button,
   Card,
@@ -67,19 +63,7 @@ export function MagicLink({
       }
     })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
-  const isPending = magicLinkPending || socialPending || socialRedirecting
+  const isPending = magicLinkPending
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -106,7 +90,6 @@ export function MagicLink({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}
@@ -159,7 +142,6 @@ export function MagicLink({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}

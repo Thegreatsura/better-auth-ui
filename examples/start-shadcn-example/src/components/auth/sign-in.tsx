@@ -4,7 +4,6 @@ import {
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
-  useSignInSocial,
   useSignInUsername
 } from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
@@ -105,20 +104,7 @@ export function SignIn({
       onSuccess: () => navigate({ to: redirectTo })
     })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
-  const signInPending = signInEmailPending || signInUsernamePending
-  const isPending = signInPending || socialPending || socialRedirecting
+  const isPending = signInEmailPending || signInUsernamePending
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -164,7 +150,6 @@ export function SignIn({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}
@@ -305,7 +290,6 @@ export function SignIn({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}
