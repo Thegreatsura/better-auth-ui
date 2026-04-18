@@ -23,7 +23,7 @@ export function ActiveSessions({
   const { localization } = useAuth()
   const { data: session } = useSession()
 
-  const { data: sessions, isPending } = useListSessions({
+  const { data: sessions, isPending } = useListSessions(undefined, {
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
       return false

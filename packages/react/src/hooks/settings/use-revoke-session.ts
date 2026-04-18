@@ -15,7 +15,7 @@ export function useRevokeSession(
   options?: UseAuthMutationOptions<AuthClient["revokeSession"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch: refetchSessions } = useListSessions({
+  const { refetch: refetchSessions } = useListSessions(undefined, {
     refetchOnMount: false
   })
 

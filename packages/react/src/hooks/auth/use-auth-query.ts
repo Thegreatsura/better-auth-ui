@@ -1,50 +1,29 @@
-import {
-  type UseQueryOptions,
-  type UseQueryResult,
-  useQuery
-} from "@tanstack/react-query"
-import type { BetterFetchError, BetterFetchOption } from "better-auth/react"
+import { type QueryKey, useQuery } from "@tanstack/react-query"
+import { type AuthFn, authQueryOptions } from "../../queries/auth-query-options"
 
-type BetterFetchFn = (options: {
-  fetchOptions?: BetterFetchOption
-}) => Promise<{ data: unknown }>
-
-type InferData<TFn> = TFn extends (options: {
-  fetchOptions?: BetterFetchOption
-}) => Promise<{ data: infer TData }>
-  ? TData
-  : never
-
-type OmitFetchOptions<T> = {
-  [K in keyof T as K extends "fetchOptions" ? never : K]: T[K]
-}
-
-export type UseAuthQueryOptions<TFn extends BetterFetchFn> = Omit<
-  UseQueryOptions<InferData<TFn>, BetterFetchError>,
-  "queryFn"
->
-
-export type UseAuthQueryResult<TFn extends BetterFetchFn> = UseQueryResult<
-  InferData<TFn>,
-  BetterFetchError
->
-
-type UseAuthQueryProps<TFn extends BetterFetchFn> = {
-  authFn: TFn
-  params?: OmitFetchOptions<Parameters<TFn>[0]>
-  options: UseAuthQueryOptions<TFn>
-}
-
-export function useAuthQuery<TFn extends BetterFetchFn>({
-  authFn,
-  params,
-  options
-}: UseAuthQueryProps<TFn>) {
-  return useQuery<InferData<TFn>, BetterFetchError>({
-    queryFn: async () => {
-      const result = await authFn({ ...params, fetchOptions: { throw: true } })
-      return result as InferData<TFn>
-    },
+/**
+ * Escape-hatch hook for Better Auth endpoints that don't have a purpose-built
+ * hook in this library yet. Thin wrapper over `useQuery` and `authQueryOptions`.
+ *
+ * @param authFn - Better Auth client method (e.g. `authClient.magicLink.list`).
+ * @param queryKey - Scope prefix for the key. `params.query` is appended automatically.
+ * @param params - Parameters forwarded to `authFn`.
+ * @param options - React Query options forwarded to `useQuery`.
+ */
+export function useAuthQuery<
+  TFn extends AuthFn,
+  const TQueryKey extends QueryKey
+>(
+  authFn: TFn,
+  queryKey: TQueryKey,
+  params?: Parameters<TFn>[0],
+  options?: Omit<
+    ReturnType<typeof authQueryOptions<TFn, TQueryKey>>,
+    "queryKey" | "queryFn"
+  >
+) {
+  return useQuery({
+    ...authQueryOptions(authFn, queryKey, params),
     ...options
   })
 }

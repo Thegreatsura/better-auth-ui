@@ -27,7 +27,7 @@ export function ManageAccounts({
   const { localization } = useAuth()
   const { data: session } = useSession()
 
-  const { data: deviceSessions, isPending } = useListDeviceSessions({
+  const { data: deviceSessions, isPending } = useListDeviceSessions(undefined, {
     throwOnError: (error) => {
       if (error.error) toast.danger(error.error.message)
       return false

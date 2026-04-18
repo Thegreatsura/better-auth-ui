@@ -15,7 +15,9 @@ export function useRevokeMultiSession(
   options?: UseAuthMutationOptions<AuthClient["multiSession"]["revoke"]>
 ) {
   const { authClient } = useAuth()
-  const { refetch } = useListDeviceSessions({ refetchOnMount: false })
+  const { refetch } = useListDeviceSessions(undefined, {
+    refetchOnMount: false
+  })
 
   return useAuthMutation({
     authFn: authClient.multiSession.revoke,

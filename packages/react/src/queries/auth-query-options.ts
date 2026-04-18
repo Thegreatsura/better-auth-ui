@@ -1,7 +1,7 @@
-import { type QueryKey, queryOptions, useQuery } from "@tanstack/react-query"
+import { type QueryKey, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
 
-type AuthFn<TData = unknown> = (params: {
+export type AuthFn<TData = unknown> = (params: {
   query?: Record<string, unknown>
   fetchOptions?: BetterFetchOption
 }) => Promise<{ data: TData }>
@@ -30,32 +30,5 @@ export function authQueryOptions<
         ...params,
         fetchOptions: { ...params?.fetchOptions, signal, throw: true }
       }) as Promise<AuthFnData<TFn>>
-  })
-}
-
-/**
- * Escape-hatch hook for Better Auth endpoints that don't have a purpose-built
- * hook in this library yet. Thin wrapper over `useQuery` and `authQueryOptions`.
- *
- * @param authFn - Better Auth client method (e.g. `authClient.magicLink.list`).
- * @param queryKey - Scope prefix for the key. `params.query` is appended automatically.
- * @param params - Parameters forwarded to `authFn`.
- * @param options - React Query options forwarded to `useQuery`.
- */
-export function useAuthQuery<
-  TFn extends AuthFn,
-  const TQueryKey extends QueryKey
->(
-  authFn: TFn,
-  queryKey: TQueryKey,
-  params?: Parameters<TFn>[0],
-  options?: Omit<
-    ReturnType<typeof authQueryOptions<TFn, TQueryKey>>,
-    "queryKey" | "queryFn"
-  >
-) {
-  return useQuery({
-    ...authQueryOptions(authFn, queryKey, params),
-    ...options
   })
 }

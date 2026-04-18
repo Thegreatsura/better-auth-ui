@@ -24,7 +24,7 @@ export function useSetActiveSession(
     refetchOnMount: false
   })
   const { data: deviceSessions, refetch: refetchDeviceSessions } =
-    useListDeviceSessions({ refetchOnMount: false })
+    useListDeviceSessions(undefined, { refetchOnMount: false })
 
   return useAuthMutation({
     authFn: authClient.multiSession.setActive,
