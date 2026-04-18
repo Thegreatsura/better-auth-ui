@@ -23,7 +23,7 @@ export function ManageAccounts({
   className,
   variant,
   ...props
-}: ManageAccountsProps & CardProps) {
+}: ManageAccountsProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
   const { data: session } = useSession()
 

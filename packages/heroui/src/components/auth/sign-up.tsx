@@ -51,7 +51,7 @@ export function SignUp({
   socialPosition = "bottom",
   variant,
   ...props
-}: SignUpProps & CardProps) {
+}: SignUpProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     emailAndPassword,

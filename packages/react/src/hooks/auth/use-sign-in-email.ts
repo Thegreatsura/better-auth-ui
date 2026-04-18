@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
+import { sessionOptions } from "../../queries/session-options"
 import {
   type UseAuthMutationOptions,
   useAuthMutation
@@ -25,8 +26,12 @@ export function useSignInEmail(
     authFn: authClient.signIn.email,
     options: {
       ...options,
+      mutationKey: ["auth", "signIn", "email"],
       onSuccess: async (...args) => {
-        queryClient.resetQueries({ queryKey: ["auth", "getSession"] })
+        queryClient.resetQueries({
+          queryKey: sessionOptions(authClient).queryKey
+        })
+
         await options?.onSuccess?.(...args)
       }
     }

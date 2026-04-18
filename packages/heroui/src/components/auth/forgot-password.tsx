@@ -34,7 +34,7 @@ export function ForgotPassword({
   className,
   variant,
   ...props
-}: ForgotPasswordProps & CardProps) {
+}: ForgotPasswordProps & Omit<CardProps, "children">) {
   const { basePaths, localization, viewPaths, navigate } = useAuth()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({

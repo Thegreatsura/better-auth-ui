@@ -34,7 +34,7 @@ export function Appearance({
   className,
   variant,
   ...props
-}: AppearanceProps & CardProps) {
+}: AppearanceProps & Omit<CardProps, "children">) {
   const {
     localization,
     appearance: { theme, setTheme, themes }

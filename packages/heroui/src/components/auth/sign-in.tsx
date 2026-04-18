@@ -50,7 +50,7 @@ export function SignIn({
   socialPosition = "bottom",
   variant,
   ...props
-}: SignInProps & CardProps) {
+}: SignInProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     baseURL,

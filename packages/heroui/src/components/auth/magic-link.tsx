@@ -46,7 +46,7 @@ export function MagicLink({
   socialPosition = "bottom",
   variant,
   ...props
-}: MagicLinkProps & CardProps) {
+}: MagicLinkProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     baseURL,

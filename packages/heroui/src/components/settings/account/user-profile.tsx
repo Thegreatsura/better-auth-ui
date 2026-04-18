@@ -40,7 +40,7 @@ export function UserProfile({
   className,
   variant,
   ...props
-}: UserProfileProps & CardProps) {
+}: UserProfileProps & Omit<CardProps, "children">) {
   const { localization, username: usernameConfig } = useAuth()
   const { data: session } = useSession()
 

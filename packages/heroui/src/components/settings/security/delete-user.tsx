@@ -28,7 +28,7 @@ export function DeleteUser({
   className,
   variant,
   ...props
-}: DeleteUserProps & CardProps) {
+}: DeleteUserProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     deleteUser: deleteUserConfig,

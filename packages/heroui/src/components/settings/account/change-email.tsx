@@ -34,7 +34,7 @@ export function ChangeEmail({
   className,
   variant,
   ...props
-}: ChangeEmailProps & CardProps) {
+}: ChangeEmailProps & Omit<CardProps, "children">) {
   const { localization, baseURL, viewPaths } = useAuth()
   const { data: session } = useSession()
 

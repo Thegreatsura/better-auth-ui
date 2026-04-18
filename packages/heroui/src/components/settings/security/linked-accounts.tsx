@@ -20,7 +20,7 @@ export function LinkedAccounts({
   className,
   variant,
   ...props
-}: LinkedAccountsProps & CardProps) {
+}: LinkedAccountsProps & Omit<CardProps, "children">) {
   const { localization, socialProviders } = useAuth()
 
   const { data: accounts, isPending } = useListAccounts(undefined, {

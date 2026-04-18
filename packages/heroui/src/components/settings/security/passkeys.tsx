@@ -24,7 +24,7 @@ export function Passkeys({
   className,
   variant,
   ...props
-}: PasskeysProps & CardProps) {
+}: PasskeysProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
 
   const { data: passkeys, isPending } = useListUserPasskeys(undefined, {

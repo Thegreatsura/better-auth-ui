@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
+import { sessionOptions } from "../../queries/session-options"
 import {
   type UseAuthMutationOptions,
   type UseAuthMutationResult,
@@ -31,10 +32,12 @@ export function useUpdateUser(
     options: {
       ...options,
       onSuccess: async (data, variables, ...rest) => {
-        queryClient.setQueryData(["auth", "getSession"], {
-          ...session,
-          user: { ...session?.user, ...variables }
-        })
+        if (session) {
+          queryClient.setQueryData(sessionOptions(authClient).queryKey, {
+            ...session,
+            user: { ...session.user, ...variables }
+          })
+        }
 
         refetchSession()
 

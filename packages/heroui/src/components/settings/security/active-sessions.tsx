@@ -19,7 +19,7 @@ export function ActiveSessions({
   className,
   variant,
   ...props
-}: ActiveSessionsProps & CardProps) {
+}: ActiveSessionsProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
   const { data: session } = useSession()
 

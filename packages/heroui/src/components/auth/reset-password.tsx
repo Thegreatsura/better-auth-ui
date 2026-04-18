@@ -31,7 +31,7 @@ export function ResetPassword({
   className,
   variant,
   ...props
-}: ResetPasswordProps & CardProps) {
+}: ResetPasswordProps & Omit<CardProps, "children">) {
   const { basePaths, emailAndPassword, localization, viewPaths, navigate } =
     useAuth()
 
