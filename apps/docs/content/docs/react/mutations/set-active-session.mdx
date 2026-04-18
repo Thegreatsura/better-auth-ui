@@ -1,5 +1,5 @@
 ---
-title: Set Active Session
+title: useSetActiveSession
 description: Switch the active device session in multi-session mode.
 ---
 
@@ -30,6 +30,6 @@ const { mutate } = useMutation(setActiveSessionOptions(authClient))
 
 Note: using the raw factory skips the optimistic session swap — prefer `useSetActiveSession` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
 
-## Props
+## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-set-active-session.ts" name="UseSetActiveSessionOptions" />
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-set-active-session.ts" name="UseSetActiveSessionParams" />

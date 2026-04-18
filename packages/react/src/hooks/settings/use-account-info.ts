@@ -4,11 +4,15 @@ import type { AuthClient } from "../../lib/auth-client"
 import { accountInfoOptions } from "../../queries/settings/account-info-options"
 import { useSession } from "../auth/use-session"
 
+export type UseAccountInfoParams = NonNullable<
+  Parameters<AuthClient["accountInfo"]>[0]
+>
+
 export type UseAccountInfoOptions = Omit<
   ReturnType<typeof accountInfoOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["accountInfo"]>[0]>
+  UseAccountInfoParams
 
 /**
  * Retrieve provider-specific info for a linked account.

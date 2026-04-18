@@ -1,5 +1,5 @@
 ---
-title: Update User
+title: useUpdateUser
 description: Update the authenticated user's profile fields.
 ---
 
@@ -26,6 +26,6 @@ const { mutate } = useMutation(updateUserOptions(authClient))
 
 Note: using the raw factory skips the optimistic session merge — prefer `useUpdateUser` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
 
-## Props
+## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-update-user.ts" name="UseUpdateUserOptions" />
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-update-user.ts" name="UseUpdateUserParams" />

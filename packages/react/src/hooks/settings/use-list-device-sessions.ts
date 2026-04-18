@@ -4,11 +4,15 @@ import type { AuthClient } from "../../lib/auth-client"
 import { listDeviceSessionsOptions } from "../../queries/settings/list-device-sessions-options"
 import { useSession } from "../auth/use-session"
 
+export type UseListDeviceSessionsParams = NonNullable<
+  Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]
+>
+
 export type UseListDeviceSessionsOptions = Omit<
   ReturnType<typeof listDeviceSessionsOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]>
+  UseListDeviceSessionsParams
 
 /**
  * Retrieve the device sessions (multi-session account switcher).

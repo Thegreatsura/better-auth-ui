@@ -4,11 +4,15 @@ import type { AuthClient } from "../../lib/auth-client"
 import { listUserPasskeysOptions } from "../../queries/settings/list-user-passkeys-options"
 import { useSession } from "../auth/use-session"
 
+export type UseListUserPasskeysParams = NonNullable<
+  Parameters<AuthClient["passkey"]["listUserPasskeys"]>[0]
+>
+
 export type UseListUserPasskeysOptions = Omit<
   ReturnType<typeof listUserPasskeysOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["passkey"]["listUserPasskeys"]>[0]>
+  UseListUserPasskeysParams
 
 /**
  * Retrieve the passkeys registered for the current user.

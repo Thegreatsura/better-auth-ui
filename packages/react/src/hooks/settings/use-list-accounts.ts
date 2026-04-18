@@ -4,11 +4,15 @@ import type { AuthClient } from "../../lib/auth-client"
 import { listAccountsOptions } from "../../queries/settings/list-accounts-options"
 import { useSession } from "../auth/use-session"
 
+export type UseListAccountsParams = NonNullable<
+  Parameters<AuthClient["listAccounts"]>[0]
+>
+
 export type UseListAccountsOptions = Omit<
   ReturnType<typeof listAccountsOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["listAccounts"]>[0]>
+  UseListAccountsParams
 
 /**
  * Retrieve the current user's linked social accounts.

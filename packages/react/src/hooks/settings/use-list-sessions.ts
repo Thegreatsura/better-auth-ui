@@ -4,11 +4,15 @@ import type { AuthClient } from "../../lib/auth-client"
 import { listSessionsOptions } from "../../queries/settings/list-sessions-options"
 import { useSession } from "../auth/use-session"
 
+export type UseListSessionsParams = NonNullable<
+  Parameters<AuthClient["listSessions"]>[0]
+>
+
 export type UseListSessionsOptions = Omit<
   ReturnType<typeof listSessionsOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["listSessions"]>[0]>
+  UseListSessionsParams
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).

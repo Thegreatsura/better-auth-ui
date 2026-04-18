@@ -1,10 +1,13 @@
 {
   "title": "Queries",
+  "icon": "Database",
   "pages": [
     "index",
+    "---Auth---",
     "session",
     "user",
     "authenticate",
+    "---Settings---",
     "list-accounts",
     "account-info",
     "list-sessions",

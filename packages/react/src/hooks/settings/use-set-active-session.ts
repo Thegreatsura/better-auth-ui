@@ -1,10 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { setActiveSessionOptions } from "../../mutations/settings/set-active-session-options"
 import { sessionOptions } from "../../queries/auth/session-options"
 import { useSession } from "../auth/use-session"
 import { useListDeviceSessions } from "./use-list-device-sessions"
+
+export type UseSetActiveSessionParams = NonNullable<
+  Parameters<AuthClient["multiSession"]["setActive"]>[0]
+>
 
 export type UseSetActiveSessionOptions = Omit<
   ReturnType<typeof setActiveSessionOptions>,

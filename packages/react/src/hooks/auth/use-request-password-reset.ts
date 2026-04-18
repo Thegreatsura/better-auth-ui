@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { requestPasswordResetOptions } from "../../mutations/auth/request-password-reset-options"
+
+export type UseRequestPasswordResetParams = NonNullable<
+  Parameters<AuthClient["requestPasswordReset"]>[0]
+>
 
 export type UseRequestPasswordResetOptions = Omit<
   ReturnType<typeof requestPasswordResetOptions>,

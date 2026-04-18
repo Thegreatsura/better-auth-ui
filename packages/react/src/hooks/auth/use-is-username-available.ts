@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { isUsernameAvailableOptions } from "../../mutations/auth/is-username-available-options"
+
+export type UseIsUsernameAvailableParams = NonNullable<
+  Parameters<AuthClient["isUsernameAvailable"]>[0]
+>
 
 export type UseIsUsernameAvailableOptions = Omit<
   ReturnType<typeof isUsernameAvailableOptions>,

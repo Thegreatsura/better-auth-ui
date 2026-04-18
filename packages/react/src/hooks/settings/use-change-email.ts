@@ -1,8 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { changeEmailOptions } from "../../mutations/settings/change-email-options"
 import { useSession } from "../auth/use-session"
+
+export type UseChangeEmailParams = NonNullable<
+  Parameters<AuthClient["changeEmail"]>[0]
+>
 
 export type UseChangeEmailOptions = Omit<
   ReturnType<typeof changeEmailOptions>,

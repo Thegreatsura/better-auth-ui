@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { linkSocialOptions } from "../../mutations/settings/link-social-options"
+
+export type UseLinkSocialParams = NonNullable<
+  Parameters<AuthClient["linkSocial"]>[0]
+>
 
 export type UseLinkSocialOptions = Omit<
   ReturnType<typeof linkSocialOptions>,

@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { deleteUserOptions } from "../../mutations/settings/delete-user-options"
+
+export type UseDeleteUserParams = NonNullable<
+  Parameters<AuthClient["deleteUser"]>[0]
+>
 
 export type UseDeleteUserOptions = Omit<
   ReturnType<typeof deleteUserOptions>,

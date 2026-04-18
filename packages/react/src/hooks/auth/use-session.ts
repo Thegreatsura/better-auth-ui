@@ -3,11 +3,15 @@ import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
 import { sessionOptions } from "../../queries/auth/session-options"
 
+export type UseSessionParams = NonNullable<
+  Parameters<AuthClient["getSession"]>[0]
+>
+
 export type UseSessionOptions = Omit<
   ReturnType<typeof sessionOptions>,
   "queryKey" | "queryFn"
 > &
-  NonNullable<Parameters<AuthClient["getSession"]>[0]>
+  UseSessionParams
 
 /**
  * Retrieve the current authentication session.

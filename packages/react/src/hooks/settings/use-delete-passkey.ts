@@ -1,8 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { deletePasskeyOptions } from "../../mutations/settings/delete-passkey-options"
 import { useListUserPasskeys } from "./use-list-user-passkeys"
+
+export type UseDeletePasskeyParams = NonNullable<
+  Parameters<AuthClient["passkey"]["deletePasskey"]>[0]
+>
 
 export type UseDeletePasskeyOptions = Omit<
   ReturnType<typeof deletePasskeyOptions>,

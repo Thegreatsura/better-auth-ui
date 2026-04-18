@@ -1,8 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { addPasskeyOptions } from "../../mutations/settings/add-passkey-options"
 import { useListUserPasskeys } from "./use-list-user-passkeys"
+
+export type UseAddPasskeyParams = NonNullable<
+  Parameters<AuthClient["passkey"]["addPasskey"]>[0]
+>
 
 export type UseAddPasskeyOptions = Omit<
   ReturnType<typeof addPasskeyOptions>,

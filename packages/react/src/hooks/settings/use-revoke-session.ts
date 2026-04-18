@@ -1,8 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { revokeSessionOptions } from "../../mutations/settings/revoke-session-options"
 import { useListSessions } from "./use-list-sessions"
+
+export type UseRevokeSessionParams = NonNullable<
+  Parameters<AuthClient["revokeSession"]>[0]
+>
 
 export type UseRevokeSessionOptions = Omit<
   ReturnType<typeof revokeSessionOptions>,

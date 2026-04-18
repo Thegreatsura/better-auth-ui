@@ -1,5 +1,5 @@
 ---
-title: Sign Out
+title: useSignOut
 description: Sign out the current session and clear the auth cache.
 ---
 
@@ -28,6 +28,6 @@ const { mutate } = useMutation(signOutOptions(authClient))
 
 Note: using the raw factory skips the cache cleanup — prefer `useSignOut` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
 
-## Props
+## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-out.ts" name="UseSignOutOptions" />
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-out.ts" name="UseSignOutParams" />

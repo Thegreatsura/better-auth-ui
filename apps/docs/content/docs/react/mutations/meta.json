@@ -1,5 +1,6 @@
 {
   "title": "Mutations",
+  "icon": "DatabaseZap",
   "pages": [
     "index",
     "---Auth---",

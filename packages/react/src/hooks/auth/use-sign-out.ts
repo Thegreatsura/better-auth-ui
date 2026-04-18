@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-client"
 import { signOutOptions } from "../../mutations/auth/sign-out-options"
+
+export type UseSignOutParams = NonNullable<Parameters<AuthClient["signOut"]>[0]>
 
 export type UseSignOutOptions = Omit<
   ReturnType<typeof signOutOptions>,
