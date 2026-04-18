@@ -7,6 +7,7 @@ import type { MDXComponents } from "mdx/types"
 import { ComponentPreview } from "@/components/component-preview"
 import { HeroUI } from "@/components/icons/heroui"
 import { NextJS } from "@/components/icons/nextjs"
+import { React } from "@/components/icons/react"
 import { Shadcn } from "@/components/icons/shadcn"
 import { TanStackStart } from "@/components/icons/tanstack-start"
 
@@ -23,6 +24,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     TypeTable: (props) => <TypeTable {...props} />,
     HeroUI,
     NextJS,
+    React,
     Shadcn,
     TanStackStart,
     ComponentPreview,
