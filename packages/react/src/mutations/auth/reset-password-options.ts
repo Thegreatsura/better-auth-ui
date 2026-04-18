@@ -7,5 +7,8 @@ import { authMutationOptions } from "../auth-mutation-options"
  * @param authClient - The Better Auth client.
  */
 export function resetPasswordOptions(authClient: AuthClient) {
-  return authMutationOptions(authClient.resetPassword, ["auth", "resetPassword"])
+  return authMutationOptions(authClient.resetPassword, [
+    "auth",
+    "resetPassword"
+  ])
 }
