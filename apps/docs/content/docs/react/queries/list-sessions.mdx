@@ -1,0 +1,40 @@
+---
+title: useListSessions
+description: Retrieve the active sessions (devices) for the current user.
+---
+
+Keyed per-user; waits for the active session before firing.
+
+## Usage
+
+```tsx
+import { useListSessions } from "@better-auth-ui/react"
+
+const { data: sessions } = useListSessions()
+
+// With React Query options
+const { data: sessions } = useListSessions({ refetchOnMount: false })
+```
+
+## Options factory
+
+```tsx
+import { listSessionsOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: sessions } = useQuery(listSessionsOptions(authClient, userId))
+```
+
+## Invalidation
+
+```ts
+import { listSessionsOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: listSessionsOptions(authClient, userId).queryKey
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-sessions.ts" name="UseListSessionsParams" />

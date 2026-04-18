@@ -35,7 +35,7 @@ export function Auth({
   socialPosition,
   view,
   ...props
-}: AuthProps & CardProps) {
+}: AuthProps & Omit<CardProps, "children">) {
   const { viewPaths } = useAuth()
 
   if (!view && !path) {

@@ -1,30 +1,39 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { listUserPasskeysOptions } from "../../queries/settings/list-user-passkeys-options"
 import { useSession } from "../auth/use-session"
+
+export type UseListUserPasskeysParams = NonNullable<
+  Parameters<AuthClient["passkey"]["listUserPasskeys"]>[0]
+>
+
+export type UseListUserPasskeysOptions = Omit<
+  ReturnType<typeof listUserPasskeysOptions>,
+  "queryKey" | "queryFn"
+> &
+  UseListUserPasskeysParams
 
 /**
  * Retrieve the passkeys registered for the current user.
  *
- * The underlying query is enabled only when session data is available.
+ * Keyed per-user; waits for the active session before firing.
  *
- * @param options - Optional React Query options to customize the query behavior.
- * @returns The React Query result for the passkeys list.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
+ * @returns React Query result for the passkeys list.
  */
-export function useListUserPasskeys(
-  options?: Partial<
-    UseAuthQueryOptions<AuthClient["passkey"]["listUserPasskeys"]>
-  >
-) {
+export function useListUserPasskeys(options?: UseListUserPasskeysOptions) {
   const { authClient } = useAuth()
   const { data: session } = useSession({ refetchOnMount: false })
+  const userId = session?.user.id
+  const disabled = !userId
 
-  return useAuthQuery({
-    authFn: authClient.passkey.listUserPasskeys,
-    options: {
-      queryKey: ["auth", "listUserPasskeys", session?.user.id],
-      enabled: !!session,
-      ...options
-    }
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
+  return useQuery({
+    ...listUserPasskeysOptions(authClient, userId, { fetchOptions }),
+    ...(disabled && { queryFn: skipToken }),
+    ...queryOptions
   })
 }

@@ -40,7 +40,7 @@ export function UserProfile({
   className,
   variant,
   ...props
-}: UserProfileProps & CardProps) {
+}: UserProfileProps & Omit<CardProps, "children">) {
   const { localization, username: usernameConfig } = useAuth()
   const { data: session } = useSession()
 
@@ -84,7 +84,6 @@ export function UserProfile({
   }
 
   const { mutate: updateUser, isPending } = useUpdateUser({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 

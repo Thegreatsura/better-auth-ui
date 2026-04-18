@@ -1,6 +1,6 @@
 import { useAuth, useSignInPasskey } from "@better-auth-ui/react"
 import { Fingerprint } from "@gravity-ui/icons"
-import { Button, Spinner, toast } from "@heroui/react"
+import { Button, Spinner } from "@heroui/react"
 
 export type PasskeyButtonProps = {
   isPending: boolean
@@ -11,7 +11,6 @@ export function PasskeyButton({ isPending }: PasskeyButtonProps) {
 
   const { mutate: signInPasskey, isPending: passkeyPending } = useSignInPasskey(
     {
-      onError: (error) => toast.danger(error.error?.message || error.message),
       onSuccess: () => navigate({ to: redirectTo })
     }
   )

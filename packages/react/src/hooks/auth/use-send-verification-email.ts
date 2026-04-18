@@ -1,21 +1,31 @@
+import { useMutation } from "@tanstack/react-query"
+
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthMutationOptions,
-  useAuthMutation
-} from "./use-auth-mutation"
+import { sendVerificationEmailOptions } from "../../mutations/auth/send-verification-email-options"
+
+export type UseSendVerificationEmailParams = NonNullable<
+  Parameters<AuthClient["sendVerificationEmail"]>[0]
+>
+
+export type UseSendVerificationEmailOptions = Omit<
+  ReturnType<typeof sendVerificationEmailOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation to send a verification email.
  *
- * The mutation sends a verification email to the specified email address.
- *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
 export function useSendVerificationEmail(
-  options?: UseAuthMutationOptions<AuthClient["sendVerificationEmail"]>
+  options?: UseSendVerificationEmailOptions
 ) {
   const { authClient } = useAuth()
 
-  return useAuthMutation({ authFn: authClient.sendVerificationEmail, options })
+  return useMutation({
+    ...sendVerificationEmailOptions(authClient),
+    ...options
+  })
 }

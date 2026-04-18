@@ -1,34 +1,40 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthMutationOptions,
-  useAuthMutation
-} from "./use-auth-mutation"
+import { signInPasskeyOptions } from "../../mutations/auth/sign-in-passkey-options"
+import { sessionOptions } from "../../queries/auth/session-options"
+
+export type UseSignInPasskeyParams = NonNullable<
+  Parameters<AuthClient["signIn"]["passkey"]>[0]
+>
+
+export type UseSignInPasskeyOptions = Omit<
+  ReturnType<typeof signInPasskeyOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation for passkey sign-in.
  *
- * The mutation sends a passkey sign-in request and
- * refetches the session on completion.
+ * Resets the session query on completion so the new session is refetched.
  *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useSignInPasskey(
-  options?: UseAuthMutationOptions<AuthClient["signIn"]["passkey"]>
-) {
+export function useSignInPasskey(options?: UseSignInPasskeyOptions) {
   const { authClient } = useAuth()
   const queryClient = useQueryClient()
 
-  return useAuthMutation({
-    authFn: authClient.signIn.passkey,
-    options: {
-      ...options,
-      onSuccess: async (...args) => {
-        queryClient.resetQueries({ queryKey: ["auth", "getSession"] })
-        await options?.onSuccess?.(...args)
-      }
+  return useMutation({
+    ...signInPasskeyOptions(authClient),
+    ...options,
+    onSuccess: async (...args) => {
+      queryClient.resetQueries({
+        queryKey: sessionOptions(authClient).queryKey
+      })
+
+      await options?.onSuccess?.(...args)
     }
   })
 }

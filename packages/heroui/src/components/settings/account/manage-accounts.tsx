@@ -3,7 +3,7 @@ import {
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
-import { Card, type CardProps, cn, toast } from "@heroui/react"
+import { Card, type CardProps, cn } from "@heroui/react"
 import { ManageAccount } from "./manage-account"
 
 export type ManageAccountsProps = {
@@ -23,16 +23,11 @@ export function ManageAccounts({
   className,
   variant,
   ...props
-}: ManageAccountsProps & CardProps) {
+}: ManageAccountsProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
   const { data: session } = useSession()
 
-  const { data: deviceSessions, isPending } = useListDeviceSessions({
-    throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message)
-      return false
-    }
-  })
+  const { data: deviceSessions, isPending } = useListDeviceSessions()
 
   const otherSessions = deviceSessions?.filter(
     (deviceSession) => deviceSession.session.id !== session?.session.id

@@ -50,7 +50,6 @@ export function ActiveSession({ activeSession }: ActiveSessionProps) {
   const { data: session } = useSession({ refetchOnMount: false })
 
   const { mutate: revokeSession, isPending: isRevoking } = useRevokeSession({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
   })
 

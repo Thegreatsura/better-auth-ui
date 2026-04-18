@@ -1,5 +1,5 @@
 import { useAuth, useListAccounts } from "@better-auth-ui/react"
-import { Card, type CardProps, cn, Skeleton, toast } from "@heroui/react"
+import { Card, type CardProps, cn, Skeleton } from "@heroui/react"
 import { LinkedAccount } from "./linked-account"
 
 export type LinkedAccountsProps = {
@@ -20,15 +20,10 @@ export function LinkedAccounts({
   className,
   variant,
   ...props
-}: LinkedAccountsProps & CardProps) {
+}: LinkedAccountsProps & Omit<CardProps, "children">) {
   const { localization, socialProviders } = useAuth()
 
-  const { data: accounts, isPending } = useListAccounts({
-    throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message)
-      return false
-    }
-  })
+  const { data: accounts, isPending } = useListAccounts()
 
   const linkedAccounts = accounts?.filter(
     (account) => account.providerId !== "credential"

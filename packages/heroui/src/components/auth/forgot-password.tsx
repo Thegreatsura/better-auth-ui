@@ -34,11 +34,10 @@ export function ForgotPassword({
   className,
   variant,
   ...props
-}: ForgotPasswordProps & CardProps) {
+}: ForgotPasswordProps & Omit<CardProps, "children">) {
   const { basePaths, localization, viewPaths, navigate } = useAuth()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => {
       toast.success(localization.auth.passwordResetEmailSent)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })

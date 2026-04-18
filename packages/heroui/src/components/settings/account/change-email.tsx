@@ -34,13 +34,12 @@ export function ChangeEmail({
   className,
   variant,
   ...props
-}: ChangeEmailProps & CardProps) {
+}: ChangeEmailProps & Omit<CardProps, "children">) {
   const { localization, baseURL, viewPaths } = useAuth()
   const { data: session } = useSession()
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
-    onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
-    onError: (error) => toast.danger(error.error?.message || error.message)
+    onSuccess: () => toast.success(localization.settings.changeEmailSuccess)
   })
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {

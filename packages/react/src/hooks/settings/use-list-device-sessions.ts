@@ -1,34 +1,39 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthQueryOptions,
-  type UseAuthQueryResult,
-  useAuthQuery
-} from "../auth/use-auth-query"
+import { listDeviceSessionsOptions } from "../../queries/settings/list-device-sessions-options"
 import { useSession } from "../auth/use-session"
 
+export type UseListDeviceSessionsParams = NonNullable<
+  Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]
+>
+
+export type UseListDeviceSessionsOptions = Omit<
+  ReturnType<typeof listDeviceSessionsOptions>,
+  "queryKey" | "queryFn"
+> &
+  UseListDeviceSessionsParams
+
 /**
- * Retrieve device sessions for multi-session account switching.
+ * Retrieve the device sessions (multi-session account switcher).
  *
- * The query is enabled only when `multiSession` is true and session data is available.
+ * Keyed per-user; waits for the active session before firing.
  *
- * @param options - Optional React Query options to customize the query behavior.
- * @returns The React Query result for the device sessions list; `data` is the array of device session objects and includes loading and error states.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
+ * @returns React Query result for the device sessions list.
  */
-export function useListDeviceSessions(
-  options?: Partial<
-    UseAuthQueryOptions<AuthClient["multiSession"]["listDeviceSessions"]>
-  >
-): UseAuthQueryResult<AuthClient["multiSession"]["listDeviceSessions"]> {
+export function useListDeviceSessions(options?: UseListDeviceSessionsOptions) {
   const { authClient } = useAuth()
   const { data: session } = useSession({ refetchOnMount: false })
+  const userId = session?.user.id
+  const disabled = !userId
 
-  return useAuthQuery({
-    authFn: authClient.multiSession.listDeviceSessions,
-    options: {
-      queryKey: ["auth", "multiSession", "listDeviceSessions"],
-      enabled: !!session,
-      ...options
-    }
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
+  return useQuery({
+    ...listDeviceSessionsOptions(authClient, userId, { fetchOptions }),
+    ...(disabled && { queryFn: skipToken }),
+    ...queryOptions
   })
 }

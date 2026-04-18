@@ -1,12 +1,12 @@
 "use client"
 
-import { AuthProvider } from "@better-auth-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { AuthProvider } from "./auth/auth-provider"
 import { Toaster } from "./ui/sonner"
 
 export function Providers({ children }: { children: ReactNode }) {

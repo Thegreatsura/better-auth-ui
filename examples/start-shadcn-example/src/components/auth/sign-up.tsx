@@ -3,7 +3,6 @@
 import {
   useAuth,
   useIsUsernameAvailable,
-  useSignInSocial,
   useSignUpEmail
 } from "@better-auth-ui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
@@ -118,20 +117,7 @@ export function SignUp({
     }
   })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.error(error.error?.message || error.message),
-    onSuccess: async () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
-  const isPending = signUpPending || socialPending || socialRedirecting
+  const isPending = signUpPending
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -191,7 +177,6 @@ export function SignUp({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}
@@ -286,8 +271,9 @@ export function SignUp({
                     <FieldError>
                       {usernameError?.error?.message ||
                         usernameError?.message ||
-                        (usernameData?.available === false &&
-                          localization.auth.usernameTaken)}
+                        (usernameData?.available === false
+                          ? localization.auth.usernameTaken
+                          : null)}
                     </FieldError>
                   </Field>
                 )}
@@ -474,7 +460,6 @@ export function SignUp({
               {socialProviders && socialProviders.length > 0 && (
                 <ProviderButtons
                   socialLayout={socialLayout}
-                  signInSocial={signInSocial}
                   isPending={isPending}
                 />
               )}

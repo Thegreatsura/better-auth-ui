@@ -1,28 +1,39 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { listSessionsOptions } from "../../queries/settings/list-sessions-options"
 import { useSession } from "../auth/use-session"
+
+export type UseListSessionsParams = NonNullable<
+  Parameters<AuthClient["listSessions"]>[0]
+>
+
+export type UseListSessionsOptions = Omit<
+  ReturnType<typeof listSessionsOptions>,
+  "queryKey" | "queryFn"
+> &
+  UseListSessionsParams
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).
  *
- * The underlying query is enabled only when session data is available.
+ * Keyed per-user; waits for the active session before firing.
  *
- * @param options - Optional React Query options to customize the query behavior.
- * @returns The React Query result for the sessions list; `data` is the array of session objects, and the result includes loading and error states.
+ * @param options - Better Auth params (`fetchOptions`) and React Query
+ *   options forwarded to `useQuery`.
+ * @returns React Query result for the sessions list.
  */
-export function useListSessions(
-  options?: Partial<UseAuthQueryOptions<AuthClient["listSessions"]>>
-) {
+export function useListSessions(options?: UseListSessionsOptions) {
   const { authClient } = useAuth()
   const { data: session } = useSession({ refetchOnMount: false })
+  const userId = session?.user.id
+  const disabled = !userId
 
-  return useAuthQuery({
-    authFn: authClient.listSessions,
-    options: {
-      queryKey: ["auth", "listSessions", session?.user.id],
-      enabled: !!session,
-      ...options
-    }
+  const { fetchOptions, ...queryOptions } = options ?? {}
+
+  return useQuery({
+    ...listSessionsOptions(authClient, userId, { fetchOptions }),
+    ...(disabled && { queryFn: skipToken }),
+    ...queryOptions
   })
 }

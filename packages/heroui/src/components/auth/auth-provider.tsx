@@ -4,6 +4,8 @@ import {
 } from "@better-auth-ui/react"
 import { RouterProvider } from "@heroui/react"
 
+import { ErrorToaster } from "./error-toaster"
+
 export type AuthProviderProps = Omit<AuthProviderPropsPrimitive, "Link">
 
 /**
@@ -21,6 +23,8 @@ export function AuthProvider({
     <AuthProviderPrimitive navigate={navigate} {...config}>
       <RouterProvider navigate={(path) => navigate({ to: path })}>
         {children}
+
+        <ErrorToaster />
       </RouterProvider>
     </AuthProviderPrimitive>
   )

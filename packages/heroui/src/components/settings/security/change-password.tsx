@@ -42,7 +42,7 @@ export function ChangePassword({
   className,
   variant,
   ...props
-}: ChangePasswordProps & CardProps) {
+}: ChangePasswordProps & Omit<CardProps, "children">) {
   const { emailAndPassword, localization } = useAuth()
   const { data: session } = useSession()
   const { data: accounts, isPending: isAccountsPending } = useListAccounts()
@@ -67,12 +67,15 @@ export function ChangePassword({
   )
 }
 
-function SetPassword({ className, variant, ...props }: CardProps) {
+function SetPassword({
+  className,
+  variant,
+  ...props
+}: Omit<CardProps, "children">) {
   const { localization } = useAuth()
   const { data: session } = useSession()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
   })
 
@@ -125,7 +128,7 @@ function ChangePasswordForm({
   emailAndPassword: ReturnType<typeof useAuth>["emailAndPassword"]
   localization: ReturnType<typeof useAuth>["localization"]
   session: ReturnType<typeof useSession>["data"]
-} & CardProps) {
+} & Omit<CardProps, "children">) {
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")

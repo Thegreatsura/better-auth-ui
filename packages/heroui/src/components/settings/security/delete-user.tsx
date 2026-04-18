@@ -28,7 +28,7 @@ export function DeleteUser({
   className,
   variant,
   ...props
-}: DeleteUserProps & CardProps) {
+}: DeleteUserProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     deleteUser: deleteUserConfig,
@@ -76,9 +76,6 @@ export function DeleteUser({
             replace: true
           })
         }
-      },
-      onError: (error) => {
-        toast.danger(error.error?.message || error.message)
       }
     })
   }

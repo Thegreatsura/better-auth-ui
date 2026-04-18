@@ -1,7 +1,6 @@
 import {
   useAuth,
   useIsUsernameAvailable,
-  useSignInSocial,
   useSignUpEmail
 } from "@better-auth-ui/react"
 import { Check, Eye, EyeSlash, Xmark } from "@gravity-ui/icons"
@@ -51,7 +50,7 @@ export function SignUp({
   socialPosition = "bottom",
   variant,
   ...props
-}: SignUpProps & CardProps) {
+}: SignUpProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     emailAndPassword,
@@ -112,24 +111,11 @@ export function SignUp({
     }
   })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
-  const isPending = signUpPending || socialPending || socialRedirecting
+  const isPending = signUpPending
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -181,7 +167,6 @@ export function SignUp({
               <ProviderButtons
                 isPending={isPending}
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
               />
             )}
 
@@ -250,8 +235,9 @@ export function SignUp({
                 <FieldError>
                   {usernameError?.error?.message ||
                     usernameError?.message ||
-                    (usernameData?.available === false &&
-                      localization.auth.usernameTaken)}
+                    (usernameData?.available === false
+                      ? localization.auth.usernameTaken
+                      : null)}
                 </FieldError>
               </TextField>
             )}
@@ -384,7 +370,6 @@ export function SignUp({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}

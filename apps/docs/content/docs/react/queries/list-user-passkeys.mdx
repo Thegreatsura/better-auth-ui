@@ -1,0 +1,42 @@
+---
+title: useListUserPasskeys
+description: Retrieve the passkeys registered for the current user.
+---
+
+Keyed per-user; waits for the active session before firing.
+
+## Usage
+
+```tsx
+import { useListUserPasskeys } from "@better-auth-ui/react"
+
+const { data: passkeys } = useListUserPasskeys()
+
+// With React Query options
+const { data: passkeys } = useListUserPasskeys({ refetchOnMount: false })
+```
+
+## Options factory
+
+```tsx
+import { listUserPasskeysOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: passkeys } = useQuery(
+  listUserPasskeysOptions(authClient, userId)
+)
+```
+
+## Invalidation
+
+```ts
+import { listUserPasskeysOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: listUserPasskeysOptions(authClient, userId).queryKey
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-user-passkeys.ts" name="UseListUserPasskeysParams" />

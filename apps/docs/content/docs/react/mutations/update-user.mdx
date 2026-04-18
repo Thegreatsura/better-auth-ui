@@ -1,0 +1,31 @@
+---
+title: useUpdateUser
+description: Update the authenticated user's profile fields.
+---
+
+On success, the variables are optimistically merged into the cached session's `user` object, then the session is refetched to reconcile with the server.
+
+## Usage
+
+```tsx
+import { useUpdateUser } from "@better-auth-ui/react"
+
+const { mutate: updateUser, isPending } = useUpdateUser()
+
+updateUser({ name: "Alice", image: "https://.../avatar.png" })
+```
+
+## Options factory
+
+```tsx
+import { updateUserOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(updateUserOptions(authClient))
+```
+
+Note: using the raw factory skips the optimistic session merge — prefer `useUpdateUser` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-update-user.ts" name="UseUpdateUserParams" />

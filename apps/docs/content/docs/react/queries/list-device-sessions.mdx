@@ -1,0 +1,46 @@
+---
+title: useListDeviceSessions
+description: Retrieve the device sessions for the multi-session account switcher.
+---
+
+Powers the multi-session account switcher — each entry represents a session currently signed in on this device.
+
+Keyed per-user; waits for the active session before firing.
+
+## Usage
+
+```tsx
+import { useListDeviceSessions } from "@better-auth-ui/react"
+
+const { data: deviceSessions } = useListDeviceSessions()
+
+// With React Query options
+const { data: deviceSessions } = useListDeviceSessions({
+  refetchOnMount: false
+})
+```
+
+## Options factory
+
+```tsx
+import { listDeviceSessionsOptions } from "@better-auth-ui/react"
+import { useQuery } from "@tanstack/react-query"
+
+const { data: deviceSessions } = useQuery(
+  listDeviceSessionsOptions(authClient, userId)
+)
+```
+
+## Invalidation
+
+```ts
+import { listDeviceSessionsOptions } from "@better-auth-ui/react"
+
+queryClient.invalidateQueries({
+  queryKey: listDeviceSessionsOptions(authClient, userId).queryKey
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-device-sessions.ts" name="UseListDeviceSessionsParams" />

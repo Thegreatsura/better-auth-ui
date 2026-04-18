@@ -1,31 +1,40 @@
+import { skipToken, useQuery } from "@tanstack/react-query"
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseAuthQueryOptions, useAuthQuery } from "../auth/use-auth-query"
+import { accountInfoOptions } from "../../queries/settings/account-info-options"
+import { useSession } from "../auth/use-session"
+
+export type UseAccountInfoParams = NonNullable<
+  Parameters<AuthClient["accountInfo"]>[0]
+>
+
+export type UseAccountInfoOptions = Omit<
+  ReturnType<typeof accountInfoOptions>,
+  "queryKey" | "queryFn"
+> &
+  UseAccountInfoParams
 
 /**
- * Retrieve provider-specific account info for a given account ID.
+ * Retrieve provider-specific info for a linked account.
  *
- * Uses the `accountInfo` API endpoint to fetch detailed information
- * from the social provider. The provider is automatically detected
- * from the account ID.
+ * Keyed per-user; waits for the active session and `options.query.accountId`
+ * before firing.
  *
- * @param accountId - The provider-given account ID to fetch info for
- * @param options - Optional react-query options forwarded to `useQuery`
- * @returns The react-query result containing account info data, loading state, and error state
+ * @param options - Better Auth params (`query`, `fetchOptions`) and React
+ *   Query options forwarded to `useQuery`.
  */
-export function useAccountInfo(
-  accountId?: string,
-  options?: Partial<UseAuthQueryOptions<AuthClient["accountInfo"]>>
-) {
+export function useAccountInfo(options?: UseAccountInfoOptions) {
   const { authClient } = useAuth()
+  const { data: session } = useSession({ refetchOnMount: false })
+  const userId = session?.user.id
 
-  return useAuthQuery({
-    authFn: authClient.accountInfo,
-    params: { query: { accountId } },
-    options: {
-      queryKey: ["auth", "accountInfo", accountId],
-      enabled: !!accountId,
-      ...options
-    }
+  const { query, fetchOptions, ...queryOptions } = options ?? {}
+  const accountId = query?.accountId
+  const disabled = !userId || !accountId
+
+  return useQuery({
+    ...accountInfoOptions(authClient, userId, { query, fetchOptions }),
+    ...(disabled && { queryFn: skipToken }),
+    ...queryOptions
   })
 }

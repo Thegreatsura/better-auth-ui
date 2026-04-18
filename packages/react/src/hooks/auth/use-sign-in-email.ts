@@ -1,11 +1,18 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthMutationOptions,
-  useAuthMutation
-} from "./use-auth-mutation"
+import { signInEmailOptions } from "../../mutations/auth/sign-in-email-options"
+import { sessionOptions } from "../../queries/auth/session-options"
+
+export type UseSignInEmailParams = NonNullable<
+  Parameters<AuthClient["signIn"]["email"]>[0]
+>
+
+export type UseSignInEmailOptions = Omit<
+  ReturnType<typeof signInEmailOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation for email/password sign-in.
@@ -13,22 +20,22 @@ import {
  * The mutation sends an email/password sign-in request and
  * refetches the session on completion.
  *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useSignInEmail(
-  options?: UseAuthMutationOptions<AuthClient["signIn"]["email"]>
-) {
+export function useSignInEmail(options?: UseSignInEmailOptions) {
   const { authClient } = useAuth()
   const queryClient = useQueryClient()
 
-  return useAuthMutation({
-    authFn: authClient.signIn.email,
-    options: {
-      ...options,
-      onSuccess: async (...args) => {
-        queryClient.resetQueries({ queryKey: ["auth", "getSession"] })
-        await options?.onSuccess?.(...args)
-      }
+  return useMutation({
+    ...signInEmailOptions(authClient),
+    ...options,
+    onSuccess: async (...args) => {
+      queryClient.resetQueries({
+        queryKey: sessionOptions(authClient).queryKey
+      })
+
+      await options?.onSuccess?.(...args)
     }
   })
 }

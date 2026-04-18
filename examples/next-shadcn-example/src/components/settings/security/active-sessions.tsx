@@ -1,8 +1,6 @@
 "use client"
 
 import { useAuth, useListSessions, useSession } from "@better-auth-ui/react"
-import { toast } from "sonner"
-
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -25,12 +23,7 @@ export function ActiveSessions({ className }: ActiveSessionsProps) {
   const { localization } = useAuth()
   const { data: session } = useSession()
 
-  const { data: sessions, isPending } = useListSessions({
-    throwOnError: (error) => {
-      if (error.error) toast.error(error.error.message)
-      return false
-    }
-  })
+  const { data: sessions, isPending } = useListSessions()
 
   const activeSessions = [...(sessions ?? [])].sort((activeSession) =>
     activeSession.id === session?.session.id ? -1 : 1

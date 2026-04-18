@@ -2,7 +2,6 @@ import {
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
-  useSignInSocial,
   useSignInUsername
 } from "@better-auth-ui/react"
 import {
@@ -50,7 +49,7 @@ export function SignIn({
   socialPosition = "bottom",
   variant,
   ...props
-}: SignInProps & CardProps) {
+}: SignInProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     baseURL,
@@ -68,7 +67,6 @@ export function SignIn({
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.auth.verificationEmailSent)
   })
 
@@ -105,19 +103,6 @@ export function SignIn({
       onSuccess: () => navigate({ to: redirectTo })
     })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -139,8 +124,7 @@ export function SignIn({
     }
   }
 
-  const signInPending = signInEmailPending || signInUsernamePending
-  const isPending = signInPending || socialPending || socialRedirecting
+  const isPending = signInEmailPending || signInUsernamePending
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
@@ -162,7 +146,6 @@ export function SignIn({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}
@@ -262,7 +245,6 @@ export function SignIn({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}

@@ -5,12 +5,14 @@ import { createElement } from "react"
 import ReactDOMServer from "react-dom/server"
 import { HeroUI } from "@/components/icons/heroui"
 import { NextJS } from "@/components/icons/nextjs"
+import { React } from "@/components/icons/react"
 import { Shadcn } from "@/components/icons/shadcn"
 import { TanStackStart } from "@/components/icons/tanstack-start"
 
 const customIcons = {
   HeroUI,
   NextJS,
+  React,
   Shadcn,
   TanStackStart
 }

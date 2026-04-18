@@ -1,0 +1,27 @@
+---
+title: useAuthenticate
+description: Session query that redirects unauthenticated users to sign-in.
+---
+
+`useAuthenticate` calls [`useSession`](/docs/react/queries/session) and, once the query settles, redirects unauthenticated users to the configured sign-in path. The current URL is preserved as a `redirectTo` query parameter so the user lands back where they started after signing in.
+
+Use this as the primary guard inside protected route components.
+
+## Usage
+
+```tsx
+import { useAuthenticate } from "@better-auth-ui/react"
+
+export function AccountPage() {
+  const { data: session, isPending } = useAuthenticate()
+
+  if (isPending) return <Spinner />
+  if (!session) return null // navigating to sign-in
+
+  return <Account user={session.user} />
+}
+```
+
+The redirect uses `basePaths.auth` + `viewPaths.auth.signIn` from `AuthProvider` — override those to target a custom sign-in view.
+
+Accepts the same arguments as `useSession` — see its [Params](/docs/react/queries/session#params).

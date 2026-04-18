@@ -1,0 +1,33 @@
+---
+title: useSignOut
+description: Sign out the current session and clear the auth cache.
+---
+
+Removes every `["auth", ...]` query on success, clearing the session, linked accounts, sessions, device sessions, and passkeys in one go.
+
+## Usage
+
+```tsx
+import { useSignOut } from "@better-auth-ui/react"
+
+const { mutate: signOut } = useSignOut({
+  onSuccess: () => navigate("/")
+})
+
+signOut()
+```
+
+## Options factory
+
+```tsx
+import { signOutOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(signOutOptions(authClient))
+```
+
+Note: using the raw factory skips the cache cleanup — prefer `useSignOut` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-out.ts" name="UseSignOutParams" />

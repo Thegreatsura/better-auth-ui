@@ -1,0 +1,30 @@
+---
+title: useSendVerificationEmail
+description: Resend the verification email to an address.
+---
+
+## Usage
+
+```tsx
+import { useSendVerificationEmail } from "@better-auth-ui/react"
+
+const { mutate: sendVerificationEmail } = useSendVerificationEmail()
+
+sendVerificationEmail({
+  email: "alice@example.com",
+  callbackURL: "/dashboard"
+})
+```
+
+## Options factory
+
+```tsx
+import { sendVerificationEmailOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(sendVerificationEmailOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-send-verification-email.ts" name="UseSendVerificationEmailParams" />

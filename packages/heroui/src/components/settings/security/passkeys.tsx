@@ -9,8 +9,7 @@ import {
   type CardProps,
   cn,
   Skeleton,
-  Spinner,
-  toast
+  Spinner
 } from "@heroui/react"
 
 import { Passkey } from "./passkey"
@@ -24,19 +23,12 @@ export function Passkeys({
   className,
   variant,
   ...props
-}: PasskeysProps & CardProps) {
+}: PasskeysProps & Omit<CardProps, "children">) {
   const { localization } = useAuth()
 
-  const { data: passkeys, isPending } = useListUserPasskeys({
-    throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message)
-      return false
-    }
-  })
+  const { data: passkeys, isPending } = useListUserPasskeys()
 
-  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey({
-    onError: (error) => toast.danger(error.error?.message || error.message)
-  })
+  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey()
 
   return (
     <div>

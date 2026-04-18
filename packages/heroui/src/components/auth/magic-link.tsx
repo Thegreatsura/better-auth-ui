@@ -1,8 +1,4 @@
-import {
-  useAuth,
-  useSignInMagicLink,
-  useSignInSocial
-} from "@better-auth-ui/react"
+import { useAuth, useSignInMagicLink } from "@better-auth-ui/react"
 import {
   Button,
   Card,
@@ -46,7 +42,7 @@ export function MagicLink({
   socialPosition = "bottom",
   variant,
   ...props
-}: MagicLinkProps & CardProps) {
+}: MagicLinkProps & Omit<CardProps, "children">) {
   const {
     basePaths,
     baseURL,
@@ -61,27 +57,13 @@ export function MagicLink({
 
   const { mutate: signInMagicLink, isPending: magicLinkPending } =
     useSignInMagicLink({
-      onError: (error) => toast.danger(error.error?.message || error.message),
       onSuccess: () => {
         setEmail("")
         toast.success(localization.auth.magicLinkSent)
       }
     })
 
-  const [socialRedirecting, setSocialRedirecting] = useState(false)
-
-  const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message),
-    onSuccess: () => {
-      setSocialRedirecting(true)
-
-      setTimeout(() => {
-        setSocialRedirecting(false)
-      }, 5000)
-    }
-  })
-
-  const isPending = magicLinkPending || socialPending || socialRedirecting
+  const isPending = magicLinkPending
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -108,7 +90,6 @@ export function MagicLink({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}
@@ -161,7 +142,6 @@ export function MagicLink({
             {!!socialProviders?.length && (
               <ProviderButtons
                 socialLayout={socialLayout}
-                signInSocial={signInSocial}
                 isPending={isPending}
               />
             )}

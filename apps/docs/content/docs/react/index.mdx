@@ -1,0 +1,51 @@
+---
+title: Overview
+description: Shared React hooks, query primitives, and components used by both shadcn/ui and HeroUI.
+icon: React
+---
+
+The `@better-auth-ui/react` package ships the data layer behind every Better Auth UI component. It's built on [TanStack Query](https://tanstack.com/query) and exposes two kinds of primitives per endpoint:
+
+- **Hooks** — `useSession`, `useSignInEmail`, `useUpdateUser`, …
+- **Options factories** — `sessionOptions`, `signInEmailOptions`, `updateUserOptions`, …
+
+Every hook is a thin wrapper around `useQuery` or `useMutation` plus its matching options factory. Use the hook in components, and use the factory anywhere TanStack Query takes a `queryOptions` / `mutationOptions` object (`useQuery`, `useQueries`, `prefetchQuery`, `useIsMutating`, loaders, a global `MutationCache`, …).
+
+## Prerequisites
+
+Wrap your app with a `QueryClientProvider` above `<AuthProvider>`.
+
+```package-install
+@tanstack/react-query
+```
+
+## Cache keys
+
+All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`["auth", "signIn", "email"]`, `["auth", "updateUser"]`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
+
+Read a key off the factory for cache seeding or invalidation:
+
+```ts
+sessionOptions(authClient).queryKey
+signInEmailOptions(authClient).mutationKey
+```
+
+## Escape hatches
+
+For Better Auth endpoints that don't have a purpose-built hook yet, use the generic wrappers:
+
+- `useAuthQuery(authFn, queryKey, options?)` — wraps `useQuery` + `authQueryOptions`.
+- `useAuthMutation(authFn, mutationKey, options?)` — wraps `useMutation` + `authMutationOptions`.
+
+Both wire `throw: true` into `fetchOptions` so results reject with a `BetterFetchError` instead of resolving to `{ error }`.
+
+## Next
+
+<Cards>
+  <Card title="Queries" href="/docs/react/queries">
+    Every auth read, with usage and server-side recipes.
+  </Card>
+  <Card title="Mutations" href="/docs/react/mutations">
+    Every auth write, with mutation keys and cache side effects.
+  </Card>
+</Cards>

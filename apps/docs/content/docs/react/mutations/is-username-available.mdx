@@ -1,0 +1,32 @@
+---
+title: useIsUsernameAvailable
+description: Check whether a username is free to claim.
+---
+
+Modeled as a mutation (not a query) because callers typically trigger the check on user action — a debounced input or form submit — rather than on mount.
+
+`data` is typed as `{ available: boolean; message: string | null }`.
+
+## Usage
+
+```tsx
+import { useIsUsernameAvailable } from "@better-auth-ui/react"
+
+const { mutateAsync: checkUsername, data } = useIsUsernameAvailable()
+
+const result = await checkUsername({ username: "alice" })
+// result.available -> boolean
+```
+
+## Options factory
+
+```tsx
+import { isUsernameAvailableOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const { mutate } = useMutation(isUsernameAvailableOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-is-username-available.ts" name="UseIsUsernameAvailableParams" />

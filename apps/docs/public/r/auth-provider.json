@@ -2,21 +2,24 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "auth-provider",
   "title": "Auth Provider",
-  "description": "A context provider component that supplies AuthConfig to all descendant components.",
+  "description": "Wraps the Better Auth UI provider and mounts an ErrorToaster that surfaces query and mutation failures via sonner.",
   "dependencies": [
-    "@better-auth-ui/react@*",
-    "better-auth",
+    "@better-auth-ui/react@latest",
+    "@tanstack/react-query",
+    "better-auth"
+  ],
+  "registryDependencies": [
     "sonner"
   ],
   "files": [
     {
       "path": "src/components/auth/auth-provider.tsx",
-      "content": "import {\n  AuthProvider as AuthProviderPrimitive,\n  type AuthProviderProps\n} from \"@better-auth-ui/react\"\nimport { toast } from \"sonner\"\n\nexport function AuthProvider({ children, ...config }: AuthProviderProps) {\n  return (\n    <AuthProviderPrimitive toast={toast} {...config}>\n      {children}\n    </AuthProviderPrimitive>\n  )\n}\n",
+      "content": "import {\n  AuthProvider as AuthProviderPrimitive,\n  type AuthProviderProps\n} from \"@better-auth-ui/react\"\n\nimport { ErrorToaster } from \"./error-toaster\"\n\n/**\n * Provides an authentication context by rendering an auth provider with the sonner toast handler injected, forwarding remaining configuration and rendering `children` inside it.\n *\n * @param children - React nodes to render inside the authentication provider\n * @returns A React element that renders an authentication provider configured with the provided props and toast handler\n */\nexport function AuthProvider({ children, ...config }: AuthProviderProps) {\n  return (\n    <AuthProviderPrimitive {...config}>\n      {children}\n\n      <ErrorToaster />\n    </AuthProviderPrimitive>\n  )\n}\n",
       "type": "registry:component"
     },
     {
-      "path": "../react/src/components/auth/auth-provider.tsx",
-      "content": "\"use client\"\n\nimport { deepmerge, defaultConfig } from \"@better-auth-ui/core\"\nimport {\n  type AnyAuthClient,\n  type AnyAuthConfig,\n  type AuthConfig,\n  AuthContext\n} from \"@better-auth-ui/react\"\nimport {\n  QueryClient,\n  QueryClientContext,\n  QueryClientProvider\n} from \"@tanstack/react-query\"\nimport type { BetterFetchError } from \"better-auth/react\"\nimport { type PropsWithChildren, useContext, useEffect } from \"react\"\nimport { useHydrated } from \"../../hooks/use-hydrated\"\n\nconst fallbackQueryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      staleTime: 1000\n    }\n  }\n})\n\nconst baseAuthConfig: AnyAuthConfig = {\n  ...defaultConfig,\n  Link: (props) => <a {...props} />\n}\n\nexport type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {\n  authClient: AnyAuthClient\n  queryClient?: QueryClient\n}\n\n/**\n * Provides AuthConfig to descendant components.\n */\nexport function AuthProvider({\n  children,\n  queryClient,\n  ...config\n}: AuthProviderProps) {\n  const queryClientContext = useContext(QueryClientContext)\n  const resolvedQueryClient =\n    queryClient || queryClientContext || fallbackQueryClient\n\n  const mergedConfig = deepmerge(baseAuthConfig, config) as AuthConfig\n\n  const hydrated = useHydrated()\n\n  if (hydrated) {\n    mergedConfig.redirectTo =\n      new URLSearchParams(window.location.search).get(\"redirectTo\")?.trim() ||\n      mergedConfig.redirectTo\n  }\n\n  useEffect(() => {\n    resolvedQueryClient.getQueryCache().config.onError = (error) => {\n      mergedConfig.toast.error(\n        error.message || (error as BetterFetchError).statusText\n      )\n    }\n  }, [resolvedQueryClient, mergedConfig.toast.error])\n\n  return (\n    <AuthContext.Provider value={mergedConfig}>\n      <QueryClientProvider client={resolvedQueryClient}>\n        {children}\n      </QueryClientProvider>\n    </AuthContext.Provider>\n  )\n}\n\n/**\n * Returns the `AuthContext` configuration\n *\n * @returns The `AuthContext`\n * @throws If the `AuthContext` is not provided\n */\nexport function useAuth() {\n  const context = useContext(AuthContext)\n\n  if (!context) {\n    throw new Error(\"[Better Auth UI] AuthProvider is required\")\n  }\n\n  return context\n}\n",
+      "path": "src/components/auth/error-toaster.tsx",
+      "content": "import { useQueryClient } from \"@tanstack/react-query\"\nimport type { BetterFetchError } from \"better-auth/react\"\nimport { useEffect } from \"react\"\nimport { toast } from \"sonner\"\n\nexport function ErrorToaster() {\n  const queryClient = useQueryClient()\n\n  useEffect(() => {\n    queryClient.getQueryCache().config.onError = (error) => {\n      const err = error as BetterFetchError\n      if (err?.error) toast.error(err.error.message)\n    }\n\n    queryClient.setMutationDefaults([], {\n      onError: (error) => {\n        toast.error(\n          (error as BetterFetchError)?.error?.message || error.message\n        )\n      }\n    })\n  }, [queryClient])\n\n  return null\n}\n",
       "type": "registry:component"
     }
   ],
