@@ -4,7 +4,7 @@ import {
   useSession
 } from "@better-auth-ui/react"
 import { Check, CirclePlus } from "@gravity-ui/icons"
-import { Dropdown, Label, Separator, toast } from "@heroui/react"
+import { Dropdown, Label, Separator } from "@heroui/react"
 
 import { SwitchAccountItem } from "./switch-account-item"
 import { UserView } from "./user-view"
@@ -21,12 +21,7 @@ import { UserView } from "./user-view"
 export function SwitchAccountMenu() {
   const { basePaths, viewPaths, localization } = useAuth()
   const { data: session } = useSession()
-  const { data: deviceSessions, isPending } = useListDeviceSessions({
-    throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message)
-      return false
-    }
-  })
+  const { data: deviceSessions, isPending } = useListDeviceSessions()
 
   return (
     <Dropdown.Popover className="min-w-40 md:min-w-56 max-w-[48svw]">

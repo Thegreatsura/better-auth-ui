@@ -79,9 +79,6 @@ export function DeleteUser({ className }: DeleteUserProps) {
             replace: true
           })
         }
-      },
-      onError: (error) => {
-        toast.error(error.error?.message || error.message)
       }
     })
   }

@@ -1,5 +1,5 @@
 import { useAuth, useListSessions, useSession } from "@better-auth-ui/react"
-import { Card, type CardProps, cn, Skeleton, toast } from "@heroui/react"
+import { Card, type CardProps, cn, Skeleton } from "@heroui/react"
 import { ActiveSession } from "./active-session"
 
 export type ActiveSessionsProps = {
@@ -23,12 +23,7 @@ export function ActiveSessions({
   const { localization } = useAuth()
   const { data: session } = useSession()
 
-  const { data: sessions, isPending } = useListSessions({
-    throwOnError: (error) => {
-      if (error.error) toast.danger(error.error.message)
-      return false
-    }
-  })
+  const { data: sessions, isPending } = useListSessions()
 
   const activeSessions = sessions?.toSorted((activeSession) =>
     activeSession.id === session?.session.id ? -1 : 1

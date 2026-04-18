@@ -76,9 +76,6 @@ export function DeleteUser({
             replace: true
           })
         }
-      },
-      onError: (error) => {
-        toast.danger(error.error?.message || error.message)
       }
     })
   }

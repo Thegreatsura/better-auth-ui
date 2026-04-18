@@ -2,8 +2,6 @@
 
 import { useAuth, useDeletePasskey } from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
-import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
@@ -19,9 +17,7 @@ export type PasskeyProps = {
 export function Passkey({ passkey }: PasskeyProps) {
   const { localization } = useAuth()
 
-  const { mutate: deletePasskey, isPending } = useDeletePasskey({
-    onError: (error) => toast.error(error.error?.message || error.message)
-  })
+  const { mutate: deletePasskey, isPending } = useDeletePasskey()
 
   return (
     <Card className="bg-transparent border-0 ring-0 shadow-none">

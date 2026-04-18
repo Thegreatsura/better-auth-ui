@@ -121,7 +121,6 @@ export function SignUp({
   const [socialRedirecting, setSocialRedirecting] = useState(false)
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.error(error.error?.message || error.message),
     onSuccess: async () => {
       setSocialRedirecting(true)
 

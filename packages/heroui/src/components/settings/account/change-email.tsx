@@ -39,8 +39,7 @@ export function ChangeEmail({
   const { data: session } = useSession()
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
-    onSuccess: () => toast.success(localization.settings.changeEmailSuccess),
-    onError: (error) => toast.danger(error.error?.message || error.message)
+    onSuccess: () => toast.success(localization.settings.changeEmailSuccess)
   })
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {

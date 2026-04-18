@@ -14,9 +14,7 @@ export function ChangeAvatar({ className }: ChangeAvatarProps) {
   const { localization, avatar } = useAuth()
   const { data: session } = useSession()
 
-  const { mutate: updateUser, isPending: updatePending } = useUpdateUser({
-    onError: (error) => toast.danger(error.error?.message || error.message)
-  })
+  const { mutate: updateUser, isPending: updatePending } = useUpdateUser()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)

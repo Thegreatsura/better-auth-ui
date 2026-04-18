@@ -1,6 +1,6 @@
 import { useAuth, useDeletePasskey } from "@better-auth-ui/react"
 import { Fingerprint, Xmark } from "@gravity-ui/icons"
-import { Button, Spinner, toast } from "@heroui/react"
+import { Button, Spinner } from "@heroui/react"
 
 export type PasskeyProps = {
   passkey: {
@@ -13,9 +13,7 @@ export type PasskeyProps = {
 export function Passkey({ passkey }: PasskeyProps) {
   const { localization } = useAuth()
 
-  const { mutate: deletePasskey, isPending } = useDeletePasskey({
-    onError: (error) => toast.danger(error.error?.message || error.message)
-  })
+  const { mutate: deletePasskey, isPending } = useDeletePasskey()
 
   return (
     <div className="flex items-center gap-3">

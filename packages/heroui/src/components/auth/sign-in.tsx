@@ -68,7 +68,6 @@ export function SignIn({
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.auth.verificationEmailSent)
   })
 
@@ -108,7 +107,6 @@ export function SignIn({
   const [socialRedirecting, setSocialRedirecting] = useState(false)
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => {
       setSocialRedirecting(true)
 

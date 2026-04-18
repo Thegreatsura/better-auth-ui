@@ -84,7 +84,6 @@ export function UserProfile({
   }
 
   const { mutate: updateUser, isPending } = useUpdateUser({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 

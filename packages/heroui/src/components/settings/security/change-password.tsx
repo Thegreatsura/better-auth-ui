@@ -76,7 +76,6 @@ function SetPassword({
   const { data: session } = useSession()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onError: (error) => toast.danger(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
   })
 

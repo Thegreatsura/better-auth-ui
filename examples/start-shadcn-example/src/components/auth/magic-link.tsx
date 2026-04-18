@@ -59,7 +59,6 @@ export function MagicLink({
 
   const { mutate: signInMagicLink, isPending: magicLinkPending } =
     useSignInMagicLink({
-      onError: (error) => toast.error(error.error?.message || error.message),
       onSuccess: () => {
         setEmail("")
         toast.success(localization.auth.magicLinkSent)
@@ -69,7 +68,6 @@ export function MagicLink({
   const [socialRedirecting, setSocialRedirecting] = useState(false)
 
   const { mutate: signInSocial, isPending: socialPending } = useSignInSocial({
-    onError: (error) => toast.error(error.error?.message || error.message),
     onSuccess: async () => {
       setSocialRedirecting(true)
 

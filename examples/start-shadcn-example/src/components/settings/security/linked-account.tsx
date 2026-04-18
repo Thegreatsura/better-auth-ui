@@ -37,19 +37,12 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
   const { baseURL, localization } = useAuth()
 
   const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo({
-    query: { accountId: account?.accountId },
-    throwOnError: (error) => {
-      if (error.error) toast.error(error.error.message)
-      return false
-    }
+    query: { accountId: account?.accountId }
   })
 
-  const { mutate: linkSocial, isPending: isLinking } = useLinkSocial({
-    onError: (error) => toast.error(error.error?.message || error.message)
-  })
+  const { mutate: linkSocial, isPending: isLinking } = useLinkSocial()
 
   const { mutate: unlinkAccount, isPending: isUnlinking } = useUnlinkAccount({
-    onError: (error) => toast.error(error.error?.message || error.message),
     onSuccess: () => toast.success(localization.settings.accountUnlinked)
   })
 
