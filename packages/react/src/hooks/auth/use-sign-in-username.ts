@@ -1,38 +1,35 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-client"
+import { signInUsernameOptions } from "../../mutations/auth/sign-in-username-options"
 import { sessionOptions } from "../../queries/auth/session-options"
-import {
-  type UseAuthMutationOptions,
-  useAuthMutation
-} from "./use-auth-mutation"
+
+export type UseSignInUsernameOptions = Omit<
+  ReturnType<typeof signInUsernameOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation for username/password sign-in.
  *
- * The mutation sends a username/password sign-in request and
- * refetches the session on completion.
+ * Resets the session query on completion so the new session is refetched.
  *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useSignInUsername(
-  options?: UseAuthMutationOptions<AuthClient["signIn"]["username"]>
-) {
+export function useSignInUsername(options?: UseSignInUsernameOptions) {
   const { authClient } = useAuth()
   const queryClient = useQueryClient()
 
-  return useAuthMutation({
-    authFn: authClient.signIn.username,
-    options: {
-      ...options,
-      onSuccess: async (...args) => {
-        queryClient.resetQueries({
-          queryKey: sessionOptions(authClient).queryKey
-        })
+  return useMutation({
+    ...signInUsernameOptions(authClient),
+    ...options,
+    onSuccess: async (...args) => {
+      queryClient.resetQueries({
+        queryKey: sessionOptions(authClient).queryKey
+      })
 
-        await options?.onSuccess?.(...args)
-      }
+      await options?.onSuccess?.(...args)
     }
   })
 }

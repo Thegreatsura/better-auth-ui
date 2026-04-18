@@ -8,14 +8,12 @@ export type AuthMutationFn<TData = unknown, TVariables = unknown> = (
 type AuthMutationFnData<TFn> =
   TFn extends AuthMutationFn<infer TData> ? TData : never
 
-type AuthMutationFnVariables<TFn> =
-  TFn extends AuthMutationFn<
-    // biome-ignore lint/suspicious/noExplicitAny: ignoring TData for variable inference
-    any,
-    infer TVariables
-  >
-    ? TVariables
-    : never
+// biome-ignore lint/suspicious/noExplicitAny: loose constraint for overloaded/generic signatures
+type AuthMutationFnVariables<TFn extends (...args: any) => any> =
+  undefined extends Parameters<TFn>[0]
+    ? // biome-ignore lint/suspicious/noConfusingVoidType: void lets `mutate()` be called with no arg
+      void | NonNullable<Parameters<TFn>[0]>
+    : Parameters<TFn>[0]
 
 /**
  * Build `mutationOptions` for a Better Auth endpoint.
@@ -23,26 +21,29 @@ type AuthMutationFnVariables<TFn> =
  * Wires `throw: true` into `fetchOptions` so the mutation rejects with a
  * `BetterFetchError` on failure instead of resolving with `{ error }`.
  *
+ * TData is inferred from the endpoint's non-throw response shape. For
+ * required-body endpoints where inference falls back to `never`, pass
+ * `TData` explicitly (e.g. `authMutationOptions<_, _, { available: boolean }>`).
+ *
  * @param authFn - Better Auth client method (e.g. `authClient.signIn.email`).
  * @param mutationKey - Scope for the mutation cache key.
  */
 export function authMutationOptions<
   // biome-ignore lint/suspicious/noExplicitAny: constraint widened so required-body endpoints pass
   TFn extends (...args: any) => any,
-  const TMutationKey extends MutationKey
+  const TMutationKey extends MutationKey,
+  TData = AuthMutationFnData<TFn>
 >(authFn: TFn, mutationKey: TMutationKey) {
-  return mutationOptions<
-    AuthMutationFnData<TFn>,
-    BetterFetchError,
-    AuthMutationFnVariables<TFn>
-  >({
-    mutationKey,
-    mutationFn: (variables) => {
-      const v = variables as { fetchOptions?: BetterFetchOption } | undefined
-      return authFn({
-        ...v,
-        fetchOptions: { ...v?.fetchOptions, throw: true }
-      } as Parameters<TFn>[0]) as Promise<AuthMutationFnData<TFn>>
+  return mutationOptions<TData, BetterFetchError, AuthMutationFnVariables<TFn>>(
+    {
+      mutationKey,
+      mutationFn: (variables) => {
+        const v = variables as { fetchOptions?: BetterFetchOption } | undefined
+        return authFn({
+          ...v,
+          fetchOptions: { ...v?.fetchOptions, throw: true }
+        } as Parameters<TFn>[0]) as Promise<TData>
+      }
     }
-  })
+  )
 }

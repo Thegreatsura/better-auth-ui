@@ -1,33 +1,32 @@
+import { useMutation } from "@tanstack/react-query"
+
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-client"
-import {
-  type UseAuthMutationOptions,
-  useAuthMutation
-} from "../auth/use-auth-mutation"
+import { changeEmailOptions } from "../../mutations/settings/change-email-options"
 import { useSession } from "../auth/use-session"
+
+export type UseChangeEmailOptions = Omit<
+  ReturnType<typeof changeEmailOptions>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Hook that creates a mutation for changing the current user's email address.
  *
- * The mutation sends an email-change request and shows success or error toasts.
- * On success the callback URL is set to the account settings view.
+ * Refetches the session on success to surface the new email.
  *
+ * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useChangeEmail(
-  options?: UseAuthMutationOptions<AuthClient["changeEmail"]>
-) {
+export function useChangeEmail(options?: UseChangeEmailOptions) {
   const { authClient } = useAuth()
   const { refetch } = useSession(undefined, { refetchOnMount: false })
 
-  return useAuthMutation({
-    authFn: authClient.changeEmail,
-    options: {
-      ...options,
-      onSuccess: async (...args) => {
-        await refetch()
-        await options?.onSuccess?.(...args)
-      }
+  return useMutation({
+    ...changeEmailOptions(authClient),
+    ...options,
+    onSuccess: async (...args) => {
+      await refetch()
+      await options?.onSuccess?.(...args)
     }
   })
 }

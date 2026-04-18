@@ -250,8 +250,9 @@ export function SignUp({
                 <FieldError>
                   {usernameError?.error?.message ||
                     usernameError?.message ||
-                    (usernameData?.available === false &&
-                      localization.auth.usernameTaken)}
+                    (usernameData?.available === false
+                      ? localization.auth.usernameTaken
+                      : null)}
                 </FieldError>
               </TextField>
             )}
