@@ -16,7 +16,7 @@ import type { UsernameConfig } from "./username-config"
  * Defines the base structure for authentication settings including paths,
  * providers, navigation functions, and feature flags.
  */
-export interface AuthConfig {
+export interface AuthConfig<_TAuthClient = unknown> {
   /**
    * Appearance/theme configuration
    * @remarks `AppearanceConfig`

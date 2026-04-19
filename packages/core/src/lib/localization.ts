@@ -60,9 +60,6 @@ export const localization = {
     /** @remarks `"OR"` */
     or: "OR",
 
-    /** @remarks `"Passkey"` */
-    passkey: "Passkey",
-
     /** @remarks `"Password"` */
     password: "Password",
 
@@ -221,20 +218,8 @@ export const localization = {
     /** @remarks `"Manage accounts"` */
     manageAccounts: "Manage accounts",
 
-    /** @remarks `"Add passkey"` */
-    addPasskey: "Add passkey",
-
     /** @remarks `"Delete"` */
     delete: "Delete",
-
-    /** @remarks `"Passkeys"` */
-    passkeys: "Passkeys",
-
-    /** @remarks `"Manage your passkeys for secure access."` */
-    passkeysDescription: "Manage your passkeys for secure access.",
-
-    /** @remarks `"Securely access your account without a password."` */
-    passkeysInstructions: "Securely access your account without a password.",
 
     /** @remarks `"Profile"` */
     profile: "Profile",

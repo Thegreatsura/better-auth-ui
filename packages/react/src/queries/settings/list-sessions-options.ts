@@ -1,4 +1,4 @@
-import type { AuthClient } from "../../lib/auth-client"
+import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { authQueryOptions } from "../auth-query-options"
 
 /**

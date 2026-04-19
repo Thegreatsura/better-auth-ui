@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-client"
+import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { signInSocialOptions } from "../../mutations/auth/sign-in-social-options"
 
 export type UseSignInSocialParams = NonNullable<

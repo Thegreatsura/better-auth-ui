@@ -5,7 +5,6 @@ import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
 import { ManageAccounts } from "./manage-accounts"
 import { UserProfile } from "./user-profile"
-
 export type AccountSettingsProps = {
   className?: string
   variant?: CardProps["variant"]

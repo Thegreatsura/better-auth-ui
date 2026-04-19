@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-client"
+import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { signUpEmailOptions } from "../../mutations/auth/sign-up-email-options"
 import { sessionOptions } from "../../queries/auth/session-options"
 

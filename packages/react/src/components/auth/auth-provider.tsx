@@ -1,30 +1,30 @@
 "use client"
 
-import { deepmerge, defaultAuthConfig } from "@better-auth-ui/core"
+import {
+  type AuthConfig,
+  type DeepPartial,
+  deepmerge,
+  defaultAuthConfig
+} from "@better-auth-ui/core"
 import {
   QueryClient,
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import { type PropsWithChildren, useContext } from "react"
+import { createContext, type PropsWithChildren, useContext } from "react"
 
-import type { AnyAuthClient } from "../../lib/auth-client"
-import type { AnyAuthConfig, AuthConfig } from "../../lib/auth-config"
-import { AuthContext } from "../../lib/auth-context"
+import type { AuthClient } from "../../lib/auth-clients/auth-client"
+
+const AuthContext = createContext<AuthConfig<AuthClient> | undefined>(undefined)
 
 const fallbackQueryClient = new QueryClient()
 
-const baseAuthConfig: AnyAuthConfig = {
-  ...defaultAuthConfig,
-  Link: (props) => <a {...props} />
-}
-
-export type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {
-  authClient: AnyAuthClient
+export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
+  DeepPartial<AuthConfig>
+> & {
+  authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
-  /**
-   * TanStack QueryClient to use for your application's queries
-   */
+  /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
 
@@ -43,23 +43,32 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const contextQueryClient = useContext(QueryClientContext)
-  const resolvedQueryClient =
-    queryClient || contextQueryClient || fallbackQueryClient
-
-  const mergedConfig = deepmerge(baseAuthConfig, config) as AuthConfig
+  const mergedConfig = deepmerge(
+    defaultAuthConfig,
+    config as AuthConfig
+  ) as AuthConfig<AuthClient>
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("redirectTo")?.trim()) ||
     mergedConfig.redirectTo
 
-  return (
-    <AuthContext.Provider value={mergedConfig}>
-      <QueryClientProvider client={resolvedQueryClient}>
+  const contextQueryClient = useContext(QueryClientContext)
+
+  if (contextQueryClient) {
+    return (
+      <AuthContext.Provider value={mergedConfig}>
         {children}
-      </QueryClientProvider>
-    </AuthContext.Provider>
+      </AuthContext.Provider>
+    )
+  }
+
+  return (
+    <QueryClientProvider client={queryClient || fallbackQueryClient}>
+      <AuthContext.Provider value={mergedConfig}>
+        {children}
+      </AuthContext.Provider>
+    </QueryClientProvider>
   )
 }
 
@@ -69,8 +78,8 @@ export function AuthProvider({
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth() {
-  const context = useContext(AuthContext)
+export function useAuth<TAuthClient = AuthClient>() {
+  const context = useContext(AuthContext) as AuthConfig<TAuthClient>
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")

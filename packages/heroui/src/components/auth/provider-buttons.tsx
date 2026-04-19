@@ -1,9 +1,7 @@
 import { useAuth } from "@better-auth-ui/react"
 import { cn } from "@heroui/react"
 import { useMemo } from "react"
-
 import { ProviderButton } from "./provider-button"
-
 export type ProviderButtonsProps = {
   isPending?: boolean
   socialLayout?: SocialLayout

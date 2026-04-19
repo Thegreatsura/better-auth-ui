@@ -18,7 +18,6 @@ import { type SyntheticEvent, useState } from "react"
 
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
-import { PasskeyButton } from "./passkey-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type MagicLinkProps = {
@@ -47,7 +46,7 @@ export function MagicLink({
     basePaths,
     baseURL,
     localization,
-    passkey,
+    plugins,
     redirectTo,
     socialProviders,
     viewPaths
@@ -129,7 +128,12 @@ export function MagicLink({
 
             <MagicLinkButton view="magicLink" isPending={isPending} />
 
-            {passkey && <PasskeyButton isPending={isPending} />}
+            {plugins?.map(
+              (plugin) =>
+                plugin.AuthButton && (
+                  <plugin.AuthButton key={plugin.id} isPending={isPending} />
+                )
+            )}
           </div>
         </Form>
 

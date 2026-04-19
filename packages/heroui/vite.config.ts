@@ -9,6 +9,7 @@ export default defineConfig({
       entry: {
         index: "src/index.tsx",
         core: "src/core.ts",
+        plugins: "src/plugins.ts",
         "react-exports": "src/react-exports.ts"
       },
       formats: ["es"],

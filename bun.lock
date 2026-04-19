@@ -263,7 +263,6 @@
         "@better-auth-ui/core": "*",
       },
       "devDependencies": {
-        "@better-auth/passkey": "^1.6.5",
         "@react-email/components": "^1.0.12",
         "@react-email/preview-server": "^5.2.10",
         "@tanstack/react-query": "^5.99.0",
@@ -284,7 +283,6 @@
         "zod": "^4.3.6",
       },
       "peerDependencies": {
-        "@better-auth/passkey": ">=1.6.5",
         "@react-email/components": ">=1.0.12",
         "@tanstack/react-query": ">=5.99.0",
         "better-auth": ">=1.6.5",

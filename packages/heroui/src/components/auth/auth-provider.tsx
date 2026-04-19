@@ -1,18 +1,21 @@
 import {
   AuthProvider as AuthProviderPrimitive,
-  type AuthProviderProps as AuthProviderPropsPrimitive
+  type AuthProviderProps
 } from "@better-auth-ui/react"
 import { RouterProvider } from "@heroui/react"
 
+import type { AuthPlugin } from "../../plugins"
 import { ErrorToaster } from "./error-toaster"
 
-export type AuthProviderProps = Omit<AuthProviderPropsPrimitive, "Link">
+declare module "@better-auth-ui/core" {
+  interface AuthConfig {
+    plugins: AuthPlugin[]
+  }
+}
 
 /**
- * Provides an authentication context by rendering an auth provider with the sonner toast handler injected, forwarding remaining configuration and rendering `children` inside it.
- *
- * @param children - React nodes to render inside the authentication provider
- * @returns A React element that renders an authentication provider configured with the provided props and toast handler
+ * Heroui-flavored `AuthProvider`. Wraps the primitive provider with a
+ * heroui `RouterProvider` and the heroui `ErrorToaster`.
  */
 export function AuthProvider({
   children,

@@ -1,5 +1,7 @@
 export * from "./config"
+export * from "./lib/auth-plugin"
 export * from "./lib/base-paths"
+export * from "./lib/deep-partial"
 export * from "./lib/localization"
 export * from "./lib/provider-names"
 export * from "./lib/utils"
