@@ -21,9 +21,9 @@ export function LinkedAccounts({
   variant,
   ...props
 }: LinkedAccountsProps & Omit<CardProps, "children">) {
-  const { localization, socialProviders } = useAuth()
+  const { authClient, localization, socialProviders } = useAuth()
 
-  const { data: accounts, isPending } = useListAccounts()
+  const { data: accounts, isPending } = useListAccounts(authClient)
 
   const linkedAccounts = accounts?.filter(
     (account) => account.providerId !== "credential"

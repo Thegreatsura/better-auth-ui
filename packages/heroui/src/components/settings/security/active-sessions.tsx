@@ -20,10 +20,10 @@ export function ActiveSessions({
   variant,
   ...props
 }: ActiveSessionsProps & Omit<CardProps, "children">) {
-  const { localization } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization } = useAuth()
+  const { data: session } = useSession(authClient)
 
-  const { data: sessions, isPending } = useListSessions()
+  const { data: sessions, isPending } = useListSessions(authClient)
 
   const activeSessions = sessions?.toSorted((activeSession) =>
     activeSession.id === session?.session.id ? -1 : 1

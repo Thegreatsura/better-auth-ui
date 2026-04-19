@@ -1,27 +1,28 @@
 import { useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { sessionOptions } from "../../queries/auth/session-options"
 
-export type UseSessionParams = NonNullable<
-  Parameters<AuthClient["getSession"]>[0]
+export type UseSessionParams<TAuthClient extends AuthClient> = NonNullable<
+  Parameters<TAuthClient["getSession"]>[0]
 >
 
-export type UseSessionOptions = Omit<
+export type UseSessionOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof sessionOptions>,
   "queryKey" | "queryFn"
 > &
-  UseSessionParams
+  UseSessionParams<TAuthClient>
 
 /**
- * Retrieve the current authentication session.
+ * Retrieve the current session.
  *
- * @param options - Better Auth params (`query`, `fetchOptions`) and React
- *   Query options forwarded to `useQuery`.
+ * @param authClient - The Better Auth client.
+ * @param options - `getSession` params & `useQuery` options.
  */
-export function useSession(options?: UseSessionOptions) {
-  const { authClient } = useAuth()
-  const { query, fetchOptions, ...queryOptions } = options ?? {}
+export function useSession<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options: UseSessionOptions<TAuthClient> = {}
+) {
+  const { query, fetchOptions, ...queryOptions } = options
 
   return useQuery({
     ...sessionOptions(authClient, { query, fetchOptions }),

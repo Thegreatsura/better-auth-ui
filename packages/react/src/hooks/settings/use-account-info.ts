@@ -1,40 +1,36 @@
-import { skipToken, useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../components/auth/auth-provider"
+import { useQuery } from "@tanstack/react-query"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { accountInfoOptions } from "../../queries/settings/account-info-options"
 import { useSession } from "../auth/use-session"
 
-export type UseAccountInfoParams = NonNullable<
-  Parameters<AuthClient["accountInfo"]>[0]
+export type UseAccountInfoParams<TAuthClient extends AuthClient> = NonNullable<
+  Parameters<TAuthClient["accountInfo"]>[0]
 >
 
-export type UseAccountInfoOptions = Omit<
+export type UseAccountInfoOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof accountInfoOptions>,
   "queryKey" | "queryFn"
 > &
-  UseAccountInfoParams
+  UseAccountInfoParams<TAuthClient>
 
 /**
  * Retrieve provider-specific info for a linked account.
  *
- * Keyed per-user; waits for the active session and `options.query.accountId`
- * before firing.
- *
- * @param options - Better Auth params (`query`, `fetchOptions`) and React
- *   Query options forwarded to `useQuery`.
+ * @param authClient - The Better Auth client.
+ * @param options - `accountInfo` params & `useQuery` options.
  */
-export function useAccountInfo(options?: UseAccountInfoOptions) {
-  const { authClient } = useAuth()
-  const { data: session } = useSession({ refetchOnMount: false })
-  const userId = session?.user.id
-
-  const { query, fetchOptions, ...queryOptions } = options ?? {}
-  const accountId = query?.accountId
-  const disabled = !userId || !accountId
+export function useAccountInfo<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options: UseAccountInfoOptions<TAuthClient> = {}
+) {
+  const { data: session } = useSession(authClient, { refetchOnMount: false })
+  const { query, fetchOptions, ...queryOptions } = options
 
   return useQuery({
-    ...accountInfoOptions(authClient, userId, { query, fetchOptions }),
-    ...(disabled && { queryFn: skipToken }),
+    ...accountInfoOptions(authClient, session?.user.id, {
+      query,
+      fetchOptions
+    }),
     ...queryOptions
   })
 }

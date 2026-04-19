@@ -43,9 +43,10 @@ export function ChangePassword({
   variant,
   ...props
 }: ChangePasswordProps & Omit<CardProps, "children">) {
-  const { emailAndPassword, localization } = useAuth()
-  const { data: session } = useSession()
-  const { data: accounts, isPending: isAccountsPending } = useListAccounts()
+  const { authClient, emailAndPassword, localization } = useAuth()
+  const { data: session } = useSession(authClient)
+  const { data: accounts, isPending: isAccountsPending } =
+    useListAccounts(authClient)
 
   const hasCredentialAccount = accounts?.some(
     (account) => account.providerId === "credential"
@@ -72,8 +73,8 @@ function SetPassword({
   variant,
   ...props
 }: Omit<CardProps, "children">) {
-  const { localization } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
     onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)

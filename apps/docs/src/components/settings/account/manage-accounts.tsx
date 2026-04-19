@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type MultiSessionAuthClient,
   useAuth,
   useListDeviceSessions,
   useSession
@@ -23,10 +24,12 @@ export type ManageAccountsProps = {
  * @returns A JSX element containing the accounts management card
  */
 export function ManageAccounts({ className }: ManageAccountsProps) {
-  const { localization } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization } = useAuth()
+  const { data: session } = useSession(authClient)
 
-  const { data: deviceSessions, isPending } = useListDeviceSessions()
+  const { data: deviceSessions, isPending } = useListDeviceSessions(
+    authClient as MultiSessionAuthClient
+  )
 
   const otherSessions = deviceSessions?.filter(
     (deviceSession) => deviceSession.session.id !== session?.session.id

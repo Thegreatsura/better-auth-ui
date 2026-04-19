@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type MultiSessionAuthClient,
   useAuth,
   useListDeviceSessions,
   useSession
@@ -25,9 +26,11 @@ import { UserView } from "./user-view"
  * @returns The switch account submenu content as a JSX element
  */
 export function SwitchAccountMenu() {
-  const { basePaths, viewPaths, localization, Link } = useAuth()
-  const { data: session } = useSession()
-  const { data: deviceSessions, isPending } = useListDeviceSessions()
+  const { authClient, basePaths, viewPaths, localization, Link } = useAuth()
+  const { data: session } = useSession(authClient)
+  const { data: deviceSessions, isPending } = useListDeviceSessions(
+    authClient as MultiSessionAuthClient
+  )
 
   return (
     <DropdownMenuSubContent className="min-w-48 md:min-w-56 max-w-[48svw]">

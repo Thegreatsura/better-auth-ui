@@ -1,39 +1,33 @@
-import { skipToken, useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../components/auth/auth-provider"
+import { useQuery } from "@tanstack/react-query"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { listAccountsOptions } from "../../queries/settings/list-accounts-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListAccountsParams = NonNullable<
-  Parameters<AuthClient["listAccounts"]>[0]
+export type UseListAccountsParams<TAuthClient extends AuthClient> = NonNullable<
+  Parameters<TAuthClient["listAccounts"]>[0]
 >
 
-export type UseListAccountsOptions = Omit<
+export type UseListAccountsOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof listAccountsOptions>,
   "queryKey" | "queryFn"
 > &
-  UseListAccountsParams
+  UseListAccountsParams<TAuthClient>
 
 /**
  * Retrieve the current user's linked social accounts.
  *
- * Keyed per-user; waits for the active session before firing.
- *
- * @param options - Better Auth params (`fetchOptions`) and React Query
- *   options forwarded to `useQuery`.
- * @returns React Query result for the user's linked accounts.
+ * @param authClient - The Better Auth client.
+ * @param options - `listAccounts` params & `useQuery` options.
  */
-export function useListAccounts(options?: UseListAccountsOptions) {
-  const { authClient } = useAuth()
-  const { data: session } = useSession({ refetchOnMount: false })
-  const userId = session?.user.id
-  const disabled = !userId
-
-  const { fetchOptions, ...queryOptions } = options ?? {}
+export function useListAccounts<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options: UseListAccountsOptions<TAuthClient> = {}
+) {
+  const { data: session } = useSession(authClient, { refetchOnMount: false })
+  const { fetchOptions, ...queryOptions } = options
 
   return useQuery({
-    ...listAccountsOptions(authClient, userId, { fetchOptions }),
-    ...(disabled && { queryFn: skipToken }),
+    ...listAccountsOptions(authClient, session?.user.id, { fetchOptions }),
     ...queryOptions
   })
 }

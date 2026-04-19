@@ -36,10 +36,11 @@ export function Appearance({
   ...props
 }: AppearanceProps & Omit<CardProps, "children">) {
   const {
+    authClient,
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-  const { data: session } = useSession()
+  const { data: session } = useSession(authClient)
 
   if (!setTheme || !themes?.length) {
     return null

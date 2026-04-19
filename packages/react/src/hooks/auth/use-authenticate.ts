@@ -1,18 +1,21 @@
 import { useEffect } from "react"
 import { useAuth } from "../../components/auth/auth-provider"
+import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { type UseSessionOptions, useSession } from "./use-session"
 
 /**
  * Calls `useSession` and redirects unauthenticated users to the sign-in page,
  * preserving the current URL as a `redirectTo` query param.
  *
- * @param options - Better Auth params (`query`, `fetchOptions`) and React
- *   Query options forwarded to `useQuery`.
- * @returns React Query result for the session.
+ * @param authClient - The Better Auth client.
+ * @param options - `getSession` params & `useQuery` options.
  */
-export function useAuthenticate(options?: UseSessionOptions) {
+export function useAuthenticate<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options?: UseSessionOptions<TAuthClient>
+) {
   const { basePaths, viewPaths, navigate } = useAuth()
-  const session = useSession(options)
+  const session = useSession(authClient, options)
 
   useEffect(() => {
     if (session.data || session.isPending) return

@@ -26,11 +26,12 @@ export type LinkedAccountProps = {
  * @returns A JSX element containing the linked account row
  */
 export function LinkedAccount({ account, provider }: LinkedAccountProps) {
-  const { baseURL, localization } = useAuth()
+  const { authClient, baseURL, localization } = useAuth()
 
-  const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo({
-    query: { accountId: account?.accountId }
-  })
+  const { data: accountInfo, isPending: isLoadingInfo } = useAccountInfo(
+    authClient,
+    { query: { accountId: account?.accountId } }
+  )
 
   const { mutate: linkSocial, isPending: isLinking } = useLinkSocial()
 

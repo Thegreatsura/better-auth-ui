@@ -37,8 +37,8 @@ export function ManageAccount({
   deviceSession,
   isPending
 }: ManageAccountProps) {
-  const { localization } = useAuth()
-  const { data: user } = useUser()
+  const { authClient, localization } = useAuth()
+  const { data: user } = useUser(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
     useSetActiveSession()

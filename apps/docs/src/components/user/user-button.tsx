@@ -68,6 +68,7 @@ export function UserButton({
   variant = "ghost"
 }: UserButtonProps) {
   const {
+    authClient,
     basePaths,
     viewPaths,
     localization,
@@ -77,7 +78,7 @@ export function UserButton({
   } = useAuth()
 
   const { isPending: settingActiveSession } = useSetActiveSession()
-  const { data: session, isPending: sessionPending } = useSession()
+  const { data: session, isPending: sessionPending } = useSession(authClient)
 
   return (
     <DropdownMenu>

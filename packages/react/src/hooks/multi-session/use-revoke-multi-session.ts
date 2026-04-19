@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
 import { revokeMultiSessionOptions } from "../../mutations/multi-session/revoke-multi-session-options"
 import { useListDeviceSessions } from "./use-list-device-sessions"
 
 export type UseRevokeMultiSessionParams = NonNullable<
-  Parameters<AuthClient["multiSession"]["revoke"]>[0]
+  Parameters<MultiSessionAuthClient["multiSession"]["revoke"]>[0]
 >
 
 export type UseRevokeMultiSessionOptions = Omit<
@@ -24,12 +24,13 @@ export type UseRevokeMultiSessionOptions = Omit<
  */
 export function useRevokeMultiSession(options?: UseRevokeMultiSessionOptions) {
   const { authClient } = useAuth()
-  const { refetch } = useListDeviceSessions({
+  const multiSessionAuthClient = authClient as MultiSessionAuthClient
+  const { refetch } = useListDeviceSessions(multiSessionAuthClient, {
     refetchOnMount: false
   })
 
   return useMutation({
-    ...revokeMultiSessionOptions(authClient),
+    ...revokeMultiSessionOptions(multiSessionAuthClient),
     ...options,
     onSuccess: async (...args) => {
       await refetch()

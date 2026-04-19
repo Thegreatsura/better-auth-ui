@@ -1,23 +1,24 @@
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import { skipToken } from "@tanstack/react-query"
+import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
 import { authQueryOptions } from "../auth-query-options"
 
 /**
- * Query options factory for the current user's device sessions
- * (multi-session account switcher).
+ * Query options factory for the current user's device sessions. Skips when
+ * `userId` is `undefined`.
  *
- * Keyed per-user (enables offline account switching with a persister).
- *
- * @param authClient - The Better Auth client.
+ * @param authClient - The Better Auth client with the multi-session plugin.
  * @param userId - The current signed in user's ID.
  * @param params - Parameters forwarded to `authClient.multiSession.listDeviceSessions`.
  */
-export function listDeviceSessionsOptions<TAuthClient extends AuthClient>(
+export function listDeviceSessionsOptions<
+  TAuthClient extends MultiSessionAuthClient
+>(
   authClient: TAuthClient,
-  userId?: string,
+  userId: string | undefined,
   params?: Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 ) {
   return authQueryOptions<TAuthClient["multiSession"]["listDeviceSessions"]>()(
-    authClient.multiSession.listDeviceSessions,
+    userId ? authClient.multiSession.listDeviceSessions : skipToken,
     ["auth", "user", userId, "listDeviceSessions"],
     params
   )

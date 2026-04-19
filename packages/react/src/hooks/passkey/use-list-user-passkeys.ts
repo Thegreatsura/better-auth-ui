@@ -1,39 +1,30 @@
-import { skipToken, useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../components/auth/auth-provider"
+import { useQuery } from "@tanstack/react-query"
 import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
 import { listUserPasskeysOptions } from "../../queries/passkey/list-user-passkeys-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListUserPasskeysParams = NonNullable<
-  Parameters<PasskeyAuthClient["passkey"]["listUserPasskeys"]>[0]
->
+export type UseListUserPasskeysParams<TAuthClient extends PasskeyAuthClient> =
+  NonNullable<Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]>
 
-export type UseListUserPasskeysOptions = Omit<
-  ReturnType<typeof listUserPasskeysOptions>,
-  "queryKey" | "queryFn"
-> &
-  UseListUserPasskeysParams
+export type UseListUserPasskeysOptions<TAuthClient extends PasskeyAuthClient> =
+  Omit<ReturnType<typeof listUserPasskeysOptions>, "queryKey" | "queryFn"> &
+    UseListUserPasskeysParams<TAuthClient>
 
 /**
  * Retrieve the passkeys registered for the current user.
  *
- * Keyed per-user; waits for the active session before firing.
- *
- * @param options - Better Auth params (`fetchOptions`) and React Query
- *   options forwarded to `useQuery`.
- * @returns React Query result for the passkeys list.
+ * @param authClient - The Better Auth client with the passkey plugin.
+ * @param options - `listUserPasskeys` params & `useQuery` options.
  */
-export function useListUserPasskeys(options?: UseListUserPasskeysOptions) {
-  const { authClient } = useAuth<PasskeyAuthClient>()
-  const { data: session } = useSession({ refetchOnMount: false })
-  const userId = session?.user.id
-  const disabled = !userId
-
-  const { fetchOptions, ...queryOptions } = options ?? {}
+export function useListUserPasskeys<TAuthClient extends PasskeyAuthClient>(
+  authClient: TAuthClient,
+  options: UseListUserPasskeysOptions<TAuthClient> = {}
+) {
+  const { data: session } = useSession(authClient, { refetchOnMount: false })
+  const { fetchOptions, ...queryOptions } = options
 
   return useQuery({
-    ...listUserPasskeysOptions(authClient, userId, { fetchOptions }),
-    ...(disabled && { queryFn: skipToken }),
+    ...listUserPasskeysOptions(authClient, session?.user.id, { fetchOptions }),
     ...queryOptions
   })
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "@better-auth-ui/react"
+import { useAuth, useSession } from "@better-auth-ui/react"
 import type { User } from "better-auth"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,7 +23,8 @@ export type UserViewProps = {
  * @returns A React element showing the user's avatar with their identifying information
  */
 export function UserView({ className, isPending, user }: UserViewProps) {
-  const { data: session, isPending: sessionPending } = useSession({
+  const { authClient } = useAuth()
+  const { data: session, isPending: sessionPending } = useSession(authClient, {
     enabled: !user && !isPending
   })
 

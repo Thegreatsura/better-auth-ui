@@ -30,6 +30,7 @@ export function DeleteUser({
   ...props
 }: DeleteUserProps & Omit<CardProps, "children">) {
   const {
+    authClient,
     basePaths,
     deleteUser: deleteUserConfig,
     localization,
@@ -37,7 +38,7 @@ export function DeleteUser({
     viewPaths
   } = useAuth()
 
-  const { data: accounts } = useListAccounts()
+  const { data: accounts } = useListAccounts(authClient)
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [password, setPassword] = useState("")

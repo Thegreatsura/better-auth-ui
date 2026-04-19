@@ -15,7 +15,7 @@ import { createContext, type PropsWithChildren, useContext } from "react"
 
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 
-const AuthContext = createContext<AuthConfig<AuthClient> | undefined>(undefined)
+const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
 const fallbackQueryClient = new QueryClient()
 
@@ -49,10 +49,7 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const mergedConfig = deepmerge(
-    defaultAuthConfig,
-    config as AuthConfig
-  ) as AuthConfig<AuthClient>
+  const mergedConfig = deepmerge(defaultAuthConfig, config as AuthConfig)
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&
@@ -84,8 +81,8 @@ export function AuthProvider({
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth<TAuthClient = AuthClient>() {
-  const context = useContext(AuthContext) as AuthConfig<TAuthClient>
+export function useAuth() {
+  const context = useContext(AuthContext)
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")

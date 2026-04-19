@@ -57,6 +57,7 @@ export function UserButton({
   themeToggle = true
 }: UserButtonProps) {
   const {
+    authClient,
     basePaths,
     viewPaths,
     localization,
@@ -64,7 +65,7 @@ export function UserButton({
     appearance: { theme, setTheme, themes }
   } = useAuth()
 
-  const { data: session, isPending: sessionPending } = useSession()
+  const { data: session, isPending: sessionPending } = useSession(authClient)
 
   return (
     <Dropdown>

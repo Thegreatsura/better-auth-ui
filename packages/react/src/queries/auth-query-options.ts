@@ -2,6 +2,7 @@ import {
   type DataTag,
   type QueryKey,
   queryOptions,
+  skipToken,
   type UseQueryOptions
 } from "@tanstack/react-query"
 import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
@@ -51,6 +52,10 @@ export type AuthQueryOptions<
 /**
  * Build `queryOptions` for a Better Auth endpoint.
  *
+ * Pass `skipToken` for `authFn` to mark the query as skipped (e.g. waiting on
+ * a prerequisite like an active session). Every consumer — `useQuery`,
+ * `prefetchQuery`, `ensureQueryData`, etc. — will honor the skip.
+ *
  * Curried to sidestep TypeScript's all-or-nothing type-argument rule: pin
  * the auth fn type on the first call (needed to prevent widening of
  * generic-indexed argument types like `TAuthClient["getSession"]`), and let
@@ -62,19 +67,29 @@ export type AuthQueryOptions<
  *   ["auth", "getSession"],
  *   params
  * )
+ *
+ * @example Skip until a prerequisite resolves:
+ * authQueryOptions<TAuthClient["listAccounts"]>()(
+ *   userId ? authClient.listAccounts : skipToken,
+ *   ["auth", "user", userId, "listAccounts"],
+ *   params
+ * )
  */
 export function authQueryOptions<TFn extends AuthFn>() {
   return <const TPrefix extends QueryKey>(
-    authFn: TFn,
+    authFn: TFn | typeof skipToken,
     queryKey: TPrefix,
     params?: Parameters<TFn>[0]
   ): AuthQueryOptions<TFn, TPrefix> =>
     queryOptions<AuthFnData<TFn>, BetterFetchError>({
       queryKey: [...queryKey, params?.query ?? null] as const,
-      queryFn: ({ signal }) =>
-        authFn({
-          ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
-        }) as Promise<AuthFnData<TFn>>
+      queryFn:
+        authFn === skipToken
+          ? skipToken
+          : ({ signal }) =>
+              authFn({
+                ...params,
+                fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+              }) as Promise<AuthFnData<TFn>>
     }) as AuthQueryOptions<TFn, TPrefix>
 }

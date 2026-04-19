@@ -1,12 +1,10 @@
+import { skipToken } from "@tanstack/react-query"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { authQueryOptions } from "../auth-query-options"
 
 /**
- * Query options factory for provider-specific account info.
- *
- * Keyed per-user. `userId` and `params` are both optional so the factory can
- * build stable options before either is known — the consumer swaps `queryFn`
- * for `skipToken` until ready.
+ * Query options factory for provider-specific account info. Skips when
+ * `userId` or `params.query.accountId` is missing.
  *
  * @param authClient - The Better Auth client.
  * @param userId - The current signed in user's ID.
@@ -14,11 +12,11 @@ import { authQueryOptions } from "../auth-query-options"
  */
 export function accountInfoOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  userId?: string,
+  userId: string | undefined,
   params?: Parameters<TAuthClient["accountInfo"]>[0]
 ) {
   return authQueryOptions<TAuthClient["accountInfo"]>()(
-    authClient.accountInfo,
+    userId && params?.query?.accountId ? authClient.accountInfo : skipToken,
     ["auth", "user", userId, "accountInfo"],
     params
   )

@@ -27,8 +27,8 @@ export type ChangeEmailProps = {
  * @returns A JSX element rendering the change-email card and form
  */
 export function ChangeEmail({ className }: ChangeEmailProps) {
-  const { baseURL, localization, viewPaths } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, baseURL, localization, viewPaths } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
     onSuccess: () => toast.success(localization.settings.changeEmailSuccess)

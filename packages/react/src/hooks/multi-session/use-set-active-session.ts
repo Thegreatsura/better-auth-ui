@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
 import { setActiveSessionOptions } from "../../mutations/multi-session/set-active-session-options"
 import { sessionOptions } from "../../queries/auth/session-options"
 import { useSession } from "../auth/use-session"
 import { useListDeviceSessions } from "./use-list-device-sessions"
 
 export type UseSetActiveSessionParams = NonNullable<
-  Parameters<AuthClient["multiSession"]["setActive"]>[0]
+  Parameters<MultiSessionAuthClient["multiSession"]["setActive"]>[0]
 >
 
 export type UseSetActiveSessionOptions = Omit<
@@ -28,12 +28,15 @@ export type UseSetActiveSessionOptions = Omit<
 export function useSetActiveSession(options?: UseSetActiveSessionOptions) {
   const queryClient = useQueryClient()
   const { authClient } = useAuth()
-  const { refetch: refetchSession } = useSession({ refetchOnMount: false })
+  const multiSessionAuthClient = authClient as MultiSessionAuthClient
+  const { refetch: refetchSession } = useSession(authClient, {
+    refetchOnMount: false
+  })
   const { data: deviceSessions, refetch: refetchDeviceSessions } =
-    useListDeviceSessions({ refetchOnMount: false })
+    useListDeviceSessions(multiSessionAuthClient, { refetchOnMount: false })
 
   return useMutation({
-    ...setActiveSessionOptions(authClient),
+    ...setActiveSessionOptions(multiSessionAuthClient),
     ...options,
     onSuccess: async (data, variables, ...rest) => {
       const sessionToken = variables?.sessionToken

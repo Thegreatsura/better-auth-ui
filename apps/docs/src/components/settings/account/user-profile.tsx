@@ -37,8 +37,8 @@ export type UserProfileProps = {
  * @returns A JSX element containing the profile card with avatar upload and editable name/username fields
  */
 export function UserProfile({ className }: UserProfileProps) {
-  const { localization, username: usernameConfig } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization, username: usernameConfig } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const currentUsername =
     (usernameConfig?.displayUsername

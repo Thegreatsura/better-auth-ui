@@ -40,9 +40,10 @@ export type ChangePasswordProps = {
  * @returns A JSX element containing the change-password or set-password card
  */
 export function ChangePassword({ className }: ChangePasswordProps) {
-  const { emailAndPassword, localization } = useAuth()
-  const { data: session } = useSession()
-  const { data: accounts, isPending: isAccountsPending } = useListAccounts()
+  const { authClient, emailAndPassword, localization } = useAuth()
+  const { data: session } = useSession(authClient)
+  const { data: accounts, isPending: isAccountsPending } =
+    useListAccounts(authClient)
 
   const hasCredentialAccount = accounts?.some(
     (account) => account.providerId === "credential"
@@ -63,8 +64,8 @@ export function ChangePassword({ className }: ChangePasswordProps) {
 }
 
 function SetPassword({ className }: { className?: string }) {
-  const { localization } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
     onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)

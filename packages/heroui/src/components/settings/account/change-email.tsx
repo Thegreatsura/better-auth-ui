@@ -35,8 +35,8 @@ export function ChangeEmail({
   variant,
   ...props
 }: ChangeEmailProps & Omit<CardProps, "children">) {
-  const { localization, baseURL, viewPaths } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization, baseURL, viewPaths } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const { mutate: changeEmail, isPending } = useChangeEmail({
     onSuccess: () => toast.success(localization.settings.changeEmailSuccess)

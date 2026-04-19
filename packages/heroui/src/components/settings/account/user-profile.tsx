@@ -41,8 +41,8 @@ export function UserProfile({
   variant,
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
-  const { localization, username: usernameConfig } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization, username: usernameConfig } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const currentUsername =
     (usernameConfig?.displayUsername

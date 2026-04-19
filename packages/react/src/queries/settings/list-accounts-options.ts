@@ -1,13 +1,10 @@
+import { skipToken } from "@tanstack/react-query"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { authQueryOptions } from "../auth-query-options"
 
 /**
- * Query options factory for a user's linked social accounts.
- *
- * Keyed per-user (enables offline account switching with a persister).
- * `userId` is optional so the factory can build stable options before the
- * active session resolves — the consumer swaps `queryFn` for `skipToken`
- * until ready.
+ * Query options factory for a user's linked social accounts. Skips when
+ * `userId` is `undefined`.
  *
  * @param authClient - The Better Auth client.
  * @param userId - The current signed in user's ID.
@@ -15,11 +12,11 @@ import { authQueryOptions } from "../auth-query-options"
  */
 export function listAccountsOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  userId?: string,
+  userId: string | undefined,
   params?: Parameters<TAuthClient["listAccounts"]>[0]
 ) {
   return authQueryOptions<TAuthClient["listAccounts"]>()(
-    authClient.listAccounts,
+    userId ? authClient.listAccounts : skipToken,
     ["auth", "user", userId, "listAccounts"],
     params
   )

@@ -1,39 +1,38 @@
-import { skipToken, useQuery } from "@tanstack/react-query"
-import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import { useQuery } from "@tanstack/react-query"
+import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
 import { listDeviceSessionsOptions } from "../../queries/multi-session/list-device-sessions-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListDeviceSessionsParams = NonNullable<
-  Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]
+export type UseListDeviceSessionsParams<
+  TAuthClient extends MultiSessionAuthClient
+> = NonNullable<
+  Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 >
 
-export type UseListDeviceSessionsOptions = Omit<
-  ReturnType<typeof listDeviceSessionsOptions>,
-  "queryKey" | "queryFn"
-> &
-  UseListDeviceSessionsParams
+export type UseListDeviceSessionsOptions<
+  TAuthClient extends MultiSessionAuthClient
+> = Omit<ReturnType<typeof listDeviceSessionsOptions>, "queryKey" | "queryFn"> &
+  UseListDeviceSessionsParams<TAuthClient>
 
 /**
  * Retrieve the device sessions (multi-session account switcher).
  *
- * Keyed per-user; waits for the active session before firing.
- *
- * @param options - Better Auth params (`fetchOptions`) and React Query
- *   options forwarded to `useQuery`.
- * @returns React Query result for the device sessions list.
+ * @param authClient - The Better Auth client with the multi-session plugin.
+ * @param options - `listDeviceSessions` params & `useQuery` options.
  */
-export function useListDeviceSessions(options?: UseListDeviceSessionsOptions) {
-  const { authClient } = useAuth()
-  const { data: session } = useSession({ refetchOnMount: false })
-  const userId = session?.user.id
-  const disabled = !userId
-
-  const { fetchOptions, ...queryOptions } = options ?? {}
+export function useListDeviceSessions<
+  TAuthClient extends MultiSessionAuthClient
+>(
+  authClient: TAuthClient,
+  options: UseListDeviceSessionsOptions<TAuthClient> = {}
+) {
+  const { data: session } = useSession(authClient, { refetchOnMount: false })
+  const { fetchOptions, ...queryOptions } = options
 
   return useQuery({
-    ...listDeviceSessionsOptions(authClient, userId, { fetchOptions }),
-    ...(disabled && { queryFn: skipToken }),
+    ...listDeviceSessionsOptions(authClient, session?.user.id, {
+      fetchOptions
+    }),
     ...queryOptions
   })
 }
