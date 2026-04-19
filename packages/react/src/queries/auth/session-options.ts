@@ -7,9 +7,13 @@ import { authQueryOptions } from "../auth-query-options"
  * @param authClient - The Better Auth client.
  * @param params - Parameters forwarded to `authClient.getSession`.
  */
-export function sessionOptions(
-  authClient: AuthClient,
-  params?: Parameters<AuthClient["getSession"]>[0]
+export function sessionOptions<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  params?: Parameters<TAuthClient["getSession"]>[0]
 ) {
-  return authQueryOptions(authClient.getSession, ["auth", "getSession"], params)
+  return authQueryOptions<TAuthClient["getSession"]>()(
+    authClient.getSession,
+    ["auth", "getSession"],
+    params
+  )
 }

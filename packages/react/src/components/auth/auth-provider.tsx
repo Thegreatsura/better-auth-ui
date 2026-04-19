@@ -19,6 +19,12 @@ const AuthContext = createContext<AuthConfig<AuthClient> | undefined>(undefined)
 
 const fallbackQueryClient = new QueryClient()
 
+declare module "@better-auth-ui/core" {
+  interface AuthConfig {
+    authClient: AuthClient
+  }
+}
+
 export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
   DeepPartial<AuthConfig>
 > & {

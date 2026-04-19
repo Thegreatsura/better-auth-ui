@@ -1,8 +1,12 @@
 import { type QueryKey, useQuery } from "@tanstack/react-query"
-import { type AuthFn, authQueryOptions } from "../queries/auth-query-options"
+import {
+  type AuthFn,
+  type AuthQueryOptions,
+  authQueryOptions
+} from "../queries/auth-query-options"
 
-type UseAuthQueryOptions<TFn extends AuthFn, TQueryKey extends QueryKey> = Omit<
-  ReturnType<typeof authQueryOptions<TFn, TQueryKey>>,
+type UseAuthQueryOptions<TFn extends AuthFn, TPrefix extends QueryKey> = Omit<
+  AuthQueryOptions<TFn, TPrefix>,
   "queryKey" | "queryFn"
 > &
   NonNullable<Parameters<TFn>[0]>
@@ -27,7 +31,7 @@ export function useAuthQuery<
   const { query, fetchOptions, ...queryOptions } = options ?? {}
 
   return useQuery({
-    ...authQueryOptions(authFn, queryKey, {
+    ...authQueryOptions<TFn>()(authFn, queryKey, {
       query,
       fetchOptions
     } as Parameters<TFn>[0]),

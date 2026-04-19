@@ -1,4 +1,9 @@
-import { type QueryKey, queryOptions } from "@tanstack/react-query"
+import {
+  type DataTag,
+  type QueryKey,
+  queryOptions,
+  type UseQueryOptions
+} from "@tanstack/react-query"
 import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
 
 export type AuthFn<TData = unknown> = (params: {
@@ -6,25 +11,70 @@ export type AuthFn<TData = unknown> = (params: {
   fetchOptions?: BetterFetchOption
 }) => Promise<{ data: TData }>
 
-type AuthFnData<TFn> = TFn extends AuthFn<infer TData> ? TData : never
+export type AuthFnData<TFn> = TFn extends AuthFn<infer TData> ? TData : never
+
+/**
+ * Final query key produced by {@link authQueryOptions}: the caller's prefix
+ * followed by `params.query ?? null`.
+ */
+export type AuthQueryKey<
+  TFn extends AuthFn = AuthFn,
+  TPrefix extends QueryKey = QueryKey
+> = readonly [...TPrefix, NonNullable<Parameters<TFn>[0]>["query"] | null]
+
+/**
+ * Return type of {@link authQueryOptions}. Named so TypeScript emits
+ * `DataTag<…>` by reference in the `.d.ts`, instead of the raw
+ * `{ [dataTagSymbol]: … }` intersection — which triggers a declaration-emit
+ * bug where `dataTagSymbol` isn't re-imported at the use site and silently
+ * breaks `setQueryData`/`getQueryData` type inference at the consumer.
+ */
+export type AuthQueryOptions<
+  TFn extends AuthFn = AuthFn,
+  TPrefix extends QueryKey = QueryKey
+> = Omit<
+  UseQueryOptions<
+    AuthFnData<TFn>,
+    BetterFetchError,
+    AuthFnData<TFn>,
+    AuthQueryKey<TFn, TPrefix>
+  >,
+  "queryKey"
+> & {
+  queryKey: DataTag<
+    AuthQueryKey<TFn, TPrefix>,
+    AuthFnData<TFn>,
+    BetterFetchError
+  >
+}
 
 /**
  * Build `queryOptions` for a Better Auth endpoint.
  *
- * @param authFn - Better Auth client method (e.g. `authClient.getSession`).
- * @param queryKey - Scope prefix for the key. `params.query` is appended automatically.
- * @param params - Parameters forwarded to `authFn`.
+ * Curried to sidestep TypeScript's all-or-nothing type-argument rule: pin
+ * the auth fn type on the first call (needed to prevent widening of
+ * generic-indexed argument types like `TAuthClient["getSession"]`), and let
+ * the prefix tuple infer from the second call's argument.
+ *
+ * @example
+ * authQueryOptions<TAuthClient["getSession"]>()(
+ *   authClient.getSession,
+ *   ["auth", "getSession"],
+ *   params
+ * )
  */
-export function authQueryOptions<
-  TFn extends AuthFn,
-  const TQueryKey extends QueryKey
->(authFn: TFn, queryKey: TQueryKey, params?: Parameters<TFn>[0]) {
-  return queryOptions<AuthFnData<TFn>, BetterFetchError>({
-    queryKey: [...queryKey, params?.query ?? null] as const,
-    queryFn: ({ signal }) =>
-      authFn({
-        ...params,
-        fetchOptions: { ...params?.fetchOptions, signal, throw: true }
-      }) as Promise<AuthFnData<TFn>>
-  })
+export function authQueryOptions<TFn extends AuthFn>() {
+  return <const TPrefix extends QueryKey>(
+    authFn: TFn,
+    queryKey: TPrefix,
+    params?: Parameters<TFn>[0]
+  ): AuthQueryOptions<TFn, TPrefix> =>
+    queryOptions<AuthFnData<TFn>, BetterFetchError>({
+      queryKey: [...queryKey, params?.query ?? null] as const,
+      queryFn: ({ signal }) =>
+        authFn({
+          ...params,
+          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+        }) as Promise<AuthFnData<TFn>>
+    }) as AuthQueryOptions<TFn, TPrefix>
 }
