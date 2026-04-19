@@ -23,7 +23,7 @@
     "@better-auth-ui/react": "*",
     "@neondatabase/serverless": "^1.0.2",
     "@tanstack/react-pacer": "^0.22.0",
-    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-query": "^5.99.2",
     "better-auth": "^1.6.5",
     "bowser": "^2.11.0",
     "class-variance-authority": "^0.7.1",
