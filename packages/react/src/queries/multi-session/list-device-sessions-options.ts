@@ -11,12 +11,12 @@ import { authQueryOptions } from "../auth-query-options"
  * @param userId - The current signed in user's ID.
  * @param params - Parameters forwarded to `authClient.multiSession.listDeviceSessions`.
  */
-export function listDeviceSessionsOptions(
-  authClient: AuthClient,
+export function listDeviceSessionsOptions<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
   userId?: string,
-  params?: Parameters<AuthClient["multiSession"]["listDeviceSessions"]>[0]
+  params?: Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 ) {
-  return authQueryOptions(
+  return authQueryOptions<TAuthClient["multiSession"]["listDeviceSessions"]>()(
     authClient.multiSession.listDeviceSessions,
     ["auth", "user", userId, "listDeviceSessions"],
     params

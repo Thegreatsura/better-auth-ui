@@ -10,12 +10,12 @@ import { authQueryOptions } from "../auth-query-options"
  * @param userId - The current signed in user's ID.
  * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
  */
-export function listUserPasskeysOptions(
-  authClient: PasskeyAuthClient,
+export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
+  authClient: TAuthClient,
   userId?: string,
-  params?: Parameters<PasskeyAuthClient["passkey"]["listUserPasskeys"]>[0]
+  params?: Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]
 ) {
-  return authQueryOptions(
+  return authQueryOptions<TAuthClient["passkey"]["listUserPasskeys"]>()(
     authClient.passkey.listUserPasskeys,
     ["auth", "user", userId, "listUserPasskeys"],
     params

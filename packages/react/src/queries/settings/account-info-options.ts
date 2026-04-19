@@ -12,12 +12,12 @@ import { authQueryOptions } from "../auth-query-options"
  * @param userId - The current signed in user's ID.
  * @param params - Parameters forwarded to `authClient.accountInfo`.
  */
-export function accountInfoOptions(
-  authClient: AuthClient,
+export function accountInfoOptions<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
   userId?: string,
-  params?: Parameters<AuthClient["accountInfo"]>[0]
+  params?: Parameters<TAuthClient["accountInfo"]>[0]
 ) {
-  return authQueryOptions(
+  return authQueryOptions<TAuthClient["accountInfo"]>()(
     authClient.accountInfo,
     ["auth", "user", userId, "accountInfo"],
     params

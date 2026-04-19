@@ -10,12 +10,12 @@ import { authQueryOptions } from "../auth-query-options"
  * @param userId - The current signed in user's ID.
  * @param params - Parameters forwarded to `authClient.listSessions`.
  */
-export function listSessionsOptions(
-  authClient: AuthClient,
+export function listSessionsOptions<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
   userId?: string,
-  params?: Parameters<AuthClient["listSessions"]>[0]
+  params?: Parameters<TAuthClient["listSessions"]>[0]
 ) {
-  return authQueryOptions(
+  return authQueryOptions<TAuthClient["listSessions"]>()(
     authClient.listSessions,
     ["auth", "user", userId, "listSessions"],
     params
