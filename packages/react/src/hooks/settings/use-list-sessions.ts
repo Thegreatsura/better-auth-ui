@@ -1,17 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
+import { skipToken, useQuery } from "@tanstack/react-query"
+
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
-import { listSessionsOptions } from "../../queries/settings/list-sessions-options"
+import {
+  type ListSessionsOptions,
+  type ListSessionsParams,
+  listSessionsOptions
+} from "../../queries/settings/list-sessions-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListSessionsParams<TAuthClient extends AuthClient> = NonNullable<
-  Parameters<TAuthClient["listSessions"]>[0]
->
-
-export type UseListSessionsOptions<TAuthClient extends AuthClient> = Omit<
-  ReturnType<typeof listSessionsOptions>,
-  "queryKey" | "queryFn"
-> &
-  UseListSessionsParams<TAuthClient>
+export type UseListSessionsOptions<TAuthClient extends AuthClient> =
+  ListSessionsOptions<TAuthClient> & ListSessionsParams<TAuthClient>
 
 /**
  * Retrieve the active sessions (devices where the current user is signed in).
@@ -23,11 +21,19 @@ export function useListSessions<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options: UseListSessionsOptions<TAuthClient> = {}
 ) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
-  const { fetchOptions, ...queryOptions } = options
+  const { data: session } = useSession(authClient)
+  const userId = session?.user.id
+
+  const { query, fetchOptions, ...queryOptions } = options
+
+  const baseOptions = listSessionsOptions(authClient, userId, {
+    query,
+    fetchOptions
+  })
 
   return useQuery({
-    ...listSessionsOptions(authClient, session?.user.id, { fetchOptions }),
-    ...queryOptions
+    ...queryOptions,
+    ...baseOptions,
+    queryFn: userId ? baseOptions.queryFn : skipToken
   })
 }

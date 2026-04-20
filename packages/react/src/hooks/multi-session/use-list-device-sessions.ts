@@ -1,18 +1,17 @@
-import { useQuery } from "@tanstack/react-query"
-import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
-import { listDeviceSessionsOptions } from "../../queries/multi-session/list-device-sessions-options"
-import { useSession } from "../auth/use-session"
+import { skipToken, useQuery } from "@tanstack/react-query"
 
-export type UseListDeviceSessionsParams<
-  TAuthClient extends MultiSessionAuthClient
-> = NonNullable<
-  Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
->
+import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
+import {
+  type ListDeviceSessionsOptions,
+  type ListDeviceSessionsParams,
+  listDeviceSessionsOptions
+} from "../../queries/multi-session/list-device-sessions-options"
+import { useSession } from "../auth/use-session"
 
 export type UseListDeviceSessionsOptions<
   TAuthClient extends MultiSessionAuthClient
-> = Omit<ReturnType<typeof listDeviceSessionsOptions>, "queryKey" | "queryFn"> &
-  UseListDeviceSessionsParams<TAuthClient>
+> = ListDeviceSessionsOptions<TAuthClient> &
+  ListDeviceSessionsParams<TAuthClient>
 
 /**
  * Retrieve the device sessions (multi-session account switcher).
@@ -26,13 +25,19 @@ export function useListDeviceSessions<
   authClient: TAuthClient,
   options: UseListDeviceSessionsOptions<TAuthClient> = {}
 ) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
-  const { fetchOptions, ...queryOptions } = options
+  const { data: session } = useSession(authClient)
+  const userId = session?.user.id
+
+  const { query, fetchOptions, ...queryOptions } = options
+
+  const baseOptions = listDeviceSessionsOptions(authClient, userId, {
+    query,
+    fetchOptions
+  })
 
   return useQuery({
-    ...listDeviceSessionsOptions(authClient, session?.user.id, {
-      fetchOptions
-    }),
-    ...queryOptions
+    ...queryOptions,
+    ...baseOptions,
+    queryFn: userId ? baseOptions.queryFn : skipToken
   })
 }

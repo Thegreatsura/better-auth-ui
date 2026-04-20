@@ -24,7 +24,7 @@ export type UseDeletePasskeyOptions = Omit<
  */
 export function useDeletePasskey(options?: UseDeletePasskeyOptions) {
   const { authClient } = useAuth<PasskeyAuthClient>()
-  const { refetch } = useListUserPasskeys()
+  const { refetch } = useListUserPasskeys(authClient)
 
   return useMutation({
     ...deletePasskeyOptions(authClient),

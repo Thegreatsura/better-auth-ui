@@ -1,15 +1,10 @@
-import {
-  type DataTag,
-  queryOptions,
-  type UseQueryOptions
-} from "@tanstack/react-query"
+import { type DataTag, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient, InferData } from "../../lib/auth-clients/auth-client"
 
 export type SessionData<TAuthClient extends AuthClient> = InferData<
-  TAuthClient,
-  "getSession"
+  TAuthClient["getSession"]
 >
 
 export type SessionParams<TAuthClient extends AuthClient> = Parameters<
@@ -34,17 +29,18 @@ export function sessionOptions<TAuthClient extends AuthClient>(
   type TData = SessionData<TAuthClient>
   const queryKey = ["auth", "getSession", params?.query ?? null] as const
 
-  return queryOptions({
-    queryKey,
-    queryFn: ({ signal }) =>
-      authClient.getSession({
-        ...params,
-        fetchOptions: { ...params?.fetchOptions, signal, throw: true }
-      })
-  }) as UseQueryOptions<
-    TData,
-    BetterFetchError,
-    TData,
-    DataTag<typeof queryKey, TData, BetterFetchError>
-  >
+  const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
+    {
+      queryKey,
+      queryFn: ({ signal }) =>
+        authClient.getSession({
+          ...params,
+          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+        }) as Promise<TData>
+    }
+  )
+
+  return options as typeof options & {
+    queryKey: DataTag<typeof queryKey, TData, BetterFetchError>
+  }
 }

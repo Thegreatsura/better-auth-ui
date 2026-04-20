@@ -1,17 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
+import { skipToken, useQuery } from "@tanstack/react-query"
+
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
-import { accountInfoOptions } from "../../queries/settings/account-info-options"
+import {
+  type AccountInfoOptions,
+  type AccountInfoParams,
+  accountInfoOptions
+} from "../../queries/settings/account-info-options"
 import { useSession } from "../auth/use-session"
 
-export type UseAccountInfoParams<TAuthClient extends AuthClient> = NonNullable<
-  Parameters<TAuthClient["accountInfo"]>[0]
->
-
-export type UseAccountInfoOptions<TAuthClient extends AuthClient> = Omit<
-  ReturnType<typeof accountInfoOptions>,
-  "queryKey" | "queryFn"
-> &
-  UseAccountInfoParams<TAuthClient>
+export type UseAccountInfoOptions<TAuthClient extends AuthClient> =
+  AccountInfoOptions<TAuthClient> & AccountInfoParams<TAuthClient>
 
 /**
  * Retrieve provider-specific info for a linked account.
@@ -23,14 +21,21 @@ export function useAccountInfo<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options: UseAccountInfoOptions<TAuthClient> = {}
 ) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
+  const { data: session } = useSession(authClient)
+  const userId = session?.user.id
+
   const { query, fetchOptions, ...queryOptions } = options
 
+  const baseOptions = accountInfoOptions(authClient, userId, {
+    query,
+    fetchOptions
+  })
+
+  const canFetch = Boolean(userId && query?.accountId)
+
   return useQuery({
-    ...accountInfoOptions(authClient, session?.user.id, {
-      query,
-      fetchOptions
-    }),
-    ...queryOptions
+    ...queryOptions,
+    ...baseOptions,
+    queryFn: canFetch ? baseOptions.queryFn : skipToken
   })
 }

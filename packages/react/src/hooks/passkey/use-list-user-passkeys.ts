@@ -1,14 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
+import { skipToken, useQuery } from "@tanstack/react-query"
+
 import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
-import { listUserPasskeysOptions } from "../../queries/passkey/list-user-passkeys-options"
+import {
+  type ListUserPasskeysOptions,
+  type ListUserPasskeysParams,
+  listUserPasskeysOptions
+} from "../../queries/passkey/list-user-passkeys-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListUserPasskeysParams<TAuthClient extends PasskeyAuthClient> =
-  NonNullable<Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]>
-
 export type UseListUserPasskeysOptions<TAuthClient extends PasskeyAuthClient> =
-  Omit<ReturnType<typeof listUserPasskeysOptions>, "queryKey" | "queryFn"> &
-    UseListUserPasskeysParams<TAuthClient>
+  ListUserPasskeysOptions<TAuthClient> & ListUserPasskeysParams<TAuthClient>
 
 /**
  * Retrieve the passkeys registered for the current user.
@@ -20,11 +21,19 @@ export function useListUserPasskeys<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
   options: UseListUserPasskeysOptions<TAuthClient> = {}
 ) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
-  const { fetchOptions, ...queryOptions } = options
+  const { data: session } = useSession(authClient)
+  const userId = session?.user.id
+
+  const { query, fetchOptions, ...queryOptions } = options
+
+  const baseOptions = listUserPasskeysOptions(authClient, userId, {
+    query,
+    fetchOptions
+  })
 
   return useQuery({
-    ...listUserPasskeysOptions(authClient, session?.user.id, { fetchOptions }),
-    ...queryOptions
+    ...queryOptions,
+    ...baseOptions,
+    queryFn: userId ? baseOptions.queryFn : skipToken
   })
 }

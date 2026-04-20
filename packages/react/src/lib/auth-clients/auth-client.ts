@@ -2,20 +2,16 @@ import type { createAuthClient } from "better-auth/react"
 
 export type AuthClient = ReturnType<typeof createAuthClient>
 
-type ResolvePath<
-  T,
-  Path extends string
-> = Path extends `${infer Key}.${infer Rest}`
-  ? Key extends keyof T
-    ? ResolvePath<T[Key], Rest>
-    : never
-  : Path extends keyof T
-    ? T[Path]
-    : never
-
-export type InferData<TAuthClient extends AuthClient, Path extends string> =
-  ResolvePath<TAuthClient, Path> extends (
-    ...args: infer _Args
-  ) => Promise<infer TResult extends { data: unknown }>
-    ? TResult["data"]
-    : never
+/**
+ * Unwraps a Better Auth client method's `data` payload.
+ *
+ * Pass the method type directly, e.g. `TAuthClient["getSession"]` or
+ * `TAuthClient["passkey"]["listUserPasskeys"]`. Keeping it method-typed
+ * (instead of a path-string utility) preserves IntelliSense on the derived
+ * types.
+ */
+export type InferData<TMethod> = TMethod extends (
+  ...args: infer _Args
+) => Promise<infer TResult extends { data: unknown }>
+  ? TResult["data"]
+  : never

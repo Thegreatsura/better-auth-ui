@@ -1,17 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
+import { skipToken, useQuery } from "@tanstack/react-query"
+
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
-import { listAccountsOptions } from "../../queries/settings/list-accounts-options"
+import {
+  type ListAccountsOptions,
+  type ListAccountsParams,
+  listAccountsOptions
+} from "../../queries/settings/list-accounts-options"
 import { useSession } from "../auth/use-session"
 
-export type UseListAccountsParams<TAuthClient extends AuthClient> = NonNullable<
-  Parameters<TAuthClient["listAccounts"]>[0]
->
-
-export type UseListAccountsOptions<TAuthClient extends AuthClient> = Omit<
-  ReturnType<typeof listAccountsOptions>,
-  "queryKey" | "queryFn"
-> &
-  UseListAccountsParams<TAuthClient>
+export type UseListAccountsOptions<TAuthClient extends AuthClient> =
+  ListAccountsOptions<TAuthClient> & ListAccountsParams<TAuthClient>
 
 /**
  * Retrieve the current user's linked social accounts.
@@ -23,11 +21,19 @@ export function useListAccounts<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options: UseListAccountsOptions<TAuthClient> = {}
 ) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
-  const { fetchOptions, ...queryOptions } = options
+  const { data: session } = useSession(authClient)
+  const userId = session?.user.id
+
+  const { query, fetchOptions, ...queryOptions } = options
+
+  const baseOptions = listAccountsOptions(authClient, userId, {
+    query,
+    fetchOptions
+  })
 
   return useQuery({
-    ...listAccountsOptions(authClient, session?.user.id, { fetchOptions }),
-    ...queryOptions
+    ...queryOptions,
+    ...baseOptions,
+    queryFn: userId ? baseOptions.queryFn : skipToken
   })
 }
