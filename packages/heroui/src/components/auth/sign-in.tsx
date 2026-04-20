@@ -1,4 +1,5 @@
 import {
+  type UsernameAuthClient,
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
@@ -22,6 +23,7 @@ import {
 } from "@heroui/react"
 import { type SyntheticEvent, useState } from "react"
 
+import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -50,6 +52,7 @@ export function SignIn({
   ...props
 }: SignInProps & Omit<CardProps, "children">) {
   const {
+    authClient,
     basePaths,
     baseURL,
     emailAndPassword,
@@ -61,15 +64,19 @@ export function SignIn({
     username: usernameConfig,
     viewPaths,
     navigate
-  } = useAuth()
+  } = useAuth<AuthPlugin>()
 
   const [password, setPassword] = useState("")
 
-  const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onSuccess: () => toast.success(localization.auth.verificationEmailSent)
-  })
+  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
+    }
+  )
 
   const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
+    authClient,
     {
       onError: (error, { email }) => {
         setPassword("")
@@ -94,7 +101,7 @@ export function SignIn({
   )
 
   const { mutate: signInUsername, isPending: signInUsernamePending } =
-    useSignInUsername({
+    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.danger(error.error?.message || error.message)

@@ -1,4 +1,8 @@
-import { useAuth, useSignInMagicLink } from "@better-auth-ui/react"
+import {
+  type MagicLinkAuthClient,
+  useAuth,
+  useSignInMagicLink
+} from "@better-auth-ui/react"
 import {
   Button,
   Card,
@@ -16,6 +20,7 @@ import {
 } from "@heroui/react"
 import { type SyntheticEvent, useState } from "react"
 
+import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -43,6 +48,7 @@ export function MagicLink({
   ...props
 }: MagicLinkProps & Omit<CardProps, "children">) {
   const {
+    authClient,
     basePaths,
     baseURL,
     localization,
@@ -50,12 +56,12 @@ export function MagicLink({
     redirectTo,
     socialProviders,
     viewPaths
-  } = useAuth()
+  } = useAuth<AuthPlugin>()
 
   const [email, setEmail] = useState("")
 
   const { mutate: signInMagicLink, isPending: magicLinkPending } =
-    useSignInMagicLink({
+    useSignInMagicLink(authClient as MagicLinkAuthClient, {
       onSuccess: () => {
         setEmail("")
         toast.success(localization.auth.magicLinkSent)

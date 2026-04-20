@@ -1,4 +1,5 @@
 import {
+  type UsernameAuthClient,
   useAuth,
   useIsUsernameAvailable,
   useSignUpEmail
@@ -52,6 +53,7 @@ export function SignUp({
   ...props
 }: SignUpProps & Omit<CardProps, "children">) {
   const {
+    authClient,
     basePaths,
     emailAndPassword,
     localization,
@@ -72,7 +74,7 @@ export function SignUp({
     data: usernameData,
     error: usernameError,
     reset: resetUsername
-  } = useIsUsernameAvailable()
+  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
 
   const usernameDebouncer = useDebouncer(
     (value: string) => {
@@ -95,21 +97,24 @@ export function SignUp({
     }
   }
 
-  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
-    onError: (error) => {
-      setPassword("")
-      setConfirmPassword("")
-      toast.danger(error.error?.message || error.message)
-    },
-    onSuccess: () => {
-      if (emailAndPassword?.requireEmailVerification) {
-        toast.success(localization.auth.verifyYourEmail)
-        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-      } else {
-        navigate({ to: redirectTo })
+  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail(
+    authClient,
+    {
+      onError: (error) => {
+        setPassword("")
+        setConfirmPassword("")
+        toast.danger(error.error?.message || error.message)
+      },
+      onSuccess: () => {
+        if (emailAndPassword?.requireEmailVerification) {
+          toast.success(localization.auth.verifyYourEmail)
+          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+        } else {
+          navigate({ to: redirectTo })
+        }
       }
     }
-  })
+  )
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =

@@ -28,13 +28,13 @@ export function ProviderButton({
   variant = "outline",
   ...props
 }: ProviderButtonProps) {
-  const { baseURL, localization, redirectTo } = useAuth()
+  const { authClient, baseURL, localization, redirectTo } = useAuth()
 
   const callbackURL = `${baseURL}${redirectTo}`
 
   const [redirecting, setRedirecting] = useState(false)
 
-  const { mutate: signInSocial, isPending } = useSignInSocial({
+  const { mutate: signInSocial, isPending } = useSignInSocial(authClient, {
     onSuccess: () => {
       setRedirecting(true)
 

@@ -1,4 +1,8 @@
-import { useAuth, useSession } from "@better-auth-ui/react"
+import {
+  type UsernameAuthClient,
+  useAuth,
+  useSession
+} from "@better-auth-ui/react"
 import { Person } from "@gravity-ui/icons"
 import { Avatar, type AvatarProps, cn, Skeleton } from "@heroui/react"
 import type { User } from "better-auth"
@@ -33,9 +37,12 @@ export function UserAvatar({
   ...props
 }: UserAvatarProps & AvatarProps) {
   const { authClient } = useAuth()
-  const { data: session, isPending: sessionPending } = useSession(authClient, {
-    enabled: !user && !isPending
-  })
+  const { data: session, isPending: sessionPending } = useSession(
+    authClient as UsernameAuthClient,
+    {
+      enabled: !user && !isPending
+    }
+  )
 
   if ((isPending || sessionPending) && !user) {
     return (

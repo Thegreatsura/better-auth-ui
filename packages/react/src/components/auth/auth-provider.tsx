@@ -14,6 +14,7 @@ import {
 import { createContext, type PropsWithChildren, useContext } from "react"
 
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthPlugin } from "../../lib/auth-plugin"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
@@ -25,11 +26,13 @@ declare module "@better-auth-ui/core" {
   }
 }
 
-export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
-  DeepPartial<AuthConfig>
-> & {
+export type AuthProviderProps<
+  TAuthClient = AuthClient,
+  TPlugin extends AuthPlugin = AuthPlugin
+> = PropsWithChildren<DeepPartial<AuthConfig>> & {
   authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
+  plugins?: TPlugin[]
   /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
@@ -78,15 +81,21 @@ export function AuthProvider({
 /**
  * Accesses the current authentication configuration from AuthContext.
  *
+ * Generic over the plugin type so UI packages can narrow `plugins` to their
+ * framework-specific `AuthPlugin` variant (e.g. heroui's plugin type with
+ * heroui-typed `AuthButton` / `SecurityCard` slot components).
+ *
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth() {
+export function useAuth<
+  TPlugin extends AuthPlugin = AuthPlugin
+>(): AuthConfig & { plugins?: TPlugin[] } {
   const context = useContext(AuthContext)
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")
   }
 
-  return context
+  return context as AuthConfig & { plugins?: TPlugin[] }
 }

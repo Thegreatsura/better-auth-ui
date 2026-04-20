@@ -32,10 +32,16 @@ export function ResetPassword({
   variant,
   ...props
 }: ResetPasswordProps & Omit<CardProps, "children">) {
-  const { basePaths, emailAndPassword, localization, viewPaths, navigate } =
-    useAuth()
+  const {
+    authClient,
+    basePaths,
+    emailAndPassword,
+    localization,
+    viewPaths,
+    navigate
+  } = useAuth()
 
-  const { mutate: resetPassword, isPending } = useResetPassword({
+  const { mutate: resetPassword, isPending } = useResetPassword(authClient, {
     onSuccess: () => {
       toast.success(localization.auth.passwordResetSuccess)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })

@@ -1,4 +1,8 @@
-import { useSetActiveSession } from "@better-auth-ui/react"
+import {
+  type MultiSessionAuthClient,
+  useAuth,
+  useSetActiveSession
+} from "@better-auth-ui/react"
 import { Dropdown, Spinner } from "@heroui/react"
 import type { Session, User } from "better-auth"
 import { UserView } from "./user-view"
@@ -19,7 +23,10 @@ export type SwitchAccountItemProps = {
  * @returns The switch account dropdown item as a JSX element
  */
 export function SwitchAccountItem({ deviceSession }: SwitchAccountItemProps) {
-  const { mutate: setActiveSession, isPending } = useSetActiveSession()
+  const { authClient } = useAuth()
+  const { mutate: setActiveSession, isPending } = useSetActiveSession(
+    authClient as MultiSessionAuthClient
+  )
 
   return (
     <Dropdown.Item

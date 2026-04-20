@@ -1,22 +1,39 @@
+import { mutationOptions } from "@tanstack/react-query"
+import type { BetterFetchError } from "better-auth/react"
+
 import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
-import {
-  type AuthMutationOptions,
-  authMutationOptions
-} from "../auth-mutation-options"
+
+export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> =
+  Parameters<TAuthClient["signIn"]["passkey"]>[0]
+
+export type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+  ReturnType<typeof signInPasskeyOptions<TAuthClient>>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Mutation options factory for passkey sign-in.
  *
  * @param authClient - The Better Auth client with the passkey plugin.
- * @param options - Extra `useMutation` options (`onSuccess`, `onError`, etc.).
  */
 export function signInPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
-  authClient: TAuthClient,
-  options?: AuthMutationOptions<TAuthClient["signIn"]["passkey"]>
+  authClient: TAuthClient
 ) {
-  return authMutationOptions(
-    authClient.signIn.passkey as TAuthClient["signIn"]["passkey"],
-    ["auth", "signIn", "passkey"],
-    options
-  )
+  const mutationKey = ["auth", "signIn", "passkey"]
+
+  // biome-ignore lint/suspicious/noConfusingVoidType: void allows no-arg mutate
+  const mutationFn = (params?: SignInPasskeyParams<TAuthClient> | void) =>
+    authClient.signIn.passkey({
+      ...(params ?? {}),
+      fetchOptions: { ...params?.fetchOptions, throw: true }
+    })
+
+  return mutationOptions<
+    Awaited<ReturnType<typeof mutationFn>>,
+    BetterFetchError,
+    Parameters<typeof mutationFn>[0]
+  >({
+    mutationKey,
+    mutationFn
+  })
 }

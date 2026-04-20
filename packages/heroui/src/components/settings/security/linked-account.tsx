@@ -33,11 +33,14 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
     { query: { accountId: account?.accountId } }
   )
 
-  const { mutate: linkSocial, isPending: isLinking } = useLinkSocial()
+  const { mutate: linkSocial, isPending: isLinking } = useLinkSocial(authClient)
 
-  const { mutate: unlinkAccount, isPending: isUnlinking } = useUnlinkAccount({
-    onSuccess: () => toast.success(localization.settings.accountUnlinked)
-  })
+  const { mutate: unlinkAccount, isPending: isUnlinking } = useUnlinkAccount(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.settings.accountUnlinked)
+    }
+  )
 
   const ProviderIcon = providerIcons[provider]
   const providerName = getProviderName(provider)

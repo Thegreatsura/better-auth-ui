@@ -1,17 +1,15 @@
 import {
+  type AuthClient,
   AuthProvider as AuthProviderPrimitive,
-  type AuthProviderProps
+  type AuthProviderProps as AuthProviderPropsPrimitive
 } from "@better-auth-ui/react"
 import { RouterProvider } from "@heroui/react"
 
-import type { AuthPlugin } from "../../plugins"
+import type { AuthPlugin } from "../../lib/auth-plugin"
 import { ErrorToaster } from "./error-toaster"
 
-declare module "@better-auth-ui/core" {
-  interface AuthConfig {
-    plugins: AuthPlugin[]
-  }
-}
+export type AuthProviderProps<TAuthClient = AuthClient> =
+  AuthProviderPropsPrimitive<TAuthClient, AuthPlugin>
 
 /**
  * Heroui-flavored `AuthProvider`. Wraps the primitive provider with a

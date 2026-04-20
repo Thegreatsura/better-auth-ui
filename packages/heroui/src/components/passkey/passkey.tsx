@@ -1,4 +1,9 @@
-import { useAuth, useAuthPlugin, useDeletePasskey } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useAuthPlugin,
+  useDeletePasskey
+} from "@better-auth-ui/react"
 import { Fingerprint, Xmark } from "@gravity-ui/icons"
 import { Button, Spinner } from "@heroui/react"
 
@@ -13,10 +18,12 @@ export type PasskeyProps = {
 }
 
 export function Passkey({ passkey }: PasskeyProps) {
-  const { localization } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
-  const { mutate: deletePasskey, isPending } = useDeletePasskey()
+  const { mutate: deletePasskey, isPending } = useDeletePasskey(
+    authClient as PasskeyAuthClient
+  )
 
   return (
     <div className="flex items-center gap-3">

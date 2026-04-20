@@ -51,6 +51,7 @@ export function SignIn({
   socialPosition = "bottom"
 }: SignInProps) {
   const {
+    authClient,
     basePaths,
     baseURL,
     emailAndPassword,
@@ -67,11 +68,15 @@ export function SignIn({
 
   const [password, setPassword] = useState("")
 
-  const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onSuccess: () => toast.success(localization.auth.verificationEmailSent)
-  })
+  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
+    }
+  )
 
   const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
+    authClient,
     {
       onError: (error, { email }) => {
         setPassword("")

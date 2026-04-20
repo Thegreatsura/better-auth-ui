@@ -49,7 +49,7 @@ export function DeleteUser({
   const needsPassword =
     !deleteUserConfig?.sendDeleteAccountVerification && hasCredentialAccount
 
-  const { mutate: deleteUser, isPending } = useDeleteUser()
+  const { mutate: deleteUser, isPending } = useDeleteUser(authClient)
 
   const handleDialogOpenChange = (open: boolean) => {
     setConfirmOpen(open)

@@ -3,14 +3,14 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 
-export type UpdateUserParams<TAuthClient extends AuthClient = AuthClient> =
-  Parameters<TAuthClient["updateUser"]>[0]
+export type UpdateUserParams<TAuthClient extends AuthClient> = Parameters<
+  TAuthClient["updateUser"]
+>[0]
 
-export type UpdateUserOptions<TAuthClient extends AuthClient = AuthClient> =
-  Omit<
-    ReturnType<typeof updateUserOptions<TAuthClient>>,
-    "mutationKey" | "mutationFn"
-  >
+export type UpdateUserOptions<TAuthClient extends AuthClient> = Omit<
+  ReturnType<typeof updateUserOptions<TAuthClient>>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Mutation options factory for updating the authenticated user's profile.
@@ -20,6 +20,8 @@ export type UpdateUserOptions<TAuthClient extends AuthClient = AuthClient> =
 export function updateUserOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
+  const mutationKey = ["auth", "updateUser"]
+
   const mutationFn = (params: UpdateUserParams<TAuthClient>) =>
     authClient.updateUser({
       ...params,
@@ -29,9 +31,9 @@ export function updateUserOptions<TAuthClient extends AuthClient>(
   return mutationOptions<
     Awaited<ReturnType<typeof mutationFn>>,
     BetterFetchError,
-    UpdateUserParams<TAuthClient>
+    Parameters<typeof mutationFn>[0]
   >({
-    mutationKey: ["auth", "updateUser"],
+    mutationKey,
     mutationFn
   })
 }

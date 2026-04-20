@@ -1,22 +1,40 @@
+import { mutationOptions } from "@tanstack/react-query"
+import type { BetterFetchError } from "better-auth/react"
+
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
-import {
-  type AuthMutationOptions,
-  authMutationOptions
-} from "../auth-mutation-options"
+
+export type SignOutParams<TAuthClient extends AuthClient> = Parameters<
+  TAuthClient["signOut"]
+>[0]
+
+export type SignOutOptions<TAuthClient extends AuthClient> = Omit<
+  ReturnType<typeof signOutOptions<TAuthClient>>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Mutation options factory for signing out.
  *
  * @param authClient - The Better Auth client.
- * @param options - Extra `useMutation` options (`onSuccess`, `onError`, etc.).
  */
 export function signOutOptions<TAuthClient extends AuthClient>(
-  authClient: TAuthClient,
-  options?: AuthMutationOptions<TAuthClient["signOut"]>
+  authClient: TAuthClient
 ) {
-  return authMutationOptions(
-    authClient.signOut as TAuthClient["signOut"],
-    ["auth", "signOut"],
-    options
-  )
+  const mutationKey = ["auth", "signOut"]
+
+  // biome-ignore lint/suspicious/noConfusingVoidType: void allows no-arg mutate
+  const mutationFn = (params?: SignOutParams<TAuthClient> | void) =>
+    authClient.signOut({
+      ...(params ?? {}),
+      fetchOptions: { ...params?.fetchOptions, throw: true }
+    })
+
+  return mutationOptions<
+    Awaited<ReturnType<typeof mutationFn>>,
+    BetterFetchError,
+    Parameters<typeof mutationFn>[0]
+  >({
+    mutationKey,
+    mutationFn
+  })
 }

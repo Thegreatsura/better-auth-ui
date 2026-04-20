@@ -35,14 +35,17 @@ export function ForgotPassword({
   variant,
   ...props
 }: ForgotPasswordProps & Omit<CardProps, "children">) {
-  const { basePaths, localization, viewPaths, navigate } = useAuth()
+  const { authClient, basePaths, localization, viewPaths, navigate } = useAuth()
 
-  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onSuccess: () => {
-      toast.success(localization.auth.passwordResetEmailSent)
-      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
+    authClient,
+    {
+      onSuccess: () => {
+        toast.success(localization.auth.passwordResetEmailSent)
+        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      }
     }
-  })
+  )
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()

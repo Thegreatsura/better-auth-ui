@@ -1,6 +1,10 @@
 "use client"
 
-import { useAuth, useSignInMagicLink } from "@better-auth-ui/react"
+import {
+  type MagicLinkAuthClient,
+  useAuth,
+  useSignInMagicLink
+} from "@better-auth-ui/react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -41,6 +45,7 @@ export function MagicLink({
   socialPosition = "bottom"
 }: MagicLinkProps) {
   const {
+    authClient,
     basePaths,
     baseURL,
     localization,
@@ -54,7 +59,7 @@ export function MagicLink({
   const [email, setEmail] = useState("")
 
   const { mutate: signInMagicLink, isPending: magicLinkPending } =
-    useSignInMagicLink({
+    useSignInMagicLink(authClient as MagicLinkAuthClient, {
       onSuccess: () => {
         setEmail("")
         toast.success(localization.auth.magicLinkSent)

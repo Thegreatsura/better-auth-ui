@@ -18,26 +18,21 @@ export function useUpdateUser<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options?: UpdateUserOptions<TAuthClient>
 ) {
-  const { data: session, refetch: refetchSession } = useSession(
-    authClient as AuthClient,
-    {
-      refetchOnMount: false
-    }
-  )
+  const { data: session, refetch: refetchSession } = useSession(authClient, {
+    refetchOnMount: false
+  })
+
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...updateUserOptions(authClient),
     ...options,
+    ...updateUserOptions(authClient),
     onSuccess: async (data, variables, ...rest) => {
       if (session) {
-        queryClient.setQueryData(
-          sessionOptions(authClient as AuthClient).queryKey,
-          {
-            ...session,
-            user: { ...session.user, ...variables }
-          }
-        )
+        queryClient.setQueryData(sessionOptions(authClient).queryKey, {
+          ...session,
+          user: { ...session.user, ...variables }
+        })
       }
 
       refetchSession()

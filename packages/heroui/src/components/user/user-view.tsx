@@ -1,4 +1,8 @@
-import { useAuth, useSession } from "@better-auth-ui/react"
+import {
+  type UsernameAuthClient,
+  useAuth,
+  useSession
+} from "@better-auth-ui/react"
 import { type AvatarProps, cn, Skeleton } from "@heroui/react"
 import type { User } from "better-auth"
 import type { ComponentProps } from "react"
@@ -28,9 +32,12 @@ export function UserView({
   ...props
 }: UserViewProps & ComponentProps<"div">) {
   const { authClient } = useAuth()
-  const { data: session, isPending: sessionPending } = useSession(authClient, {
-    enabled: !user && !isPending
-  })
+  const { data: session, isPending: sessionPending } = useSession(
+    authClient as UsernameAuthClient,
+    {
+      enabled: !user && !isPending
+    }
+  )
 
   const resolvedUser = user ?? session?.user
 

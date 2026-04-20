@@ -1,31 +1,25 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
-import { signInSocialOptions } from "../../mutations/auth/sign-in-social-options"
-
-export type UseSignInSocialParams = NonNullable<
-  Parameters<AuthClient["signIn"]["social"]>[0]
->
-
-export type UseSignInSocialOptions = Omit<
-  ReturnType<typeof signInSocialOptions>,
-  "mutationKey" | "mutationFn"
->
+import {
+  type SignInSocialOptions,
+  signInSocialOptions
+} from "../../mutations/auth/sign-in-social-options"
 
 /**
  * Hook that creates a mutation for social sign-in.
  *
  * The mutation initiates a social sign-in flow with the specified provider.
  *
+ * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
- * @returns The `useMutation` result.
  */
-export function useSignInSocial(options?: UseSignInSocialOptions) {
-  const { authClient } = useAuth()
-
+export function useSignInSocial<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options?: SignInSocialOptions<TAuthClient>
+) {
   return useMutation({
-    ...signInSocialOptions(authClient),
-    ...options
+    ...options,
+    ...signInSocialOptions(authClient)
   })
 }

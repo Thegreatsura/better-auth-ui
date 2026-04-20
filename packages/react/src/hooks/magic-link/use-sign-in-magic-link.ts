@@ -1,29 +1,23 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { useAuth } from "../../components/auth/auth-provider"
 import type { MagicLinkAuthClient } from "../../lib/auth-clients/magic-link-auth-client"
-import { signInMagicLinkOptions } from "../../mutations/magic-link/sign-in-magic-link-options"
-
-export type UseSignInMagicLinkParams = NonNullable<
-  Parameters<MagicLinkAuthClient["signIn"]["magicLink"]>[0]
->
-
-export type UseSignInMagicLinkOptions = Omit<
-  ReturnType<typeof signInMagicLinkOptions>,
-  "mutationKey" | "mutationFn"
->
+import {
+  type SignInMagicLinkOptions,
+  signInMagicLinkOptions
+} from "../../mutations/magic-link/sign-in-magic-link-options"
 
 /**
  * Hook that creates a mutation for magic-link sign-in.
  *
+ * @param authClient - The Better Auth client with the magic-link plugin.
  * @param options - React Query options forwarded to `useMutation`.
- * @returns The `useMutation` result.
  */
-export function useSignInMagicLink(options?: UseSignInMagicLinkOptions) {
-  const { authClient } = useAuth<MagicLinkAuthClient>()
-
+export function useSignInMagicLink<TAuthClient extends MagicLinkAuthClient>(
+  authClient: TAuthClient,
+  options?: SignInMagicLinkOptions<TAuthClient>
+) {
   return useMutation({
-    ...signInMagicLinkOptions(authClient),
-    ...options
+    ...options,
+    ...signInMagicLinkOptions(authClient)
   })
 }

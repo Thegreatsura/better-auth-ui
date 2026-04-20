@@ -61,7 +61,7 @@ export function UserProfile({
     data: usernameData,
     error: usernameError,
     reset: resetUsername
-  } = useIsUsernameAvailable()
+  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
 
   const usernameDebouncer = useDebouncer(
     (value: string) => {
