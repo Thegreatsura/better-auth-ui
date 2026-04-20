@@ -1,6 +1,11 @@
 "use client"
 
-import { useAuth, useSession, useSetActiveSession } from "@better-auth-ui/react"
+import {
+  type MultiSessionAuthClient,
+  useAuth,
+  useSession,
+  useSetActiveSession
+} from "@better-auth-ui/react"
 import {
   ChevronsUpDown,
   LogIn,
@@ -68,6 +73,7 @@ export function UserButton({
   variant = "ghost"
 }: UserButtonProps) {
   const {
+    authClient,
     basePaths,
     viewPaths,
     localization,
@@ -76,8 +82,10 @@ export function UserButton({
     appearance: { theme, setTheme, themes }
   } = useAuth()
 
-  const { isPending: settingActiveSession } = useSetActiveSession()
-  const { data: session, isPending: sessionPending } = useSession()
+  const { isPending: settingActiveSession } = useSetActiveSession(
+    authClient as MultiSessionAuthClient
+  )
+  const { data: session, isPending: sessionPending } = useSession(authClient)
 
   return (
     <DropdownMenu>

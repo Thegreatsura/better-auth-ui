@@ -27,8 +27,8 @@ export type SettingsProps = {
  * @returns A JSX element rendering the settings layout and the selected settings panel
  */
 export function Settings({ className, view, path, hideNav }: SettingsProps) {
-  const { basePaths, localization, viewPaths, Link } = useAuth()
-  useAuthenticate()
+  const { authClient, basePaths, localization, viewPaths, Link } = useAuth()
+  useAuthenticate(authClient)
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")

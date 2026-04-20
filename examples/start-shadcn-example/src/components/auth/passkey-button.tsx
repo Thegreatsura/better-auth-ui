@@ -1,6 +1,10 @@
 "use client"
 
-import { useAuth, useSignInPasskey } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useSignInPasskey
+} from "@better-auth-ui/react"
 import { Fingerprint } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
@@ -11,9 +15,10 @@ export type PasskeyButtonProps = {
 }
 
 export function PasskeyButton({ isPending }: PasskeyButtonProps) {
-  const { localization, redirectTo, navigate } = useAuth()
+  const { authClient, localization, redirectTo, navigate } = useAuth()
 
   const { mutate: signInPasskey, isPending: passkeyPending } = useSignInPasskey(
+    authClient as PasskeyAuthClient,
     {
       onSuccess: () => navigate({ to: redirectTo })
     }
@@ -30,10 +35,7 @@ export function PasskeyButton({ isPending }: PasskeyButtonProps) {
       onClick={() => signInPasskey()}
     >
       {passkeyPending ? <Spinner /> : <Fingerprint />}
-      {localization.auth.continueWith.replace(
-        "{{provider}}",
-        localization.auth.passkey
-      )}
+      {localization.auth.continueWith.replace("{{provider}}", "Passkey")}
     </Button>
   )
 }

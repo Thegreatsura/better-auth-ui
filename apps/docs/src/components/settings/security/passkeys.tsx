@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type PasskeyAuthClient,
   useAddPasskey,
   useAuth,
   useListUserPasskeys
@@ -18,17 +19,19 @@ export type PasskeysProps = {
 }
 
 export function Passkeys({ className }: PasskeysProps) {
-  const { localization } = useAuth()
+  const { authClient } = useAuth()
 
-  const { data: passkeys, isPending } = useListUserPasskeys()
+  const { data: passkeys, isPending } = useListUserPasskeys(
+    authClient as PasskeyAuthClient
+  )
 
-  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey()
+  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey(
+    authClient as PasskeyAuthClient
+  )
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-3">
-        {localization.settings.passkeys}
-      </h2>
+      <h2 className="text-sm font-semibold mb-3">Passkeys</h2>
 
       <Card className={cn("p-0", className)}>
         <CardContent className="p-0">
@@ -36,11 +39,11 @@ export function Passkeys({ className }: PasskeysProps) {
             <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-medium leading-tight">
-                  {localization.settings.passkeysDescription}
+                  Manage your passkeys for secure access.
                 </p>
 
                 <p className="text-muted-foreground text-xs mt-0.5">
-                  {localization.settings.passkeysInstructions}
+                  Securely access your account without a password.
                 </p>
               </div>
 
@@ -51,7 +54,7 @@ export function Passkeys({ className }: PasskeysProps) {
                 onClick={() => addPasskey()}
               >
                 {isAdding && <Spinner />}
-                {localization.settings.addPasskey}
+                Add passkey
               </Button>
             </CardContent>
           </Card>

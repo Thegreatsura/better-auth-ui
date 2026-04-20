@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type UsernameAuthClient,
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
@@ -101,7 +102,7 @@ export function SignIn({
   )
 
   const { mutate: signInUsername, isPending: signInUsernamePending } =
-    useSignInUsername({
+    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)

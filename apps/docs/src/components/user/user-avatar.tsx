@@ -41,9 +41,7 @@ export function UserAvatar({
   const { authClient } = useAuth()
   const { data: session, isPending: sessionPending } = useSession(
     authClient as UsernameAuthClient,
-    {
-      enabled: !user && !isPending
-    }
+    { enabled: !user && !isPending }
   )
 
   if ((isPending || sessionPending) && !user) {
@@ -53,7 +51,7 @@ export function UserAvatar({
   const resolvedUser = user ?? session?.user
 
   const initials = (
-    resolvedUser?.displayUsername ||
+    resolvedUser?.username ||
     resolvedUser?.name ||
     resolvedUser?.email
   )

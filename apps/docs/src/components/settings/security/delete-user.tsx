@@ -33,6 +33,7 @@ export type DeleteUserProps = {
  */
 export function DeleteUser({ className }: DeleteUserProps) {
   const {
+    authClient,
     basePaths,
     deleteUser: deleteUserConfig,
     localization,
@@ -40,7 +41,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
     navigate
   } = useAuth()
 
-  const { data: accounts } = useListAccounts()
+  const { data: accounts } = useListAccounts(authClient)
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [password, setPassword] = useState("")
@@ -51,7 +52,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
   const needsPassword =
     !deleteUserConfig?.sendDeleteAccountVerification && hasCredentialAccount
 
-  const { mutate: deleteUser, isPending } = useDeleteUser()
+  const { mutate: deleteUser, isPending } = useDeleteUser(authClient)
 
   const handleDialogOpenChange = (open: boolean) => {
     setConfirmOpen(open)

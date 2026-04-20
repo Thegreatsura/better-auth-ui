@@ -1,12 +1,13 @@
 "use client"
 
-import { useAuthenticate } from "@better-auth-ui/react"
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import Link from "next/link"
 
 import { Spinner } from "@/components/ui/spinner"
 
 export default function Dashboard() {
-  const { data: session } = useAuthenticate()
+  const { authClient } = useAuth()
+  const { data: session } = useAuthenticate(authClient)
 
   if (!session) {
     return (

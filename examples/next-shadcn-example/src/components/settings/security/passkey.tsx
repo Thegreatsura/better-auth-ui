@@ -1,6 +1,10 @@
 "use client"
 
-import { useAuth, useDeletePasskey } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useDeletePasskey
+} from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,9 +19,11 @@ export type PasskeyProps = {
 }
 
 export function Passkey({ passkey }: PasskeyProps) {
-  const { localization } = useAuth()
+  const { authClient, localization } = useAuth()
 
-  const { mutate: deletePasskey, isPending } = useDeletePasskey()
+  const { mutate: deletePasskey, isPending } = useDeletePasskey(
+    authClient as PasskeyAuthClient
+  )
 
   return (
     <Card className="bg-transparent border-0 ring-0 shadow-none">
@@ -28,7 +34,7 @@ export function Passkey({ passkey }: PasskeyProps) {
 
         <div className="flex flex-col min-w-0">
           <span className="text-sm font-medium leading-tight">
-            {passkey.name || localization.auth.passkey}
+            {passkey.name || "Passkey"}
           </span>
 
           <span className="text-xs text-muted-foreground">

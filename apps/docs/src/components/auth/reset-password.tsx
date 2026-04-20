@@ -36,6 +36,7 @@ export type ResetPasswordProps = {
  */
 export function ResetPassword({ className }: ResetPasswordProps) {
   const {
+    authClient,
     basePaths,
     emailAndPassword,
     localization,
@@ -44,7 +45,7 @@ export function ResetPassword({ className }: ResetPasswordProps) {
     Link
   } = useAuth()
 
-  const { mutate: resetPassword, isPending } = useResetPassword({
+  const { mutate: resetPassword, isPending } = useResetPassword(authClient, {
     onSuccess: () => {
       toast.success(localization.auth.passwordResetSuccess)
       navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })

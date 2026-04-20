@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type UsernameAuthClient,
   useAuth,
   useIsUsernameAvailable,
   useSession,
@@ -38,7 +39,7 @@ export type UserProfileProps = {
  */
 export function UserProfile({ className }: UserProfileProps) {
   const { authClient, localization, username: usernameConfig } = useAuth()
-  const { data: session } = useSession(authClient)
+  const { data: session } = useSession(authClient as UsernameAuthClient)
 
   const currentUsername =
     (usernameConfig?.displayUsername
@@ -56,7 +57,7 @@ export function UserProfile({ className }: UserProfileProps) {
     data: usernameData,
     error: usernameError,
     reset: resetUsername
-  } = useIsUsernameAvailable()
+  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
 
   const usernameDebouncer = useDebouncer(
     (value: string) => {
@@ -79,7 +80,7 @@ export function UserProfile({ className }: UserProfileProps) {
     }
   }
 
-  const { mutate: updateUser, isPending } = useUpdateUser({
+  const { mutate: updateUser, isPending } = useUpdateUser(authClient, {
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 

@@ -1,6 +1,10 @@
 "use client"
 
-import { useAuth, useSession } from "@better-auth-ui/react"
+import {
+  type UsernameAuthClient,
+  useAuth,
+  useSession
+} from "@better-auth-ui/react"
 import type { User } from "better-auth"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -24,9 +28,10 @@ export type UserViewProps = {
  */
 export function UserView({ className, isPending, user }: UserViewProps) {
   const { authClient } = useAuth()
-  const { data: session, isPending: sessionPending } = useSession(authClient, {
-    enabled: !user && !isPending
-  })
+  const { data: session, isPending: sessionPending } = useSession(
+    authClient as UsernameAuthClient,
+    { enabled: !user && !isPending }
+  )
 
   const resolvedUser = user ?? session?.user
 

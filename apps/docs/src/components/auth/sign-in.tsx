@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type UsernameAuthClient,
   useAuth,
   useSendVerificationEmail,
   useSignInEmail,
@@ -51,6 +52,7 @@ export function SignIn({
   socialPosition = "bottom"
 }: SignInProps) {
   const {
+    authClient,
     basePaths,
     baseURL,
     emailAndPassword,
@@ -67,11 +69,15 @@ export function SignIn({
 
   const [password, setPassword] = useState("")
 
-  const { mutate: sendVerificationEmail } = useSendVerificationEmail({
-    onSuccess: () => toast.success(localization.auth.verificationEmailSent)
-  })
+  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
+    }
+  )
 
   const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
+    authClient,
     {
       onError: (error, { email }) => {
         setPassword("")
@@ -96,7 +102,7 @@ export function SignIn({
   )
 
   const { mutate: signInUsername, isPending: signInUsernamePending } =
-    useSignInUsername({
+    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)

@@ -67,9 +67,12 @@ function SetPassword({ className }: { className?: string }) {
   const { authClient, localization } = useAuth()
   const { data: session } = useSession(authClient)
 
-  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
-  })
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
+    }
+  )
 
   const handleSetPassword = () => {
     if (!session) return
@@ -121,11 +124,12 @@ function ChangePasswordForm({
   localization: ReturnType<typeof useAuth>["localization"]
   session: ReturnType<typeof useSession>["data"]
 }) {
+  const { authClient } = useAuth()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const { mutate: changePassword, isPending } = useChangePassword({
+  const { mutate: changePassword, isPending } = useChangePassword(authClient, {
     onError: (error) => {
       setCurrentPassword("")
       setNewPassword("")

@@ -1,6 +1,10 @@
 "use client"
 
-import { useSession } from "@better-auth-ui/react"
+import {
+  type UsernameAuthClient,
+  useAuth,
+  useSession
+} from "@better-auth-ui/react"
 import type { User } from "better-auth"
 import { User2 } from "lucide-react"
 import type { ReactNode } from "react"
@@ -34,9 +38,11 @@ export function UserAvatar({
   isPending,
   fallback
 }: UserAvatarProps) {
-  const { data: session, isPending: sessionPending } = useSession({
-    enabled: !user && !isPending
-  })
+  const { authClient } = useAuth()
+  const { data: session, isPending: sessionPending } = useSession(
+    authClient as UsernameAuthClient,
+    { enabled: !user && !isPending }
+  )
 
   if ((isPending || sessionPending) && !user) {
     return <Skeleton className={cn("size-8 rounded-full", className)} />

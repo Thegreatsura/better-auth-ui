@@ -23,10 +23,11 @@ export type ChangeAvatarProps = {
 }
 
 export function ChangeAvatar({ className }: ChangeAvatarProps) {
-  const { localization, avatar } = useAuth()
-  const { data: session } = useSession()
+  const { authClient, localization, avatar } = useAuth()
+  const { data: session } = useSession(authClient)
 
-  const { mutate: updateUser, isPending: updatePending } = useUpdateUser()
+  const { mutate: updateUser, isPending: updatePending } =
+    useUpdateUser(authClient)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)

@@ -36,10 +36,11 @@ export type AppearanceProps = {
  */
 export function Appearance({ className }: AppearanceProps) {
   const {
+    authClient,
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-  const { data: session } = useSession()
+  const { data: session } = useSession(authClient)
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import { useAuthenticate } from "@better-auth-ui/react"
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Spinner } from "@/components/ui/spinner"
@@ -8,7 +8,8 @@ export const Route = createFileRoute("/dashboard")({
 })
 
 function Dashboard() {
-  const { data: session } = useAuthenticate()
+  const { authClient } = useAuth()
+  const { data: session } = useAuthenticate(authClient)
 
   if (!session) {
     return (

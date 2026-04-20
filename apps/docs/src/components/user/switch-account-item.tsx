@@ -1,6 +1,8 @@
 "use client"
 
 import {
+  type MultiSessionAuthClient,
+  useAuth,
   type useListDeviceSessions,
   useSetActiveSession
 } from "@better-auth-ui/react"
@@ -24,7 +26,10 @@ export type SwitchAccountItemProps = {
  * @returns The switch account dropdown menu item as a JSX element
  */
 export function SwitchAccountItem({ deviceSession }: SwitchAccountItemProps) {
-  const { mutate: setActiveSession, isPending } = useSetActiveSession()
+  const { authClient } = useAuth()
+  const { mutate: setActiveSession, isPending } = useSetActiveSession(
+    authClient as MultiSessionAuthClient
+  )
 
   return (
     <DropdownMenuItem

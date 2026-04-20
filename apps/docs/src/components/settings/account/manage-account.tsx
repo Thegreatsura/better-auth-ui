@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type MultiSessionAuthClient,
   useAuth,
   useRevokeMultiSession,
   useSession,
@@ -48,10 +49,10 @@ export function ManageAccount({
   const { data: session } = useSession(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
-    useSetActiveSession()
+    useSetActiveSession(authClient as MultiSessionAuthClient)
 
   const { mutate: revokeSession, isPending: isRevoking } =
-    useRevokeMultiSession({
+    useRevokeMultiSession(authClient as MultiSessionAuthClient, {
       onSuccess: () => toast.success(localization.settings.revokeSessionSuccess)
     })
 
