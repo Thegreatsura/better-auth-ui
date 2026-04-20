@@ -8,9 +8,10 @@ Initiates the OAuth redirect flow — the session lands once the provider redire
 ## Usage
 
 ```tsx
-import { useSignInSocial } from "@better-auth-ui/react"
+import { useAuth, useSignInSocial } from "@better-auth-ui/react"
 
-const { mutate: signInSocial } = useSignInSocial()
+const { authClient } = useAuth()
+const { mutate: signInSocial } = useSignInSocial(authClient)
 
 signInSocial({
   provider: "github",
@@ -29,4 +30,4 @@ const { mutate } = useMutation(signInSocialOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-social.ts" name="UseSignInSocialParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/auth/sign-in-social-options.ts" name="SignInSocialParams" />

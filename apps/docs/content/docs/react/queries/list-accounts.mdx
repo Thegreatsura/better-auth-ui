@@ -8,12 +8,13 @@ Keyed per-user; waits for the active session before firing.
 ## Usage
 
 ```tsx
-import { useListAccounts } from "@better-auth-ui/react"
+import { useAuth, useListAccounts } from "@better-auth-ui/react"
 
-const { data: accounts } = useListAccounts()
+const { authClient } = useAuth()
+const { data: accounts } = useListAccounts(authClient)
 
 // With React Query options
-const { data: accounts } = useListAccounts({ refetchOnMount: false })
+const { data: accounts } = useListAccounts(authClient, { refetchOnMount: false })
 ```
 
 ## Options factory
@@ -37,4 +38,4 @@ queryClient.invalidateQueries({
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-accounts.ts" name="UseListAccountsParams" />
+<auto-type-table path="../../../../../../packages/react/src/queries/settings/list-accounts-options.ts" name="ListAccountsParams" />

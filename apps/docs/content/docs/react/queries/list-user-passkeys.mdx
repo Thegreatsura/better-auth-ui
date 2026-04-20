@@ -8,13 +8,25 @@ Keyed per-user; waits for the active session before firing.
 ## Usage
 
 ```tsx
-import { useListUserPasskeys } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useListUserPasskeys
+} from "@better-auth-ui/react"
 
-const { data: passkeys } = useListUserPasskeys()
+const { authClient } = useAuth()
+const { data: passkeys } = useListUserPasskeys(
+  authClient as PasskeyAuthClient
+)
 
 // With React Query options
-const { data: passkeys } = useListUserPasskeys({ refetchOnMount: false })
+const { data: passkeys } = useListUserPasskeys(
+  authClient as PasskeyAuthClient,
+  { refetchOnMount: false }
+)
 ```
+
+`useListUserPasskeys` requires the Better Auth `passkey` plugin. Cast `authClient` to `PasskeyAuthClient` so TypeScript picks up the plugin-extended method signature.
 
 ## Options factory
 
@@ -39,4 +51,4 @@ queryClient.invalidateQueries({
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-user-passkeys.ts" name="UseListUserPasskeysParams" />
+<auto-type-table path="../../../../../../packages/react/src/queries/passkey/list-user-passkeys-options.ts" name="ListUserPasskeysParams" />

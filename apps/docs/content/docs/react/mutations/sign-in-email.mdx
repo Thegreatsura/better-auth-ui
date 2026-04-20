@@ -8,9 +8,10 @@ Resets the session query on success so the new session is refetched.
 ## Usage
 
 ```tsx
-import { useSignInEmail } from "@better-auth-ui/react"
+import { useAuth, useSignInEmail } from "@better-auth-ui/react"
 
-const { mutate: signInEmail, isPending } = useSignInEmail()
+const { authClient } = useAuth()
+const { mutate: signInEmail, isPending } = useSignInEmail(authClient)
 
 signInEmail({
   email: "alice@example.com",
@@ -30,4 +31,4 @@ const { mutate } = useMutation(signInEmailOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-email.ts" name="UseSignInEmailParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/auth/sign-in-email-options.ts" name="SignInEmailParams" />

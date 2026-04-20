@@ -8,9 +8,10 @@ Refetches the session on success so the new email surfaces everywhere that reads
 ## Usage
 
 ```tsx
-import { useChangeEmail } from "@better-auth-ui/react"
+import { useAuth, useChangeEmail } from "@better-auth-ui/react"
 
-const { mutate: changeEmail } = useChangeEmail()
+const { authClient } = useAuth()
+const { mutate: changeEmail } = useChangeEmail(authClient)
 
 changeEmail({
   newEmail: "new@example.com",
@@ -29,4 +30,4 @@ const { mutate } = useMutation(changeEmailOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-change-email.ts" name="UseChangeEmailParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/settings/change-email-options.ts" name="ChangeEmailParams" />

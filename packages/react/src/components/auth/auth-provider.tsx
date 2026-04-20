@@ -22,6 +22,10 @@ const fallbackQueryClient = new QueryClient()
 
 declare module "@better-auth-ui/core" {
   interface AuthConfig {
+    /**
+     * The auth client to use for the authentication context.
+     * @remarks `AuthClient`
+     */
     authClient: AuthClient
   }
 }

@@ -8,12 +8,21 @@ Resets the session query on success so the new session is refetched.
 ## Usage
 
 ```tsx
-import { useSignInPasskey } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useSignInPasskey
+} from "@better-auth-ui/react"
 
-const { mutate: signInPasskey } = useSignInPasskey()
+const { authClient } = useAuth()
+const { mutate: signInPasskey } = useSignInPasskey(
+  authClient as PasskeyAuthClient
+)
 
 signInPasskey()
 ```
+
+`useSignInPasskey` requires the Better Auth `passkey` plugin. Cast `authClient` to `PasskeyAuthClient` so TypeScript picks up the plugin-extended method signature.
 
 ## Options factory
 
@@ -26,4 +35,4 @@ const { mutate } = useMutation(signInPasskeyOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-passkey.ts" name="UseSignInPasskeyParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/passkey/sign-in-passkey-options.ts" name="SignInPasskeyParams" />

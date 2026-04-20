@@ -8,14 +8,15 @@ Keyed per-user; waits for the active session and `query.accountId` before firing
 ## Usage
 
 ```tsx
-import { useAccountInfo } from "@better-auth-ui/react"
+import { useAccountInfo, useAuth } from "@better-auth-ui/react"
 
-const { data: accountInfo } = useAccountInfo({
+const { authClient } = useAuth()
+const { data: accountInfo } = useAccountInfo(authClient, {
   query: { accountId: "acc_123" }
 })
 
 // With React Query options in the same object
-const { data: accountInfo } = useAccountInfo({
+const { data: accountInfo } = useAccountInfo(authClient, {
   query: { accountId: "acc_123" },
   staleTime: 60_000
 })
@@ -48,4 +49,4 @@ queryClient.invalidateQueries({
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-account-info.ts" name="UseAccountInfoParams" />
+<auto-type-table path="../../../../../../packages/react/src/queries/settings/account-info-options.ts" name="AccountInfoParams" />

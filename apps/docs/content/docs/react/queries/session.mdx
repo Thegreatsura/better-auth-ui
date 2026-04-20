@@ -6,21 +6,23 @@ description: Read, prefetch, and invalidate the current authenticated session.
 ## Usage
 
 ```tsx
-import { useSession } from "@better-auth-ui/react"
+import { useAuth, useSession } from "@better-auth-ui/react"
 
-// No args — most common
-const { data: session } = useSession()
+const { authClient } = useAuth()
+
+// Most common
+const { data: session } = useSession(authClient)
 
 // React Query options
-const { data: session } = useSession({ staleTime: 30_000 })
+const { data: session } = useSession(authClient, { staleTime: 30_000 })
 
 // Better Auth params
-const { data: session } = useSession({
+const { data: session } = useSession(authClient, {
   query: { disableCookieCache: true }
 })
 
 // Both in one object
-const { data: session } = useSession({
+const { data: session } = useSession(authClient, {
   query: { disableCookieCache: true },
   staleTime: 30_000
 })
@@ -57,4 +59,4 @@ queryClient.invalidateQueries({
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-session.ts" name="UseSessionParams" />
+<auto-type-table path="../../../../../../packages/react/src/queries/auth/session-options.ts" name="SessionParams" />

@@ -8,9 +8,10 @@ Refetches the linked accounts list on success.
 ## Usage
 
 ```tsx
-import { useUnlinkAccount } from "@better-auth-ui/react"
+import { useAuth, useUnlinkAccount } from "@better-auth-ui/react"
 
-const { mutate: unlinkAccount } = useUnlinkAccount()
+const { authClient } = useAuth()
+const { mutate: unlinkAccount } = useUnlinkAccount(authClient)
 
 unlinkAccount({ providerId: "github", accountId: "acc_123" })
 ```
@@ -26,4 +27,4 @@ const { mutate } = useMutation(unlinkAccountOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-unlink-account.ts" name="UseUnlinkAccountParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/settings/unlink-account-options.ts" name="UnlinkAccountParams" />
