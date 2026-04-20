@@ -18,7 +18,13 @@ import type { AuthPlugin } from "../../lib/auth-plugin"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
-const fallbackQueryClient = new QueryClient()
+const fallbackQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5000
+    }
+  }
+})
 
 declare module "@better-auth-ui/core" {
   interface AuthConfig {

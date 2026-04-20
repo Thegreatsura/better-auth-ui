@@ -22,6 +22,10 @@
     "./core": {
       "types": "./dist/core.d.ts",
       "import": "./dist/core.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
     }
   },
   "devDependencies": {
@@ -45,10 +49,8 @@
     "vitest": "^4.1.4",
     "zod": "^4.3.6"
   },
-  "dependencies": {
-    "@better-auth-ui/core": "*"
-  },
   "peerDependencies": {
+    "@better-auth-ui/core": "*",
     "@better-auth/passkey": ">=1.6.5",
     "@react-email/components": ">=1.0.12",
     "@tanstack/react-query": ">=5.99.2",

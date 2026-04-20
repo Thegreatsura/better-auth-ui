@@ -29,6 +29,10 @@
       "types": "./dist/react-exports.d.ts",
       "import": "./dist/react-exports.js"
     },
+    "./react/server": {
+      "types": "./dist/react-server-exports.d.ts",
+      "import": "./dist/react-server-exports.js"
+    },
     "./styles": "./dist/styles.css"
   },
   "devDependencies": {
@@ -50,11 +54,9 @@
     "react-dom": "^19.2.5",
     "vitest": "^4.1.4"
   },
-  "dependencies": {
-    "@better-auth-ui/core": "*",
-    "@better-auth-ui/react": "*"
-  },
   "peerDependencies": {
+    "@better-auth-ui/core": "*",
+    "@better-auth-ui/react": "*",
     "@gravity-ui/icons": ">=2.18.0",
     "@heroui/react": ">=3.0.2",
     "@heroui/styles": ">=3.0.2",
