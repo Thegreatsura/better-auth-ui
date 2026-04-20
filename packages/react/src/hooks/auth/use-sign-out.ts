@@ -1,13 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-clients/auth-client"
 import { signOutOptions } from "../../mutations/auth/sign-out-options"
 
-export type UseSignOutParams = NonNullable<Parameters<AuthClient["signOut"]>[0]>
+export type UseSignOutParams<TAuthClient extends AuthClient> = NonNullable<
+  Parameters<TAuthClient["signOut"]>[0]
+>
 
-export type UseSignOutOptions = Omit<
-  ReturnType<typeof signOutOptions>,
+export type UseSignOutOptions<TAuthClient extends AuthClient> = Omit<
+  ReturnType<typeof signOutOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >
 
@@ -16,11 +17,14 @@ export type UseSignOutOptions = Omit<
  *
  * Removes all cached auth queries on completion.
  *
+ * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useSignOut(options?: UseSignOutOptions) {
-  const { authClient } = useAuth()
+export function useSignOut<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options?: UseSignOutOptions<TAuthClient>
+) {
   const queryClient = useQueryClient()
 
   return useMutation({

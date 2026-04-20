@@ -1,16 +1,14 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { useAuth } from "../../components/auth/auth-provider"
 import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
 import { addPasskeyOptions } from "../../mutations/passkey/add-passkey-options"
 import { useListUserPasskeys } from "./use-list-user-passkeys"
 
-export type UseAddPasskeyParams = NonNullable<
-  Parameters<PasskeyAuthClient["passkey"]["addPasskey"]>[0]
->
+export type UseAddPasskeyParams<TAuthClient extends PasskeyAuthClient> =
+  NonNullable<Parameters<TAuthClient["passkey"]["addPasskey"]>[0]>
 
-export type UseAddPasskeyOptions = Omit<
-  ReturnType<typeof addPasskeyOptions>,
+export type UseAddPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+  ReturnType<typeof addPasskeyOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >
 
@@ -19,12 +17,15 @@ export type UseAddPasskeyOptions = Omit<
  *
  * Refetches the user's passkey list on success.
  *
+ * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
  * @returns The `useMutation` result.
  */
-export function useAddPasskey(options?: UseAddPasskeyOptions) {
-  const { authClient } = useAuth<PasskeyAuthClient>()
-  const { refetch } = useListUserPasskeys()
+export function useAddPasskey<TAuthClient extends PasskeyAuthClient>(
+  authClient: TAuthClient,
+  options?: UseAddPasskeyOptions<TAuthClient>
+) {
+  const { refetch } = useListUserPasskeys(authClient)
 
   return useMutation({
     ...addPasskeyOptions(authClient),

@@ -15,8 +15,10 @@ export function listSessionsOptions<TAuthClient extends AuthClient>(
   userId: string | undefined,
   params?: Parameters<TAuthClient["listSessions"]>[0]
 ) {
-  return authQueryOptions<TAuthClient["listSessions"]>()(
-    userId ? authClient.listSessions : skipToken,
+  return authQueryOptions(
+    userId
+      ? (authClient.listSessions as TAuthClient["listSessions"])
+      : skipToken,
     ["auth", "user", userId, "listSessions"],
     params
   )

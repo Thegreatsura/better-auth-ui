@@ -15,8 +15,10 @@ export function accountInfoOptions<TAuthClient extends AuthClient>(
   userId: string | undefined,
   params?: Parameters<TAuthClient["accountInfo"]>[0]
 ) {
-  return authQueryOptions<TAuthClient["accountInfo"]>()(
-    userId && params?.query?.accountId ? authClient.accountInfo : skipToken,
+  return authQueryOptions(
+    userId && params?.query?.accountId
+      ? (authClient.accountInfo as TAuthClient["accountInfo"])
+      : skipToken,
     ["auth", "user", userId, "accountInfo"],
     params
   )

@@ -1,4 +1,5 @@
 import {
+  type UsernameAuthClient,
   useAuth,
   useIsUsernameAvailable,
   useSession,
@@ -42,7 +43,7 @@ export function UserProfile({
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
   const { authClient, localization, username: usernameConfig } = useAuth()
-  const { data: session } = useSession(authClient)
+  const { data: session } = useSession(authClient as UsernameAuthClient)
 
   const currentUsername =
     (usernameConfig?.displayUsername
@@ -83,7 +84,7 @@ export function UserProfile({
     }
   }
 
-  const { mutate: updateUser, isPending } = useUpdateUser({
+  const { mutate: updateUser, isPending } = useUpdateUser(authClient, {
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 

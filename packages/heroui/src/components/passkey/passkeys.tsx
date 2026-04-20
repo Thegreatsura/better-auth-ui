@@ -33,7 +33,9 @@ export function Passkeys({
   const { data: passkeys, isPending } = useListUserPasskeys(
     authClient as PasskeyAuthClient
   )
-  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey()
+  const { mutate: addPasskey, isPending: isAdding } = useAddPasskey(
+    authClient as PasskeyAuthClient
+  )
 
   return (
     <div>

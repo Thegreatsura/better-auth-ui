@@ -1,4 +1,9 @@
-import { useAuth, useAuthPlugin, useSignInPasskey } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useAuthPlugin,
+  useSignInPasskey
+} from "@better-auth-ui/react"
 import { Fingerprint } from "@gravity-ui/icons"
 import { Button, Spinner } from "@heroui/react"
 
@@ -9,10 +14,11 @@ export type PasskeyButtonProps = {
 }
 
 export function PasskeyButton({ isPending }: PasskeyButtonProps) {
-  const { localization, redirectTo, navigate } = useAuth()
+  const { authClient, localization, redirectTo, navigate } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
   const { mutate: signInPasskey, isPending: passkeyPending } = useSignInPasskey(
+    authClient as PasskeyAuthClient,
     {
       onSuccess: () => navigate({ to: redirectTo })
     }

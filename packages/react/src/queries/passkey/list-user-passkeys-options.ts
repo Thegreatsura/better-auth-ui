@@ -15,8 +15,11 @@ export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
   userId: string | undefined,
   params?: Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]
 ) {
-  return authQueryOptions<TAuthClient["passkey"]["listUserPasskeys"]>()(
-    userId ? authClient.passkey.listUserPasskeys : skipToken,
+  return authQueryOptions(
+    userId
+      ? (authClient.passkey
+          .listUserPasskeys as TAuthClient["passkey"]["listUserPasskeys"])
+      : skipToken,
     ["auth", "user", userId, "listUserPasskeys"],
     params
   )

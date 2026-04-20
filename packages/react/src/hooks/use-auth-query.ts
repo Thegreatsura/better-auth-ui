@@ -31,7 +31,7 @@ export function useAuthQuery<
   const { query, fetchOptions, ...queryOptions } = options ?? {}
 
   return useQuery({
-    ...authQueryOptions<TFn>()(authFn, queryKey, {
+    ...authQueryOptions(authFn, queryKey, {
       query,
       fetchOptions
     } as Parameters<TFn>[0]),

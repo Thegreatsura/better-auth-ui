@@ -56,40 +56,30 @@ export type AuthQueryOptions<
  * a prerequisite like an active session). Every consumer — `useQuery`,
  * `prefetchQuery`, `ensureQueryData`, etc. — will honor the skip.
  *
- * Curried to sidestep TypeScript's all-or-nothing type-argument rule: pin
- * the auth fn type on the first call (needed to prevent widening of
- * generic-indexed argument types like `TAuthClient["getSession"]`), and let
- * the prefix tuple infer from the second call's argument.
- *
- * @example
- * authQueryOptions<TAuthClient["getSession"]>()(
- *   authClient.getSession,
- *   ["auth", "getSession"],
- *   params
- * )
- *
- * @example Skip until a prerequisite resolves:
- * authQueryOptions<TAuthClient["listAccounts"]>()(
- *   userId ? authClient.listAccounts : skipToken,
- *   ["auth", "user", userId, "listAccounts"],
- *   params
- * )
+ * @param authFn - Better Auth client method (e.g. `authClient.getSession`)
+ *   or `skipToken`. For factories generic over a client, re-assert the
+ *   indexed access (e.g. `authClient.getSession as TAuthClient["getSession"]`)
+ *   so plugin-extended param/return types flow through.
+ * @param queryKey - Scope prefix for the key. `params.query` is appended automatically.
+ * @param params - Parameters forwarded to `authFn`.
  */
-export function authQueryOptions<TFn extends AuthFn>() {
-  return <const TPrefix extends QueryKey>(
-    authFn: TFn | typeof skipToken,
-    queryKey: TPrefix,
-    params?: Parameters<TFn>[0]
-  ): AuthQueryOptions<TFn, TPrefix> =>
-    queryOptions<AuthFnData<TFn>, BetterFetchError>({
-      queryKey: [...queryKey, params?.query ?? null] as const,
-      queryFn:
-        authFn === skipToken
-          ? skipToken
-          : ({ signal }) =>
-              authFn({
-                ...params,
-                fetchOptions: { ...params?.fetchOptions, signal, throw: true }
-              }) as Promise<AuthFnData<TFn>>
-    }) as AuthQueryOptions<TFn, TPrefix>
+export function authQueryOptions<
+  TFn extends AuthFn,
+  const TPrefix extends QueryKey
+>(
+  authFn: TFn | typeof skipToken,
+  queryKey: TPrefix,
+  params?: Parameters<TFn>[0]
+): AuthQueryOptions<TFn, TPrefix> {
+  return queryOptions<AuthFnData<TFn>, BetterFetchError>({
+    queryKey: [...queryKey, params?.query ?? null] as const,
+    queryFn:
+      authFn === skipToken
+        ? skipToken
+        : ({ signal }) =>
+            authFn({
+              ...params,
+              fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+            }) as Promise<AuthFnData<TFn>>
+  }) as AuthQueryOptions<TFn, TPrefix>
 }

@@ -17,8 +17,11 @@ export function listDeviceSessionsOptions<
   userId: string | undefined,
   params?: Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 ) {
-  return authQueryOptions<TAuthClient["multiSession"]["listDeviceSessions"]>()(
-    userId ? authClient.multiSession.listDeviceSessions : skipToken,
+  return authQueryOptions(
+    userId
+      ? (authClient.multiSession
+          .listDeviceSessions as TAuthClient["multiSession"]["listDeviceSessions"])
+      : skipToken,
     ["auth", "user", userId, "listDeviceSessions"],
     params
   )

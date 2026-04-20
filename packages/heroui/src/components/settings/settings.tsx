@@ -35,8 +35,8 @@ export function Settings({
   view,
   ...props
 }: SettingsProps & ComponentProps<"div">) {
-  const { basePaths, localization, viewPaths } = useAuth()
-  useAuthenticate()
+  const { authClient, basePaths, localization, viewPaths } = useAuth()
+  useAuthenticate(authClient)
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
