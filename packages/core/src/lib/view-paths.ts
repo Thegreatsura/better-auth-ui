@@ -1,7 +1,12 @@
 /**
  * View path segments for authentication routes.
+ *
+ * The required keys are the fixed built-ins every install ships with. Optional
+ * keys are contributed by plugins (e.g. `magicLinkPlugin` adds `magicLink`) and
+ * merged in at runtime via `AuthProvider`'s `plugins` prop. Access them via
+ * `useAuth().viewPaths` or the composed result of `resolveViewPaths(plugins)`.
  */
-export type AuthViewPaths = {
+export interface AuthViewPaths {
   /**
    * Path segment for the sign-in view
    * @default "sign-in"
@@ -12,11 +17,6 @@ export type AuthViewPaths = {
    * @default "sign-up"
    */
   signUp: string
-  /**
-   * Path segment for the magic link authentication view
-   * @default "magic-link"
-   */
-  magicLink: string
   /**
    * Path segment for the forgot password view
    * @default "forgot-password"
@@ -32,12 +32,21 @@ export type AuthViewPaths = {
    * @default "sign-out"
    */
   signOut: string
+  /**
+   * Path segment for the magic link authentication view.
+   *
+   * Contributed by `magicLinkPlugin`; `undefined` when the plugin isn't
+   * registered.
+   *
+   * @default "magic-link"
+   */
+  magicLink?: string
 }
 
 /**
  * View path segments for settings routes.
  */
-export type SettingsViewPaths = {
+export interface SettingsViewPaths {
   /**
    * Path segment for the account settings view
    * @default "account"
@@ -64,7 +73,6 @@ export const viewPaths: ViewPaths = {
   auth: {
     signIn: "sign-in",
     signUp: "sign-up",
-    magicLink: "magic-link",
     forgotPassword: "forgot-password",
     resetPassword: "reset-password",
     signOut: "sign-out"

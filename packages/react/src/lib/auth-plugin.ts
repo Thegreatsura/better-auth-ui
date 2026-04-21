@@ -1,6 +1,8 @@
 import type { AuthPlugin as CoreAuthPlugin } from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
 
+export type { AuthPluginViewPaths } from "@better-auth-ui/core"
+
 /**
  * Props passed to every plugin-contributed auth button (e.g. passkey, magic
  * link). Rendered alongside the submit button in sign-in / sign-up /
@@ -70,17 +72,6 @@ export type AuthPluginComponents = {
 }
 
 /**
- * View-path contributions merged into `AuthConfig.viewPaths`.
- *
- * Plugins that add routable sub-pages (e.g. `magicLinkPlugin` adds
- * `/auth/magic-link`) declare the URL segment under the matching section.
- */
-export type AuthPluginViewPaths = {
-  auth?: Record<string, string>
-  settings?: Record<string, string>
-}
-
-/**
  * View components matching keys declared in `AuthPluginViewPaths`. The
  * `<Auth>` and `<Settings>` routers look up the current view in this merged
  * map and render the resolved component.
@@ -134,6 +125,5 @@ export type AuthPluginViews = {
  */
 export type AuthPlugin<TComponents = AuthPluginComponents> = CoreAuthPlugin &
   TComponents & {
-    viewPaths?: AuthPluginViewPaths
     views?: AuthPluginViews
   }
