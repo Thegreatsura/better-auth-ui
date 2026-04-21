@@ -1,5 +1,8 @@
 import type { AuthClient } from "../../lib/auth-client"
-import { type UseSessionOptions, useSession } from "./use-session"
+import {
+  type UseSessionOptions,
+  useSession
+} from "../../queries/auth/session-query"
 
 /**
  * Retrieve the current authenticated user. Thin wrapper over `useSession`

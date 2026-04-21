@@ -1,0 +1,61 @@
+import { mutationOptions, useMutation } from "@tanstack/react-query"
+import type { BetterFetchError } from "better-auth/react"
+
+import type { AuthClient } from "../../lib/auth-client"
+
+type SignInSocialParams<TAuthClient extends AuthClient> = Parameters<
+  TAuthClient["signIn"]["social"]
+>[0]
+
+type SignInSocialOptions<TAuthClient extends AuthClient> = Omit<
+  ReturnType<typeof signInSocialOptions<TAuthClient>>,
+  "mutationKey" | "mutationFn"
+>
+
+/**
+ * Mutation options factory for social sign-in.
+ *
+ * The returned `mutationKey` (`["auth", "signIn", "social"]`) is stable and
+ * can be passed to `useIsMutating` or matched inside a global
+ * `MutationCache` observer for toast handling.
+ *
+ * @param authClient - The Better Auth client.
+ */
+export function signInSocialOptions<TAuthClient extends AuthClient>(
+  authClient: TAuthClient
+) {
+  const mutationKey = ["auth", "signIn", "social"]
+
+  const mutationFn = (params: SignInSocialParams<TAuthClient>) =>
+    authClient.signIn.social({
+      ...params,
+      fetchOptions: { ...params?.fetchOptions, throw: true }
+    })
+
+  return mutationOptions<
+    Awaited<ReturnType<typeof mutationFn>>,
+    BetterFetchError,
+    Parameters<typeof mutationFn>[0]
+  >({
+    mutationKey,
+    mutationFn
+  })
+}
+
+/**
+ * Hook that creates a mutation for social sign-in.
+ *
+ * The mutation initiates a social sign-in flow with the specified provider.
+ *
+ * @param authClient - The Better Auth client.
+ * @param options - React Query options forwarded to `useMutation`.
+ */
+export function useSignInSocial<TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  options?: SignInSocialOptions<TAuthClient>
+) {
+  return useMutation({
+    ...options,
+    ...signInSocialOptions(authClient)
+  })
+}
