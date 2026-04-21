@@ -19,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
       multiSession
       passkey
       plugins={[magicLinkPlugin()]}
-      redirectTo="/dashboard"
+      redirectTo="/settings/account"
       socialProviders={["github"]}
       navigate={navigate}
     >

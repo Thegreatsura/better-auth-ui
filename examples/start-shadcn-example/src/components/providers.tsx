@@ -19,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
       multiSession
       passkey
       socialProviders={["github", "google"]}
-      redirectTo="/dashboard"
+      redirectTo="/settings/account"
       navigate={navigate}
       Link={Link}
     >

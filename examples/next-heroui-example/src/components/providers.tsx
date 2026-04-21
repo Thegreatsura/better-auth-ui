@@ -20,7 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       multiSession
       plugins={[magicLinkPlugin()]}
-      redirectTo="/dashboard"
+      redirectTo="/settings/account"
       socialProviders={["google", "github"]}
       navigate={({ to, replace }) =>
         replace ? router.replace(to) : router.push(to)
