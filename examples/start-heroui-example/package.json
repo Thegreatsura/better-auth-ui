@@ -10,7 +10,7 @@
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.32.3",
+    "@cloudflare/vite-plugin": "^1.33.0",
     "@tanstack/devtools-vite": "^0.6.0",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -19,7 +19,7 @@
     "drizzle-kit": "^0.31.10",
     "typescript": "^6.0.3",
     "vite": "^8.0.8",
-    "wrangler": "^4.83.0"
+    "wrangler": "^4.84.0"
   },
   "dependencies": {
     "@better-auth-ui/heroui": "*",
