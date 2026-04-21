@@ -4,7 +4,8 @@ import {
   type AuthConfig,
   type DeepPartial,
   deepmerge,
-  defaultAuthConfig
+  defaultAuthConfig,
+  resolveViewPaths
 } from "@better-auth-ui/core"
 import {
   QueryClient,
@@ -60,9 +61,14 @@ export type AuthProviderProps<
 export function AuthProvider({
   children,
   queryClient,
+  plugins,
   ...config
 }: AuthProviderProps) {
-  const mergedConfig = deepmerge(defaultAuthConfig, config as AuthConfig)
+  const mergedConfig = deepmerge(defaultAuthConfig, {
+    ...config,
+    plugins,
+    viewPaths: resolveViewPaths(plugins, config.viewPaths)
+  } as AuthConfig)
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&
