@@ -41,7 +41,7 @@ export function Auth({
   view,
   ...props
 }: AuthProps & Omit<CardProps, "children">) {
-  const { plugins, viewPaths } = useAuth<AuthPlugin>()
+  const { emailAndPassword, plugins, viewPaths } = useAuth<AuthPlugin>()
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
@@ -57,6 +57,26 @@ export function Auth({
     throw new Error(
       `[Better Auth UI] Valid views are: ${Object.keys(viewPaths.auth).join(", ")}`
     )
+  }
+
+  // When the built-in password-based sign-in is disabled, render the first
+  // plugin offering a `fallbackFor.signIn` view (e.g. magicLinkPlugin) in its
+  // place. This preserves the behaviour of navigating straight to a primary
+  // passwordless form when email+password auth isn't configured.
+  if (currentView === "signIn" && !emailAndPassword?.enabled) {
+    const Fallback = plugins?.find(
+      (plugin) => plugin.fallbackFor?.signIn
+    )?.fallbackFor?.signIn
+
+    if (Fallback) {
+      return (
+        <Fallback
+          socialLayout={socialLayout}
+          socialPosition={socialPosition}
+          {...props}
+        />
+      )
+    }
   }
 
   for (const plugin of plugins ?? []) {

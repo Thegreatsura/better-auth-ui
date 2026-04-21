@@ -1,8 +1,7 @@
 import { Auth } from "@better-auth-ui/heroui"
-import { resolveViewPaths } from "@better-auth-ui/heroui/core"
+import { viewPaths } from "@better-auth-ui/heroui/core"
+import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { notFound } from "next/navigation"
-
-import { authPlugins } from "@/lib/auth-plugins"
 
 export default async function AuthPage({
   params
@@ -13,7 +12,12 @@ export default async function AuthPage({
 }) {
   const { path } = await params
 
-  if (!Object.values(resolveViewPaths(authPlugins).auth).includes(path)) {
+  if (
+    !Object.values({
+      ...viewPaths.auth,
+      ...magicLinkPlugin().viewPaths?.auth
+    }).includes(path)
+  ) {
     notFound()
   }
 

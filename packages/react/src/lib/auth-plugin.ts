@@ -92,6 +92,22 @@ export type AuthPluginViews = {
 }
 
 /**
+ * Fallback view components a plugin offers when a built-in view isn't
+ * available under the current config. The `<Auth>` router renders the
+ * fallback instead of the built-in view when the condition below each key
+ * is met.
+ */
+export type AuthPluginFallbackFor = {
+  /**
+   * Rendered at `/auth/sign-in` when
+   * `AuthConfig.emailAndPassword.enabled === false` and this plugin is
+   * registered. Used to replace the password form with an alternative
+   * primary sign-in flow (e.g. magic link).
+   */
+  signIn?: AuthPluginViewComponent
+}
+
+/**
  * UI-aware plugin definition.
  *
  * Extends the identity-only `CoreAuthPlugin` (`id`, `localization`) with
@@ -136,4 +152,5 @@ export type AuthPluginViews = {
 export type AuthPlugin<TComponents = AuthPluginComponents> = CoreAuthPlugin &
   TComponents & {
     views?: AuthPluginViews
+    fallbackFor?: AuthPluginFallbackFor
   }

@@ -16,7 +16,7 @@ Make sure you've completed the [Quick Start](/docs/heroui) guide first.
 <Step>
 ### Configure AuthProvider
 
-Configure `AuthProvider` with TanStack Router's navigation.
+Configure `AuthProvider` with TanStack Router's navigation. Register any plugins you want enabled by passing their factories inline to the `plugins` prop.
 
 ```tsx title="components/providers.tsx" file=<rootDir>/../../examples/start-heroui-example/src/components/providers.tsx
 ```
@@ -36,12 +36,12 @@ Wrap your application with the `Providers` component in your root route.
 <Step>
 ### Create the Auth Page
 
-Create a dynamic auth page that renders the appropriate authentication view based on the path. Validate the segment against `resolveViewPaths(authPlugins).auth` so unknown paths return a 404.
+Create a dynamic auth page that renders the appropriate authentication view based on the path. For plugin-contributed paths (e.g. `/auth/magic-link` from `magicLinkPlugin()`), spread the plugin's `viewPaths.auth` into the validation set:
 
 ```tsx title="routes/auth/$path.tsx" file=<rootDir>/../../examples/start-heroui-example/src/routes/auth/$path.tsx
 ```
 
-The resolved `auth` object contains every built-in path (`sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`) plus one entry for each plugin in `authPlugins` that contributes an auth view. If you haven't registered any plugins, call `resolveViewPaths()` with no arguments to fall back to the built-in defaults.
+The built-in `viewPaths.auth` object contains `sign-in`, `sign-up`, `sign-out`, `forgot-password`, and `reset-password`. Spread each plugin's `viewPaths.auth` to add its segments. If you aren't using any plugins, you can drop the spread and use `viewPaths.auth` directly.
 
 </Step>
 <Step>
@@ -52,7 +52,7 @@ Create a dynamic settings route that renders the `Settings` component for the UR
 ```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-heroui-example/src/routes/settings/$path.tsx
 ```
 
-The built-in `viewPaths.settings` object contains `account` and `security`. When plugins contribute their own settings views (e.g. `organizationPlugin()` adding `organizations`), swap the import for `resolveViewPaths(authPlugins).settings` just like the auth route above.
+The built-in `viewPaths.settings` object contains `account` and `security`. When a plugin contributes its own settings views (e.g. `organizationPlugin()` adding `organizations`), spread its `viewPaths.settings` the same way as the auth route above.
 
 </Step>
 </Steps>
@@ -66,32 +66,35 @@ Use the `useAuthenticate` hook to protect routes and access session data.
 
 The `useAuthenticate` hook will automatically redirect unauthenticated users to the sign-in page.
 
-## Registering Plugins
+## Adding More Plugins
 
-Plugins extend the UI with additional auth flows, views, and slot components. The recommended pattern is a single `lib/auth-plugins.ts` module that defines every plugin you want enabled:
+To add another plugin, import its factory and append it to the `plugins` array on `AuthProvider`:
 
-```tsx title="lib/auth-plugins.ts" file=<rootDir>/../../examples/start-heroui-example/src/lib/auth-plugins.ts
-```
-
-Pass the array into `AuthProvider` via the `plugins` prop, and into `resolveViewPaths()` wherever you need to validate or look up plugin-contributed paths outside of React (route loaders, server handlers, middleware).
-
-To add another plugin, import its factory and append it to the array:
-
-```tsx title="lib/auth-plugins.ts"
+```tsx title="components/providers.tsx"
 import {
   magicLinkPlugin,
   multiSessionPlugin,
   passkeyPlugin
 } from "@better-auth-ui/heroui/plugins"
 
-export const authPlugins = [
-  magicLinkPlugin(),
-  multiSessionPlugin(),
-  passkeyPlugin()
-]
+<AuthProvider
+  plugins={[magicLinkPlugin(), multiSessionPlugin(), passkeyPlugin()]}
+  /* ... */
+/>
 ```
 
-The plugin's localization, view paths, views, and slot components (auth buttons, security cards, account cards, user menu items) are all wired up automatically — no other file needs to change. Install each plugin's matching client on your `authClient` too (e.g. `magicLinkClient()` on `createAuthClient` alongside `magicLink()` on the Better Auth server).
+Then spread each plugin's view paths in the routes that need to validate them:
+
+```tsx title="routes/auth/$path.tsx"
+const authViewPaths = {
+  ...viewPaths.auth,
+  ...magicLinkPlugin().viewPaths?.auth,
+  ...passkeyPlugin().viewPaths?.auth
+  // ...etc
+}
+```
+
+Install each plugin's matching client on your `authClient` too (e.g. `magicLinkClient()` on `createAuthClient` alongside `magicLink()` on the Better Auth server).
 
 ## Example Project
 

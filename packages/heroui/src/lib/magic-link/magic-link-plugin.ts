@@ -13,6 +13,11 @@ export function magicLinkPlugin(options: MagicLinkPluginOptions = {}) {
     authButtons: [MagicLinkButton],
     views: {
       auth: { magicLink: MagicLink }
+    },
+    // When `emailAndPassword.enabled === false`, /auth/sign-in renders the
+    // magic-link form instead of the disabled password form.
+    fallbackFor: {
+      signIn: MagicLink
     }
   } satisfies AuthPlugin
 }

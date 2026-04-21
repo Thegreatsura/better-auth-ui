@@ -1,13 +1,13 @@
 "use client"
 
 import { AuthProvider } from "@better-auth-ui/heroui"
+import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
-import { authPlugins } from "@/lib/auth-plugins"
 
 export function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
@@ -19,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
       appearance={{ theme, setTheme }}
       deleteUser={{ enabled: true }}
       multiSession
-      plugins={authPlugins}
+      plugins={[magicLinkPlugin()]}
       redirectTo="/dashboard"
       socialProviders={["google", "github"]}
       navigate={({ to, replace }) =>
