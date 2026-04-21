@@ -1,3 +1,5 @@
+"use client"
+
 import {
   type MagicLinkAuthClient,
   useAuth,
@@ -22,7 +24,6 @@ import { type SyntheticEvent, useState } from "react"
 
 import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type MagicLinkProps = {
@@ -132,13 +133,14 @@ export function MagicLink({
               {localization.auth.sendMagicLink}
             </Button>
 
-            <MagicLinkButton view="magicLink" isPending={isPending} />
-
-            {plugins?.map(
-              (plugin) =>
-                plugin.AuthButton && (
-                  <plugin.AuthButton key={plugin.id} isPending={isPending} />
-                )
+            {plugins?.flatMap((plugin) =>
+              (plugin.authButtons ?? []).map((Button, index) => (
+                <Button
+                  key={`${plugin.id}-${index.toString()}`}
+                  view="magicLink"
+                  isPending={isPending}
+                />
+              ))
             )}
           </div>
         </Form>

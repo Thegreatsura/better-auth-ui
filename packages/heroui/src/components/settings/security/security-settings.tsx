@@ -38,11 +38,10 @@ export function SecuritySettings({
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
       {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
-      {plugins?.map(
-        (plugin) =>
-          plugin.SecurityCard && (
-            <plugin.SecurityCard key={plugin.id} variant={variant} />
-          )
+      {plugins?.flatMap((plugin) =>
+        plugin.securityCards?.map((Card, index) => (
+          <Card key={`${plugin.id}-${index.toString()}`} variant={variant} />
+        ))
       )}
       <ActiveSessions variant={variant} />
       {deleteUser?.enabled && <DangerZone variant={variant} />}

@@ -25,7 +25,6 @@ import { type SyntheticEvent, useState } from "react"
 
 import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export interface SignInProps {
@@ -57,7 +56,6 @@ export function SignIn({
     baseURL,
     emailAndPassword,
     localization,
-    magicLink,
     plugins,
     redirectTo,
     socialProviders,
@@ -233,15 +231,14 @@ export function SignIn({
                 {localization.auth.signIn}
               </Button>
 
-              {magicLink && (
-                <MagicLinkButton view="signIn" isPending={isPending} />
-              )}
-
-              {plugins?.map(
-                (plugin) =>
-                  plugin.AuthButton && (
-                    <plugin.AuthButton key={plugin.id} isPending={isPending} />
-                  )
+              {plugins?.flatMap((plugin) =>
+                plugin.authButtons?.map((Button, index) => (
+                  <Button
+                    key={`${plugin.id}-${index.toString()}`}
+                    view="signIn"
+                    isPending={isPending}
+                  />
+                ))
               )}
             </div>
           </Form>

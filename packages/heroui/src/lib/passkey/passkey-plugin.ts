@@ -10,7 +10,7 @@ import type { AuthPlugin } from "../auth-plugin"
 export function passkeyPlugin(options: PasskeyPluginOptions = {}) {
   return {
     ...corePasskeyPlugin(options),
-    AuthButton: PasskeyButton,
-    SecurityCard: Passkeys
+    authButtons: [PasskeyButton],
+    securityCards: [Passkeys]
   } satisfies AuthPlugin
 }

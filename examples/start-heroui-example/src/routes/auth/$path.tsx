@@ -1,10 +1,12 @@
 import { Auth } from "@better-auth-ui/heroui"
-import { viewPaths } from "@better-auth-ui/heroui/core"
+import { resolveViewPaths } from "@better-auth-ui/heroui/core"
 import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { authPlugins } from "@/lib/auth-plugins"
 
 export const Route = createFileRoute("/auth/$path")({
   beforeLoad({ params: { path } }) {
-    if (!Object.values(viewPaths.auth).includes(path)) {
+    if (!Object.values(resolveViewPaths(authPlugins).auth).includes(path)) {
       throw notFound()
     }
   },

@@ -1,4 +1,4 @@
-import type { AuthPlugin as CoreAuthPlugin } from "@better-auth-ui/core"
+import type { AuthPlugin as CoreAuthPlugin, AuthView } from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
 
 export type { AuthPluginViewPaths } from "@better-auth-ui/core"
@@ -6,12 +6,18 @@ export type { AuthPluginViewPaths } from "@better-auth-ui/core"
 /**
  * Props passed to every plugin-contributed auth button (e.g. passkey, magic
  * link). Rendered alongside the submit button in sign-in / sign-up /
- * forgot-password forms.
+ * forgot-password / magic-link forms.
  */
 export type AuthButtonProps = {
   className?: string
   children?: ReactNode
   isPending?: boolean
+  /**
+   * The auth view currently being rendered. Plugin buttons can use this to
+   * context-switch (e.g. `MagicLinkButton` renders a "back to sign-in"
+   * toggle when `view === "magicLink"`).
+   */
+  view?: AuthView
 }
 
 /**
@@ -43,10 +49,14 @@ export type UserMenuItemProps = {
 /**
  * View component rendered by the `<Auth>` / `<Settings>` router when the
  * current path matches a plugin-contributed `viewPaths` entry.
+ *
+ * Props are intentionally loose — UI packages (heroui, shadcn, native) pass
+ * framework-specific router props (e.g. `socialLayout`, `variant`) to the
+ * resolved view, and each plugin declares its own narrower prop shape at the
+ * component definition site.
  */
-export type AuthPluginViewComponent = ComponentType<{
-  className?: string
-}>
+// biome-ignore lint/suspicious/noExplicitAny: plugin views define their own prop shapes
+export type AuthPluginViewComponent = ComponentType<any>
 
 /**
  * Default slot component shapes — the framework-agnostic baseline every UI

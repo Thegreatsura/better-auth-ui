@@ -41,7 +41,6 @@ export const auth = betterAuth({
     }
   }
 })
-
 type PasskeyAuthServer = Pick<
   Auth<{ plugins: [ReturnType<typeof passkey>] }>,
   "api"

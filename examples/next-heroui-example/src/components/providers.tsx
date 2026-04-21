@@ -7,6 +7,7 @@ import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { authPlugins } from "@/lib/auth-plugins"
 
 export function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
@@ -17,8 +18,8 @@ export function Providers({ children }: { children: ReactNode }) {
       authClient={authClient}
       appearance={{ theme, setTheme }}
       deleteUser={{ enabled: true }}
-      magicLink
       multiSession
+      plugins={authPlugins}
       redirectTo="/dashboard"
       socialProviders={["google", "github"]}
       navigate={({ to, replace }) =>

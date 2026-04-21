@@ -2,8 +2,8 @@ import type { AuthView } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import type { CardProps } from "@heroui/react"
 
+import type { AuthPlugin } from "../../lib/auth-plugin"
 import { ForgotPassword } from "./forgot-password"
-import { MagicLink } from "./magic-link"
 import type { SocialLayout } from "./provider-buttons"
 import { ResetPassword } from "./reset-password"
 import { SignIn } from "./sign-in"
@@ -23,6 +23,10 @@ export type AuthProps = {
 /**
  * Render the appropriate authentication view based on the provided `view` or `path`.
  *
+ * Plugin-contributed views (e.g. `magicLinkPlugin` providing the `magicLink`
+ * view) are resolved dynamically from `plugins[].views.auth`; built-in views
+ * (`signIn`, `signUp`, etc.) are matched in the switch below.
+ *
  * @param path - Route path used to resolve an auth view when `view` is not provided
  * @param socialLayout - Social layout to apply to sign-in/sign-up/magic-link views
  * @param socialPosition - Position for social buttons ("top" or "bottom")
@@ -37,7 +41,7 @@ export function Auth({
   view,
   ...props
 }: AuthProps & Omit<CardProps, "children">) {
-  const { viewPaths } = useAuth()
+  const { plugins, viewPaths } = useAuth<AuthPlugin>()
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
@@ -48,6 +52,26 @@ export function Auth({
   ) as Record<string, AuthView>
 
   const currentView = view || (path ? authPathViews[path] : undefined)
+
+  if (!currentView) {
+    throw new Error(
+      `[Better Auth UI] Valid views are: ${Object.keys(viewPaths.auth).join(", ")}`
+    )
+  }
+
+  for (const plugin of plugins ?? []) {
+    const PluginView = plugin.views?.auth?.[currentView]
+
+    if (PluginView) {
+      return (
+        <PluginView
+          socialLayout={socialLayout}
+          socialPosition={socialPosition}
+          {...props}
+        />
+      )
+    }
+  }
 
   switch (currentView) {
     case "signIn":
@@ -66,14 +90,6 @@ export function Auth({
           {...props}
         />
       )
-    case "magicLink":
-      return (
-        <MagicLink
-          socialLayout={socialLayout}
-          socialPosition={socialPosition}
-          {...props}
-        />
-      )
     case "forgotPassword":
       return <ForgotPassword {...props} />
     case "resetPassword":
@@ -82,7 +98,7 @@ export function Auth({
       return <SignOut {...props} />
     default:
       throw new Error(
-        `[Better Auth UI] Valid views are: ${Object.keys(viewPaths.auth).join(", ")}`
+        `[Better Auth UI] Unknown view "${currentView}". Valid views are: ${Object.keys(viewPaths.auth).join(", ")}`
       )
   }
 }

@@ -24,8 +24,8 @@ import {
 import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useState } from "react"
 
+import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignUpProps = {
@@ -57,13 +57,13 @@ export function SignUp({
     basePaths,
     emailAndPassword,
     localization,
-    magicLink,
+    plugins,
     redirectTo,
     socialProviders,
     username: usernameConfig,
     viewPaths,
     navigate
-  } = useAuth()
+  } = useAuth<AuthPlugin>()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -359,8 +359,14 @@ export function SignUp({
                 {localization.auth.signUp}
               </Button>
 
-              {magicLink && (
-                <MagicLinkButton view="signUp" isPending={isPending} />
+              {plugins?.flatMap((plugin) =>
+                plugin.authButtons?.map((Button, index) => (
+                  <Button
+                    key={`${plugin.id}-${index.toString()}`}
+                    view="signUp"
+                    isPending={isPending}
+                  />
+                ))
               )}
             </div>
           </Form>

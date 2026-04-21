@@ -1,3 +1,5 @@
+"use client"
+
 import type { AuthView } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import { Envelope, Lock } from "@gravity-ui/icons"
@@ -5,7 +7,7 @@ import { cn, Link } from "@heroui/react"
 import { buttonVariants } from "@heroui/styles"
 
 export type MagicLinkButtonProps = {
-  isPending: boolean
+  isPending?: boolean
   view?: AuthView
 }
 
