@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
+import type { PasskeyAuthClient } from "../../lib/auth-client"
 import {
   type SignInPasskeyOptions,
   signInPasskeyOptions

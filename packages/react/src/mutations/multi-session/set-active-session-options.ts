@@ -1,7 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
+import type { MultiSessionAuthClient } from "../../lib/auth-client"
 
 export type SetActiveSessionParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["setActive"]>[0]

@@ -1,7 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthClient } from "../../lib/auth-client"
 
 export type SendVerificationEmailParams<TAuthClient extends AuthClient> =
   Parameters<TAuthClient["sendVerificationEmail"]>[0]

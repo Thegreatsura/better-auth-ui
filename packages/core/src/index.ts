@@ -1,4 +1,5 @@
 export * from "./config"
+export * from "./lib/auth-keys"
 export * from "./lib/auth-plugin"
 export * from "./lib/base-paths"
 export * from "./lib/deep-partial"

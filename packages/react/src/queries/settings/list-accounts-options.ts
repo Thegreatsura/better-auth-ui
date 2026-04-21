@@ -1,7 +1,8 @@
+import { authKeys } from "@better-auth-ui/core"
 import { type DataTag, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { AuthClient, InferData } from "../../lib/auth-clients/auth-client"
+import type { AuthClient, InferData } from "../../lib/auth-client"
 
 export type ListAccountsData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["listAccounts"]
@@ -29,13 +30,7 @@ export function listAccountsOptions<TAuthClient extends AuthClient>(
   params?: ListAccountsParams<TAuthClient>
 ) {
   type TData = ListAccountsData<TAuthClient>
-  const queryKey = [
-    "auth",
-    "user",
-    userId,
-    "listAccounts",
-    params?.query ?? null
-  ] as const
+  const queryKey = authKeys.listAccounts(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthClient } from "../../lib/auth-client"
 import {
   type SessionOptions,
   type SessionParams,

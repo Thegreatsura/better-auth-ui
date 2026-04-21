@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { UsernameAuthClient } from "../../lib/auth-clients/username-auth-client"
+import type { UsernameAuthClient } from "../../lib/auth-client"
 import {
   type SignInUsernameOptions,
   signInUsernameOptions

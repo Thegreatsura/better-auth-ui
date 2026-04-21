@@ -1,8 +1,9 @@
+import { authKeys } from "@better-auth-ui/core"
 import { type DataTag, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { InferData } from "../../lib/auth-clients/auth-client"
-import type { PasskeyAuthClient } from "../../lib/auth-clients/passkey-auth-client"
+import type { InferData } from "../../lib/auth-client"
+import type { PasskeyAuthClient } from "../../lib/auth-client"
 
 export type ListUserPasskeysData<TAuthClient extends PasskeyAuthClient> =
   InferData<TAuthClient["passkey"]["listUserPasskeys"]>
@@ -29,13 +30,7 @@ export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
   params?: ListUserPasskeysParams<TAuthClient>
 ) {
   type TData = ListUserPasskeysData<TAuthClient>
-  const queryKey = [
-    "auth",
-    "user",
-    userId,
-    "listUserPasskeys",
-    params?.query ?? null
-  ] as const
+  const queryKey = authKeys.listUserPasskeys(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

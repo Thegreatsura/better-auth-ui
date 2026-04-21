@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-query"
 import { createContext, type PropsWithChildren, useContext } from "react"
 
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthClient } from "../../lib/auth-client"
 import type { AuthPlugin } from "../../lib/auth-plugin"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)

@@ -1,8 +1,9 @@
+import { authKeys } from "@better-auth-ui/core"
 import { type DataTag, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { InferData } from "../../lib/auth-clients/auth-client"
-import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
+import type { InferData } from "../../lib/auth-client"
+import type { MultiSessionAuthClient } from "../../lib/auth-client"
 
 export type ListDeviceSessionsData<TAuthClient extends MultiSessionAuthClient> =
   InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
@@ -33,13 +34,7 @@ export function listDeviceSessionsOptions<
   params?: ListDeviceSessionsParams<TAuthClient>
 ) {
   type TData = ListDeviceSessionsData<TAuthClient>
-  const queryKey = [
-    "auth",
-    "user",
-    userId,
-    "listDeviceSessions",
-    params?.query ?? null
-  ] as const
+  const queryKey = authKeys.listDeviceSessions(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

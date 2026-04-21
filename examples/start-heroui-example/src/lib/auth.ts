@@ -1,5 +1,5 @@
 import { passkey } from "@better-auth/passkey"
-import { type Auth, betterAuth } from "better-auth"
+import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { multiSession, username } from "better-auth/plugins"
 
@@ -41,7 +41,3 @@ export const auth = betterAuth({
     }
   }
 })
-type PasskeyAuthServer = Pick<
-  Auth<{ plugins: [ReturnType<typeof passkey>] }>,
-  "api"
->

@@ -1,7 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { MagicLinkAuthClient } from "../../lib/auth-clients/magic-link-auth-client"
+import type { MagicLinkAuthClient } from "../../lib/auth-client"
 
 export type SignInMagicLinkParams<TAuthClient extends MagicLinkAuthClient> =
   Parameters<TAuthClient["signIn"]["magicLink"]>[0]

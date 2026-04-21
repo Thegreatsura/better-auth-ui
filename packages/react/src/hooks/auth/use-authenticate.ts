@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useAuth } from "../../components/auth/auth-provider"
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthClient } from "../../lib/auth-client"
 import { type UseSessionOptions, useSession } from "./use-session"
 
 /**

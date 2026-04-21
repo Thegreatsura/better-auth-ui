@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import type { MultiSessionAuthClient } from "../../lib/auth-clients/multi-session-auth-client"
+import type { MultiSessionAuthClient } from "../../lib/auth-client"
 import {
   type RevokeMultiSessionOptions,
   revokeMultiSessionOptions

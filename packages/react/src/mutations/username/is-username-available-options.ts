@@ -1,7 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { UsernameAuthClient } from "../../lib/auth-clients/username-auth-client"
+import type { UsernameAuthClient } from "../../lib/auth-client"
 
 export type IsUsernameAvailableParams<TAuthClient extends UsernameAuthClient> =
   Parameters<TAuthClient["isUsernameAvailable"]>[0]

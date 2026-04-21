@@ -1,0 +1,63 @@
+/**
+ * Hierarchical query key factory for every Better Auth query managed by
+ * this library.
+ *
+ * Keys are nested — higher-level keys are valid prefixes of their
+ * descendants — so a single call can invalidate a whole subtree:
+ *
+ * ```ts
+ * queryClient.invalidateQueries({ queryKey: authKeys.all })
+ * queryClient.invalidateQueries({ queryKey: authKeys.user(userId) })
+ * queryClient.invalidateQueries({ queryKey: authKeys.session(query) })
+ * ```
+ *
+ * This factory lives in `@better-auth-ui/core` so it can be shared across
+ * framework packages (`@better-auth-ui/react`, a future `/solid` package,
+ * etc.) and across client- and server-side query variants — the cache
+ * entries line up regardless of which query options factory produced them.
+ */
+export const authKeys = {
+  /** Root key for every Better Auth query. */
+  all: ["auth"] as const,
+
+  /** Prefix for all `getSession` queries (any `query` value). */
+  sessions: () => [...authKeys.all, "getSession"] as const,
+  /** Key for a `getSession` query with the given `query` params. */
+  session: <TQuery = undefined>(query?: TQuery) =>
+    [...authKeys.sessions(), query ?? null] as const,
+
+  /** Prefix for every per-user query. */
+  users: () => [...authKeys.all, "user"] as const,
+  /** Prefix for every query scoped to a specific user. */
+  user: (userId: string | undefined) => [...authKeys.users(), userId] as const,
+
+  /** Key for `multiSession.listDeviceSessions` for the given user. */
+  listDeviceSessions: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authKeys.user(userId), "listDeviceSessions", query ?? null] as const,
+
+  /** Key for `passkey.listUserPasskeys` for the given user. */
+  listUserPasskeys: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authKeys.user(userId), "listUserPasskeys", query ?? null] as const,
+
+  /** Key for `accountInfo` for the given user. */
+  accountInfo: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authKeys.user(userId), "accountInfo", query ?? null] as const,
+
+  /** Key for `listAccounts` for the given user. */
+  listAccounts: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authKeys.user(userId), "listAccounts", query ?? null] as const,
+
+  /** Key for `listSessions` for the given user. */
+  listSessions: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authKeys.user(userId), "listSessions", query ?? null] as const
+} as const

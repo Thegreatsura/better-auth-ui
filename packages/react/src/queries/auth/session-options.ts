@@ -1,7 +1,8 @@
+import { authKeys } from "@better-auth-ui/core"
 import { type DataTag, queryOptions } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import type { AuthClient, InferData } from "../../lib/auth-clients/auth-client"
+import type { AuthClient, InferData } from "../../lib/auth-client"
 
 export type SessionData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["getSession"]
@@ -27,7 +28,7 @@ export function sessionOptions<TAuthClient extends AuthClient>(
   params?: SessionParams<TAuthClient>
 ) {
   type TData = SessionData<TAuthClient>
-  const queryKey = ["auth", "getSession", params?.query ?? null] as const
+  const queryKey = authKeys.session(params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

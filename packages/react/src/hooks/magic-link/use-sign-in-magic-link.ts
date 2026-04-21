@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import type { MagicLinkAuthClient } from "../../lib/auth-clients/magic-link-auth-client"
+import type { MagicLinkAuthClient } from "../../lib/auth-client"
 import {
   type SignInMagicLinkOptions,
   signInMagicLinkOptions

@@ -1,6 +1,7 @@
+import { authKeys } from "@better-auth-ui/core"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { AuthClient } from "../../lib/auth-clients/auth-client"
+import type { AuthClient } from "../../lib/auth-client"
 import {
   type SignOutOptions,
   signOutOptions
@@ -24,7 +25,7 @@ export function useSignOut<TAuthClient extends AuthClient>(
     ...options,
     ...signOutOptions(authClient),
     onSuccess: async (...args) => {
-      queryClient.removeQueries({ queryKey: ["auth"] })
+      queryClient.removeQueries({ queryKey: authKeys.all })
       await options?.onSuccess?.(...args)
     }
   })

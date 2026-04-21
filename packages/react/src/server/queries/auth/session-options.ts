@@ -1,11 +1,12 @@
+import { authKeys } from "@better-auth-ui/core"
 import {
   type DataTag,
   type QueryClient,
   queryOptions
 } from "@tanstack/react-query"
-import type { APIError, Auth } from "better-auth"
+import type { APIError } from "better-auth"
 
-type AuthServer = Pick<Auth, "api">
+import type { AuthServer } from "../../../lib/auth-server"
 
 type SessionData<TAuth extends AuthServer> = ReturnType<
   TAuth["api"]["getSession"]
@@ -26,7 +27,7 @@ export function sessionOptions<TAuth extends AuthServer>(
   params: SessionParams<TAuth>
 ) {
   type TData = SessionData<TAuth>
-  const queryKey = ["auth", "getSession", params?.query ?? null] as const
+  const queryKey = authKeys.session(params?.query)
 
   const options = queryOptions<TData, APIError, TData, typeof queryKey>({
     queryKey,
