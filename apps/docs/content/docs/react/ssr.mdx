@@ -1,0 +1,185 @@
+---
+title: SSR
+description: Customize the TanStack Query client and prefetch auth data on the server with TanStack Start.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+Every Better Auth UI hook runs through [TanStack Query](https://tanstack.com/query), so wiring up a shared `QueryClient` and its router integration is all you need to prefetch sessions on the server, guard routes before render, and hydrate the cache on the client.
+
+The examples below mirror [`examples/start-heroui-example`](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/start-heroui-example) and target [TanStack Start](https://tanstack.com/start). The same `QueryClient` recipe works in any React app — only the router integration differs.
+
+## Install the SSR integration
+
+```package-install
+@tanstack/react-query @tanstack/react-router-ssr-query
+```
+
+`@tanstack/react-router-ssr-query` dehydrates the `QueryClient` on the server, streams it down with the HTML, and rehydrates it on the client. It also wraps the app in a `QueryClientProvider` for you, so no extra provider is required.
+
+## Customize the QueryClient
+
+Build the `QueryClient` inside your router factory so every SSR request gets a fresh cache. Apply your `defaultOptions` here — the example sets a 5 second `staleTime` so repeat navigations within that window skip the network.
+
+```tsx title="src/router.tsx"
+import { QueryClient } from "@tanstack/react-query"
+import { createRouter } from "@tanstack/react-router"
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
+
+import { routeTree } from "./routeTree.gen"
+
+export const getRouter = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5000
+      }
+    }
+  })
+
+  const router = createRouter({
+    routeTree,
+    scrollRestoration: true,
+    defaultPreloadStaleTime: 0,
+    context: { queryClient }
+  })
+
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient
+  })
+
+  return router
+}
+```
+
+A few notes on the options above:
+
+- `defaultPreloadStaleTime: 0` tells TanStack Router to always run loaders on preload. Pair it with `staleTime` on the query so the underlying data is still cached — the loader fires, the query returns instantly.
+- `context: { queryClient }` exposes the client to every loader/`beforeLoad` hook via `context.queryClient`.
+- `setupRouterSsrQueryIntegration` must be called **after** `createRouter` — it subscribes to router events to dehydrate/hydrate around each navigation.
+
+Tune `defaultOptions` the same way you would in any TanStack Query app. For example, to disable refetch-on-window-focus globally:
+
+```ts
+new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      refetchOnWindowFocus: false
+    }
+  }
+})
+```
+
+## Type the root route context
+
+Use `createRootRouteWithContext` so child routes can read `context.queryClient` with full typing.
+
+```tsx title="src/routes/__root.tsx"
+import type { QueryClient } from "@tanstack/react-query"
+import { createRootRouteWithContext } from "@tanstack/react-router"
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+}>()({
+  // ...head, shellComponent, etc.
+})
+```
+
+The tree of routes now has `{ queryClient }` available in every loader, `beforeLoad`, and component via `Route.useRouteContext()`.
+
+## Prefetch the session in `beforeLoad`
+
+Every `@better-auth-ui/react` query ships matching `ensure*`, `prefetch*`, and `fetch*` helpers alongside its options factory. They accept the `authClient`, a `QueryClient`, and the same params as the underlying query.
+
+| Helper             | When to use                                                                 |
+| ------------------ | --------------------------------------------------------------------------- |
+| `ensureSession`    | Read the session, resolving from cache if fresh. Most common in loaders.    |
+| `prefetchSession`  | Kick off a background fetch without awaiting. Good for soft preloads.       |
+| `fetchSession`     | Always bypass the cache and fetch fresh data.                               |
+
+Use `ensureSession` in `beforeLoad` to gate protected routes. If no session is returned, redirect to sign-in and preserve the current URL so the user lands back after signing in.
+
+```tsx title="src/routes/settings/$path.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { Settings } from "@better-auth-ui/heroui"
+import { ensureSession } from "@better-auth-ui/react"
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+
+import { authClient } from "@/lib/auth-client"
+
+export const Route = createFileRoute("/settings/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!Object.values(viewPaths.settings).includes(path)) {
+      throw notFound()
+    }
+
+    const session = await ensureSession(authClient, queryClient)
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirect: location.href }
+      })
+    }
+
+    return { user: session.user }
+  },
+  component: SettingsPage
+})
+
+function SettingsPage() {
+  const { path } = Route.useParams()
+  const { user } = Route.useRouteContext()
+
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+      <Settings path={path} />
+    </div>
+  )
+}
+```
+
+Because the query is seeded on the server, the `Settings` component — and any `useSession` call inside it — reads the session synchronously on first render, with no loading flash.
+
+Anything you `return` from `beforeLoad` is merged into the route context, so you can forward the resolved user (or any other derived data) straight to the component via `Route.useRouteContext()` instead of re-reading the query downstream.
+
+## Prefetch without blocking
+
+Use `prefetchSession` when you want to warm the cache without blocking navigation — for example, on a marketing route that lazily renders an authed widget:
+
+```ts
+import { prefetchSession } from "@better-auth-ui/react"
+
+export const Route = createFileRoute("/")({
+  loader: ({ context: { queryClient } }) => {
+    void prefetchSession(authClient, queryClient)
+  }
+})
+```
+
+The same pattern works for every settings read — `prefetchListAccounts`, `prefetchListSessions`, `prefetchListDeviceSessions`, `prefetchListUserPasskeys`, and `prefetchAccountInfo` all live in `@better-auth-ui/react` next to their options factories.
+
+## Server-only helpers
+
+If you'd rather skip the HTTP round-trip and hit the Better Auth server directly from a TanStack Start server function (or any other server runtime), import the matching helpers from `@better-auth-ui/react/server`. They accept your Better Auth server instance instead of an `authClient`:
+
+```ts title="src/lib/session.ts"
+import { ensureSession } from "@better-auth-ui/react/server"
+import type { QueryClient } from "@tanstack/react-query"
+import { createServerFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+const getSession = createServerFn().handler(() =>
+  auth.api.getSession({ headers: getRequestHeaders() })
+)
+
+export const ensureServerSession = (queryClient: QueryClient) =>
+  ensureSession(auth, queryClient, { headers: getRequestHeaders() })
+```
+
+The server entrypoint mirrors the client API one-to-one: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus the equivalents for `listAccounts`, `accountInfo`, `listSessions`, `listDeviceSessions`, and `listUserPasskeys`. Cache keys are identical between the two, so data prefetched on the server hydrates cleanly into the client-side `useSession`, `useListSessions`, etc.

@@ -1,5 +1,10 @@
 import { authKeys } from "@better-auth-ui/core"
-import { type DataTag, queryOptions, useQuery } from "@tanstack/react-query"
+import {
+  type DataTag,
+  type QueryClient,
+  queryOptions,
+  useQuery
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient, InferData } from "../../lib/auth-client"
@@ -45,6 +50,24 @@ export function sessionOptions<TAuthClient extends AuthClient>(
     queryKey: DataTag<typeof queryKey, TData, BetterFetchError>
   }
 }
+
+export const ensureSession = <TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  queryClient: QueryClient,
+  params?: SessionParams<TAuthClient>
+) => queryClient.ensureQueryData(sessionOptions(authClient, params))
+
+export const prefetchSession = <TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  queryClient: QueryClient,
+  params?: SessionParams<TAuthClient>
+) => queryClient.prefetchQuery(sessionOptions(authClient, params))
+
+export const fetchSession = <TAuthClient extends AuthClient>(
+  authClient: TAuthClient,
+  queryClient: QueryClient,
+  params?: SessionParams<TAuthClient>
+) => queryClient.fetchQuery(sessionOptions(authClient, params))
 
 export type UseSessionOptions<TAuthClient extends AuthClient> =
   SessionOptions<TAuthClient> & SessionParams<TAuthClient>

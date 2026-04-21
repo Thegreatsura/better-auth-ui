@@ -3,5 +3,5 @@
   "icon": "React",
   "description": "Hooks & components",
   "root": true,
-  "pages": ["index", "queries", "mutations"]
+  "pages": ["index", "queries", "mutations", "ssr"]
 }
