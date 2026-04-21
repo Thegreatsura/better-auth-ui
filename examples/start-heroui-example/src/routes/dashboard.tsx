@@ -1,4 +1,4 @@
-import { useAuth, useAuthenticate } from "@better-auth-ui/heroui/react"
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import { Spinner } from "@heroui/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 

@@ -1,5 +1,5 @@
+import { viewPaths } from "@better-auth-ui/core"
 import { Settings } from "@better-auth-ui/heroui"
-import { viewPaths } from "@better-auth-ui/heroui/core"
 import { notFound } from "next/navigation"
 
 export default async function SettingsPage({

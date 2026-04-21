@@ -24,11 +24,12 @@
     "wrangler": "^4.84.0"
   },
   "dependencies": {
+    "@better-auth-ui/core": "*",
     "@better-auth-ui/react": "*",
     "@better-auth/passkey": "^1.6.5",
     "@fontsource-variable/inter": "^5.2.8",
     "@neondatabase/serverless": "^1.0.2",
-    "@tailwindcss/vite": "^4.2.2",
+    "@tailwindcss/vite": "^4.2.3",
     "@tanstack/react-devtools": "^0.10.2",
     "@tanstack/react-pacer": "^0.22.0",
     "@tanstack/react-query": "^5.99.2",
@@ -50,6 +51,6 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.3"
   }
 }

@@ -19,10 +19,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js"
-    },
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
@@ -45,7 +41,7 @@
     "react-dom": "^19.2.5",
     "react-email": "^6.0.0",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.2",
+    "tailwindcss": "^4.2.3",
     "vitest": "^4.1.4",
     "zod": "^4.3.6"
   },
@@ -59,7 +55,7 @@
     "react": ">=19.2.5",
     "react-dom": ">=19.2.5",
     "tailwind-merge": ">=3.5.0",
-    "tailwindcss": ">=4.2.2",
+    "tailwindcss": ">=4.2.3",
     "zod": ">=4.3.0"
   },
   "repository": {

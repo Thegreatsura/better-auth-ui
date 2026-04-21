@@ -5,6 +5,7 @@
   "description": "Display and manage all active sessions for the current user with revoke controls. Shows each session's browser, OS, and creation time.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth",
     "bowser",
     "lucide-react"

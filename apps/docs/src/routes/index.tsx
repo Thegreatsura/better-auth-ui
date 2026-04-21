@@ -33,7 +33,9 @@ function Home() {
   }
 
   const copyHeroUiCommand = () => {
-    navigator.clipboard.writeText("bun add @better-auth-ui/heroui@latest")
+    navigator.clipboard.writeText(
+      "bun add @better-auth-ui/heroui@latest @better-auth-ui/react@latest @better-auth-ui/core@latest"
+    )
     setCopiedHeroui(true)
     setTimeout(() => setCopiedHeroui(false), 2000)
   }
@@ -133,7 +135,8 @@ function Home() {
               <div className="flex min-w-0 items-center gap-2">
                 <span className="shrink-0 text-orange-500">$</span>
                 <span className="truncate text-neutral-600 dark:text-neutral-400">
-                  bun add @better-auth-ui/heroui@latest
+                  bun add @better-auth-ui/heroui @better-auth-ui/react
+                  @better-auth-ui/core
                 </span>
               </div>
               <span className="shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-600 dark:group-hover:text-neutral-400">

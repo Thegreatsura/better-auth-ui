@@ -1,4 +1,4 @@
-import { viewPaths } from "@better-auth-ui/react/core"
+import { viewPaths } from "@better-auth-ui/core"
 import { notFound } from "next/navigation"
 
 import { Settings } from "@/components/settings/settings"

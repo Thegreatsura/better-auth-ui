@@ -4,7 +4,8 @@
   "title": "Account Settings",
   "description": "A container component that displays account settings including user profile, change email, appearance, and accounts management.",
   "dependencies": [
-    "@better-auth-ui/react@latest"
+    "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest"
   ],
   "registryDependencies": [
     "https://better-auth-ui.com/r/user-profile.json",

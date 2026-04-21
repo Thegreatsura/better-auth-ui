@@ -5,6 +5,7 @@
   "description": "Renders a user button with dropdown menu showing user info, settings link, theme controls, and sign-in/sign-out actions.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth",
     "lucide-react"
   ],

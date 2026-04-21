@@ -5,6 +5,7 @@
   "description": "Email template component that notifies users when a new device signs in to their account.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "@react-email/components"
   ],
   "registryDependencies": [],

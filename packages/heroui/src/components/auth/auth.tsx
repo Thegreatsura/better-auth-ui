@@ -64,9 +64,8 @@ export function Auth({
   // place. This preserves the behaviour of navigating straight to a primary
   // passwordless form when email+password auth isn't configured.
   if (currentView === "signIn" && !emailAndPassword?.enabled) {
-    const Fallback = plugins?.find(
-      (plugin) => plugin.fallbackFor?.signIn
-    )?.fallbackFor?.signIn
+    const Fallback = plugins?.find((plugin) => plugin.fallbackFor?.signIn)
+      ?.fallbackFor?.signIn
 
     if (Fallback) {
       return (

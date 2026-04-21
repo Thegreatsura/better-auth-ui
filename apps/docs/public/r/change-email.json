@@ -5,6 +5,7 @@
   "description": "A form component for changing the user's email address with verification.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth"
   ],
   "registryDependencies": [

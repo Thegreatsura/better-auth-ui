@@ -5,6 +5,7 @@
   "description": "A danger zone section with a delete user card and confirmation dialog for permanently deleting the user account.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth",
     "lucide-react"
   ],

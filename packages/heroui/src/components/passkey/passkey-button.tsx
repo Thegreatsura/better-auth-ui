@@ -1,5 +1,3 @@
-"use client"
-
 import type { AuthView } from "@better-auth-ui/core"
 import {
   type PasskeyAuthClient,
@@ -21,15 +19,15 @@ export function PasskeyButton({ isPending, view }: PasskeyButtonProps) {
   const { authClient, localization, redirectTo, navigate } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
-  // Passkey sign-in isn't relevant on sign-up / forgot-password flows.
-  if (view === "signUp" || view === "forgotPassword") return null
-
   const { mutate: signInPasskey, isPending: passkeyPending } = useSignInPasskey(
     authClient as PasskeyAuthClient,
     {
       onSuccess: () => navigate({ to: redirectTo })
     }
   )
+
+  // Passkey sign-in isn't relevant on sign-up / forgot-password flows.
+  if (view === "signUp" || view === "forgotPassword") return null
 
   const isDisabled = isPending || passkeyPending
 

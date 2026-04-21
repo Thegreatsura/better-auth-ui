@@ -1,7 +1,7 @@
 "use client"
 
+import type { SettingsView } from "@better-auth-ui/core"
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
-import type { SettingsView } from "@better-auth-ui/react/core"
 import { useMemo } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"

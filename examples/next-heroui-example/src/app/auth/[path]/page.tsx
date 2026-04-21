@@ -1,6 +1,6 @@
+import { viewPaths } from "@better-auth-ui/core"
+import { magicLinkPlugin } from "@better-auth-ui/core/plugins"
 import { Auth } from "@better-auth-ui/heroui"
-import { viewPaths } from "@better-auth-ui/heroui/core"
-import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { notFound } from "next/navigation"
 
 export default async function AuthPage({

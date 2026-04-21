@@ -1,5 +1,5 @@
+import { viewPaths } from "@better-auth-ui/core"
 import { Auth } from "@better-auth-ui/heroui"
-import { viewPaths } from "@better-auth-ui/heroui/core"
 import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { createFileRoute, notFound } from "@tanstack/react-router"
 

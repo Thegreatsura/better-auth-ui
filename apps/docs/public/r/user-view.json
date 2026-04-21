@@ -5,6 +5,7 @@
   "description": "Renders a user view that shows the user's avatar alongside their name and email.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth"
   ],
   "registryDependencies": [

@@ -3,8 +3,9 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient, InferData } from "../../lib/auth-clients/auth-client"
 
-export type AccountInfoData<TAuthClient extends AuthClient> =
-  InferData<TAuthClient["accountInfo"]>
+export type AccountInfoData<TAuthClient extends AuthClient> = InferData<
+  TAuthClient["accountInfo"]
+>
 
 export type AccountInfoParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["accountInfo"]

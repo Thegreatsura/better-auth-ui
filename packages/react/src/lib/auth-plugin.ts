@@ -1,4 +1,7 @@
-import type { AuthPlugin as CoreAuthPlugin, AuthView } from "@better-auth-ui/core"
+import type {
+  AuthView,
+  AuthPlugin as CoreAuthPlugin
+} from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
 
 export type { AuthPluginViewPaths } from "@better-auth-ui/core"

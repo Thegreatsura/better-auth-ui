@@ -5,6 +5,7 @@
   "description": "Display and manage multiple signed-in accounts for multi-session support. Shows all device sessions with actions to switch between or revoke sessions.",
   "dependencies": [
     "@better-auth-ui/react@latest",
+    "@better-auth-ui/core@latest",
     "better-auth",
     "lucide-react"
   ],

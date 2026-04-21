@@ -8,10 +8,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: "src/index.tsx",
-        core: "src/core.ts",
-        plugins: "src/plugins.ts",
-        "react-exports": "src/react-exports.ts",
-        "react-server-exports": "src/react-server-exports.ts"
+        plugins: "src/plugins.ts"
       },
       formats: ["es"],
       fileName: "[name]"

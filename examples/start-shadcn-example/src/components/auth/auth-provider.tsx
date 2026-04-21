@@ -6,7 +6,7 @@ import type { ComponentType, PropsWithChildren } from "react"
 
 import { ErrorToaster } from "./error-toaster"
 
-declare module "@better-auth-ui/react/core" {
+declare module "@better-auth-ui/core" {
   interface AuthConfig {
     /**
      * React component used to render internal navigation links.
