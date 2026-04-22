@@ -42,23 +42,56 @@ export function listAccountsOptions<TAuth extends AuthServer>(
   }
 }
 
+/**
+ * Get the current user's linked social accounts from the query cache,
+ * calling `fetchListAccounts` under the hood if no cached entry exists.
+ * Resolves with the account list, making it suitable for reading directly
+ * in a server component.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listUserAccounts`.
+ */
 export const ensureListAccounts = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListAccountsParams<TAuth>
 ) => queryClient.ensureQueryData(listAccountsOptions(auth, userId, params))
 
+/**
+ * Prefetch the current user's linked social accounts into the query cache.
+ * Behaves like `fetchListAccounts`, but does not throw on error and does
+ * not return the data — use this when you only need the value to be
+ * available after hydration.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listUserAccounts`.
+ */
 export const prefetchListAccounts = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListAccountsParams<TAuth>
 ) => queryClient.prefetchQuery(listAccountsOptions(auth, userId, params))
 
+/**
+ * Fetch and cache the current user's linked social accounts, resolving
+ * with the data or throwing on error. If a cached entry exists and is
+ * neither invalidated nor older than `staleTime`, the cached value is
+ * returned without a network call; otherwise the latest data is fetched.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listUserAccounts`.
+ */
 export const fetchListAccounts = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListAccountsParams<TAuth>
 ) => queryClient.fetchQuery(listAccountsOptions(auth, userId, params))

@@ -42,23 +42,56 @@ export function listUserPasskeysOptions<TAuth extends PasskeyAuthServer>(
   }
 }
 
+/**
+ * Get the current user's passkeys from the query cache, calling
+ * `fetchListUserPasskeys` under the hood if no cached entry exists. Resolves
+ * with the passkey list, making it suitable for reading directly in a server
+ * component.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the passkey plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listPasskeys`.
+ */
 export const ensureListUserPasskeys = <TAuth extends PasskeyAuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListUserPasskeysParams<TAuth>
 ) => queryClient.ensureQueryData(listUserPasskeysOptions(auth, userId, params))
 
+/**
+ * Prefetch the current user's passkeys into the query cache. Behaves like
+ * `fetchListUserPasskeys`, but does not throw on error and does not return
+ * the data — use this when you only need the value to be available after
+ * hydration.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the passkey plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listPasskeys`.
+ */
 export const prefetchListUserPasskeys = <TAuth extends PasskeyAuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListUserPasskeysParams<TAuth>
 ) => queryClient.prefetchQuery(listUserPasskeysOptions(auth, userId, params))
 
+/**
+ * Fetch and cache the current user's passkeys, resolving with the data or
+ * throwing on error. If a cached entry exists and is neither invalidated
+ * nor older than `staleTime`, the cached value is returned without a
+ * network call; otherwise the latest data is fetched.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the passkey plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listPasskeys`.
+ */
 export const fetchListUserPasskeys = <TAuth extends PasskeyAuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListUserPasskeysParams<TAuth>
 ) => queryClient.fetchQuery(listUserPasskeysOptions(auth, userId, params))

@@ -115,7 +115,7 @@ export const Route = createFileRoute("/settings/$path")({
       throw notFound()
     }
 
-    const session = await ensureSession(authClient, queryClient)
+    const session = await ensureSession(queryClient, authClient)
 
     if (!session) {
       throw redirect({
@@ -155,7 +155,7 @@ import { prefetchSession } from "@better-auth-ui/react"
 
 export const Route = createFileRoute("/")({
   loader: ({ context: { queryClient } }) => {
-    void prefetchSession(authClient, queryClient)
+    void prefetchSession(queryClient, authClient)
   }
 })
 ```
@@ -179,7 +179,7 @@ const getSession = createServerFn().handler(() =>
 )
 
 export const ensureServerSession = (queryClient: QueryClient) =>
-  ensureSession(auth, queryClient, { headers: getRequestHeaders() })
+  ensureSession(queryClient, auth, { headers: getRequestHeaders() })
 ```
 
 The server entrypoint mirrors the client API one-to-one: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus the equivalents for `listAccounts`, `accountInfo`, `listSessions`, `listDeviceSessions`, and `listUserPasskeys`. Cache keys are identical between the two, so data prefetched on the server hydrates cleanly into the client-side `useSession`, `useListSessions`, etc.

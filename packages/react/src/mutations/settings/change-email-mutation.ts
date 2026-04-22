@@ -40,9 +40,11 @@ export function changeEmailOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for changing the current user's email address.
+ * Create a mutation for changing the current user's email address.
  *
- * Refetches the session on success to surface the new email.
+ * Wraps `authClient.changeEmail`, refetches the session on success to
+ * surface the new email, and forwards React Query mutation options such
+ * as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -54,8 +56,8 @@ export function useChangeEmail<TAuthClient extends AuthClient>(
   const { refetch } = useSession(authClient, { refetchOnMount: false })
 
   return useMutation({
-    ...options,
     ...changeEmailOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetch()
       await options?.onSuccess?.(...args)

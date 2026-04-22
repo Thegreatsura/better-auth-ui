@@ -24,7 +24,7 @@ export default async function SettingsPage({
   const requestHeaders = await headers()
   const queryClient = getQueryClient()
 
-  const session = await ensureSession(auth, queryClient, {
+  const session = await ensureSession(queryClient, auth, {
     headers: requestHeaders
   })
 

@@ -1,12 +1,15 @@
-import { mutationOptions, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { sessionOptions } from "../../queries/auth/session-query"
 
-export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
-  TAuthClient["signIn"]["passkey"]
->[0]
+export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> =
+  Parameters<TAuthClient["signIn"]["passkey"]>[0]
 
 type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof signInPasskeyOptions<TAuthClient>>,
@@ -41,9 +44,11 @@ export function signInPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 }
 
 /**
- * Hook that creates a mutation for passkey sign-in.
+ * Create a mutation for passkey sign-in.
  *
- * Resets the session query on completion so the new session is refetched.
+ * Wraps `authClient.signIn.passkey`, resets the session query on success so
+ * the new session is refetched, and forwards React Query mutation options
+ * such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -55,8 +60,8 @@ export function useSignInPasskey<TAuthClient extends PasskeyAuthClient>(
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...options,
     ...signInPasskeyOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       queryClient.resetQueries({
         queryKey: sessionOptions(authClient).queryKey

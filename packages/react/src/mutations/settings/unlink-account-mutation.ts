@@ -40,9 +40,11 @@ export function unlinkAccountOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for unlinking a social provider from the current user.
+ * Create a mutation for unlinking a social provider from the current user.
  *
- * Refetches the linked accounts list on success.
+ * Wraps `authClient.unlinkAccount`, refetches the linked accounts list on
+ * success, and forwards React Query mutation options such as `onSuccess`,
+ * `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -54,8 +56,8 @@ export function useUnlinkAccount<TAuthClient extends AuthClient>(
   const { refetch } = useListAccounts(authClient, { refetchOnMount: false })
 
   return useMutation({
-    ...options,
     ...unlinkAccountOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetch()
       await options?.onSuccess?.(...args)

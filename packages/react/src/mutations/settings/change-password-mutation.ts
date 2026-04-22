@@ -39,7 +39,10 @@ export function changePasswordOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for changing the authenticated user's password.
+ * Create a mutation for changing the authenticated user's password.
+ *
+ * Wraps `authClient.changePassword` and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -49,7 +52,7 @@ export function useChangePassword<TAuthClient extends AuthClient>(
   options?: ChangePasswordOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...changePasswordOptions(authClient)
+    ...changePasswordOptions(authClient),
+    ...options
   })
 }

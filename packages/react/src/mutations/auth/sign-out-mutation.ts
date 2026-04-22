@@ -1,5 +1,9 @@
 import { authKeys } from "@better-auth-ui/core"
-import { mutationOptions, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
@@ -41,9 +45,11 @@ export function signOutOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for signing out.
+ * Create a mutation for signing the current user out.
  *
- * Removes all cached auth queries on completion.
+ * Wraps `authClient.signOut`, removes all cached auth queries on success,
+ * and forwards React Query mutation options such as `onSuccess`, `onError`,
+ * and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -55,8 +61,8 @@ export function useSignOut<TAuthClient extends AuthClient>(
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...options,
     ...signOutOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       queryClient.removeQueries({ queryKey: authKeys.all })
       await options?.onSuccess?.(...args)

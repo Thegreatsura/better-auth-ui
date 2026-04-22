@@ -39,7 +39,10 @@ export function deleteUserOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for deleting the authenticated user account.
+ * Create a mutation for deleting the authenticated user's account.
+ *
+ * Wraps `authClient.deleteUser` and forwards React Query mutation options
+ * such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -49,7 +52,7 @@ export function useDeleteUser<TAuthClient extends AuthClient>(
   options?: DeleteUserOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...deleteUserOptions(authClient)
+    ...deleteUserOptions(authClient),
+    ...options
   })
 }

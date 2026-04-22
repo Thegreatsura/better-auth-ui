@@ -8,9 +8,8 @@ import type { BetterFetchError } from "better-auth/react"
 import type { UsernameAuthClient } from "../../lib/auth-client"
 import { sessionOptions } from "../../queries/auth/session-query"
 
-export type SignInUsernameParams<TAuthClient extends UsernameAuthClient> = Parameters<
-  TAuthClient["signIn"]["username"]
->[0]
+export type SignInUsernameParams<TAuthClient extends UsernameAuthClient> =
+  Parameters<TAuthClient["signIn"]["username"]>[0]
 
 type SignInUsernameOptions<TAuthClient extends UsernameAuthClient> = Omit<
   ReturnType<typeof signInUsernameOptions<TAuthClient>>,
@@ -44,9 +43,11 @@ export function signInUsernameOptions<TAuthClient extends UsernameAuthClient>(
 }
 
 /**
- * Hook that creates a mutation for username/password sign-in.
+ * Create a mutation for username/password sign-in.
  *
- * Resets the session query on completion so the new session is refetched.
+ * Wraps `authClient.signIn.username`, resets the session query on success so
+ * the new session is refetched, and forwards React Query mutation options
+ * such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the username plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -58,8 +59,8 @@ export function useSignInUsername<TAuthClient extends UsernameAuthClient>(
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...options,
     ...signInUsernameOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       queryClient.resetQueries({
         queryKey: sessionOptions(authClient).queryKey

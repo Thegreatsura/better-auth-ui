@@ -17,10 +17,14 @@ type SessionParams<TAuth extends AuthServer> = Parameters<
 >[0]
 
 /**
- * Query options factory for the current session.
+ * Query options factory for the current session on the server.
  *
- * @param authClient - The Better Auth client.
- * @param params - Parameters forwarded to `authClient.getSession`.
+ * Uses the same query key as the client-side `sessionOptions` so that data
+ * fetched during SSR hydrates seamlessly into the client's React Query cache.
+ *
+ * @param auth - The Better Auth server instance.
+ * @param params - Parameters forwarded to `auth.api.getSession` (typically
+ *   includes request `headers` for cookie-based session resolution).
  */
 export function sessionOptions<TAuth extends AuthServer>(
   auth: TAuth,
@@ -39,20 +43,48 @@ export function sessionOptions<TAuth extends AuthServer>(
   }
 }
 
+/**
+ * Get the current session from the query cache, calling `fetchSession` under
+ * the hood if no cached entry exists. Resolves with the session data, making
+ * it suitable for reading the value directly in a server component.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param params - Parameters forwarded to `auth.api.getSession`.
+ */
 export const ensureSession = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   params: SessionParams<TAuth>
 ) => queryClient.ensureQueryData(sessionOptions(auth, params))
 
+/**
+ * Prefetch the current session into the query cache. Behaves like
+ * `fetchSession`, but does not throw on error and does not return the data —
+ * use this when you only need the value to be available after hydration.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param params - Parameters forwarded to `auth.api.getSession`.
+ */
 export const prefetchSession = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   params: SessionParams<TAuth>
 ) => queryClient.prefetchQuery(sessionOptions(auth, params))
 
+/**
+ * Fetch and cache the current session, resolving with the data or throwing
+ * on error. If a cached entry exists and is neither invalidated nor older
+ * than `staleTime`, the cached value is returned without a network call;
+ * otherwise the latest data is fetched.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance.
+ * @param params - Parameters forwarded to `auth.api.getSession`.
+ */
 export const fetchSession = <TAuth extends AuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   params: SessionParams<TAuth>
 ) => queryClient.fetchQuery(sessionOptions(auth, params))

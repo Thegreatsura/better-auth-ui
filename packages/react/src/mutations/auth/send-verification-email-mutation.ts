@@ -3,9 +3,8 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-export type SendVerificationEmailParams<TAuthClient extends AuthClient> = Parameters<
-  TAuthClient["sendVerificationEmail"]
->[0]
+export type SendVerificationEmailParams<TAuthClient extends AuthClient> =
+  Parameters<TAuthClient["sendVerificationEmail"]>[0]
 
 type SendVerificationEmailOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof sendVerificationEmailOptions<TAuthClient>>,
@@ -39,7 +38,10 @@ export function sendVerificationEmailOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation to send a verification email.
+ * Create a mutation for sending an email-verification link.
+ *
+ * Wraps `authClient.sendVerificationEmail` and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -49,7 +51,7 @@ export function useSendVerificationEmail<TAuthClient extends AuthClient>(
   options?: SendVerificationEmailOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...sendVerificationEmailOptions(authClient)
+    ...sendVerificationEmailOptions(authClient),
+    ...options
   })
 }

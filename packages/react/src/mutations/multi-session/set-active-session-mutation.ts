@@ -1,13 +1,17 @@
-import { mutationOptions, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { MultiSessionAuthClient } from "../../lib/auth-client"
-import { useListDeviceSessions } from "../../queries/multi-session/list-device-sessions-query"
 import {
   type SessionData,
   sessionOptions,
   useSession
 } from "../../queries/auth/session-query"
+import { useListDeviceSessions } from "../../queries/multi-session/list-device-sessions-query"
 
 export type SetActiveSessionParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["setActive"]>[0]
@@ -44,10 +48,12 @@ export function setActiveSessionOptions<
 }
 
 /**
- * Hook that sets an active device session in multi-session mode.
+ * Create a mutation for switching the active device session.
  *
- * Optimistically switches the cached session to the matching device session,
- * scrolls to top, and refetches both the session and device-session queries.
+ * Wraps `authClient.multiSession.setActive`, optimistically swaps the cached
+ * session to the matching device session, scrolls to top, refetches both
+ * the session and device-session queries, and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the multi-session plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -66,8 +72,8 @@ export function useSetActiveSession<TAuthClient extends MultiSessionAuthClient>(
     })
 
   return useMutation({
-    ...options,
     ...setActiveSessionOptions(authClient),
+    ...options,
     onSuccess: async (data, variables, ...rest) => {
       const sessionToken = variables?.sessionToken
       const deviceSession = deviceSessions?.find(

@@ -17,9 +17,9 @@ export const Route = createFileRoute("/settings/$path")({
 
     const ensureSession = createIsomorphicFn()
       .server(() =>
-        ensureSessionServer(auth, queryClient, { headers: getRequestHeaders() })
+        ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
       )
-      .client(() => ensureSessionClient(authClient, queryClient))
+      .client(() => ensureSessionClient(queryClient, authClient))
 
     const session = await ensureSession()
 

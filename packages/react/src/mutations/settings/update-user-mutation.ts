@@ -44,7 +44,11 @@ export function updateUserOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * `useMutation` hook for updating the authenticated user's profile.
+ * Create a mutation for updating the authenticated user's profile.
+ *
+ * Wraps `authClient.updateUser`, optimistically patches the cached session
+ * with the new fields, refetches the session, and forwards React Query
+ * mutation options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -60,8 +64,8 @@ export function useUpdateUser<TAuthClient extends AuthClient>(
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...options,
     ...updateUserOptions(authClient),
+    ...options,
     onSuccess: async (data, variables, ...rest) => {
       if (session) {
         queryClient.setQueryData(sessionOptions(authClient).queryKey, {

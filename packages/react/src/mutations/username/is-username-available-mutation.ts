@@ -41,7 +41,10 @@ export function isUsernameAvailableOptions<
 }
 
 /**
- * Hook that creates a mutation to check if a username is available.
+ * Create a mutation for checking whether a username is available.
+ *
+ * Wraps `authClient.isUsernameAvailable` and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the username plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -51,7 +54,7 @@ export function useIsUsernameAvailable<TAuthClient extends UsernameAuthClient>(
   options?: IsUsernameAvailableOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...isUsernameAvailableOptions(authClient)
+    ...isUsernameAvailableOptions(authClient),
+    ...options
   })
 }

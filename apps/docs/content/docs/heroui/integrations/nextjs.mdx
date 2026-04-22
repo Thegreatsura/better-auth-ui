@@ -89,7 +89,7 @@ import { getQueryClient } from "@/lib/query-client"
 export default async function Dashboard() {
   const queryClient = getQueryClient()
 
-  const session = await ensureSession(auth, queryClient, {
+  const session = await ensureSession(queryClient, auth, {
     headers: await headers()
   })
 

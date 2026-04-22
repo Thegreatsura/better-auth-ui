@@ -38,7 +38,10 @@ export function signInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient>(
 }
 
 /**
- * Hook that creates a mutation for magic-link sign-in.
+ * Create a mutation for requesting a magic-link sign-in email.
+ *
+ * Wraps `authClient.signIn.magicLink` and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the magic-link plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -48,7 +51,7 @@ export function useSignInMagicLink<TAuthClient extends MagicLinkAuthClient>(
   options?: SignInMagicLinkOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...signInMagicLinkOptions(authClient)
+    ...signInMagicLinkOptions(authClient),
+    ...options
   })
 }

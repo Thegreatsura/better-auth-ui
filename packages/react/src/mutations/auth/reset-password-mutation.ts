@@ -39,9 +39,11 @@ export function resetPasswordOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for the reset-password flow.
+ * Create a mutation for completing a password reset.
  *
- * Resets the user's password using the provided token and new password.
+ * Wraps `authClient.resetPassword` (using the token from the reset email)
+ * and forwards React Query mutation options such as `onSuccess`, `onError`,
+ * and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -51,7 +53,7 @@ export function useResetPassword<TAuthClient extends AuthClient>(
   options?: ResetPasswordOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...resetPasswordOptions(authClient)
+    ...resetPasswordOptions(authClient),
+    ...options
   })
 }

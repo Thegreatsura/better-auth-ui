@@ -4,9 +4,8 @@ import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { useListUserPasskeys } from "../../queries/passkey/list-user-passkeys-query"
 
-export type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
-  TAuthClient["passkey"]["deletePasskey"]
->[0]
+export type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> =
+  Parameters<TAuthClient["passkey"]["deletePasskey"]>[0]
 
 type DeletePasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof deletePasskeyOptions<TAuthClient>>,
@@ -40,9 +39,11 @@ export function deletePasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 }
 
 /**
- * Hook that creates a mutation for deleting a passkey.
+ * Create a mutation for deleting a passkey.
  *
- * Refetches the user's passkey list on success.
+ * Wraps `authClient.passkey.deletePasskey`, refetches the user's passkey
+ * list on success, and forwards React Query mutation options such as
+ * `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -54,8 +55,8 @@ export function useDeletePasskey<TAuthClient extends PasskeyAuthClient>(
   const { refetch } = useListUserPasskeys(authClient, { refetchOnMount: false })
 
   return useMutation({
-    ...options,
     ...deletePasskeyOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetch()
       await options?.onSuccess?.(...args)

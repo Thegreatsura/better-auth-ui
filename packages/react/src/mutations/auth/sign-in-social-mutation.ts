@@ -43,9 +43,11 @@ export function signInSocialOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for social sign-in.
+ * Create a mutation for social sign-in.
  *
- * The mutation initiates a social sign-in flow with the specified provider.
+ * Wraps `authClient.signIn.social` to initiate a provider redirect and
+ * forwards React Query mutation options such as `onSuccess`, `onError`,
+ * and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -55,7 +57,7 @@ export function useSignInSocial<TAuthClient extends AuthClient>(
   options?: SignInSocialOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...signInSocialOptions(authClient)
+    ...signInSocialOptions(authClient),
+    ...options
   })
 }

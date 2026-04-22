@@ -1,4 +1,8 @@
-import { mutationOptions, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
@@ -44,10 +48,11 @@ export function signInEmailOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for email/password sign-in.
+ * Create a mutation for email/password sign-in.
  *
- * The mutation sends an email/password sign-in request and
- * refetches the session on completion.
+ * Wraps `authClient.signIn.email`, resets the session query on success so
+ * the new session is refetched, and forwards React Query mutation options
+ * such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -59,8 +64,8 @@ export function useSignInEmail<TAuthClient extends AuthClient>(
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...options,
     ...signInEmailOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       queryClient.resetQueries({
         queryKey: sessionOptions(authClient).queryKey

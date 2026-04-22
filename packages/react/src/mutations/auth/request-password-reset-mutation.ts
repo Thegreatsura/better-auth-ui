@@ -3,9 +3,8 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-export type RequestPasswordResetParams<TAuthClient extends AuthClient> = Parameters<
-  TAuthClient["requestPasswordReset"]
->[0]
+export type RequestPasswordResetParams<TAuthClient extends AuthClient> =
+  Parameters<TAuthClient["requestPasswordReset"]>[0]
 
 type RequestPasswordResetOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof requestPasswordResetOptions<TAuthClient>>,
@@ -39,9 +38,10 @@ export function requestPasswordResetOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for the forgot-password flow.
+ * Create a mutation for requesting a password reset email.
  *
- * Sends a password reset email for the provided address.
+ * Wraps `authClient.requestPasswordReset` and forwards React Query mutation
+ * options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -51,7 +51,7 @@ export function useRequestPasswordReset<TAuthClient extends AuthClient>(
   options?: RequestPasswordResetOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...requestPasswordResetOptions(authClient)
+    ...requestPasswordResetOptions(authClient),
+    ...options
   })
 }

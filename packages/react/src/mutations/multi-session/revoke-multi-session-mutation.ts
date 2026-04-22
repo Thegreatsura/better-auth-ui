@@ -4,8 +4,9 @@ import type { BetterFetchError } from "better-auth/react"
 import type { MultiSessionAuthClient } from "../../lib/auth-client"
 import { useListDeviceSessions } from "../../queries/multi-session/list-device-sessions-query"
 
-export type RevokeMultiSessionParams<TAuthClient extends MultiSessionAuthClient> =
-  Parameters<TAuthClient["multiSession"]["revoke"]>[0]
+export type RevokeMultiSessionParams<
+  TAuthClient extends MultiSessionAuthClient
+> = Parameters<TAuthClient["multiSession"]["revoke"]>[0]
 
 type RevokeMultiSessionOptions<TAuthClient extends MultiSessionAuthClient> =
   Omit<
@@ -40,9 +41,11 @@ export function revokeMultiSessionOptions<
 }
 
 /**
- * Hook that creates a mutation for revoking a device session in multi-session mode.
+ * Create a mutation for revoking a device session in multi-session mode.
  *
- * Refetches the device sessions list on success.
+ * Wraps `authClient.multiSession.revoke`, refetches the device sessions list
+ * on success, and forwards React Query mutation options such as `onSuccess`,
+ * `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the multi-session plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -55,8 +58,8 @@ export function useRevokeMultiSession<
   })
 
   return useMutation({
-    ...options,
     ...revokeMultiSessionOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetch()
       await options?.onSuccess?.(...args)

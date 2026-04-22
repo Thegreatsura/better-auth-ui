@@ -12,7 +12,7 @@ export async function Header() {
   const requestHeaders = await headers()
   const queryClient = getQueryClient()
 
-  await ensureSession(auth, queryClient, { headers: requestHeaders })
+  await ensureSession(queryClient, auth, { headers: requestHeaders })
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

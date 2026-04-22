@@ -41,26 +41,59 @@ export function listDeviceSessionsOptions<TAuth extends MultiSessionAuthServer>(
   }
 }
 
+/**
+ * Get the current user's device sessions from the query cache, calling
+ * `fetchListDeviceSessions` under the hood if no cached entry exists.
+ * Resolves with the device session list, making it suitable for reading
+ * directly in a server component.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the multi-session plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listDeviceSessions`.
+ */
 export const ensureListDeviceSessions = <TAuth extends MultiSessionAuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListDeviceSessionsParams<TAuth>
 ) =>
   queryClient.ensureQueryData(listDeviceSessionsOptions(auth, userId, params))
 
+/**
+ * Prefetch the current user's device sessions into the query cache. Behaves
+ * like `fetchListDeviceSessions`, but does not throw on error and does not
+ * return the data — use this when you only need the value to be available
+ * after hydration.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the multi-session plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listDeviceSessions`.
+ */
 export const prefetchListDeviceSessions = <
   TAuth extends MultiSessionAuthServer
 >(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListDeviceSessionsParams<TAuth>
 ) => queryClient.prefetchQuery(listDeviceSessionsOptions(auth, userId, params))
 
+/**
+ * Fetch and cache the current user's device sessions, resolving with the
+ * data or throwing on error. If a cached entry exists and is neither
+ * invalidated nor older than `staleTime`, the cached value is returned
+ * without a network call; otherwise the latest data is fetched.
+ *
+ * @param queryClient - The React Query client used for SSR hydration.
+ * @param auth - The Better Auth server instance with the multi-session plugin.
+ * @param userId - The signed-in user's ID, used for cache partitioning.
+ * @param params - Parameters forwarded to `auth.api.listDeviceSessions`.
+ */
 export const fetchListDeviceSessions = <TAuth extends MultiSessionAuthServer>(
-  auth: TAuth,
   queryClient: QueryClient,
+  auth: TAuth,
   userId: string,
   params: ListDeviceSessionsParams<TAuth>
 ) => queryClient.fetchQuery(listDeviceSessionsOptions(auth, userId, params))

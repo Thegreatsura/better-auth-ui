@@ -40,9 +40,11 @@ export function revokeSessionOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for revoking a user session.
+ * Create a mutation for revoking a user session.
  *
- * Refetches the sessions list on success.
+ * Wraps `authClient.revokeSession`, refetches the sessions list on success,
+ * and forwards React Query mutation options such as `onSuccess`, `onError`,
+ * and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -56,8 +58,8 @@ export function useRevokeSession<TAuthClient extends AuthClient>(
   })
 
   return useMutation({
-    ...options,
     ...revokeSessionOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetchSessions()
       await options?.onSuccess?.(...args)

@@ -4,9 +4,8 @@ import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { useListUserPasskeys } from "../../queries/passkey/list-user-passkeys-query"
 
-export type AddPasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
-  TAuthClient["passkey"]["addPasskey"]
->[0]
+export type AddPasskeyParams<TAuthClient extends PasskeyAuthClient> =
+  Parameters<TAuthClient["passkey"]["addPasskey"]>[0]
 
 type AddPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof addPasskeyOptions<TAuthClient>>,
@@ -41,9 +40,11 @@ export function addPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 }
 
 /**
- * Hook that creates a mutation for registering a new passkey.
+ * Create a mutation for registering a new passkey.
  *
- * Refetches the user's passkey list on success.
+ * Wraps `authClient.passkey.addPasskey`, refetches the user's passkey list
+ * on success, and forwards React Query mutation options such as
+ * `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -55,8 +56,8 @@ export function useAddPasskey<TAuthClient extends PasskeyAuthClient>(
   const { refetch } = useListUserPasskeys(authClient, { refetchOnMount: false })
 
   return useMutation({
-    ...options,
     ...addPasskeyOptions(authClient),
+    ...options,
     onSuccess: async (...args) => {
       await refetch()
       await options?.onSuccess?.(...args)

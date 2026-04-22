@@ -39,7 +39,10 @@ export function linkSocialOptions<TAuthClient extends AuthClient>(
 }
 
 /**
- * Hook that creates a mutation for linking a social provider to the current user.
+ * Create a mutation for linking a social provider to the current user.
+ *
+ * Wraps `authClient.linkSocial` to initiate a provider redirect and forwards
+ * React Query mutation options such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -49,7 +52,7 @@ export function useLinkSocial<TAuthClient extends AuthClient>(
   options?: LinkSocialOptions<TAuthClient>
 ) {
   return useMutation({
-    ...options,
-    ...linkSocialOptions(authClient)
+    ...linkSocialOptions(authClient),
+    ...options
   })
 }

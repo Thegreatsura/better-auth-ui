@@ -6,7 +6,6 @@ import {
   remarkAutoTypeTable
 } from "fumadocs-typescript"
 import remarkCodeImport from "remark-code-import"
-import { renderTypeToHastFast } from "./src/lib/render-type-to-hast-fast"
 
 /**
  * fumadocs-typescript's getSimpleForm() maps every union (including `T | undefined`
@@ -68,8 +67,8 @@ export default defineConfig({
               preferFullTypeForSimplifiedUnion(entry)
               stripRedundantUndefinedUnions(entry)
             }
-          },
-          renderType: renderTypeToHastFast
+          }
+          //  renderType: renderTypeToHastFast
         }
       ]
     ],
