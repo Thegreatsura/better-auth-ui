@@ -19,6 +19,7 @@
     "apps/docs": {
       "name": "docs",
       "dependencies": {
+        "@better-auth-ui/core": "*",
         "@better-auth-ui/heroui": "*",
         "@better-auth-ui/react": "*",
         "@fontsource-variable/inter": "^5.2.8",
@@ -270,7 +271,6 @@
         "@react-email/components": "^1.0.12",
         "@react-email/preview-server": "^5.2.10",
         "@tanstack/react-query": "^5.99.2",
-        "@tanstack/react-start": "^1.167.0",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.5.2",
         "@types/react": "^19.2.14",
@@ -292,7 +292,6 @@
         "@better-auth/passkey": ">=1.6.5",
         "@react-email/components": ">=1.0.12",
         "@tanstack/react-query": ">=5.99.2",
-        "@tanstack/react-start": ">=1.167.0",
         "better-auth": ">=1.6.5",
         "clsx": ">=2.0.0",
         "react": ">=19.2.5",
@@ -301,9 +300,6 @@
         "tailwindcss": ">=4.2.3",
         "zod": ">=4.3.0",
       },
-      "optionalPeers": [
-        "@tanstack/react-start",
-      ],
     },
   },
   "packages": {

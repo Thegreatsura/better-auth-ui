@@ -13,6 +13,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@better-auth-ui/core": "*",
     "@better-auth-ui/heroui": "*",
     "@better-auth-ui/react": "*",
     "@fontsource-variable/inter": "^5.2.8",

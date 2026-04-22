@@ -3,7 +3,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-type DeleteUserParams<TAuthClient extends AuthClient> = Parameters<
+export type DeleteUserParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["deleteUser"]
 >[0]
 

@@ -3,7 +3,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { MagicLinkAuthClient } from "../../lib/auth-client"
 
-type SignInMagicLinkParams<TAuthClient extends MagicLinkAuthClient> =
+export type SignInMagicLinkParams<TAuthClient extends MagicLinkAuthClient> =
   Parameters<TAuthClient["signIn"]["magicLink"]>[0]
 
 type SignInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient> = Omit<

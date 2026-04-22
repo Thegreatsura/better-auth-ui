@@ -69,7 +69,34 @@ The `viewPaths.settings` object contains valid settings path segments: `account`
 
 Use the `useAuthenticate` hook to protect routes and access session data.
 
-```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/dashboard/page.tsx
+```tsx title="app/dashboard/page.tsx"
+"use client"
+
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
+import Link from "next/link"
+
+import { Spinner } from "@/components/ui/spinner"
+
+export default function Dashboard() {
+  const { authClient } = useAuth()
+  const { data: session } = useAuthenticate(authClient)
+
+  if (!session) {
+    return (
+      <div className="flex justify-center my-auto">
+        <Spinner color="current" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center my-auto">
+      <h1 className="text-2xl">Hello, {session.user.email}</h1>
+
+      <Link href="/auth/sign-out">Sign Out</Link>
+    </div>
+  )
+}
 ```
 
 The `useAuthenticate` hook will automatically redirect unauthenticated users to the sign-in page.

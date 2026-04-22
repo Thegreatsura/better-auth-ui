@@ -3,7 +3,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-type ResetPasswordParams<TAuthClient extends AuthClient> = Parameters<
+export type ResetPasswordParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["resetPassword"]
 >[0]
 

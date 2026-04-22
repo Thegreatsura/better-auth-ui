@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { AuthClient } from "../../lib/auth-client"
 import { useListAccounts } from "../../queries/settings/list-accounts-query"
 
-type UnlinkAccountParams<TAuthClient extends AuthClient> = Parameters<
+export type UnlinkAccountParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["unlinkAccount"]
 >[0]
 

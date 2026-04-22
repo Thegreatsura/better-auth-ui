@@ -9,7 +9,7 @@ type ListSessionsData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["listSessions"]
 >
 
-type ListSessionsParams<TAuthClient extends AuthClient> = Parameters<
+export type ListSessionsParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["listSessions"]
 >[0]
 

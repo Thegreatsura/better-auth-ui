@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { MultiSessionAuthClient } from "../../lib/auth-client"
 import { useListDeviceSessions } from "../../queries/multi-session/list-device-sessions-query"
 
-type RevokeMultiSessionParams<TAuthClient extends MultiSessionAuthClient> =
+export type RevokeMultiSessionParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["revoke"]>[0]
 
 type RevokeMultiSessionOptions<TAuthClient extends MultiSessionAuthClient> =

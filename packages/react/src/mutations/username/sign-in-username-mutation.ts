@@ -8,7 +8,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { UsernameAuthClient } from "../../lib/auth-client"
 import { sessionOptions } from "../../queries/auth/session-query"
 
-type SignInUsernameParams<TAuthClient extends UsernameAuthClient> = Parameters<
+export type SignInUsernameParams<TAuthClient extends UsernameAuthClient> = Parameters<
   TAuthClient["signIn"]["username"]
 >[0]
 

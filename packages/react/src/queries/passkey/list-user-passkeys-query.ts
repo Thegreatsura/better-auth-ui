@@ -9,7 +9,7 @@ type ListUserPasskeysData<TAuthClient extends PasskeyAuthClient> = InferData<
   TAuthClient["passkey"]["listUserPasskeys"]
 >
 
-type ListUserPasskeysParams<TAuthClient extends PasskeyAuthClient> = Parameters<
+export type ListUserPasskeysParams<TAuthClient extends PasskeyAuthClient> = Parameters<
   TAuthClient["passkey"]["listUserPasskeys"]
 >[0]
 

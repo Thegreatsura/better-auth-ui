@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { sessionOptions } from "../../queries/auth/session-query"
 
-type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
+export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
   TAuthClient["signIn"]["passkey"]
 >[0]
 

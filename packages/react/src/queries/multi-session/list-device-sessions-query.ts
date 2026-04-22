@@ -8,7 +8,7 @@ import { useSession } from "../auth/session-query"
 type ListDeviceSessionsData<TAuthClient extends MultiSessionAuthClient> =
   InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
 
-type ListDeviceSessionsParams<TAuthClient extends MultiSessionAuthClient> =
+export type ListDeviceSessionsParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 
 type ListDeviceSessionsOptions<TAuthClient extends MultiSessionAuthClient> =

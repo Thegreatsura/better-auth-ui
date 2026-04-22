@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-type SignOutParams<TAuthClient extends AuthClient> = Parameters<
+export type SignOutParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["signOut"]
 >[0]
 

@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { AuthClient } from "../../lib/auth-client"
 import { useListSessions } from "../../queries/settings/list-sessions-query"
 
-type RevokeSessionParams<TAuthClient extends AuthClient> = Parameters<
+export type RevokeSessionParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["revokeSession"]
 >[0]
 

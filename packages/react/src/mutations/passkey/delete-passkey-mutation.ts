@@ -4,7 +4,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { useListUserPasskeys } from "../../queries/passkey/list-user-passkeys-query"
 
-type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
+export type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> = Parameters<
   TAuthClient["passkey"]["deletePasskey"]
 >[0]
 

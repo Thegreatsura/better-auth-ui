@@ -9,7 +9,7 @@ type AccountInfoData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["accountInfo"]
 >
 
-type AccountInfoParams<TAuthClient extends AuthClient> = Parameters<
+export type AccountInfoParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["accountInfo"]
 >[0]
 

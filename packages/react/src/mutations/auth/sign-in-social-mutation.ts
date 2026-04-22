@@ -3,7 +3,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
 
-type SignInSocialParams<TAuthClient extends AuthClient> = Parameters<
+export type SignInSocialParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["signIn"]["social"]
 >[0]
 

@@ -3,7 +3,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { UsernameAuthClient } from "../../lib/auth-client"
 
-type IsUsernameAvailableParams<TAuthClient extends UsernameAuthClient> =
+export type IsUsernameAvailableParams<TAuthClient extends UsernameAuthClient> =
   Parameters<TAuthClient["isUsernameAvailable"]>[0]
 
 type IsUsernameAvailableOptions<TAuthClient extends UsernameAuthClient> = Omit<

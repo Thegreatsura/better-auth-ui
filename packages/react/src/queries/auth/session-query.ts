@@ -13,7 +13,7 @@ export type SessionData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["getSession"]
 >
 
-type SessionParams<TAuthClient extends AuthClient> = Parameters<
+export type SessionParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["getSession"]
 >[0]
 

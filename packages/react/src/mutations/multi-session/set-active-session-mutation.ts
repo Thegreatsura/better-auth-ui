@@ -9,7 +9,7 @@ import {
   useSession
 } from "../../queries/auth/session-query"
 
-type SetActiveSessionParams<TAuthClient extends MultiSessionAuthClient> =
+export type SetActiveSessionParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["setActive"]>[0]
 
 type SetActiveSessionOptions<TAuthClient extends MultiSessionAuthClient> = Omit<
