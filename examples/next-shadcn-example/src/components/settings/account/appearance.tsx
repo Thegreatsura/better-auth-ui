@@ -8,6 +8,7 @@ import {
   useSession
 } from "@better-auth-ui/react"
 import { Monitor, Moon, Sun } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -42,6 +43,9 @@ export function Appearance({ className }: AppearanceProps) {
   } = useAuth()
   const { data: session } = useSession(authClient)
 
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => setIsMounted(true), [])
+
   return (
     <div>
       <h2 className="text-sm font-semibold mb-3">
@@ -54,10 +58,10 @@ export function Appearance({ className }: AppearanceProps) {
             <Label>{localization.settings.theme}</Label>
 
             <RadioGroup
-              value={session ? theme : ""}
+              value={isMounted && session ? theme : ""}
               onValueChange={setTheme}
               className="grid gap-3 grid-cols-2 sm:grid-cols-3"
-              disabled={!session || !theme}
+              disabled={!isMounted || !session || !theme}
             >
               {themes.includes("system") && (
                 <FieldLabel htmlFor="system">

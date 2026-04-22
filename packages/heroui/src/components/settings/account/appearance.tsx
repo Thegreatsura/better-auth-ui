@@ -2,8 +2,7 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth,
-  useSession
+  useAuth
 } from "@better-auth-ui/react"
 import { Display, Moon, Sun } from "@gravity-ui/icons"
 import {
@@ -12,7 +11,8 @@ import {
   cn,
   Label,
   Radio,
-  RadioGroup
+  RadioGroup,
+  useIsHydrated
 } from "@heroui/react"
 
 export type AppearanceProps = {
@@ -36,11 +36,10 @@ export function Appearance({
   ...props
 }: AppearanceProps & Omit<CardProps, "children">) {
   const {
-    authClient,
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-  const { data: session } = useSession(authClient)
+  const hydrated = useIsHydrated()
 
   if (!setTheme || !themes?.length) {
     return null
@@ -58,9 +57,9 @@ export function Appearance({
 
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
-            value={session ? theme : ""}
+            value={hydrated ? theme : ""}
             onChange={setTheme}
-            isDisabled={!session || !theme}
+            isDisabled={!hydrated || !theme}
           >
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3">
               {themes.includes("system") && (

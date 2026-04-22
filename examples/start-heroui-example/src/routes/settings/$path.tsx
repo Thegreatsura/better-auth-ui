@@ -1,7 +1,12 @@
 import { viewPaths } from "@better-auth-ui/core"
 import { Settings } from "@better-auth-ui/heroui"
-import { ensureSession } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
 import { authClient } from "@/lib/auth-client"
 
 export const Route = createFileRoute("/settings/$path")({
@@ -10,26 +15,29 @@ export const Route = createFileRoute("/settings/$path")({
       throw notFound()
     }
 
-    const session = await ensureSession(authClient, queryClient)
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(auth, queryClient, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(authClient, queryClient))
+
+    const session = await ensureSession()
 
     if (!session) {
       throw redirect({
         to: "/auth/$path",
         params: { path: "sign-in" },
-        search: { redirect: location.href }
+        search: { redirectTo: location.href }
       })
     }
 
-    return { user: session.user }
+    return { session }
   },
   component: SettingsPage
 })
 
 function SettingsPage() {
   const { path } = Route.useParams()
-  const context = Route.useRouteContext()
-
-  console.log("user", context.user)
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4 md:p-6">

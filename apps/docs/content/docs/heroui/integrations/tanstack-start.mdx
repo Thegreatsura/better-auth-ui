@@ -59,7 +59,70 @@ The built-in `viewPaths.settings` object contains `account` and `security`. When
 
 ## Protecting Routes
 
-Use the `useAuthenticate` hook to protect routes and access session data.
+Better Auth UI supports two route protection patterns depending on whether your route is server-rendered or prerendered.
+
+### Server-rendered routes (`beforeLoad`)
+
+For SSR routes, check the session in `beforeLoad` so unauthenticated users are redirected before any component renders — no flash of unauthenticated UI. Use `createIsomorphicFn` to run `ensureSessionServer` on the server (direct `auth.api` call, no HTTP hop) and `ensureSessionClient` on the client (goes through `authClient`). Both share the same TanStack Query cache under `authKeys.session()`, so the session is hydrated from SSR and reused by any child `useSession` call.
+
+```tsx title="routes/dashboard.tsx"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+
+export const Route = createFileRoute("/dashboard")({
+  async beforeLoad({ context: { queryClient }, location }) {
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(auth, queryClient, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(authClient, queryClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: Dashboard
+})
+
+function Dashboard() {
+  const { session } = Route.useRouteContext()
+
+  return (
+    <div className="flex flex-col items-center my-auto">
+      <h1 className="text-2xl">Hello, {session.user.email}</h1>
+
+      <Link to="/auth/$path" params={{ path: "sign-out" }}>
+        Sign Out
+      </Link>
+    </div>
+  )
+}
+```
+
+The returned `{ session }` is available to child routes and components via `Route.useRouteContext()`. Because `ensureSessionServer` populates the query cache during SSR, downstream `useSession` calls render synchronously without a loading state.
+
+### Reactive protection & prerendered routes (`useAuthenticate`)
+
+`beforeLoad` only runs when the route loads — it can't react to session changes that happen *while* the page is mounted (token expiry, sign-out in another tab via `multiSessionPlugin`, a revoked session from the server, etc.). And for statically prerendered or purely client-rendered routes there's no server to call in the first place. The `useAuthenticate` hook covers both: it subscribes to `useSession` and redirects unauthenticated users to the sign-in page the moment the session goes away, preserving the current URL as a `redirectTo` query param.
+
+Use it in two situations:
+
+1. **Alongside `beforeLoad`** for server-rendered routes, as a second layer that keeps the UI in sync after the initial load.
+2. **On its own** for statically prerendered or purely client-rendered routes (SSG output, SPA routes, marketing pages), where server-side session access isn't available.
 
 ```tsx title="routes/dashboard.tsx"
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
@@ -94,7 +157,7 @@ function Dashboard() {
 }
 ```
 
-The `useAuthenticate` hook will automatically redirect unauthenticated users to the sign-in page.
+In combination, `beforeLoad` handles the initial render (including SSR hydration with no auth flash) and `useAuthenticate` handles everything after — giving you both first-paint protection and live reactivity to session changes.
 
 ## Adding More Plugins
 
