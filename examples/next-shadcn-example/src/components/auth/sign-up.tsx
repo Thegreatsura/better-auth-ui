@@ -1,5 +1,6 @@
 "use client"
 
+import { parseAdditionalFieldValue } from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -29,6 +30,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
+import { AdditionalField } from "./additional-field"
 import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -58,6 +60,7 @@ export function SignUp({
   socialPosition = "bottom"
 }: SignUpProps) {
   const {
+    additionalFields,
     authClient,
     basePaths,
     emailAndPassword,
@@ -135,7 +138,7 @@ export function SignUp({
     confirmPassword?: string
   }>({})
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
@@ -149,6 +152,29 @@ export function SignUp({
       return
     }
 
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (!field.signUp || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     signUpEmail({
       name,
       email,
@@ -160,7 +186,8 @@ export function SignUp({
               ? { displayUsername: username.trim() }
               : {})
           }
-        : {})
+        : {}),
+      ...additionalFieldValues
     })
   }
 
@@ -437,6 +464,18 @@ export function SignUp({
 
                     <FieldError>{fieldErrors.confirmPassword}</FieldError>
                   </Field>
+                )}
+
+                {additionalFields?.map(
+                  (field) =>
+                    field.signUp && (
+                      <AdditionalField
+                        key={field.name}
+                        name={field.name}
+                        field={field}
+                        isPending={isPending}
+                      />
+                    )
                 )}
 
                 <div className="flex flex-col gap-3">
