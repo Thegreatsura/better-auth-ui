@@ -1,6 +1,10 @@
 "use client"
 
 import {
+  type AdditionalFieldInputType,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
+import {
   type UsernameAuthClient,
   useAuth,
   useIsUsernameAvailable,
@@ -25,6 +29,7 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { AdditionalField } from "../../auth/additional-field"
 import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
@@ -38,7 +43,12 @@ export type UserProfileProps = {
  * @returns A JSX element containing the profile card with avatar upload and editable name/username fields
  */
 export function UserProfile({ className }: UserProfileProps) {
-  const { authClient, localization, username: usernameConfig } = useAuth()
+  const {
+    additionalFields,
+    authClient,
+    localization,
+    username: usernameConfig
+  } = useAuth()
   const { data: session } = useSession(authClient as UsernameAuthClient)
 
   const currentUsername =
@@ -94,6 +104,20 @@ export function UserProfile({ className }: UserProfileProps) {
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
 
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (field.profile === false || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     updateUser({
       name,
       ...(usernameConfig?.enabled
@@ -103,7 +127,8 @@ export function UserProfile({ className }: UserProfileProps) {
               ? { displayUsername: username.trim() }
               : {})
           }
-        : {})
+        : {}),
+      ...additionalFieldValues
     })
   }
 
@@ -215,6 +240,40 @@ export function UserProfile({ className }: UserProfileProps) {
 
               <FieldError>{fieldErrors.name}</FieldError>
             </Field>
+
+            {additionalFields?.map((field) => {
+              if (field.profile === false) return null
+
+              const value = (session?.user as Record<string, unknown>)?.[
+                field.name
+              ]
+
+              // Re-mount when the session value loads so the field's
+              // uncontrolled `defaultValue` reflects the latest data.
+              const key = `${field.name}:${
+                value instanceof Date
+                  ? value.toISOString()
+                  : String(value ?? "")
+              }`
+
+              return session ? (
+                <AdditionalField
+                  key={key}
+                  name={field.name}
+                  field={{
+                    ...field,
+                    // `defaultValue` is sign-up-only; on the profile we
+                    // always seed from the session.
+                    defaultValue: value as AdditionalFieldInputType
+                  }}
+                  isPending={isPending}
+                />
+              ) : (
+                <Skeleton key={field.name}>
+                  <Input className="invisible" />
+                </Skeleton>
+              )
+            })}
           </CardContent>
 
           <CardFooter>

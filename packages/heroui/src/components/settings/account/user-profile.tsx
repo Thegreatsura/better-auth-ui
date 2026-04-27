@@ -1,4 +1,7 @@
-import { parseAdditionalFieldValue } from "@better-auth-ui/core"
+import {
+  type AdditionalFieldInputType,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -228,7 +231,7 @@ export function UserProfile({
 
                     // Re-mount when the session value loads so the field's
                     // uncontrolled `defaultValue` reflects the latest data.
-                    const fieldKey = `${field.name}:${
+                    const key = `${field.name}:${
                       value instanceof Date
                         ? value.toISOString()
                         : String(value ?? "")
@@ -236,11 +239,11 @@ export function UserProfile({
 
                     return session ? (
                       <AdditionalField
-                        key={fieldKey}
+                        key={key}
                         name={field.name}
                         field={{
                           ...field,
-                          defaultValue: value as string | number | Date
+                          defaultValue: value as AdditionalFieldInputType
                         }}
                         isPending={isPending}
                         variant={variant}
