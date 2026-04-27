@@ -24,7 +24,8 @@ import {
   TextArea,
   TextField,
   TimeField,
-  type TimeValue
+  type TimeValue,
+  toast
 } from "@heroui/react"
 import {
   type CalendarDate,
@@ -99,7 +100,7 @@ function CopyButton({
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch (error) {
-      console.error(error)
+      toast.danger(error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -174,7 +175,9 @@ export function AdditionalField({
         defaultValue={
           typeof field.defaultValue === "number"
             ? field.defaultValue
-            : Number(field.defaultValue)
+            : field.defaultValue != null && field.defaultValue !== ""
+              ? Number(field.defaultValue)
+              : undefined
         }
         minValue={field.min}
         maxValue={field.max}
@@ -240,7 +243,9 @@ export function AdditionalField({
     return (
       <Switch
         name={name}
-        defaultSelected={Boolean(field.defaultValue)}
+        defaultSelected={
+          field.defaultValue === true || field.defaultValue === "true"
+        }
         isDisabled={isPending}
         isReadOnly={field.readOnly}
       >
@@ -257,7 +262,9 @@ export function AdditionalField({
     return (
       <Checkbox
         name={name}
-        defaultSelected={Boolean(field.defaultValue)}
+        defaultSelected={
+          field.defaultValue === true || field.defaultValue === "true"
+        }
         isDisabled={isPending}
         isReadOnly={field.readOnly}
         isRequired={field.required}

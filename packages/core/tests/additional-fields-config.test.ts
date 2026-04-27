@@ -21,17 +21,17 @@ describe("parseAdditionalFieldValue", () => {
       expect(parseAdditionalFieldValue(field, "hello")).toBe("hello")
     })
 
-    it("returns undefined for empty string", () => {
+    it("returns null for empty string (explicit clear)", () => {
       const field = baseField({ type: "string" })
-      expect(parseAdditionalFieldValue(field, "")).toBeUndefined()
+      expect(parseAdditionalFieldValue(field, "")).toBeNull()
     })
 
-    it("returns undefined for null", () => {
+    it("returns undefined for null (omitted)", () => {
       const field = baseField({ type: "string" })
       expect(parseAdditionalFieldValue(field, null)).toBeUndefined()
     })
 
-    it("returns undefined for undefined", () => {
+    it("returns undefined for undefined (omitted)", () => {
       const field = baseField({ type: "string" })
       expect(parseAdditionalFieldValue(field, undefined)).toBeUndefined()
     })
@@ -64,12 +64,12 @@ describe("parseAdditionalFieldValue", () => {
       expect(parseAdditionalFieldValue(field, "abc")).toBeUndefined()
     })
 
-    it("returns undefined for empty string", () => {
+    it("returns null for empty string (explicit clear)", () => {
       const field = baseField({ type: "number" })
-      expect(parseAdditionalFieldValue(field, "")).toBeUndefined()
+      expect(parseAdditionalFieldValue(field, "")).toBeNull()
     })
 
-    it("returns undefined for null", () => {
+    it("returns undefined for null (omitted)", () => {
       const field = baseField({ type: "number" })
       expect(parseAdditionalFieldValue(field, null)).toBeUndefined()
     })
@@ -131,12 +131,12 @@ describe("parseAdditionalFieldValue", () => {
       expect(parseAdditionalFieldValue(field, "not-a-date")).toBeUndefined()
     })
 
-    it("returns undefined for empty string", () => {
+    it("returns null for empty string (explicit clear)", () => {
       const field = baseField({ type: "date" })
-      expect(parseAdditionalFieldValue(field, "")).toBeUndefined()
+      expect(parseAdditionalFieldValue(field, "")).toBeNull()
     })
 
-    it("returns undefined for null", () => {
+    it("returns undefined for null (omitted)", () => {
       const field = baseField({ type: "date" })
       expect(parseAdditionalFieldValue(field, null)).toBeUndefined()
     })

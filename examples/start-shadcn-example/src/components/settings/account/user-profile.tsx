@@ -1,7 +1,7 @@
 "use client"
 
 import {
-  type AdditionalFieldInputType,
+  type AdditionalFieldValue,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
 import {
@@ -122,6 +122,7 @@ export function UserProfile({ className }: UserProfileProps) {
         }
       }
 
+      // `null` = explicit clear (forward to backend); `undefined` = omitted.
       if (value !== undefined) {
         additionalFieldValues[field.name] = value
       }
@@ -273,7 +274,7 @@ export function UserProfile({ className }: UserProfileProps) {
                     ...field,
                     // `defaultValue` is sign-up-only; on the profile we
                     // always seed from the session.
-                    defaultValue: value as AdditionalFieldInputType
+                    defaultValue: value as AdditionalFieldValue
                   }}
                   isPending={isPending}
                 />

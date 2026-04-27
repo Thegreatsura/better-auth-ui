@@ -3,16 +3,16 @@ import { Display, Moon, Sun } from "@gravity-ui/icons"
 import { Dropdown, Label, Tabs } from "@heroui/react"
 
 /**
- * Theme toggle dropdown item used inside `UserButton`. Renders nothing when
- * theming is not configured (no `theme`/`setTheme`/`themes` available).
+ * Theme toggle dropdown item used inside `UserButton`. Callers are responsible
+ * for ensuring theming is configured (i.e. `appearance.theme`,
+ * `appearance.setTheme`, and `appearance.themes` are available) before
+ * rendering this component.
  */
 export function ThemeToggleItem() {
   const {
     localization,
     appearance: { theme, setTheme, themes }
   } = useAuth()
-
-  if (!theme || !setTheme || !themes?.length) return null
 
   return (
     <Dropdown.Item className="py-1 pe-2">
@@ -21,7 +21,7 @@ export function ThemeToggleItem() {
       <Tabs
         className="ml-auto"
         selectedKey={theme}
-        onSelectionChange={(key) => setTheme(key as string)}
+        onSelectionChange={(key) => setTheme?.(key as string)}
       >
         <Tabs.ListContainer>
           <Tabs.List

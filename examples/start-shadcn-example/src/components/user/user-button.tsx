@@ -82,6 +82,8 @@ export function UserButton({
     appearance: { theme, setTheme, themes }
   } = useAuth()
 
+  const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
+
   const { isPending: settingActiveSession } = useSetActiveSession(
     authClient as MultiSessionAuthClient
   )
@@ -163,7 +165,7 @@ export function UserButton({
 
             <DropdownMenuSeparator />
 
-            {themeToggle && theme && setTheme && !!themes?.length && (
+            {showThemeToggle && (
               <>
                 <DropdownMenuItem
                   className="justify-between py-0.75 hover:bg-transparent! cursor-default!"

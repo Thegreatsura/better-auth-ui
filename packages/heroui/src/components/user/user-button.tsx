@@ -53,8 +53,16 @@ export function UserButton({
   variant = "ghost",
   themeToggle = true
 }: UserButtonProps) {
-  const { authClient, basePaths, viewPaths, localization, multiSession } =
-    useAuth()
+  const {
+    authClient,
+    basePaths,
+    viewPaths,
+    localization,
+    multiSession,
+    appearance: { theme, setTheme, themes }
+  } = useAuth()
+
+  const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
 
   const { data: session, isPending: sessionPending } = useSession(authClient)
 
@@ -124,7 +132,7 @@ export function UserButton({
                 </Dropdown.SubmenuTrigger>
               )}
 
-              {themeToggle && <ThemeToggleItem />}
+              {showThemeToggle && <ThemeToggleItem />}
 
               <Separator />
 
@@ -157,7 +165,7 @@ export function UserButton({
                 <Label>{localization.auth.signUp}</Label>
               </Dropdown.Item>
 
-              {themeToggle && (
+              {showThemeToggle && (
                 <>
                   <Separator />
 

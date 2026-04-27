@@ -1,6 +1,9 @@
 /** Data type of the additional field. */
 export type AdditionalFieldType = "string" | "number" | "boolean" | "date"
 
+/** Runtime value held by an `AdditionalField` (matches `AdditionalFieldType`). */
+export type AdditionalFieldValue = string | number | boolean | Date
+
 /** UI rendering choice. Default is inferred from `AdditionalField.type`. */
 export type AdditionalFieldInputType =
   | "input"
@@ -70,7 +73,7 @@ export interface AdditionalField {
   /** @default false */
   required?: boolean
   /** Default value used to seed the input on the sign-up form only. */
-  defaultValue?: string | number | boolean | Date
+  defaultValue?: AdditionalFieldValue
   /**
    * Render the field but exclude it from submission payloads.
    * @default false
@@ -84,15 +87,14 @@ export interface AdditionalField {
   /** Options for the select input type. */
   options?: AdditionalFieldOption[]
   /**
-   * Custom client-side validation. Return `true` (or anything truthy) when
-   * valid, or throw an `Error` (the `message` is shown to the user) when
-   * invalid.
+   * Custom client-side validation. Throw an `Error` (the `message` is shown
+   * to the user) when invalid; return / resolve normally when valid.
    *
    * Receives the parsed value (after `parseAdditionalFieldValue`).
    */
   validate?: (
-    value: string | number | boolean | Date | undefined
-  ) => boolean | Promise<boolean>
+    value: AdditionalFieldValue | null | undefined
+  ) => void | Promise<void>
   /** Render on the sign-up form. @default false */
   signUp?: boolean
   /** Render on the user profile. @default true */
@@ -103,19 +105,21 @@ export interface AdditionalField {
 export type AdditionalFields = AdditionalField[]
 
 /**
- * Convert a raw form value into the JS value Better Auth expects for the
- * given field. Returns `undefined` when the value is empty or unparseable.
+ * Convert a raw form value into the JS value Better Auth expects.
+ * Returns `null` for blank input (explicit clear), `undefined` when omitted
+ * or unparseable. Booleans always return `true`/`false`.
  */
 export function parseAdditionalFieldValue(
   field: AdditionalField,
   raw: string | null | undefined
-): string | number | boolean | Date | undefined {
+): AdditionalFieldValue | null | undefined {
   if (field.type === "boolean") {
     // FormData: checked checkbox/switch sends "on"; unchecked sends nothing.
     return raw === "on" || raw === "true"
   }
 
-  if (!raw) return undefined
+  if (raw == null) return undefined
+  if (raw === "") return null
 
   if (field.type === "number") {
     const parsed = Number(raw)

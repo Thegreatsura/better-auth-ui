@@ -1,3 +1,7 @@
+# Package Manager
+
+This workspace uses **Bun** — NOT pnpm or npm. Always prefix Nx commands with `bun` (e.g., `bun nx build`, `bun nx run-many`, `bun nx affected`). Use `bun install` / `bun add` for dependencies. Ignore any `pnpm`/`npm` examples below — substitute `bun` instead.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

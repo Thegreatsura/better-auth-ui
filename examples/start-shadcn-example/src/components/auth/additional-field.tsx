@@ -8,6 +8,7 @@ import { useAuth } from "@better-auth-ui/react"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronDownIcon, Copy } from "lucide-react"
 import { useState } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -91,8 +92,8 @@ function CopyButton({
       await navigator.clipboard.writeText(value)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
-    } catch {
-      // ignore — clipboard API unavailable
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -192,7 +193,9 @@ export function AdditionalField({
         <Switch
           id={name}
           name={name}
-          defaultChecked={Boolean(field.defaultValue)}
+          defaultChecked={
+            field.defaultValue === true || field.defaultValue === "true"
+          }
           disabled={isPending || field.readOnly}
         />
 
@@ -209,7 +212,9 @@ export function AdditionalField({
         <Checkbox
           id={name}
           name={name}
-          defaultChecked={Boolean(field.defaultValue)}
+          defaultChecked={
+            field.defaultValue === true || field.defaultValue === "true"
+          }
           required={field.required}
           disabled={isPending || field.readOnly}
         />
@@ -448,7 +453,12 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
       combined.setHours(Number(h), Number(m), Number(s), 0)
       formValue = combined.toISOString()
     } else {
-      formValue = format(date, "yyyy-MM-dd")
+      // Anchor to local midnight then serialize as ISO so the downstream
+      // `parseAdditionalFieldValue` parses the same calendar day regardless
+      // of timezone (a bare "YYYY-MM-DD" would be parsed as UTC midnight).
+      const localMidnight = new Date(date)
+      localMidnight.setHours(0, 0, 0, 0)
+      formValue = localMidnight.toISOString()
     }
   }
 

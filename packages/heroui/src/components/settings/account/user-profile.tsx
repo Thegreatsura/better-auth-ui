@@ -1,5 +1,5 @@
 import {
-  type AdditionalFieldInputType,
+  type AdditionalFieldValue,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
 import {
@@ -121,6 +121,7 @@ export function UserProfile({
         }
       }
 
+      // `null` = explicit clear (forward to backend); `undefined` = omitted.
       if (value !== undefined) {
         additionalFieldValues[field.name] = value
       }
@@ -252,7 +253,7 @@ export function UserProfile({
                         name={field.name}
                         field={{
                           ...field,
-                          defaultValue: value as AdditionalFieldInputType
+                          defaultValue: value as AdditionalFieldValue
                         }}
                         isPending={isPending}
                         variant={variant}
