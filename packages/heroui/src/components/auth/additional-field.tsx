@@ -135,11 +135,14 @@ export function AdditionalField({
         defaultValue={field.defaultValue as string}
         isDisabled={isPending}
         isReadOnly={field.readOnly}
-        isRequired={field.required}
       >
         <Label>{field.label}</Label>
 
-        <TextArea placeholder={field.placeholder} variant={inputVariant} />
+        <TextArea
+          placeholder={field.placeholder}
+          required={field.required}
+          variant={inputVariant}
+        />
 
         <FieldError />
       </TextField>
@@ -165,14 +168,16 @@ export function AdditionalField({
         formatOptions={field.formatOptions}
         isDisabled={isPending}
         isReadOnly={field.readOnly}
-        isRequired={field.required}
         variant={inputVariant}
       >
         <Label>{field.label}</Label>
 
         <NumberField.Group>
           <NumberField.DecrementButton />
-          <NumberField.Input placeholder={field.placeholder} />
+          <NumberField.Input
+            placeholder={field.placeholder}
+            required={field.required}
+          />
           <NumberField.IncrementButton />
         </NumberField.Group>
 
@@ -256,8 +261,9 @@ export function AdditionalField({
   if (inputType === "select") {
     return (
       <Select
+        className="[&[data-required=true]>.label]:after:content-none"
         name={name}
-        defaultSelectedKey={
+        defaultValue={
           field.defaultValue != null ? String(field.defaultValue) : undefined
         }
         placeholder={field.placeholder}
@@ -299,6 +305,7 @@ export function AdditionalField({
   if (inputType === "combobox") {
     return (
       <ComboBox
+        className="[&[data-required=true]>.label]:after:content-none"
         name={name}
         defaultSelectedKey={
           field.defaultValue != null ? String(field.defaultValue) : undefined
@@ -347,7 +354,7 @@ export function AdditionalField({
 
     return (
       <DatePicker
-        className="w-full"
+        className="w-full [&[data-required=true]>.label]:after:content-none"
         name={name}
         defaultValue={defaultValue}
         granularity={isDateTime ? "minute" : "day"}
@@ -454,7 +461,6 @@ export function AdditionalField({
         defaultValue={field.defaultValue as string}
         isDisabled={isPending}
         isReadOnly={field.readOnly}
-        isRequired={field.required}
       >
         <Label>{field.label}</Label>
 
@@ -463,6 +469,7 @@ export function AdditionalField({
 
           <InputGroup.Input
             placeholder={field.placeholder}
+            required={field.required}
             type={nativeInputType}
             inputMode={nativeInputMode}
             step={nativeStep}
@@ -493,12 +500,12 @@ export function AdditionalField({
       defaultValue={field.defaultValue as string}
       isDisabled={isPending}
       isReadOnly={field.readOnly}
-      isRequired={field.required}
     >
       <Label>{field.label}</Label>
 
       <Input
         placeholder={field.placeholder}
+        required={field.required}
         variant={inputVariant}
         type={nativeInputType}
         inputMode={nativeInputMode}
