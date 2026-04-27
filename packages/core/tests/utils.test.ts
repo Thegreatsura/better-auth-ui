@@ -6,6 +6,7 @@ describe("deepmerge", () => {
     it("should merge two simple objects", () => {
       const target = { a: 1, b: 2 }
       const source = { c: 3 }
+      // @ts-expect-error intentional divergent shape
       const result = deepmerge(target, source)
 
       expect(result).toEqual({ a: 1, b: 2, c: 3 })
@@ -98,6 +99,7 @@ describe("deepmerge", () => {
     it("should merge sibling nested objects", () => {
       const target = { a: { b: 1 }, c: { d: 2 } }
       const source = { a: { e: 3 }, c: { f: 4 } }
+      // @ts-expect-error intentional divergent shape
       const result = deepmerge(target, source)
 
       expect(result).toEqual({ a: { b: 1, e: 3 }, c: { d: 2, f: 4 } })
@@ -134,6 +136,7 @@ describe("deepmerge", () => {
     it("should override with string values", () => {
       const target = { a: 1 }
       const source = { a: "string" }
+      // @ts-expect-error intentional divergent type
       const result = deepmerge(target, source)
 
       expect(result).toEqual({ a: "string" })
@@ -142,6 +145,7 @@ describe("deepmerge", () => {
     it("should override with boolean values", () => {
       const target = { a: 1 }
       const source = { a: false }
+      // @ts-expect-error intentional divergent type
       const result = deepmerge(target, source)
 
       expect(result).toEqual({ a: false })
@@ -150,6 +154,7 @@ describe("deepmerge", () => {
     it("should override with null values", () => {
       const target = { a: 1 }
       const source = { a: null }
+      // @ts-expect-error intentional divergent type
       const result = deepmerge(target, source)
 
       expect(result).toEqual({ a: null })
@@ -224,6 +229,7 @@ describe("deepmerge", () => {
       const targetCopy = JSON.parse(JSON.stringify(target))
       const sourceCopy = JSON.parse(JSON.stringify(source))
 
+      // @ts-expect-error intentional divergent shape
       deepmerge(target, source)
 
       expect(target).toEqual(targetCopy)

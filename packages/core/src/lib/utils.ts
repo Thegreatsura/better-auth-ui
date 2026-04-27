@@ -1,3 +1,5 @@
+import type { DeepPartial } from "./deep-partial"
+
 /**
  * Type guard that checks whether a value is a non-null, non-array object.
  */
@@ -127,7 +129,7 @@ export function fileToBase64(file: File): Promise<string> {
  * @param source - Partial overrides to apply on top of `target`.
  * @returns A new merged object of type `T`.
  */
-export function deepmerge<T>(target: T, source: Partial<T>): T {
+export function deepmerge<T>(target: T, source: DeepPartial<T>): T {
   if (isPlainObject(target) && isPlainObject(source)) {
     const result: Record<string, unknown> = { ...target }
 
@@ -137,7 +139,7 @@ export function deepmerge<T>(target: T, source: Partial<T>): T {
       if (key in target) {
         result[key] = deepmerge(
           (target as Record<string, unknown>)[key],
-          value as unknown as Partial<T>
+          value as never
         )
       } else {
         result[key] = value

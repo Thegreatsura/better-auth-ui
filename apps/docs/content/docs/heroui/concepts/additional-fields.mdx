@@ -1,0 +1,220 @@
+---
+title: Additional Fields
+description: Render custom user fields on the sign-up form and user profile.
+---
+
+`additionalFields` is an `AuthProvider` config option that declares extra user fields to render on the sign-up form and the user profile. Each field describes its data type, label, and optional UI rendering. Better Auth UI then handles rendering, parsing, and submitting the value through `signUp.email` (sign-up) and `updateUser` (profile).
+
+<Callout type="info">
+  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission — the server still owns persistence and validation.
+</Callout>
+
+## Usage
+
+Pass an array of field configurations to `<AuthProvider>`:
+
+```tsx
+import { AuthProvider } from "@better-auth-ui/heroui"
+
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  additionalFields={[
+    {
+      name: "bio",
+      type: "string",
+      label: "Bio",
+      inputType: "textarea",
+      placeholder: "Tell us a bit about yourself"
+    },
+    {
+      name: "birthday",
+      type: "date",
+      label: "Birthday",
+      signUp: true,
+      required: true
+    }
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+Fields default to rendering on the user profile only. Set `signUp: true` to also render the field on the sign-up form.
+
+## Field types
+
+The `type` controls the data type of the field. The default `inputType` is inferred from `type`, but you can override it for a different look.
+
+| `type`      | Default `inputType` | Submitted as              |
+| ----------- | ------------------- | ------------------------- |
+| `"string"`  | `"input"`           | `string`                  |
+| `"number"`  | `"number"`          | `number`                  |
+| `"boolean"` | `"switch"`          | `boolean`                 |
+| `"date"`    | `"date"`            | `Date`                    |
+
+## Input types
+
+Override the visual rendering with `inputType`:
+
+| `inputType`   | Renders                                            |
+| ------------- | -------------------------------------------------- |
+| `"input"`     | Single-line text input                             |
+| `"textarea"`  | Multi-line text input                              |
+| `"number"`    | Number field with increment / decrement buttons    |
+| `"slider"`    | Slider with live value output                      |
+| `"switch"`    | Toggle switch                                      |
+| `"checkbox"`  | Checkbox                                           |
+| `"select"`    | Select dropdown                                    |
+| `"combobox"`  | Searchable combo box                               |
+| `"date"`      | Date picker                                        |
+| `"datetime"`  | Date picker with time field                        |
+| `"hidden"`    | Hidden input (submitted but not rendered)          |
+
+## Examples
+
+### Numeric formatting
+
+`number` fields accept `Intl.NumberFormatOptions` via `formatOptions`:
+
+```ts
+{
+  name: "hourlyRate",
+  type: "number",
+  label: "Hourly rate",
+  formatOptions: { style: "currency", currency: "USD" }
+}
+
+{
+  name: "commissionRate",
+  type: "number",
+  label: "Commission rate",
+  formatOptions: { style: "percent", maximumFractionDigits: 2 }
+}
+```
+
+Use `min`, `max`, and `step` to bound the value:
+
+```ts
+{
+  name: "yearsExperience",
+  type: "number",
+  label: "Years of experience",
+  min: 0,
+  max: 50,
+  step: 1
+}
+```
+
+### Slider
+
+`inputType: "slider"` honors `min`, `max`, `step`, and `formatOptions`:
+
+```ts
+{
+  name: "budget",
+  type: "number",
+  label: "Budget",
+  inputType: "slider",
+  min: 0,
+  max: 5000,
+  step: 50,
+  defaultValue: 1000,
+  formatOptions: { style: "currency", currency: "USD" }
+}
+```
+
+### Select / Combobox
+
+Both accept an `options` array of `{ label, value }` objects:
+
+```ts
+{
+  name: "country",
+  type: "string",
+  label: "Country",
+  inputType: "select",
+  options: [
+    { label: "United States", value: "us" },
+    { label: "Canada", value: "ca" },
+    { label: "United Kingdom", value: "gb" }
+  ]
+}
+```
+
+### Prefix / suffix
+
+String inputs render inside an `InputGroup` when `prefix` or `suffix` is set:
+
+```ts
+{
+  name: "website",
+  type: "string",
+  label: "Website",
+  prefix: "https://",
+  suffix: ".com"
+}
+```
+
+### Read-only with copy button
+
+Use `readOnly: true` and `copyable: true` to surface a non-editable value with a copy-to-clipboard affordance — useful for fields like `id`:
+
+```ts
+{
+  name: "id",
+  type: "string",
+  label: "User ID",
+  readOnly: true,
+  copyable: true
+}
+```
+
+### Hidden value
+
+`inputType: "hidden"` submits a value without rendering anything visible. Combine with `defaultValue` to attach a server-side preset:
+
+```ts
+{
+  name: "referralSource",
+  type: "string",
+  label: "Referral source",
+  inputType: "hidden",
+  defaultValue: "demo-app",
+  signUp: true
+}
+```
+
+### Custom validation
+
+Provide a `validate` callback to run client-side checks before submission. Throw an `Error` to reject — the message is shown to the user via toast:
+
+```ts
+{
+  name: "nickname",
+  type: "string",
+  label: "Nickname",
+  signUp: true,
+  required: true,
+  validate: (value) => {
+    if (typeof value === "string" && !/^[a-zA-Z0-9_]+$/.test(value)) {
+      throw new Error(
+        "Nickname must only contain letters, numbers, and underscores"
+      )
+    }
+    return true
+  }
+}
+```
+
+## Where fields render
+
+| Flag             | Default | Effect                                              |
+| ---------------- | ------- | --------------------------------------------------- |
+| `signUp: true`   | `false` | Render on the sign-up form                          |
+| `profile: false` | `true`  | Hide on the user profile                            |
+| `readOnly: true` | `false` | Render but exclude the value from submission        |
+
+## Type reference
+
+<auto-type-table path="../../../../../../packages/core/src/config/additional-fields-config.ts" name="AdditionalField" />
