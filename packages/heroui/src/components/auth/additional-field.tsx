@@ -8,6 +8,7 @@ import {
   Button,
   Calendar,
   type CardProps,
+  Checkbox,
   DateField,
   DatePicker,
   FieldError,
@@ -15,6 +16,7 @@ import {
   InputGroup,
   Label,
   NumberField,
+  Switch,
   TextArea,
   TextField,
   TimeField,
@@ -30,6 +32,7 @@ import {
   toCalendarDate,
   toCalendarDateTime
 } from "@internationalized/date"
+import { useState } from "react"
 
 export type AdditionalFieldProps = {
   name: string
@@ -163,6 +166,44 @@ export function AdditionalField({
 
         <FieldError />
       </NumberField>
+    )
+  }
+
+  if (inputType === "switch") {
+    return (
+      <Switch
+        name={name}
+        defaultSelected={Boolean(field.defaultValue)}
+        isDisabled={isPending}
+        isReadOnly={field.readOnly}
+      >
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+
+        <Label>{field.label}</Label>
+      </Switch>
+    )
+  }
+
+  if (inputType === "checkbox") {
+    return (
+      <Checkbox
+        name={name}
+        defaultSelected={Boolean(field.defaultValue)}
+        isDisabled={isPending}
+        isReadOnly={field.readOnly}
+        isRequired={field.required}
+        variant={inputVariant}
+      >
+        <Checkbox.Control>
+          <Checkbox.Indicator />
+        </Checkbox.Control>
+
+        <Checkbox.Content>
+          <Label>{field.label}</Label>
+        </Checkbox.Content>
+      </Checkbox>
     )
   }
 

@@ -1,11 +1,13 @@
 /** Data type of the additional field. */
-export type AdditionalFieldType = "string" | "number" | "date"
+export type AdditionalFieldType = "string" | "number" | "boolean" | "date"
 
 /** UI rendering choice. Default is inferred from `AdditionalField.type`. */
 export type AdditionalFieldInputType =
   | "input"
   | "textarea"
   | "number"
+  | "switch"
+  | "checkbox"
   | "date"
   | "datetime"
 
@@ -42,7 +44,7 @@ export interface AdditionalField {
   /** @default false */
   required?: boolean
   /** Default value used to seed the input on the sign-up form only. */
-  defaultValue?: string | number | Date
+  defaultValue?: string | number | boolean | Date
   /**
    * Render the field but exclude it from submission payloads.
    * @default false
@@ -69,7 +71,12 @@ export type AdditionalFields = AdditionalField[]
 export function parseAdditionalFieldValue(
   field: AdditionalField,
   raw: string | null | undefined
-): string | number | Date | undefined {
+): string | number | boolean | Date | undefined {
+  if (field.type === "boolean") {
+    // FormData: checked checkbox/switch sends "on"; unchecked sends nothing.
+    return raw === "on" || raw === "true"
+  }
+
   if (!raw) return undefined
 
   if (field.type === "number") {
@@ -94,6 +101,8 @@ export function resolveInputType(
   switch (field.type) {
     case "number":
       return "number"
+    case "boolean":
+      return "switch"
     case "date":
       return "date"
     default:
