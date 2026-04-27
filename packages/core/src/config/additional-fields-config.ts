@@ -8,6 +8,8 @@ export type AdditionalFieldInputType =
   | "number"
   | "switch"
   | "checkbox"
+  | "select"
+  | "combobox"
   | "date"
   | "datetime"
 
@@ -28,6 +30,12 @@ export type AdditionalFieldLabel = AdditionalFieldRegister extends {
 }
   ? L
   : string
+
+/** Option for a `select` input. */
+export interface AdditionalFieldOption {
+  label: AdditionalFieldLabel
+  value: string
+}
 
 /** Configuration for a single additional user field. */
 export interface AdditionalField {
@@ -55,6 +63,8 @@ export interface AdditionalField {
    * @default false
    */
   copyable?: boolean
+  /** Options for the select input type. */
+  options?: AdditionalFieldOption[]
   /** Render on the sign-up form. @default false */
   signUp?: boolean
   /** Render on the user profile. @default true */

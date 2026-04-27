@@ -9,13 +9,16 @@ import {
   Calendar,
   type CardProps,
   Checkbox,
+  ComboBox,
   DateField,
   DatePicker,
   FieldError,
   Input,
   InputGroup,
   Label,
+  ListBox,
   NumberField,
+  Select,
   Switch,
   TextArea,
   TextField,
@@ -204,6 +207,92 @@ export function AdditionalField({
           <Label>{field.label}</Label>
         </Checkbox.Content>
       </Checkbox>
+    )
+  }
+
+  if (inputType === "select") {
+    return (
+      <Select
+        name={name}
+        defaultSelectedKey={
+          field.defaultValue != null ? String(field.defaultValue) : undefined
+        }
+        placeholder={field.placeholder}
+        isDisabled={isPending}
+        isRequired={field.required}
+        variant={inputVariant}
+        fullWidth
+      >
+        <Label>{field.label}</Label>
+
+        <Select.Trigger>
+          <Select.Value />
+          <Select.Indicator />
+        </Select.Trigger>
+
+        <Select.Popover>
+          <ListBox>
+            {field.options?.map((option) => (
+              <ListBox.Item
+                key={option.value}
+                id={option.value}
+                textValue={
+                  typeof option.label === "string" ? option.label : option.value
+                }
+              >
+                {option.label}
+
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            ))}
+          </ListBox>
+        </Select.Popover>
+
+        <FieldError />
+      </Select>
+    )
+  }
+
+  if (inputType === "combobox") {
+    return (
+      <ComboBox
+        name={name}
+        defaultSelectedKey={
+          field.defaultValue != null ? String(field.defaultValue) : undefined
+        }
+        isDisabled={isPending}
+        isReadOnly={field.readOnly}
+        isRequired={field.required}
+        variant={inputVariant}
+        fullWidth
+      >
+        <Label>{field.label}</Label>
+
+        <ComboBox.InputGroup>
+          <Input placeholder={field.placeholder} />
+          <ComboBox.Trigger />
+        </ComboBox.InputGroup>
+
+        <ComboBox.Popover>
+          <ListBox>
+            {field.options?.map((option) => (
+              <ListBox.Item
+                key={option.value}
+                id={option.value}
+                textValue={
+                  typeof option.label === "string" ? option.label : option.value
+                }
+              >
+                {option.label}
+
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            ))}
+          </ListBox>
+        </ComboBox.Popover>
+
+        <FieldError />
+      </ComboBox>
     )
   }
 

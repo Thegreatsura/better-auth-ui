@@ -13,6 +13,14 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList
+} from "@/components/ui/combobox"
+import {
   Field,
   FieldContent,
   FieldError,
@@ -31,6 +39,13 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
@@ -172,6 +187,71 @@ export function AdditionalField({
         <FieldContent>
           <FieldLabel htmlFor={name}>{field.label}</FieldLabel>
         </FieldContent>
+      </Field>
+    )
+  }
+
+  if (inputType === "select") {
+    return (
+      <Field>
+        <Label htmlFor={name}>{field.label}</Label>
+
+        <Select
+          name={name}
+          defaultValue={
+            field.defaultValue != null ? String(field.defaultValue) : undefined
+          }
+          required={field.required}
+          disabled={isPending || field.readOnly}
+        >
+          <SelectTrigger id={name} className="w-full">
+            <SelectValue placeholder={field.placeholder} />
+          </SelectTrigger>
+
+          <SelectContent>
+            {field.options?.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <FieldError />
+      </Field>
+    )
+  }
+
+  if (inputType === "combobox") {
+    return (
+      <Field>
+        <Label htmlFor={name}>{field.label}</Label>
+
+        <Combobox
+          items={field.options ?? []}
+          name={name}
+          defaultValue={
+            field.defaultValue != null ? String(field.defaultValue) : undefined
+          }
+          required={field.required}
+          disabled={isPending || field.readOnly}
+        >
+          <ComboboxInput placeholder={field.placeholder} id={name} />
+
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+
+            <ComboboxList>
+              {(option) => (
+                <ComboboxItem key={option.value} value={option}>
+                  {option.label}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+
+        <FieldError />
       </Field>
     )
   }
