@@ -30,7 +30,7 @@
       "name": "additional-field",
       "type": "registry:component",
       "title": "Additional Field",
-      "description": "Renders a configured additional user field on the sign-up form and user profile, with support for string, number, boolean, date, datetime, select, and combobox types.",
+      "description": "Renders a configured additional user field on the sign-up form and user profile, with support for string, number, boolean, date, datetime, select, combobox, and slider types.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
@@ -49,6 +49,7 @@
         "label",
         "popover",
         "select",
+        "slider",
         "switch",
         "textarea"
       ],

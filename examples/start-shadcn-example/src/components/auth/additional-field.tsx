@@ -46,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
@@ -136,6 +137,8 @@ export function AdditionalField({
   }
 
   if (inputType === "number") {
+    const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+
     return (
       <Field>
         <Label htmlFor={name}>{field.label}</Label>
@@ -144,6 +147,13 @@ export function AdditionalField({
           id={name}
           name={name}
           type="number"
+          inputMode={maxFractionDigits ? "decimal" : "numeric"}
+          min={field.min}
+          max={field.max}
+          step={
+            field.step ??
+            (maxFractionDigits ? 1 / 10 ** maxFractionDigits : undefined)
+          }
           defaultValue={field.defaultValue as number | string | undefined}
           placeholder={field.placeholder}
           required={field.required}
@@ -154,6 +164,10 @@ export function AdditionalField({
         <FieldError />
       </Field>
     )
+  }
+
+  if (inputType === "slider") {
+    return <SliderField name={name} field={field} isPending={isPending} />
   }
 
   if (inputType === "switch") {
@@ -264,6 +278,19 @@ export function AdditionalField({
   const hasPrefix = field.prefix != null
   const hasSuffix = field.suffix != null || field.copyable
 
+  // When `inputType: "input"` is paired with `type: "number"`, restrict the
+  // native input to numbers. `formatOptions.maximumFractionDigits` enables
+  // fractional input via `step`.
+  const isNumeric = field.type === "number"
+  const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+  const nativeInputType = isNumeric ? "number" : undefined
+  const nativeInputMode = isNumeric
+    ? maxFractionDigits
+      ? "decimal"
+      : "numeric"
+    : undefined
+  const nativeStep = maxFractionDigits ? 1 / 10 ** maxFractionDigits : undefined
+
   if (hasPrefix || hasSuffix) {
     return (
       <Field>
@@ -279,6 +306,9 @@ export function AdditionalField({
           <InputGroupInput
             id={name}
             name={name}
+            type={nativeInputType}
+            inputMode={nativeInputMode}
+            step={nativeStep}
             defaultValue={field.defaultValue as string}
             placeholder={field.placeholder}
             required={field.required}
@@ -314,11 +344,61 @@ export function AdditionalField({
       <Input
         id={name}
         name={name}
+        type={nativeInputType}
+        inputMode={nativeInputMode}
+        step={nativeStep}
         defaultValue={field.defaultValue as string}
         placeholder={field.placeholder}
         required={field.required}
         readOnly={field.readOnly}
         disabled={isPending}
+      />
+
+      <FieldError />
+    </Field>
+  )
+}
+
+/**
+ * Slider field. Radix Slider doesn't render the current value, so we render
+ * it next to the label and control the state to keep the displayed value in
+ * sync. The selected value is submitted via the underlying Radix `name` prop.
+ */
+function SliderField({ name, field, isPending }: AdditionalFieldProps) {
+  const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+  const min = field.min ?? 0
+  const max = field.max ?? 100
+  const step =
+    field.step ?? (maxFractionDigits ? 1 / 10 ** maxFractionDigits : 1)
+  const initial =
+    typeof field.defaultValue === "number"
+      ? field.defaultValue
+      : field.defaultValue != null
+        ? Number(field.defaultValue)
+        : min
+
+  const [value, setValue] = useState<number>(initial)
+
+  const formatter = new Intl.NumberFormat(undefined, field.formatOptions)
+
+  return (
+    <Field>
+      <div className="flex items-center justify-between gap-2">
+        <Label htmlFor={name}>{field.label}</Label>
+        <span className="text-sm text-muted-foreground tabular-nums">
+          {formatter.format(value)}
+        </span>
+      </div>
+
+      <Slider
+        id={name}
+        name={name}
+        value={[value]}
+        onValueChange={([v]) => setValue(v ?? min)}
+        min={min}
+        max={max}
+        step={step}
+        disabled={isPending || field.readOnly}
       />
 
       <FieldError />

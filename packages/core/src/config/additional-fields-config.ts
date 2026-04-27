@@ -6,6 +6,7 @@ export type AdditionalFieldInputType =
   | "input"
   | "textarea"
   | "number"
+  | "slider"
   | "switch"
   | "checkbox"
   | "select"
@@ -53,6 +54,18 @@ export interface AdditionalField {
   prefix?: AdditionalFieldLabel
   /** Content rendered as a suffix addon inside the input group. */
   suffix?: AdditionalFieldLabel
+  /**
+   * `Intl.NumberFormat` options for number fields. Use `maximumFractionDigits`
+   * (and optionally `minimumFractionDigits`) to allow decimals, or `style: "currency"`
+   * / `style: "percent"` for richer formatting.
+   */
+  formatOptions?: Intl.NumberFormatOptions
+  /** Minimum value. Applies to `number` and `slider` input types. */
+  min?: number
+  /** Maximum value. Applies to `number` and `slider` input types. */
+  max?: number
+  /** Step value. Applies to `number` and `slider` input types. */
+  step?: number
   /** @default false */
   required?: boolean
   /** Default value used to seed the input on the sign-up form only. */

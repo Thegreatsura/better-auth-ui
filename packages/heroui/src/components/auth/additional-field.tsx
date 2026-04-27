@@ -19,6 +19,7 @@ import {
   ListBox,
   NumberField,
   Select,
+  Slider,
   Switch,
   TextArea,
   TextField,
@@ -146,14 +147,22 @@ export function AdditionalField({
   }
 
   if (inputType === "number") {
+    const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+
     return (
       <NumberField
         name={name}
         defaultValue={
           typeof field.defaultValue === "number"
             ? field.defaultValue
-            : parseInt(field.defaultValue as string, 10)
+            : Number(field.defaultValue)
         }
+        minValue={field.min}
+        maxValue={field.max}
+        step={
+          field.step ?? (maxFractionDigits ? 1 / 10 ** maxFractionDigits : 1)
+        }
+        formatOptions={field.formatOptions}
         isDisabled={isPending}
         isReadOnly={field.readOnly}
         isRequired={field.required}
@@ -169,6 +178,40 @@ export function AdditionalField({
 
         <FieldError />
       </NumberField>
+    )
+  }
+
+  if (inputType === "slider") {
+    const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+
+    return (
+      <Slider
+        defaultValue={
+          typeof field.defaultValue === "number"
+            ? field.defaultValue
+            : field.defaultValue != null
+              ? Number(field.defaultValue)
+              : undefined
+        }
+        minValue={field.min ?? 0}
+        maxValue={field.max ?? 100}
+        step={
+          field.step ?? (maxFractionDigits ? 1 / 10 ** maxFractionDigits : 1)
+        }
+        formatOptions={field.formatOptions}
+        isDisabled={isPending || field.readOnly}
+        className="flex flex-col gap-2"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <Label>{field.label}</Label>
+          <Slider.Output className="text-sm text-muted" />
+        </div>
+
+        <Slider.Track>
+          <Slider.Fill />
+          <Slider.Thumb name={name} />
+        </Slider.Track>
+      </Slider>
     )
   }
 
@@ -391,6 +434,19 @@ export function AdditionalField({
   const hasPrefix = field.prefix != null
   const hasSuffix = field.suffix != null || field.copyable
 
+  // When `inputType: "input"` is paired with `type: "number"`, restrict the
+  // native input to numbers. `formatOptions.maximumFractionDigits` enables
+  // fractional input via `step`.
+  const isNumeric = field.type === "number"
+  const maxFractionDigits = field.formatOptions?.maximumFractionDigits
+  const nativeInputType = isNumeric ? "number" : undefined
+  const nativeInputMode = isNumeric
+    ? maxFractionDigits
+      ? "decimal"
+      : "numeric"
+    : undefined
+  const nativeStep = maxFractionDigits ? 1 / 10 ** maxFractionDigits : undefined
+
   if (hasPrefix || hasSuffix) {
     return (
       <TextField
@@ -405,7 +461,12 @@ export function AdditionalField({
         <InputGroup variant={inputVariant}>
           {hasPrefix && <InputGroup.Prefix>{field.prefix}</InputGroup.Prefix>}
 
-          <InputGroup.Input placeholder={field.placeholder} />
+          <InputGroup.Input
+            placeholder={field.placeholder}
+            type={nativeInputType}
+            inputMode={nativeInputMode}
+            step={nativeStep}
+          />
 
           {field.copyable ? (
             <InputGroup.Suffix className="px-0">
@@ -436,7 +497,13 @@ export function AdditionalField({
     >
       <Label>{field.label}</Label>
 
-      <Input placeholder={field.placeholder} variant={inputVariant} />
+      <Input
+        placeholder={field.placeholder}
+        variant={inputVariant}
+        type={nativeInputType}
+        inputMode={nativeInputMode}
+        step={nativeStep}
+      />
 
       <FieldError />
     </TextField>
