@@ -1,3 +1,4 @@
+import { parseAdditionalFieldValue } from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -25,6 +26,7 @@ import {
 import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useEffect, useState } from "react"
 
+import { AdditionalField } from "../../auth/additional-field"
 import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
@@ -42,7 +44,12 @@ export function UserProfile({
   variant,
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
-  const { authClient, localization, username: usernameConfig } = useAuth()
+  const {
+    additionalFields,
+    authClient,
+    localization,
+    username: usernameConfig
+  } = useAuth()
   const { data: session } = useSession(authClient as UsernameAuthClient)
 
   const currentUsername =
@@ -93,6 +100,20 @@ export function UserProfile({
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
 
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (field.profile === false || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     updateUser({
       name,
       ...(usernameConfig?.enabled
@@ -102,7 +123,8 @@ export function UserProfile({
               ? { displayUsername: username.trim() }
               : {})
           }
-        : {})
+        : {}),
+      ...additionalFieldValues
     })
   }
 
@@ -196,6 +218,40 @@ export function UserProfile({
 
                   <FieldError />
                 </TextField>
+
+                {additionalFields
+                  ?.filter((field) => field.profile !== false)
+                  .map((field) => {
+                    const value = (session?.user as Record<string, unknown>)[
+                      field.name
+                    ]
+
+                    // Re-mount when the session value loads so the field's
+                    // uncontrolled `defaultValue` reflects the latest data.
+                    const fieldKey = `${field.name}:${
+                      value instanceof Date
+                        ? value.toISOString()
+                        : String(value ?? "")
+                    }`
+
+                    return session ? (
+                      <AdditionalField
+                        key={fieldKey}
+                        name={field.name}
+                        field={{
+                          ...field,
+                          defaultValue: value as string | number | Date
+                        }}
+                        isPending={isPending}
+                        variant={variant}
+                      />
+                    ) : (
+                      <Skeleton
+                        key={field.name}
+                        className="h-10 md:h-9 w-full rounded-xl"
+                      />
+                    )
+                  })}
               </Fieldset.Group>
 
               <Fieldset.Actions>

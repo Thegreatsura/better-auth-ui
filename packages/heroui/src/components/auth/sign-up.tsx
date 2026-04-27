@@ -1,3 +1,4 @@
+import { parseAdditionalFieldValue } from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -25,6 +26,7 @@ import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useState } from "react"
 
 import type { AuthPlugin } from "../../lib/auth-plugin"
+import { AdditionalField } from "./additional-field"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -53,6 +55,7 @@ export function SignUp({
   ...props
 }: SignUpProps & Omit<CardProps, "children">) {
   const {
+    additionalFields,
     authClient,
     basePaths,
     emailAndPassword,
@@ -136,6 +139,20 @@ export function SignUp({
       return
     }
 
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (!field.signUp || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     signUpEmail({
       name,
       email,
@@ -147,7 +164,8 @@ export function SignUp({
               ? { displayUsername: username.trim() }
               : {})
           }
-        : {})
+        : {}),
+      ...additionalFieldValues
     })
   }
 
@@ -350,6 +368,19 @@ export function SignUp({
 
                 <FieldError />
               </TextField>
+            )}
+
+            {additionalFields?.map(
+              (field) =>
+                field.signUp && (
+                  <AdditionalField
+                    key={field.name}
+                    name={field.name}
+                    field={field}
+                    isPending={isPending}
+                    variant={variant}
+                  />
+                )
             )}
 
             <div className="flex flex-col gap-3">

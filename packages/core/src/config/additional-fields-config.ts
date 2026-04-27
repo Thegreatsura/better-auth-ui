@@ -61,3 +61,42 @@ export interface AdditionalField {
 
 /** Ordered list of `AdditionalField` configurations. */
 export type AdditionalFields = AdditionalField[]
+
+/**
+ * Convert a raw form value into the JS value Better Auth expects for the
+ * given field. Returns `undefined` when the value is empty or unparseable.
+ */
+export function parseAdditionalFieldValue(
+  field: AdditionalField,
+  raw: string | null | undefined
+): string | number | Date | undefined {
+  if (!raw) return undefined
+
+  if (field.type === "number") {
+    const parsed = Number(raw)
+    return Number.isNaN(parsed) ? undefined : parsed
+  }
+
+  if (field.type === "date") {
+    const parsed = new Date(raw)
+    return Number.isNaN(parsed.getTime()) ? undefined : parsed
+  }
+
+  return raw
+}
+
+/** Resolve the effective `inputType`, defaulting based on `field.type`. */
+export function resolveInputType(
+  field: AdditionalField
+): AdditionalFieldInputType {
+  if (field.inputType) return field.inputType
+
+  switch (field.type) {
+    case "number":
+      return "number"
+    case "date":
+      return "date"
+    default:
+      return "input"
+  }
+}

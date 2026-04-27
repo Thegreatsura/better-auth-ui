@@ -175,6 +175,9 @@ export const localization = {
     /** @remarks `"Cancel"` */
     cancel: "Cancel",
 
+    /** @remarks `"Copy to clipboard"` */
+    copyToClipboard: "Copy to clipboard",
+
     /** @remarks `"Change email"` */
     changeEmail: "Change email",
 
@@ -257,6 +260,9 @@ export const localization = {
 
     /** @remarks `"Theme"` */
     theme: "Theme",
+
+    /** @remarks `"Time"` */
+    time: "Time",
 
     /** @remarks `"Unlink {{provider}}"` */
     unlinkProvider: "Unlink {{provider}}",
