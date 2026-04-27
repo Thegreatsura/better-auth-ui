@@ -125,7 +125,7 @@ export function SignUp({
 
   const isPending = signUpPending
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
@@ -147,6 +147,15 @@ export function SignUp({
         field,
         formData.get(field.name) as string | null
       )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.danger(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
 
       if (value !== undefined) {
         additionalFieldValues[field.name] = value

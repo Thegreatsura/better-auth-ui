@@ -13,6 +13,7 @@ export type AdditionalFieldInputType =
   | "combobox"
   | "date"
   | "datetime"
+  | "hidden"
 
 /**
  * Augmentation target for widening `AdditionalField.label` in UI packages.
@@ -82,6 +83,16 @@ export interface AdditionalField {
   copyable?: boolean
   /** Options for the select input type. */
   options?: AdditionalFieldOption[]
+  /**
+   * Custom client-side validation. Return `true` (or anything truthy) when
+   * valid, or throw an `Error` (the `message` is shown to the user) when
+   * invalid.
+   *
+   * Receives the parsed value (after `parseAdditionalFieldValue`).
+   */
+  validate?: (
+    value: string | number | boolean | Date | undefined
+  ) => boolean | Promise<boolean>
   /** Render on the sign-up form. @default false */
   signUp?: boolean
   /** Render on the user profile. @default true */

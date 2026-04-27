@@ -128,6 +128,22 @@ export function AdditionalField({
   const inputType = resolveInputType(field)
   const inputVariant = variant === "transparent" ? "primary" : "secondary"
 
+  if (inputType === "hidden") {
+    return (
+      <input
+        type="hidden"
+        name={name}
+        value={
+          field.defaultValue == null
+            ? ""
+            : field.defaultValue instanceof Date
+              ? field.defaultValue.toISOString()
+              : String(field.defaultValue)
+        }
+      />
+    )
+  }
+
   if (inputType === "textarea") {
     return (
       <TextField

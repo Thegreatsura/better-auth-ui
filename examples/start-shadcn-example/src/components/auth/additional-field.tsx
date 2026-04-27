@@ -116,6 +116,22 @@ export function AdditionalField({
 }: AdditionalFieldProps) {
   const inputType = resolveInputType(field)
 
+  if (inputType === "hidden") {
+    return (
+      <input
+        type="hidden"
+        name={name}
+        value={
+          field.defaultValue == null
+            ? ""
+            : field.defaultValue instanceof Date
+              ? field.defaultValue.toISOString()
+              : String(field.defaultValue)
+        }
+      />
+    )
+  }
+
   if (inputType === "textarea") {
     return (
       <Field>

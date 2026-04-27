@@ -98,7 +98,7 @@ export function UserProfile({
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
@@ -111,6 +111,15 @@ export function UserProfile({
         field,
         formData.get(field.name) as string | null
       )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.danger(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
 
       if (value !== undefined) {
         additionalFieldValues[field.name] = value
