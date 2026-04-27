@@ -49,6 +49,10 @@ export interface AdditionalField {
   inputType?: AdditionalFieldInputType
   /** Placeholder text. */
   placeholder?: string
+  /** Content rendered as a prefix addon inside the input group. */
+  prefix?: AdditionalFieldLabel
+  /** Content rendered as a suffix addon inside the input group. */
+  suffix?: AdditionalFieldLabel
   /** @default false */
   required?: boolean
   /** Default value used to seed the input on the sign-up form only. */

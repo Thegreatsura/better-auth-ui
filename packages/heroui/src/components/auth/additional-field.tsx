@@ -388,7 +388,10 @@ export function AdditionalField({
   }
 
   // inputType === "input"
-  if (field.copyable) {
+  const hasPrefix = field.prefix != null
+  const hasSuffix = field.suffix != null || field.copyable
+
+  if (hasPrefix || hasSuffix) {
     return (
       <TextField
         name={name}
@@ -400,14 +403,22 @@ export function AdditionalField({
         <Label>{field.label}</Label>
 
         <InputGroup variant={inputVariant}>
+          {hasPrefix && <InputGroup.Prefix>{field.prefix}</InputGroup.Prefix>}
+
           <InputGroup.Input placeholder={field.placeholder} />
 
-          <InputGroup.Suffix className="px-0">
-            <CopyButton
-              value={field.defaultValue as string}
-              isDisabled={isPending}
-            />
-          </InputGroup.Suffix>
+          {field.copyable ? (
+            <InputGroup.Suffix className="px-0">
+              <CopyButton
+                value={field.defaultValue as string}
+                isDisabled={isPending}
+              />
+            </InputGroup.Suffix>
+          ) : (
+            field.suffix != null && (
+              <InputGroup.Suffix>{field.suffix}</InputGroup.Suffix>
+            )
+          )}
         </InputGroup>
 
         <FieldError />

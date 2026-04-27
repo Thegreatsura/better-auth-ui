@@ -261,12 +261,21 @@ export function AdditionalField({
   }
 
   // inputType === "input"
-  if (field.copyable) {
+  const hasPrefix = field.prefix != null
+  const hasSuffix = field.suffix != null || field.copyable
+
+  if (hasPrefix || hasSuffix) {
     return (
       <Field>
         <Label htmlFor={name}>{field.label}</Label>
 
         <InputGroup>
+          {hasPrefix && (
+            <InputGroupAddon align="inline-start">
+              {field.prefix}
+            </InputGroupAddon>
+          )}
+
           <InputGroupInput
             id={name}
             name={name}
@@ -277,12 +286,20 @@ export function AdditionalField({
             disabled={isPending}
           />
 
-          <InputGroupAddon align="inline-end">
-            <CopyButton
-              value={field.defaultValue as string | undefined}
-              isDisabled={isPending}
-            />
-          </InputGroupAddon>
+          {field.copyable ? (
+            <InputGroupAddon align="inline-end">
+              <CopyButton
+                value={field.defaultValue as string | undefined}
+                isDisabled={isPending}
+              />
+            </InputGroupAddon>
+          ) : (
+            field.suffix != null && (
+              <InputGroupAddon align="inline-end">
+                {field.suffix}
+              </InputGroupAddon>
+            )
+          )}
         </InputGroup>
 
         <FieldError />
