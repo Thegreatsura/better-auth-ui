@@ -4,6 +4,7 @@ import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
+import type { AdditionalFields } from "./additional-fields-config"
 import type { AppearanceConfig } from "./appearance-config"
 import type { AvatarConfig } from "./avatar-config"
 import type { DeleteUserConfig } from "./delete-user-config"
@@ -17,6 +18,11 @@ import type { UsernameConfig } from "./username-config"
  * providers, navigation functions, and feature flags.
  */
 export interface AuthConfig {
+  /**
+   * Additional user fields rendered on sign-up and the user profile.
+   * @remarks `AdditionalFields`
+   */
+  additionalFields?: AdditionalFields
   /**
    * Appearance/theme configuration
    * @remarks `AppearanceConfig`
