@@ -43,8 +43,8 @@ useIsMutating({ mutationKey: authMutationKeys.signIn.all })
 
 For Better Auth endpoints that don't have a purpose-built hook yet, use the generic wrappers:
 
-- `useAuthQuery(authFn, queryKey, options?)` — wraps `useQuery` + `authQueryOptions`.
-- `useAuthMutation(authFn, mutationKey, options?)` — wraps `useMutation` + `authMutationOptions`.
+- `useAuthQuery(authFn, queryKey, options?)` / `authQueryOptions(authFn, queryKey, params?)` — read-style endpoints.
+- `useAuthMutation(authFn, mutationKey, options?)` / `authMutationOptions(authFn, mutationKey)` — write-style endpoints.
 
 Both wire `throw: true` into `fetchOptions` so results reject with a `BetterFetchError` instead of resolving to `{ error }`.
 
