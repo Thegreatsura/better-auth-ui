@@ -1,37 +1,34 @@
-import { passkeyClient } from "@better-auth/passkey/client"
-import {
+import type { passkeyClient } from "@better-auth/passkey/client"
+import type {
   magicLinkClient,
   multiSessionClient,
   usernameClient
 } from "better-auth/client/plugins"
-import { createAuthClient } from "better-auth/react"
+import type { createAuthClient } from "better-auth/react"
 
 export type AuthClient = ReturnType<typeof createAuthClient>
 
-// The per-plugin clients below are never used at runtime — they exist solely
-// so TypeScript can infer the fully-typed client shape for each plugin via
-// `typeof`. Marking them `/* @__PURE__ */` lets bundlers drop the calls in
-// downstream builds.
+// The per-plugin client types below are pure type-level declarations — no
+// runtime code is emitted for them. This avoids relying on `/* @__PURE__ */`
+// being honoured by every downstream bundler (RSC graphs, dev builds,
+// Turbopack, older configs, etc.) and keeps the plugin packages out of
+// consumers' runtime bundles entirely.
 
-const magicLinkAuthClient = /* @__PURE__ */ createAuthClient({
-  plugins: [magicLinkClient()]
-})
-export type MagicLinkAuthClient = typeof magicLinkAuthClient
+export type MagicLinkAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof magicLinkClient>] }>
+>
 
-const multiSessionAuthClient = /* @__PURE__ */ createAuthClient({
-  plugins: [multiSessionClient()]
-})
-export type MultiSessionAuthClient = typeof multiSessionAuthClient
+export type MultiSessionAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof multiSessionClient>] }>
+>
 
-const passkeyAuthClient = /* @__PURE__ */ createAuthClient({
-  plugins: [passkeyClient()]
-})
-export type PasskeyAuthClient = typeof passkeyAuthClient
+export type PasskeyAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof passkeyClient>] }>
+>
 
-const usernameAuthClient = /* @__PURE__ */ createAuthClient({
-  plugins: [usernameClient()]
-})
-export type UsernameAuthClient = typeof usernameAuthClient
+export type UsernameAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof usernameClient>] }>
+>
 
 /**
  * Unwraps a Better Auth client method's `data` payload.
