@@ -471,8 +471,8 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
   // "datetime" (date + time).
   let formValue = ""
   if (date) {
-    if (isDateTime) {
-      const [h = "0", m = "0", s = "0"] = (time || "00:00:00").split(":")
+    if (isDateTime && time && time.trim() !== "") {
+      const [h = "0", m = "0", s = "0"] = time.split(":")
       const combined = new Date(date)
       combined.setHours(Number(h), Number(m), Number(s), 0)
       formValue = combined.toISOString()
@@ -480,6 +480,8 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
       // Anchor to local midnight then serialize as ISO so the downstream
       // `parseAdditionalFieldValue` parses the same calendar day regardless
       // of timezone (a bare "YYYY-MM-DD" would be parsed as UTC midnight).
+      // For datetime fields with a blank time, we fall through to this path
+      // so an empty time stays blank rather than silently becoming midnight.
       const localMidnight = new Date(date)
       localMidnight.setHours(0, 0, 0, 0)
       formValue = localMidnight.toISOString()
