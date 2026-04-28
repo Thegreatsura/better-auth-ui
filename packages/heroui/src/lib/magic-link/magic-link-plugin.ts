@@ -14,10 +14,12 @@ export function magicLinkPlugin(options: MagicLinkPluginOptions = {}) {
     views: {
       auth: { magicLink: MagicLink }
     },
-    // When `emailAndPassword.enabled === false`, /auth/sign-in renders the
-    // magic-link form instead of the disabled password form.
-    fallbackFor: {
-      signIn: MagicLink
+    // Conditional, not an override: when `emailAndPassword.enabled === false`
+    // the `<Auth>` router renders this at `/auth/sign-in` instead of the
+    // disabled password form. With password auth on, the built-in `SignIn`
+    // still wins.
+    fallbackViews: {
+      auth: { signIn: MagicLink }
     }
   } satisfies AuthPlugin
 }

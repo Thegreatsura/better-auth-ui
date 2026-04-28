@@ -1,6 +1,7 @@
 import type { AuthView } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import type { CardProps } from "@heroui/react"
+import { useEffect } from "react"
 
 import type { AuthPlugin } from "../../lib/auth-plugin"
 import { ForgotPassword } from "./forgot-password"
@@ -21,11 +22,30 @@ export type AuthProps = {
 }
 
 /**
+ * Built-in views that only make sense when email + password auth is enabled.
+ * When it's disabled, the `<Auth>` router redirects these to `signIn` so a
+ * plugin's `fallbackViews.auth.signIn` (e.g. magic link) takes over.
+ */
+const PASSWORD_ONLY_VIEWS: ReadonlySet<AuthView> = new Set<AuthView>([
+  "signUp",
+  "forgotPassword",
+  "resetPassword"
+])
+
+/**
  * Render the appropriate authentication view based on the provided `view` or `path`.
  *
- * Plugin-contributed views (e.g. `magicLinkPlugin` providing the `magicLink`
- * view) are resolved dynamically from `plugins[].views.auth`; built-in views
- * (`signIn`, `signUp`, etc.) are matched in the switch below.
+ * View resolution order:
+ *   1. Plugin **overrides** via `plugins[].views.auth[currentView]` — these
+ *      always win (first plugin to register wins).
+ *   2. Plugin **fallbacks** via `plugins[].fallbackViews.auth[currentView]` —
+ *      only consulted when the built-in flow isn't viable (currently:
+ *      `signIn` when `emailAndPassword.enabled === false`).
+ *   3. Built-in components (`SignIn`, `SignUp`, ...).
+ *
+ * Additionally, when `emailAndPassword.enabled === false`, password-only
+ * views (`signUp` / `forgotPassword` / `resetPassword`) redirect to `signIn`
+ * since those flows have no meaning without a password.
  *
  * @param path - Route path used to resolve an auth view when `view` is not provided
  * @param socialLayout - Social layout to apply to sign-in/sign-up/magic-link views
@@ -41,7 +61,8 @@ export function Auth({
   view,
   ...props
 }: AuthProps & Omit<CardProps, "children">) {
-  const { emailAndPassword, plugins, viewPaths } = useAuth<AuthPlugin>()
+  const { basePaths, emailAndPassword, plugins, viewPaths, navigate } =
+    useAuth<AuthPlugin>()
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
@@ -59,25 +80,28 @@ export function Auth({
     )
   }
 
-  // When the built-in password-based sign-in is disabled, render the first
-  // plugin offering a `fallbackFor.signIn` view (e.g. magicLinkPlugin) in its
-  // place. This preserves the behaviour of navigating straight to a primary
-  // passwordless form when email+password auth isn't configured.
-  if (currentView === "signIn" && !emailAndPassword?.enabled) {
-    const Fallback = plugins?.find((plugin) => plugin.fallbackFor?.signIn)
-      ?.fallbackFor?.signIn
+  // When email + password auth is disabled, password-only views (signUp,
+  // forgotPassword, resetPassword) have no meaning. Redirect them to signIn,
+  // where a plugin's `fallbackViews.auth.signIn` (e.g. magic link) takes
+  // over as the primary entry point.
+  const shouldRedirectToSignIn =
+    !emailAndPassword?.enabled && PASSWORD_ONLY_VIEWS.has(currentView)
 
-    if (Fallback) {
-      return (
-        <Fallback
-          socialLayout={socialLayout}
-          socialPosition={socialPosition}
-          {...props}
-        />
-      )
+  useEffect(() => {
+    if (shouldRedirectToSignIn) {
+      navigate({
+        to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
+        replace: true
+      })
     }
+  }, [shouldRedirectToSignIn, navigate, basePaths.auth, viewPaths.auth.signIn])
+
+  if (shouldRedirectToSignIn) {
+    return null
   }
 
+  // 1. Plugin overrides (`views.auth[currentView]`) — these always win,
+  //    including over built-in views. First plugin to register wins.
   for (const plugin of plugins ?? []) {
     const PluginView = plugin.views?.auth?.[currentView]
 
@@ -92,6 +116,26 @@ export function Auth({
     }
   }
 
+  // 2. Plugin fallbacks — only when the built-in `signIn` isn't viable
+  //    (password auth is off). Used by `magicLinkPlugin` to render the
+  //    magic-link form as the primary passwordless sign-in surface.
+  if (currentView === "signIn" && !emailAndPassword?.enabled) {
+    const Fallback = plugins?.find(
+      (plugin) => plugin.fallbackViews?.auth?.signIn
+    )?.fallbackViews?.auth?.signIn
+
+    if (Fallback) {
+      return (
+        <Fallback
+          socialLayout={socialLayout}
+          socialPosition={socialPosition}
+          {...props}
+        />
+      )
+    }
+  }
+
+  // 3. Built-ins.
   switch (currentView) {
     case "signIn":
       return (

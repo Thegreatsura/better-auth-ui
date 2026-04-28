@@ -88,6 +88,12 @@ export type AuthPluginComponents = {
  * View components matching keys declared in `AuthPluginViewPaths`. The
  * `<Auth>` and `<Settings>` routers look up the current view in this merged
  * map and render the resolved component.
+ *
+ * Registering a component under a built-in key (e.g. `auth.signIn`) **always**
+ * replaces the built-in view — this is a hard override. For conditional
+ * replacements that only kick in when a built-in flow is unavailable (e.g.
+ * magic link standing in for sign-in when `emailAndPassword.enabled === false`),
+ * use `fallbackViews` instead.
  */
 export type AuthPluginViews = {
   auth?: Record<string, AuthPluginViewComponent>
@@ -95,19 +101,23 @@ export type AuthPluginViews = {
 }
 
 /**
- * Fallback view components a plugin offers when a built-in view isn't
- * available under the current config. The `<Auth>` router renders the
- * fallback instead of the built-in view when the condition below each key
- * is met.
+ * Conditional view replacements a plugin offers when a built-in view isn't
+ * viable under the current config. Unlike `views`, which always wins,
+ * `fallbackViews` only takes effect when the built-in flow is disabled.
+ *
+ * The `<Auth>` router checks each key's condition and, if met, renders the
+ * fallback in place of the built-in view.
  */
-export type AuthPluginFallbackFor = {
-  /**
-   * Rendered at `/auth/sign-in` when
-   * `AuthConfig.emailAndPassword.enabled === false` and this plugin is
-   * registered. Used to replace the password form with an alternative
-   * primary sign-in flow (e.g. magic link).
-   */
-  signIn?: AuthPluginViewComponent
+export type AuthPluginFallbackViews = {
+  auth?: {
+    /**
+     * Rendered at `/auth/sign-in` when
+     * `AuthConfig.emailAndPassword.enabled === false` and this plugin is
+     * registered. Used to replace the password form with an alternative
+     * primary sign-in flow (e.g. magic link).
+     */
+    signIn?: AuthPluginViewComponent
+  }
 }
 
 /**
@@ -140,7 +150,12 @@ export type AuthPluginFallbackFor = {
  *   localization: { magicLink, sendMagicLink, magicLinkSent, ... },
  *   authButtons: [MagicLinkButton],
  *   viewPaths: { auth: { magicLink: "magic-link" } },
- *   views: { auth: { magicLink: MagicLink } }
+ *   views: { auth: { magicLink: MagicLink } },
+ *   // Conditional, not an override: when `emailAndPassword.enabled === false`
+ *   // the `<Auth>` router renders this at `/auth/sign-in` instead of the
+ *   // disabled password form. With password auth on, the built-in `SignIn`
+ *   // still wins.
+ *   fallbackViews: { auth: { signIn: MagicLink } }
  * }
  *
  * // multi session
@@ -155,5 +170,5 @@ export type AuthPluginFallbackFor = {
 export type AuthPlugin<TComponents = AuthPluginComponents> = CoreAuthPlugin &
   TComponents & {
     views?: AuthPluginViews
-    fallbackFor?: AuthPluginFallbackFor
+    fallbackViews?: AuthPluginFallbackViews
   }
