@@ -52,9 +52,9 @@ export function setActiveSessionOptions<
  * Create a mutation for switching the active device session.
  *
  * Wraps `authClient.multiSession.setActive`, optimistically swaps the cached
- * session to the matching device session, scrolls to top, refetches both
- * the session and device-session queries, and forwards React Query mutation
- * options such as `onSuccess`, `onError`, and `retry`.
+ * session to the matching device session, refetches both the session and
+ * device-session queries, and forwards React Query mutation options such as
+ * `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client with the multi-session plugin.
  * @param options - React Query options forwarded to `useMutation`.
@@ -87,8 +87,6 @@ export function useSetActiveSession<TAuthClient extends MultiSessionAuthClient>(
           deviceSession as SessionData<TAuthClient>
         )
       }
-
-      window.scrollTo({ top: 0 })
 
       await refetchSession()
       await refetchDeviceSessions()

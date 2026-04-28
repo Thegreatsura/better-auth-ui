@@ -49,7 +49,9 @@ export function ManageAccount({
   const { data: session } = useSession(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
-    useSetActiveSession(authClient as MultiSessionAuthClient)
+    useSetActiveSession(authClient as MultiSessionAuthClient, {
+      onSuccess: () => window.scrollTo({ top: 0 })
+    })
 
   const { mutate: revokeSession, isPending: isRevoking } =
     useRevokeMultiSession(authClient as MultiSessionAuthClient, {
