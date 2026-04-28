@@ -68,8 +68,10 @@ export type AuthPluginFallbackViews<TAuthViewProps> = {
  */
 export type AuthPlugin<
   TComponents = AuthPluginComponents,
-  TAuthViewProps = unknown,
-  TSettingsViewProps = unknown
+  // biome-ignore lint/suspicious/noExplicitAny: any
+  TAuthViewProps = any,
+  // biome-ignore lint/suspicious/noExplicitAny: any
+  TSettingsViewProps = any
 > = CoreAuthPlugin &
   TComponents & {
     views?: AuthPluginViews<TAuthViewProps, TSettingsViewProps>
