@@ -8,8 +8,8 @@ import type { APIError } from "better-auth"
 
 import type { AuthServer } from "../../../lib/auth-server"
 
-type SessionData<TAuth extends AuthServer> = ReturnType<
-  TAuth["api"]["getSession"]
+type SessionData<TAuth extends AuthServer> = Awaited<
+  ReturnType<TAuth["api"]["getSession"]>
 >
 
 type SessionParams<TAuth extends AuthServer> = Parameters<
@@ -31,7 +31,7 @@ export function sessionOptions<TAuth extends AuthServer>(
   params: SessionParams<TAuth>
 ) {
   type TData = SessionData<TAuth>
-  const queryKey = authKeys.session(params?.query)
+  const queryKey = authKeys.session
 
   const options = queryOptions<TData, APIError, TData, typeof queryKey>({
     queryKey,

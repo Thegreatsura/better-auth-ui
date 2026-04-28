@@ -57,6 +57,14 @@ queryClient.invalidateQueries({
 })
 ```
 
+Or, equivalently, via the shared key factory:
+
+```ts
+import { authKeys } from "@better-auth-ui/core"
+
+queryClient.invalidateQueries({ queryKey: authKeys.session })
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/react/src/queries/auth/session-query.ts" name="SessionParams" />

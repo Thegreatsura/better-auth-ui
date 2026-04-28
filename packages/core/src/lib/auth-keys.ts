@@ -8,7 +8,7 @@
  * ```ts
  * queryClient.invalidateQueries({ queryKey: authKeys.all })
  * queryClient.invalidateQueries({ queryKey: authKeys.user(userId) })
- * queryClient.invalidateQueries({ queryKey: authKeys.session(query) })
+ * queryClient.invalidateQueries({ queryKey: authKeys.session })
  * ```
  *
  * This factory lives in `@better-auth-ui/core` so it can be shared across
@@ -20,11 +20,8 @@ export const authKeys = {
   /** Root key for every Better Auth query. */
   all: ["auth"] as const,
 
-  /** Prefix for all `getSession` queries (any `query` value). */
-  sessions: () => [...authKeys.all, "getSession"] as const,
-  /** Key for a `getSession` query with the given `query` params. */
-  session: <TQuery = undefined>(query?: TQuery) =>
-    [...authKeys.sessions(), query ?? null] as const,
+  /** Key for the current `getSession` query. */
+  session: ["auth", "getSession"] as const,
 
   /** Prefix for every per-user query. */
   users: () => [...authKeys.all, "user"] as const,

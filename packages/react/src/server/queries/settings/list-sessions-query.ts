@@ -8,8 +8,8 @@ import type { APIError } from "better-auth"
 
 import type { AuthServer } from "../../../lib/auth-server"
 
-type ListSessionsData<TAuth extends AuthServer> = ReturnType<
-  TAuth["api"]["listSessions"]
+type ListSessionsData<TAuth extends AuthServer> = Awaited<
+  ReturnType<TAuth["api"]["listSessions"]>
 >
 
 type ListSessionsParams<TAuth extends AuthServer> = Parameters<

@@ -36,7 +36,7 @@ export function sessionOptions<TAuthClient extends AuthClient>(
   params?: SessionParams<TAuthClient>
 ) {
   type TData = SessionData<TAuthClient>
-  const queryKey = authKeys.session(params?.query)
+  const queryKey = authKeys.session
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

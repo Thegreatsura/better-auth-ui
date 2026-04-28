@@ -8,8 +8,8 @@ import type { APIError } from "better-auth"
 
 import type { MultiSessionAuthServer } from "../../../lib/auth-server"
 
-type ListDeviceSessionsData<TAuth extends MultiSessionAuthServer> = ReturnType<
-  TAuth["api"]["listDeviceSessions"]
+type ListDeviceSessionsData<TAuth extends MultiSessionAuthServer> = Awaited<
+  ReturnType<TAuth["api"]["listDeviceSessions"]>
 >
 
 type ListDeviceSessionsParams<TAuth extends MultiSessionAuthServer> =
