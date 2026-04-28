@@ -160,7 +160,7 @@ export const Route = createFileRoute("/")({
 })
 ```
 
-The same pattern works for every settings read — `prefetchListAccounts`, `prefetchListSessions`, `prefetchListDeviceSessions`, `prefetchListUserPasskeys`, and `prefetchAccountInfo` all live in `@better-auth-ui/react` next to their options factories.
+The same pattern works for every settings read — `prefetchListAccounts`, `prefetchListSessions`, `prefetchListDeviceSessions`, `prefetchListPasskeys`, and `prefetchAccountInfo` all live in `@better-auth-ui/react` next to their options factories.
 
 ## Server-only helpers
 
@@ -182,4 +182,4 @@ export const ensureServerSession = (queryClient: QueryClient) =>
   ensureSession(queryClient, auth, { headers: getRequestHeaders() })
 ```
 
-The server entrypoint mirrors the client API one-to-one: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus the equivalents for `listAccounts`, `accountInfo`, `listSessions`, `listDeviceSessions`, and `listUserPasskeys`. Cache keys are identical between the two, so data prefetched on the server hydrates cleanly into the client-side `useSession`, `useListSessions`, etc.
+The server entrypoint mirrors the client API one-to-one: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus the equivalents for `listAccounts`, `accountInfo`, `listSessions`, `listDeviceSessions`, and `listPasskeys`. Cache keys are identical between the two, so data prefetched on the server hydrates cleanly into the client-side `useSession`, `useListSessions`, etc.

@@ -3,7 +3,7 @@ import {
   useAddPasskey,
   useAuth,
   useAuthPlugin,
-  useListUserPasskeys
+  useListPasskeys
 } from "@better-auth-ui/react"
 import {
   Button,
@@ -30,7 +30,7 @@ export function Passkeys({
   const { authClient } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
-  const { data: passkeys, isPending } = useListUserPasskeys(
+  const { data: passkeys, isPending } = useListPasskeys(
     authClient as PasskeyAuthClient
   )
   const { mutate: addPasskey, isPending: isAdding } = useAddPasskey(

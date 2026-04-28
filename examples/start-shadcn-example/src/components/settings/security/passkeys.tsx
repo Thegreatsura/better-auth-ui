@@ -4,7 +4,7 @@ import {
   type PasskeyAuthClient,
   useAddPasskey,
   useAuth,
-  useListUserPasskeys
+  useListPasskeys
 } from "@better-auth-ui/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,7 +21,7 @@ export type PasskeysProps = {
 export function Passkeys({ className }: PasskeysProps) {
   const { authClient } = useAuth()
 
-  const { data: passkeys, isPending } = useListUserPasskeys(
+  const { data: passkeys, isPending } = useListPasskeys(
     authClient as PasskeyAuthClient
   )
 

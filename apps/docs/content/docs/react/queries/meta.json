@@ -12,6 +12,6 @@
     "account-info",
     "list-sessions",
     "list-device-sessions",
-    "list-user-passkeys"
+    "list-passkeys"
   ]
 }

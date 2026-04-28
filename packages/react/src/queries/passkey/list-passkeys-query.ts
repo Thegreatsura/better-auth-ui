@@ -11,15 +11,15 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, PasskeyAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-type ListUserPasskeysData<TAuthClient extends PasskeyAuthClient> = InferData<
+type ListPasskeysData<TAuthClient extends PasskeyAuthClient> = InferData<
   TAuthClient["passkey"]["listUserPasskeys"]
 >
 
-export type ListUserPasskeysParams<TAuthClient extends PasskeyAuthClient> =
+export type ListPasskeysParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]
 
-type ListUserPasskeysOptions<TAuthClient extends PasskeyAuthClient> = Omit<
-  ReturnType<typeof listUserPasskeysOptions<TAuthClient>>,
+type ListPasskeysOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+  ReturnType<typeof listPasskeysOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >
 
@@ -30,13 +30,13 @@ type ListUserPasskeysOptions<TAuthClient extends PasskeyAuthClient> = Omit<
  * @param userId - The current signed-in user's ID. Used for cache partitioning.
  * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
  */
-export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
+export function listPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
   userId: string | undefined,
-  params?: ListUserPasskeysParams<TAuthClient>
+  params?: ListPasskeysParams<TAuthClient>
 ) {
-  type TData = ListUserPasskeysData<TAuthClient>
-  const queryKey = authQueryKeys.listUserPasskeys(userId, params?.query)
+  type TData = ListPasskeysData<TAuthClient>
+  const queryKey = authQueryKeys.listPasskeys(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {
@@ -56,7 +56,7 @@ export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
 
 /**
  * Get the current user's passkeys from the query cache, calling
- * `fetchListUserPasskeys` under the hood if no cached entry exists. Resolves
+ * `fetchListPasskeys` under the hood if no cached entry exists. Resolves
  * with the passkey list, making it ideal for loaders or `beforeLoad` guards.
  *
  * @param queryClient - The React Query client.
@@ -64,19 +64,17 @@ export function listUserPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
  * @param userId - The signed-in user's ID, used for cache partitioning.
  * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
  */
-export const ensureListUserPasskeys = <TAuthClient extends PasskeyAuthClient>(
+export const ensureListPasskeys = <TAuthClient extends PasskeyAuthClient>(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string,
-  params?: ListUserPasskeysParams<TAuthClient>
+  params?: ListPasskeysParams<TAuthClient>
 ) =>
-  queryClient.ensureQueryData(
-    listUserPasskeysOptions(authClient, userId, params)
-  )
+  queryClient.ensureQueryData(listPasskeysOptions(authClient, userId, params))
 
 /**
  * Prefetch the current user's passkeys into the query cache. Behaves like
- * `fetchListUserPasskeys`, but does not throw on error and does not return
+ * `fetchListPasskeys`, but does not throw on error and does not return
  * the data — use this to warm the cache without blocking navigation.
  *
  * @param queryClient - The React Query client.
@@ -84,13 +82,12 @@ export const ensureListUserPasskeys = <TAuthClient extends PasskeyAuthClient>(
  * @param userId - The signed-in user's ID, used for cache partitioning.
  * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
  */
-export const prefetchListUserPasskeys = <TAuthClient extends PasskeyAuthClient>(
+export const prefetchListPasskeys = <TAuthClient extends PasskeyAuthClient>(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string,
-  params?: ListUserPasskeysParams<TAuthClient>
-) =>
-  queryClient.prefetchQuery(listUserPasskeysOptions(authClient, userId, params))
+  params?: ListPasskeysParams<TAuthClient>
+) => queryClient.prefetchQuery(listPasskeysOptions(authClient, userId, params))
 
 /**
  * Fetch and cache the current user's passkeys, resolving with the data or
@@ -103,33 +100,33 @@ export const prefetchListUserPasskeys = <TAuthClient extends PasskeyAuthClient>(
  * @param userId - The signed-in user's ID, used for cache partitioning.
  * @param params - Parameters forwarded to `authClient.passkey.listUserPasskeys`.
  */
-export const fetchListUserPasskeys = <TAuthClient extends PasskeyAuthClient>(
+export const fetchListPasskeys = <TAuthClient extends PasskeyAuthClient>(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string,
-  params?: ListUserPasskeysParams<TAuthClient>
-) => queryClient.fetchQuery(listUserPasskeysOptions(authClient, userId, params))
+  params?: ListPasskeysParams<TAuthClient>
+) => queryClient.fetchQuery(listPasskeysOptions(authClient, userId, params))
 
-export type UseListUserPasskeysOptions<TAuthClient extends PasskeyAuthClient> =
-  ListUserPasskeysOptions<TAuthClient> & ListUserPasskeysParams<TAuthClient>
+export type UseListPasskeysOptions<TAuthClient extends PasskeyAuthClient> =
+  ListPasskeysOptions<TAuthClient> & ListPasskeysParams<TAuthClient>
 
 /**
  * Subscribe to the current user's passkeys via TanStack Query.
  *
- * Shares a query key with the server-side `listUserPasskeysOptions`, so
+ * Shares a query key with the server-side `listPasskeysOptions`, so
  * SSR-hydrated data is reused from the cache without an immediate refetch.
  * The query is gated on a signed-in user; while the session is loading or
  * absent, the underlying `queryFn` is replaced with `skipToken`.
  *
  * @param authClient - The Better Auth client with the passkey plugin.
- * @param options - `listUserPasskeys` params (`query`, `fetchOptions`) merged
+ * @param options - `listPasskeys` params (`query`, `fetchOptions`) merged
  *   with `useQuery` options (e.g. `enabled`, `staleTime`, `select`).
  * @param queryClient - Optional custom `QueryClient`. Defaults to the client
  *   from the nearest `QueryClientProvider`.
  */
-export function useListUserPasskeys<TAuthClient extends PasskeyAuthClient>(
+export function useListPasskeys<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
-  options: UseListUserPasskeysOptions<TAuthClient> = {},
+  options: UseListPasskeysOptions<TAuthClient> = {},
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
@@ -137,7 +134,7 @@ export function useListUserPasskeys<TAuthClient extends PasskeyAuthClient>(
 
   const { query, fetchOptions, ...queryOptions } = options
 
-  const baseOptions = listUserPasskeysOptions(authClient, userId, {
+  const baseOptions = listPasskeysOptions(authClient, userId, {
     query,
     fetchOptions
   })

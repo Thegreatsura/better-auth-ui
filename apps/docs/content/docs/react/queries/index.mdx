@@ -25,7 +25,7 @@ queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 
 ## Per-user queries
 
-Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListUserPasskeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
+Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListPasskeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
 
 ## Escape hatch
 
@@ -83,7 +83,7 @@ authQueryOptions(authClient.magicLink.list, ["auth", "magicLink", "list"], {
   <Card title="useListDeviceSessions" href="/docs/react/queries/list-device-sessions">
     Device sessions for the multi-session account switcher.
   </Card>
-  <Card title="useListUserPasskeys" href="/docs/react/queries/list-user-passkeys">
+  <Card title="useListPasskeys" href="/docs/react/queries/list-passkeys">
     Passkeys registered for the current user.
   </Card>
 </Cards>

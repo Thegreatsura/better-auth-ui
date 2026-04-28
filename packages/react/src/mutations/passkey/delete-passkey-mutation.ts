@@ -3,7 +3,7 @@ import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { PasskeyAuthClient } from "../../lib/auth-client"
-import { useListUserPasskeys } from "../../queries/passkey/list-user-passkeys-query"
+import { useListPasskeys } from "../../queries/passkey/list-passkeys-query"
 
 export type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["deletePasskey"]>[0]
@@ -53,7 +53,7 @@ export function useDeletePasskey<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
   options?: DeletePasskeyOptions<TAuthClient>
 ) {
-  const { refetch } = useListUserPasskeys(authClient, { refetchOnMount: false })
+  const { refetch } = useListPasskeys(authClient, { refetchOnMount: false })
 
   return useMutation({
     ...deletePasskeyOptions(authClient),

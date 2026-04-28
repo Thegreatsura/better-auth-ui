@@ -42,12 +42,11 @@ export const authQueryKeys = {
       query ?? null
     ] as const,
 
-  /** Key for `passkey.listUserPasskeys` for the given user. */
-  listUserPasskeys: <TQuery = undefined>(
+  /** Key for the user's passkey list. */
+  listPasskeys: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
-  ) =>
-    [...authQueryKeys.user(userId), "listUserPasskeys", query ?? null] as const,
+  ) => [...authQueryKeys.user(userId), "listPasskeys", query ?? null] as const,
 
   /** Key for `accountInfo` for the given user. */
   accountInfo: <TQuery = undefined>(

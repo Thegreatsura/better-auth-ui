@@ -2,7 +2,7 @@ import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
-import { useListUserPasskeys } from "../../queries/passkey/list-user-passkeys-query"
+import { useListPasskeys } from "../../queries/passkey/list-passkeys-query"
 
 export type AddPasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["addPasskey"]>[0]
@@ -53,7 +53,7 @@ export function useAddPasskey<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
   options?: AddPasskeyOptions<TAuthClient>
 ) {
-  const { refetch } = useListUserPasskeys(authClient, { refetchOnMount: false })
+  const { refetch } = useListPasskeys(authClient, { refetchOnMount: false })
 
   return useMutation({
     ...addPasskeyOptions(authClient),
