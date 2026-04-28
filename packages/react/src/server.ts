@@ -1,7 +1,7 @@
 export type * from "./lib/auth-server"
 export * from "./server/queries/auth/session-query"
 export * from "./server/queries/multi-session/list-device-sessions-query"
-export * from "./server/queries/passkey/list-user-passkeys-query"
+export * from "./server/queries/passkey/list-passkeys-query"
 export * from "./server/queries/settings/account-info-query"
 export * from "./server/queries/settings/list-accounts-query"
 export * from "./server/queries/settings/list-sessions-query"
