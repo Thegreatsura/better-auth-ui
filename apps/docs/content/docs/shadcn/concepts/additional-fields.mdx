@@ -156,9 +156,9 @@ String inputs render inside an `InputGroup` when `prefix` or `suffix` is set:
 }
 ```
 
-### Read-only with copy button
+### Copy button
 
-Use `readOnly: true` and `copyable: true` to surface a non-editable value with a copy-to-clipboard affordance — useful for fields like `id`:
+Set `copyable: true` to render a copy-to-clipboard button as a suffix on the input. The button copies the input's *current* value, so it works on editable fields too — though it's most commonly paired with `readOnly: true` for fields like `id`:
 
 ```ts
 {

@@ -7,7 +7,7 @@ import {
 import { useAuth } from "@better-auth-ui/react"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronDownIcon, Copy } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -74,18 +74,23 @@ function formatTime(date: Date) {
   return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
-/** Icon-only copy button used as an `InputGroupAddon`. */
+/**
+ * Icon-only copy button used as an `InputGroupAddon`. `getValue` is invoked
+ * lazily on click so the button copies the input's *live* value rather than a
+ * stale snapshot — important when paired with editable inputs.
+ */
 function CopyButton({
-  value,
+  getValue,
   isDisabled
 }: {
-  value: string | undefined
+  getValue: () => string | undefined
   isDisabled?: boolean
 }) {
   const { localization } = useAuth()
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
+    const value = getValue()
     if (!value) return
 
     try {
@@ -102,7 +107,7 @@ function CopyButton({
       aria-label={localization.settings.copyToClipboard}
       title={localization.settings.copyToClipboard}
       onClick={handleCopy}
-      disabled={isDisabled || !value}
+      disabled={isDisabled}
     >
       {copied ? <Check /> : <Copy />}
     </InputGroupButton>
@@ -116,6 +121,9 @@ export function AdditionalField({
   isPending
 }: AdditionalFieldProps) {
   const inputType = resolveInputType(field)
+  // Used by `inputType: "input"` with `copyable: true` so the copy button
+  // reads the input's *live* value rather than a stale `defaultValue`.
+  const inputRef = useRef<HTMLInputElement>(null)
 
   if (inputType === "hidden") {
     return (
@@ -141,7 +149,9 @@ export function AdditionalField({
         <Textarea
           id={name}
           name={name}
-          defaultValue={field.defaultValue as string}
+          defaultValue={
+            field.defaultValue == null ? undefined : String(field.defaultValue)
+          }
           placeholder={field.placeholder}
           required={field.required}
           readOnly={field.readOnly}
@@ -171,7 +181,13 @@ export function AdditionalField({
             field.step ??
             (maxFractionDigits ? 1 / 10 ** maxFractionDigits : undefined)
           }
-          defaultValue={field.defaultValue as number | string | undefined}
+          defaultValue={
+            field.defaultValue == null
+              ? undefined
+              : typeof field.defaultValue === "number"
+                ? field.defaultValue
+                : String(field.defaultValue)
+          }
           placeholder={field.placeholder}
           required={field.required}
           readOnly={field.readOnly}
@@ -325,12 +341,17 @@ export function AdditionalField({
           )}
 
           <InputGroupInput
+            ref={inputRef}
             id={name}
             name={name}
             type={nativeInputType}
             inputMode={nativeInputMode}
             step={nativeStep}
-            defaultValue={field.defaultValue as string}
+            defaultValue={
+              field.defaultValue == null
+                ? undefined
+                : String(field.defaultValue)
+            }
             placeholder={field.placeholder}
             required={field.required}
             readOnly={field.readOnly}
@@ -340,7 +361,7 @@ export function AdditionalField({
           {field.copyable ? (
             <InputGroupAddon align="inline-end">
               <CopyButton
-                value={field.defaultValue as string | undefined}
+                getValue={() => inputRef.current?.value}
                 isDisabled={isPending}
               />
             </InputGroupAddon>
@@ -368,7 +389,9 @@ export function AdditionalField({
         type={nativeInputType}
         inputMode={nativeInputMode}
         step={nativeStep}
-        defaultValue={field.defaultValue as string}
+        defaultValue={
+          field.defaultValue == null ? undefined : String(field.defaultValue)
+        }
         placeholder={field.placeholder}
         required={field.required}
         readOnly={field.readOnly}

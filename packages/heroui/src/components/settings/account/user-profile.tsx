@@ -235,7 +235,16 @@ export function UserProfile({
                 {additionalFields
                   ?.filter((field) => field.profile !== false)
                   .map((field) => {
-                    const value = (session?.user as Record<string, unknown>)[
+                    if (!session) {
+                      return (
+                        <Skeleton
+                          key={field.name}
+                          className="h-10 md:h-9 w-full rounded-xl"
+                        />
+                      )
+                    }
+
+                    const value = (session.user as Record<string, unknown>)[
                       field.name
                     ]
 
@@ -247,21 +256,16 @@ export function UserProfile({
                         : String(value ?? "")
                     }`
 
-                    return session ? (
+                    return (
                       <AdditionalField
                         key={key}
                         name={field.name}
                         field={{
                           ...field,
-                          defaultValue: value as AdditionalFieldValue
+                          defaultValue: value as AdditionalFieldValue | null
                         }}
                         isPending={isPending}
                         variant={variant}
-                      />
-                    ) : (
-                      <Skeleton
-                        key={field.name}
-                        className="h-10 md:h-9 w-full rounded-xl"
                       />
                     )
                   })}

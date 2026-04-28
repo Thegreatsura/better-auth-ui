@@ -72,8 +72,11 @@ export interface AdditionalField {
   step?: number
   /** @default false */
   required?: boolean
-  /** Default value used to seed the input on the sign-up form only. */
-  defaultValue?: AdditionalFieldValue
+  /**
+   * Default value used to seed the input on the sign-up form. On the user
+   * profile, the value is always re-seeded from the persisted session.
+   */
+  defaultValue?: AdditionalFieldValue | null
   /**
    * Render the field but exclude it from submission payloads.
    * @default false

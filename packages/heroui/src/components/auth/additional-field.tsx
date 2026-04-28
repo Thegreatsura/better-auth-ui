@@ -37,7 +37,7 @@ import {
   toCalendarDate,
   toCalendarDateTime
 } from "@internationalized/date"
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 export type AdditionalFieldProps = {
   name: string
@@ -81,18 +81,23 @@ function toDateTimeValue(value: unknown): CalendarDateTime | undefined {
   return undefined
 }
 
-/** Icon-only copy button used as an `InputGroup.Suffix`. */
+/**
+ * Icon-only copy button used as an `InputGroup.Suffix`. `getValue` is invoked
+ * lazily on click so the button copies the input's *live* value rather than a
+ * stale snapshot — important when paired with editable inputs.
+ */
 function CopyButton({
-  value,
+  getValue,
   isDisabled
 }: {
-  value: string | undefined
+  getValue: () => string | undefined
   isDisabled?: boolean
 }) {
   const { localization } = useAuth()
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
+    const value = getValue()
     if (!value) return
 
     try {
@@ -110,7 +115,7 @@ function CopyButton({
       aria-label={localization.settings.copyToClipboard}
       size="sm"
       variant="ghost"
-      isDisabled={isDisabled || !value}
+      isDisabled={isDisabled}
       onPress={handleCopy}
     >
       {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
@@ -128,6 +133,9 @@ export function AdditionalField({
   const { localization } = useAuth()
   const inputType = resolveInputType(field)
   const inputVariant = variant === "transparent" ? "primary" : "secondary"
+  // Used by `inputType: "input"` with `copyable: true` so the copy button
+  // reads the input's *live* value rather than a stale `defaultValue`.
+  const inputRef = useRef<HTMLInputElement>(null)
 
   if (inputType === "hidden") {
     return (
@@ -149,7 +157,9 @@ export function AdditionalField({
     return (
       <TextField
         name={name}
-        defaultValue={field.defaultValue as string}
+        defaultValue={
+          field.defaultValue == null ? undefined : String(field.defaultValue)
+        }
         isDisabled={isPending}
         isReadOnly={field.readOnly}
       >
@@ -481,7 +491,9 @@ export function AdditionalField({
     return (
       <TextField
         name={name}
-        defaultValue={field.defaultValue as string}
+        defaultValue={
+          field.defaultValue == null ? undefined : String(field.defaultValue)
+        }
         isDisabled={isPending}
         isReadOnly={field.readOnly}
       >
@@ -491,6 +503,7 @@ export function AdditionalField({
           {hasPrefix && <InputGroup.Prefix>{field.prefix}</InputGroup.Prefix>}
 
           <InputGroup.Input
+            ref={inputRef}
             placeholder={field.placeholder}
             required={field.required}
             type={nativeInputType}
@@ -501,7 +514,7 @@ export function AdditionalField({
           {field.copyable ? (
             <InputGroup.Suffix className="px-0">
               <CopyButton
-                value={field.defaultValue as string}
+                getValue={() => inputRef.current?.value}
                 isDisabled={isPending}
               />
             </InputGroup.Suffix>
@@ -520,7 +533,9 @@ export function AdditionalField({
   return (
     <TextField
       name={name}
-      defaultValue={field.defaultValue as string}
+      defaultValue={
+        field.defaultValue == null ? undefined : String(field.defaultValue)
+      }
       isDisabled={isPending}
       isReadOnly={field.readOnly}
     >
