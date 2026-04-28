@@ -14,6 +14,17 @@ export function Providers({ children }: { children: ReactNode }) {
     <AuthProvider
       authClient={authClient}
       appearance={{ theme, setTheme }}
+      additionalFields={[
+        {
+          name: "dateOfBirth",
+          type: "date",
+          label: "Date of Birth",
+          placeholder: "Pick a date",
+          required: true,
+          signUp: true,
+          profile: false
+        }
+      ]}
       deleteUser={{ enabled: true }}
       magicLink
       multiSession

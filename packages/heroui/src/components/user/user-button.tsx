@@ -3,12 +3,9 @@ import {
   ArrowRightFromSquare,
   ArrowRightToSquare,
   ChevronsExpandVertical,
-  Display,
   Gear,
-  Moon,
   PersonPlus,
-  Persons,
-  Sun
+  Persons
 } from "@gravity-ui/icons"
 import {
   Button,
@@ -17,11 +14,11 @@ import {
   Dropdown,
   type DropdownPopoverProps,
   Label,
-  Separator,
-  Tabs
+  Separator
 } from "@heroui/react"
 
 import { SwitchAccountMenu } from "./switch-account-menu"
+import { ThemeToggleItem } from "./theme-toggle-item"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
 
@@ -64,6 +61,8 @@ export function UserButton({
     multiSession,
     appearance: { theme, setTheme, themes }
   } = useAuth()
+
+  const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
 
   const { data: session, isPending: sessionPending } = useSession(authClient)
 
@@ -133,55 +132,7 @@ export function UserButton({
                 </Dropdown.SubmenuTrigger>
               )}
 
-              {themeToggle && theme && setTheme && !!themes?.length && (
-                <Dropdown.Item className="py-1 pe-2">
-                  <Label>{localization.settings.theme}</Label>
-
-                  <Tabs
-                    className="ml-auto"
-                    selectedKey={theme}
-                    onSelectionChange={(key) => setTheme(key as string)}
-                  >
-                    <Tabs.ListContainer>
-                      <Tabs.List
-                        aria-label={localization.settings.theme}
-                        className="*:h-5 *:w-5 *:p-0"
-                      >
-                        {themes.includes("system") && (
-                          <Tabs.Tab
-                            id="system"
-                            aria-label={localization.settings.system}
-                          >
-                            <Display className="size-3" />
-
-                            <Tabs.Indicator />
-                          </Tabs.Tab>
-                        )}
-                        {themes.includes("light") && (
-                          <Tabs.Tab
-                            id="light"
-                            aria-label={localization.settings.light}
-                          >
-                            <Sun className="size-3" />
-
-                            <Tabs.Indicator />
-                          </Tabs.Tab>
-                        )}
-                        {themes.includes("dark") && (
-                          <Tabs.Tab
-                            id="dark"
-                            aria-label={localization.settings.dark}
-                          >
-                            <Moon className="size-3" />
-
-                            <Tabs.Indicator />
-                          </Tabs.Tab>
-                        )}
-                      </Tabs.List>
-                    </Tabs.ListContainer>
-                  </Tabs>
-                </Dropdown.Item>
-              )}
+              {showThemeToggle && <ThemeToggleItem />}
 
               <Separator />
 
@@ -213,6 +164,14 @@ export function UserButton({
 
                 <Label>{localization.auth.signUp}</Label>
               </Dropdown.Item>
+
+              {showThemeToggle && (
+                <>
+                  <Separator />
+
+                  <ThemeToggleItem />
+                </>
+              )}
             </>
           )}
         </Dropdown.Menu>

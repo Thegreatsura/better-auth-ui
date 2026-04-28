@@ -1,4 +1,8 @@
 import {
+  type AdditionalFieldValue,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
+import {
   type UsernameAuthClient,
   useAuth,
   useIsUsernameAvailable,
@@ -25,6 +29,7 @@ import {
 import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useEffect, useState } from "react"
 
+import { AdditionalField } from "../../auth/additional-field"
 import { ChangeAvatar } from "./change-avatar"
 
 export type UserProfileProps = {
@@ -42,7 +47,12 @@ export function UserProfile({
   variant,
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
-  const { authClient, localization, username: usernameConfig } = useAuth()
+  const {
+    additionalFields,
+    authClient,
+    localization,
+    username: usernameConfig
+  } = useAuth()
   const { data: session } = useSession(authClient as UsernameAuthClient)
 
   const currentUsername =
@@ -88,10 +98,34 @@ export function UserProfile({
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
   })
 
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
+
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (field.profile === false || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.danger(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
+
+      // `null` = explicit clear (forward to backend); `undefined` = omitted.
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
 
     updateUser({
       name,
@@ -102,7 +136,8 @@ export function UserProfile({
               ? { displayUsername: username.trim() }
               : {})
           }
-        : {})
+        : {}),
+      ...additionalFieldValues
     })
   }
 
@@ -196,6 +231,48 @@ export function UserProfile({
 
                   <FieldError />
                 </TextField>
+
+                {additionalFields
+                  ?.filter((field) => field.profile !== false)
+                  .map((field) => {
+                    if (!session) {
+                      if (field.inputType === "hidden") {
+                        return null
+                      }
+
+                      return (
+                        <Skeleton
+                          key={field.name}
+                          className="h-10 md:h-9 w-full rounded-xl"
+                        />
+                      )
+                    }
+
+                    const value = (session.user as Record<string, unknown>)[
+                      field.name
+                    ]
+
+                    // Re-mount when the session value loads so the field's
+                    // uncontrolled `defaultValue` reflects the latest data.
+                    const key = `${field.name}:${
+                      value instanceof Date
+                        ? value.toISOString()
+                        : String(value ?? "")
+                    }`
+
+                    return (
+                      <AdditionalField
+                        key={key}
+                        name={field.name}
+                        field={{
+                          ...field,
+                          defaultValue: value as AdditionalFieldValue | null
+                        }}
+                        isPending={isPending}
+                        variant={variant}
+                      />
+                    )
+                  })}
               </Fieldset.Group>
 
               <Fieldset.Actions>

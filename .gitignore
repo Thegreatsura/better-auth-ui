@@ -53,3 +53,4 @@ Thumbs.db
 .cursor/hooks/state/continual-learning.json
 # heroui-agents-md
 .heroui-docs/
+.playwright-mcp/

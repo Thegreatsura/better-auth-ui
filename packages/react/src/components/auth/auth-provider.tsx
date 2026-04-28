@@ -11,7 +11,12 @@ import {
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import { createContext, type PropsWithChildren, useContext } from "react"
+import {
+  createContext,
+  type PropsWithChildren,
+  type ReactNode,
+  useContext
+} from "react"
 
 import type { AuthClient } from "../../lib/auth-client"
 import type { AuthPlugin } from "../../lib/auth-plugin"
@@ -33,6 +38,11 @@ declare module "@better-auth-ui/core" {
      * @remarks `AuthClient`
      */
     authClient: AuthClient
+  }
+
+  /** Widen `AdditionalField.label` to `ReactNode` in the React package. */
+  interface AdditionalFieldRegister {
+    label: ReactNode
   }
 }
 

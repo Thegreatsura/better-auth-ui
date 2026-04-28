@@ -27,6 +27,40 @@
       ]
     },
     {
+      "name": "additional-field",
+      "type": "registry:component",
+      "title": "Additional Field",
+      "description": "Renders a configured additional user field on the sign-up form and user profile, with support for string, number, boolean, date, datetime, select, combobox, slider, and hidden types.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "date-fns",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "checkbox",
+        "combobox",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "popover",
+        "select",
+        "slider",
+        "switch",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "src/components/auth/additional-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "sign-in",
       "type": "registry:component",
       "title": "Sign In",
@@ -91,7 +125,8 @@
         "field",
         "input-group",
         "sonner",
-        "spinner"
+        "spinner",
+        "https://better-auth-ui.com/r/additional-field.json"
       ],
       "files": [
         {
@@ -346,6 +381,7 @@
         "skeleton",
         "sonner",
         "spinner",
+        "https://better-auth-ui.com/r/additional-field.json",
         "https://better-auth-ui.com/r/user-avatar.json"
       ],
       "files": [
