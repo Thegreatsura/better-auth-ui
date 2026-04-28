@@ -1,7 +1,7 @@
 "use client"
 
 import {
-  type AdditionalFieldInputType,
+  type AdditionalFieldValue,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
 import {
@@ -122,6 +122,7 @@ export function UserProfile({ className }: UserProfileProps) {
         }
       }
 
+      // `null` = explicit clear (forward to backend); `undefined` = omitted.
       if (value !== undefined) {
         additionalFieldValues[field.name] = value
       }
@@ -253,7 +254,15 @@ export function UserProfile({ className }: UserProfileProps) {
             {additionalFields?.map((field) => {
               if (field.profile === false) return null
 
-              const value = (session?.user as Record<string, unknown>)?.[
+              if (!session) {
+                return (
+                  <Skeleton key={field.name}>
+                    <Input className="invisible" />
+                  </Skeleton>
+                )
+              }
+
+              const value = (session.user as Record<string, unknown>)[
                 field.name
               ]
 
@@ -265,7 +274,7 @@ export function UserProfile({ className }: UserProfileProps) {
                   : String(value ?? "")
               }`
 
-              return session ? (
+              return (
                 <AdditionalField
                   key={key}
                   name={field.name}
@@ -273,14 +282,10 @@ export function UserProfile({ className }: UserProfileProps) {
                     ...field,
                     // `defaultValue` is sign-up-only; on the profile we
                     // always seed from the session.
-                    defaultValue: value as AdditionalFieldInputType
+                    defaultValue: value as AdditionalFieldValue | null
                   }}
                   isPending={isPending}
                 />
-              ) : (
-                <Skeleton key={field.name}>
-                  <Input className="invisible" />
-                </Skeleton>
               )
             })}
           </CardContent>
