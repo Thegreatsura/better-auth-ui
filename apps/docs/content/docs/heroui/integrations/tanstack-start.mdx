@@ -52,7 +52,7 @@ Create a dynamic settings route that renders the `Settings` component for the UR
 ```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-heroui-example/src/routes/settings/$path.tsx
 ```
 
-The built-in `viewPaths.settings` object contains `account` and `security`. When a plugin contributes its own settings views (e.g. `organizationPlugin()` adding `organizations`), spread its `viewPaths.settings` the same way as the auth route above.
+The built-in `viewPaths.settings` object contains `account` and `security`. If a plugin contributes its own settings views, spread its `viewPaths.settings` the same way as the auth route above.
 
 </Step>
 </Steps>
