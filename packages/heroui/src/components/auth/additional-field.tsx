@@ -300,7 +300,7 @@ export function AdditionalField({
           field.defaultValue != null ? String(field.defaultValue) : undefined
         }
         placeholder={field.placeholder}
-        isDisabled={isPending}
+        isDisabled={isPending || field.readOnly}
         isRequired={field.required}
         variant={inputVariant}
         fullWidth

@@ -255,6 +255,10 @@ export function UserProfile({ className }: UserProfileProps) {
               if (field.profile === false) return null
 
               if (!session) {
+                if (field.inputType === "hidden") {
+                  return null
+                }
+
                 return (
                   <Skeleton key={field.name}>
                     <Input className="invisible" />

@@ -465,6 +465,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
     isDateTime && date ? formatTime(date) : ""
   )
   const [open, setOpen] = useState(false)
+  const [error, setError] = useState<string>()
 
   // Compose the hidden form value: ISO date for "date", ISO datetime for
   // "datetime" (date + time).
@@ -486,12 +487,28 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
   }
 
   return (
-    <Field>
+    <Field data-invalid={!!error}>
       <Label htmlFor={`${name}-date`}>{field.label}</Label>
 
-      <input type="hidden" name={name} value={formValue} />
-
-      <div className="flex gap-2">
+      <div className="relative flex gap-2">
+        {/* Visually-hidden input so required constraint validation fires on submit.
+            onInvalid suppresses the native browser balloon and routes the message
+            through the styled <FieldError> below — matching the pattern used by
+            the Name / Email / Password fields in the sign-up form. */}
+        <input
+          type="text"
+          name={name}
+          value={formValue}
+          onChange={() => {}}
+          required={field.required}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-0"
+          onInvalid={(e) => {
+            e.preventDefault()
+            setError((e.target as HTMLInputElement).validationMessage)
+          }}
+        />
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -499,6 +516,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
               variant="outline"
               id={`${name}-date`}
               data-empty={!date}
+              aria-invalid={!!error}
               disabled={isPending || field.readOnly}
               className={cn(
                 "flex-1 justify-between font-normal",
@@ -519,6 +537,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
               captionLayout="dropdown"
               onSelect={(value) => {
                 setDate(value)
+                if (value) setError(undefined)
                 if (!isDateTime) setOpen(false)
               }}
             />
@@ -544,7 +563,7 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
         )}
       </div>
 
-      <FieldError />
+      <FieldError>{error}</FieldError>
     </Field>
   )
 }

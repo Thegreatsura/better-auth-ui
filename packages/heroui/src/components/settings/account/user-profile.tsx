@@ -236,6 +236,10 @@ export function UserProfile({
                   ?.filter((field) => field.profile !== false)
                   .map((field) => {
                     if (!session) {
+                      if (field.inputType === "hidden") {
+                        return null
+                      }
+
                       return (
                         <Skeleton
                           key={field.name}
