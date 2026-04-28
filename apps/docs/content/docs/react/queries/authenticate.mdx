@@ -26,3 +26,33 @@ export function AccountPage() {
 The redirect uses `basePaths.auth` + `viewPaths.auth.signIn` from `AuthProvider` — override those to target a custom sign-in view.
 
 Accepts the same arguments as `useSession` — see its [Params](/docs/react/queries/session#params).
+
+## First-render caveat
+
+The redirect runs inside `useEffect`, so it's client-only. On the first render `session` is `undefined` (still pending) and no navigation happens yet — without something in front of the protected UI, it can briefly flash before the client mounts, runs the effect, and navigates to sign-in.
+
+You have two ways to handle this:
+
+### Gate on `isPending` (simplest)
+
+Render a skeleton or spinner while the session query is pending, and `null` once it resolves to unauthenticated (the redirect is already in flight). This is what the [Usage](#usage) example does and is enough for most apps:
+
+```tsx
+const { data: session, isPending } = useAuthenticate(authClient)
+
+if (isPending) return <Skeleton />
+if (!session) return null // navigating to sign-in
+
+return <Account user={session.user} />
+```
+
+No flash of protected content, no server work required — just a brief loading state on first mount. Works identically for SSR, client-rendered, and statically prerendered routes.
+
+### Pair with a server-side guard (no loading state)
+
+If you want the protected UI to render immediately on first paint with no skeleton, prefetch the session on the server and hydrate it into the query cache:
+
+- **Next.js** — prefetch in a server component and wrap the subtree in `HydrationBoundary`. See the [Next.js integration guide](/docs/heroui/integrations/nextjs#reactive-protection--prerendered-routes-useauthenticate).
+- **TanStack Start** — check the session in `beforeLoad` on the route. See the [TanStack Start integration guide](/docs/heroui/integrations/tanstack-start#reactive-protection--prerendered-routes-useauthenticate).
+
+The server-side check handles first paint; `useAuthenticate` handles everything after — token expiry, sign-out in another tab, server-side session revocation — by reactively redirecting whenever the session goes away.
