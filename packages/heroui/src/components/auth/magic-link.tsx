@@ -132,8 +132,8 @@ export function MagicLink({
             </Button>
 
             {plugins?.flatMap((plugin) =>
-              (plugin.authButtons ?? []).map((Button, index) => (
-                <Button
+              (plugin.authButtons ?? []).map((AuthButton, index) => (
+                <AuthButton
                   key={`${plugin.id}-${index.toString()}`}
                   view="magicLink"
                   isPending={isPending}

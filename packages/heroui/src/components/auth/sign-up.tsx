@@ -400,8 +400,8 @@ export function SignUp({
               </Button>
 
               {plugins?.flatMap((plugin) =>
-                plugin.authButtons?.map((Button, index) => (
-                  <Button
+                plugin.authButtons?.map((AuthButton, index) => (
+                  <AuthButton
                     key={`${plugin.id}-${index.toString()}`}
                     view="signUp"
                     isPending={isPending}
