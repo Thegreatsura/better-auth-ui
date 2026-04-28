@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
@@ -29,7 +30,7 @@ type SetActiveSessionOptions<TAuthClient extends MultiSessionAuthClient> = Omit<
 export function setActiveSessionOptions<
   TAuthClient extends MultiSessionAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = ["auth", "multiSession", "setActive"]
+  const mutationKey = authMutationKeys.multiSession.setActive
 
   const mutationFn = (params: SetActiveSessionParams<TAuthClient>) =>
     authClient.multiSession.setActive({

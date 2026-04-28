@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -20,7 +21,7 @@ type LinkSocialOptions<TAuthClient extends AuthClient> = Omit<
 export function linkSocialOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "linkSocial"]
+  const mutationKey = authMutationKeys.linkSocial
 
   const mutationFn = (params: LinkSocialParams<TAuthClient>) =>
     authClient.linkSocial({

@@ -38,19 +38,29 @@ Hooks that change auth state update the cache for you. Override `onSuccess` in t
 
 ## Tracking mutation state globally
 
-All mutation keys are prefixed with `"auth"`:
+All mutation keys are prefixed with `"auth"` and exposed through the shared `authMutationKeys` factory in `@better-auth-ui/core`. Use it instead of inlining tuples so call sites share the same source of truth as the mutation factories:
 
 ```ts
-const authPending = useIsMutating({ mutationKey: ["auth"] })
-const signInPending = useIsMutating({ mutationKey: ["auth", "signIn"] })
+import { authMutationKeys } from "@better-auth-ui/core"
+import { useIsMutating } from "@tanstack/react-query"
+
+const authPending = useIsMutating({ mutationKey: authMutationKeys.all })
+const signInPending = useIsMutating({ mutationKey: authMutationKeys.signIn.all })
+const emailSignInPending = useIsMutating({
+  mutationKey: authMutationKeys.signIn.email
+})
 ```
+
+Each grouping (`signIn`, `signUp`, `passkey`, `multiSession`) exposes an `all` prefix so you can match a whole feature at once.
 
 Match inside a `MutationCache` observer for global toasts or analytics:
 
 ```ts
+import { authMutationKeys } from "@better-auth-ui/core"
+
 new MutationCache({
   onError: (error, _vars, _ctx, mutation) => {
-    if (mutation.options.mutationKey?.[0] === "auth") {
+    if (mutation.options.mutationKey?.[0] === authMutationKeys.all[0]) {
       toast.error(error.message)
     }
   }
@@ -71,6 +81,8 @@ const { mutate } = useAuthMutation(
   ["auth", "emailOtp", "sendVerificationOtp"]
 )
 ```
+
+For endpoints that already have a key in `authMutationKeys`, prefer it over an inline tuple so cache observers and `useIsMutating` checks line up.
 
 ## Available mutations
 

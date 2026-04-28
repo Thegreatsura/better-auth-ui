@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -20,7 +21,7 @@ type ResetPasswordOptions<TAuthClient extends AuthClient> = Omit<
 export function resetPasswordOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "resetPassword"]
+  const mutationKey = authMutationKeys.resetPassword
 
   const mutationFn = (params: ResetPasswordParams<TAuthClient>) =>
     authClient.resetPassword({

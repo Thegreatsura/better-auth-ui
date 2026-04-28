@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -22,7 +23,7 @@ type IsUsernameAvailableOptions<TAuthClient extends UsernameAuthClient> = Omit<
 export function isUsernameAvailableOptions<
   TAuthClient extends UsernameAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = ["auth", "isUsernameAvailable"]
+  const mutationKey = authMutationKeys.isUsernameAvailable
 
   const mutationFn = (params: IsUsernameAvailableParams<TAuthClient>) =>
     authClient.isUsernameAvailable({

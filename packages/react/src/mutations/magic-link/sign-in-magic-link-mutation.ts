@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -19,7 +20,7 @@ type SignInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient> = Omit<
 export function signInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "signIn", "magicLink"]
+  const mutationKey = authMutationKeys.signIn.magicLink
 
   const mutationFn = (params: SignInMagicLinkParams<TAuthClient>) =>
     authClient.signIn.magicLink({

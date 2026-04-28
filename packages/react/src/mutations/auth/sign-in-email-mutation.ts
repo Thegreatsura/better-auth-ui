@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
@@ -20,7 +21,7 @@ type SignInEmailOptions<TAuthClient extends AuthClient> = Omit<
 /**
  * Mutation options factory for email/password sign-in.
  *
- * The returned `mutationKey` (`["auth", "signIn", "email"]`) is stable and
+ * The returned `mutationKey` (`authMutationKeys.signIn.email`) is stable and
  * can be passed to `useIsMutating` or matched inside a global
  * `MutationCache` observer for toast handling.
  *
@@ -29,7 +30,7 @@ type SignInEmailOptions<TAuthClient extends AuthClient> = Omit<
 export function signInEmailOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "signIn", "email"]
+  const mutationKey = authMutationKeys.signIn.email
 
   const mutationFn = (params: SignInEmailParams<TAuthClient>) =>
     authClient.signIn.email({

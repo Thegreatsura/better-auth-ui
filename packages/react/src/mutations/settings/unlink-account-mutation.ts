@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -21,7 +22,7 @@ type UnlinkAccountOptions<TAuthClient extends AuthClient> = Omit<
 export function unlinkAccountOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "unlinkAccount"]
+  const mutationKey = authMutationKeys.unlinkAccount
 
   const mutationFn = (params: UnlinkAccountParams<TAuthClient>) =>
     authClient.unlinkAccount({

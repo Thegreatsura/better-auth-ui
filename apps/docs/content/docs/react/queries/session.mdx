@@ -60,9 +60,9 @@ queryClient.invalidateQueries({
 Or, equivalently, via the shared key factory:
 
 ```ts
-import { authKeys } from "@better-auth-ui/core"
+import { authQueryKeys } from "@better-auth-ui/core"
 
-queryClient.invalidateQueries({ queryKey: authKeys.session })
+queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 ```
 
 ## Params

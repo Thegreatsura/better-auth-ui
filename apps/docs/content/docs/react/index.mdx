@@ -21,13 +21,22 @@ Wrap your app with a `QueryClientProvider` above `<AuthProvider>`.
 
 ## Cache keys
 
-All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`["auth", "signIn", "email"]`, `["auth", "updateUser"]`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
+All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`authMutationKeys.signIn.email`, `authMutationKeys.updateUser`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
 
 Read a key off the factory for cache seeding or invalidation:
 
 ```ts
 sessionOptions(authClient).queryKey
 signInEmailOptions(authClient).mutationKey
+```
+
+Or pull from the shared key factories in `@better-auth-ui/core`:
+
+```ts
+import { authQueryKeys, authMutationKeys } from "@better-auth-ui/core"
+
+queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+useIsMutating({ mutationKey: authMutationKeys.signIn.all })
 ```
 
 ## Escape hatches

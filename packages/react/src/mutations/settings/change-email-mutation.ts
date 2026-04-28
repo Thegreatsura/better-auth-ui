@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -21,7 +22,7 @@ type ChangeEmailOptions<TAuthClient extends AuthClient> = Omit<
 export function changeEmailOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "changeEmail"]
+  const mutationKey = authMutationKeys.changeEmail
 
   const mutationFn = (params: ChangeEmailParams<TAuthClient>) =>
     authClient.changeEmail({

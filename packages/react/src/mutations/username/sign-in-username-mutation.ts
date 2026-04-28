@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
@@ -24,7 +25,7 @@ type SignInUsernameOptions<TAuthClient extends UsernameAuthClient> = Omit<
 export function signInUsernameOptions<TAuthClient extends UsernameAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "signIn", "username"]
+  const mutationKey = authMutationKeys.signIn.username
 
   const mutationFn = (params: SignInUsernameParams<TAuthClient>) =>
     authClient.signIn.username({

@@ -1,4 +1,4 @@
-import { authKeys } from "@better-auth-ui/core"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
@@ -25,7 +25,7 @@ type SignOutOptions<TAuthClient extends AuthClient> = Omit<
 export function signOutOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "signOut"]
+  const mutationKey = authMutationKeys.signOut
 
   // biome-ignore lint/suspicious/noConfusingVoidType: void allows no-arg mutate
   const mutationFn = (params?: SignOutParams<TAuthClient> | void) =>
@@ -64,7 +64,7 @@ export function useSignOut<TAuthClient extends AuthClient>(
     ...signOutOptions(authClient),
     ...options,
     onSuccess: async (...args) => {
-      queryClient.removeQueries({ queryKey: authKeys.all })
+      queryClient.removeQueries({ queryKey: authQueryKeys.all })
       await options?.onSuccess?.(...args)
     }
   })

@@ -1,10 +1,10 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
   useQueryClient
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
-
 import type { AuthClient } from "../../lib/auth-client"
 import { sessionOptions, useSession } from "../../queries/auth/session-query"
 
@@ -25,7 +25,7 @@ type UpdateUserOptions<TAuthClient extends AuthClient> = Omit<
 export function updateUserOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "updateUser"]
+  const mutationKey = authMutationKeys.updateUser
 
   const mutationFn = (params: UpdateUserParams<TAuthClient>) =>
     authClient.updateUser({

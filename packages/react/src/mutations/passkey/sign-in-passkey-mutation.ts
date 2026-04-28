@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
   useMutation,
@@ -24,7 +25,7 @@ type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
 export function signInPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = ["auth", "signIn", "passkey"]
+  const mutationKey = authMutationKeys.signIn.passkey
 
   // biome-ignore lint/suspicious/noConfusingVoidType: void allows no-arg mutate
   const mutationFn = (params?: SignInPasskeyParams<TAuthClient> | void) =>

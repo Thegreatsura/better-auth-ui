@@ -1,4 +1,4 @@
-import { authKeys } from "@better-auth-ui/core"
+import { authQueryKeys } from "@better-auth-ui/core"
 import {
   type DataTag,
   type QueryClient,
@@ -30,7 +30,7 @@ export function accountInfoOptions<TAuth extends AuthServer>(
   params: AccountInfoParams<TAuth>
 ) {
   type TData = AccountInfoData<TAuth>
-  const queryKey = authKeys.accountInfo(userId, params?.query)
+  const queryKey = authQueryKeys.accountInfo(userId, params?.query)
 
   const options = queryOptions<TData, APIError, TData, typeof queryKey>({
     queryKey,

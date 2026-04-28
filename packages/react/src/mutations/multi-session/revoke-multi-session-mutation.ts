@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -22,7 +23,7 @@ type RevokeMultiSessionOptions<TAuthClient extends MultiSessionAuthClient> =
 export function revokeMultiSessionOptions<
   TAuthClient extends MultiSessionAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = ["auth", "multiSession", "revoke"]
+  const mutationKey = authMutationKeys.multiSession.revoke
 
   const mutationFn = (params: RevokeMultiSessionParams<TAuthClient>) =>
     authClient.multiSession.revoke({
