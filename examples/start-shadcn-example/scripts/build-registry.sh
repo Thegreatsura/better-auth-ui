@@ -18,7 +18,7 @@ SRC_LIB="$EXAMPLE_DIR/src/lib"
 # Components subdirectories that are mirrored into every target.
 COMPONENT_DIRS=(auth user settings ui)
 # Lib entries (file or directory) that are mirrored into every target.
-LIB_ENTRIES=(auth-plugin.ts magic-link)
+LIB_ENTRIES=(auth-plugin.ts magic-link passkey)
 
 # Targets that consume the registry sources.
 TARGETS=(
@@ -27,6 +27,14 @@ TARGETS=(
 )
 
 REGISTRY_OUTPUT="$EXAMPLE_DIR/../../apps/docs/public/r"
+
+# `shadcn build` writes one JSON per registry item but never deletes stale
+# entries from previous runs. Wipe the output directory first so renames
+# and removals propagate cleanly.
+echo "→ pruning $REGISTRY_OUTPUT"
+: "${REGISTRY_OUTPUT:?REGISTRY_OUTPUT is empty}"
+rm -rf -- "$REGISTRY_OUTPUT"
+mkdir -p "$REGISTRY_OUTPUT"
 
 echo "→ shadcn build → $REGISTRY_OUTPUT"
 (cd "$EXAMPLE_DIR" && shadcn build --output "$REGISTRY_OUTPUT")

@@ -22,9 +22,9 @@ export type PasskeyButtonProps = {
 /**
  * "Continue with Passkey" button rendered alongside the password sign-in form.
  *
- * Hidden on sign-up and forgot-password views where passkey sign-in isn't applicable.
+ * Hidden on the sign-up view where passkey sign-in isn't applicable.
  *
- * @param view - Current auth view. Hides the button on `"signUp"` and `"forgotPassword"`.
+ * @param view - Current auth view. Hides the button on `"signUp"`.
  */
 export function PasskeyButton({ view }: PasskeyButtonProps) {
   const { authClient, localization, redirectTo, navigate } = useAuth()
