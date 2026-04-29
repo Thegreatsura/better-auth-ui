@@ -2,7 +2,15 @@ import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
 
 export default defineConfig({
-  plugins: [dts({ tsconfigPath: "./tsconfig.json" })],
+  plugins: [
+    dts({
+      tsconfigPath: "./tsconfig.json",
+      // Force a full type-check + emit on every dts run so cross-package
+      // type changes propagate immediately in dev (vite build --watch);
+      // incremental mode can otherwise skip re-emitting .d.ts files.
+      compilerOptions: { incremental: false, composite: false }
+    })
+  ],
   build: {
     lib: {
       entry: { index: "src/index.ts", plugins: "src/plugins/index.ts" },
