@@ -25,8 +25,7 @@ export function ProviderButton({
 
   const callbackURL = `${baseURL}${redirectTo}`
 
-  const { mutate: signInSocial, isPending: providerPending } =
-    useSignInSocial(authClient)
+  const { mutate: signInSocial } = useSignInSocial(authClient)
 
   const ProviderIcon = providerIcons[provider]
 
@@ -41,17 +40,12 @@ export function ProviderButton({
   return (
     <Button
       variant={variant}
-      isDisabled={isPending}
-      isPending={providerPending}
+      isPending={isPending}
       onPress={() => signInSocial({ provider, callbackURL })}
       {...props}
       aria-label={getProviderName(provider)}
     >
-      {providerPending ? (
-        <Spinner color="current" size="sm" />
-      ) : (
-        <ProviderIcon />
-      )}
+      {isPending ? <Spinner color="current" size="sm" /> : <ProviderIcon />}
 
       {display === "full"
         ? localization.auth.continueWith.replace(
