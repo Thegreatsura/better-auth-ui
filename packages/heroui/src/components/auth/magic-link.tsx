@@ -51,6 +51,7 @@ export function MagicLink({
     authClient,
     basePaths,
     baseURL,
+    emailAndPassword,
     localization,
     plugins,
     redirectTo,
@@ -161,17 +162,19 @@ export function MagicLink({
         )}
       </Card.Content>
 
-      <Card.Footer className="flex-col">
-        <Description className="text-sm">
-          {localization.auth.needToCreateAnAccount}{" "}
-          <Link
-            href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-            className="text-accent decoration-accent no-underline hover:underline"
-          >
-            {localization.auth.signUp}
-          </Link>
-        </Description>
-      </Card.Footer>
+      {emailAndPassword?.enabled && (
+        <Card.Footer className="flex-col">
+          <Description className="text-sm">
+            {localization.auth.needToCreateAnAccount}{" "}
+            <Link
+              href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+              className="text-accent decoration-accent no-underline hover:underline"
+            >
+              {localization.auth.signUp}
+            </Link>
+          </Description>
+        </Card.Footer>
+      )}
     </Card>
   )
 }
