@@ -10,7 +10,7 @@ export type SocialLayout = "auto" | "horizontal" | "vertical" | "grid"
 
 /**
  * Render social provider sign-in buttons. Each button owns its own sign-in
- * mutation and reads the shared sign-in pending state from React Query.
+ * mutation and reads shared auth pending state from React Query.
  *
  * @param socialLayout - Preferred layout for the buttons; `"auto"` picks `"horizontal"` when there are four or more providers, otherwise `"vertical"`.
  * @returns The JSX element that renders the configured social provider buttons.
