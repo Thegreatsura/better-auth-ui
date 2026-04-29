@@ -6,6 +6,10 @@
       "outputs": ["{projectRoot}/dist"],
       "cache": true
     },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "cache": true
+    },
     "dev": {
       "dependsOn": ["^dev", "email"],
       "continuous": true
