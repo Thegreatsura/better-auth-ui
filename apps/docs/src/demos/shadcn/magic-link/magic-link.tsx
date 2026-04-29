@@ -1,15 +1,14 @@
-import type { ReactNode } from "react"
-
 import { AuthProvider } from "@/components/auth/auth-provider"
+import { MagicLink } from "@/components/auth/magic-link"
 import { authClient } from "@/lib/auth-client"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function MagicLinkDemo() {
   return (
     <AuthProvider
       authClient={authClient}
-      multiSession
-      deleteUser={{ enabled: true }}
       navigate={() => {}}
+      plugins={[magicLinkPlugin()]}
       socialProviders={["github", "google"]}
       appearance={{
         theme: "system",
@@ -20,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
         <a {...props} href={undefined} />
       )}
     >
-      {children}
+      <MagicLink />
     </AuthProvider>
   )
 }

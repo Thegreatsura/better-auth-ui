@@ -3,7 +3,6 @@ import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
 import { AuthProvider } from "./auth/auth-provider"
 import { Toaster } from "./ui/sonner"
 
@@ -29,7 +28,6 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       multiSession
       passkey
-      plugins={[magicLinkPlugin()]}
       socialProviders={["github", "google"]}
       redirectTo="/settings/account"
       navigate={navigate}
