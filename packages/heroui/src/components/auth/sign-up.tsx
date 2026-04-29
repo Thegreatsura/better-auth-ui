@@ -24,8 +24,6 @@ import {
 } from "@heroui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
 import { type SyntheticEvent, useState } from "react"
-
-import type { AuthPlugin } from "../../lib/auth-plugin"
 import { AdditionalField } from "./additional-field"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
@@ -66,7 +64,7 @@ export function SignUp({
     username: usernameConfig,
     viewPaths,
     navigate
-  } = useAuth<AuthPlugin>()
+  } = useAuth()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")

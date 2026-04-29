@@ -10,6 +10,13 @@ import type { ComponentType } from "react"
 
 import type { SocialLayout } from "../components/auth/provider-buttons"
 
+declare module "@better-auth-ui/react" {
+  /** Widens `useAuth().plugins` to the heroui-typed `AuthPlugin`. */
+  interface AuthPluginRegister {
+    plugin: AuthPlugin
+  }
+}
+
 /** Heroui slot component shapes — narrows the framework-agnostic defaults with heroui variant unions. */
 export type AuthPluginComponents = {
   /** Rendered alongside the submit button in sign-in / sign-up / forgot-password. */

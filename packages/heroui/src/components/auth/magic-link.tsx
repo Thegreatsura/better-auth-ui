@@ -20,7 +20,6 @@ import {
 } from "@heroui/react"
 import { type SyntheticEvent, useState } from "react"
 
-import type { AuthPlugin } from "../../lib/auth-plugin"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -55,7 +54,7 @@ export function MagicLink({
     redirectTo,
     socialProviders,
     viewPaths
-  } = useAuth<AuthPlugin>()
+  } = useAuth()
 
   const [email, setEmail] = useState("")
 

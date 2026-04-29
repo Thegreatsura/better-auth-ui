@@ -2,7 +2,6 @@ import type { AuthView } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import type { CardProps } from "@heroui/react"
 import { type ComponentType, useEffect } from "react"
-import type { AuthPlugin } from "../../lib/auth-plugin"
 import { ForgotPassword } from "./forgot-password"
 import type { SocialLayout } from "./provider-buttons"
 import { ResetPassword } from "./reset-password"
@@ -65,7 +64,7 @@ export function Auth({
   ...props
 }: AuthProps & Omit<CardProps, "children">) {
   const { basePaths, emailAndPassword, plugins, viewPaths, navigate } =
-    useAuth<AuthPlugin>()
+    useAuth()
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")

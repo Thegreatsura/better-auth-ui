@@ -46,13 +46,31 @@ declare module "@better-auth-ui/core" {
   }
 }
 
-export type AuthProviderProps<
-  TAuthClient = AuthClient,
-  TPlugin extends AuthPlugin = AuthPlugin
-> = PropsWithChildren<DeepPartial<AuthConfig>> & {
+/**
+ * Module-augmentation slot for narrowing the plugin type returned by
+ * `useAuth()`. UI packages widen `plugin` here (e.g. heroui's variant-typed
+ * `AuthPlugin`) so consumers don't have to pass `useAuth<AuthPlugin>()`.
+ *
+ * @example
+ * declare module "@better-auth-ui/react" {
+ *   interface AuthPluginRegister { plugin: HeroUIAuthPlugin }
+ * }
+ */
+// biome-ignore lint/suspicious/noEmptyInterface: declaration-merging slot
+export interface AuthPluginRegister {}
+
+export type ResolvedAuthPlugin = AuthPluginRegister extends { plugin: infer P }
+  ? P extends AuthPlugin
+    ? P
+    : AuthPlugin
+  : AuthPlugin
+
+export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
+  DeepPartial<AuthConfig>
+> & {
   authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
-  plugins?: TPlugin[]
+  plugins?: ResolvedAuthPlugin[]
   /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
@@ -115,21 +133,19 @@ export function AuthProvider({
 /**
  * Accesses the current authentication configuration from AuthContext.
  *
- * Generic over the plugin type so UI packages can narrow `plugins` to their
- * framework-specific `AuthPlugin` variant (e.g. heroui's plugin type with
- * heroui-typed `AuthButton` / `SecurityCard` slot components).
+ * UI packages widen the plugin type globally via the `Register` interface
+ * (see module augmentation in `@better-auth-ui/heroui`), so callers don't
+ * need to pass a generic.
  *
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth<
-  TPlugin extends AuthPlugin = AuthPlugin
->(): AuthConfig & { plugins?: TPlugin[] } {
+export function useAuth(): AuthConfig & { plugins?: ResolvedAuthPlugin[] } {
   const context = useContext(AuthContext)
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")
   }
 
-  return context as AuthConfig & { plugins?: TPlugin[] }
+  return context as AuthConfig & { plugins?: ResolvedAuthPlugin[] }
 }
