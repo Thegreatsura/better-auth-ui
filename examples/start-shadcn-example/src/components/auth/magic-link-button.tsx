@@ -1,14 +1,16 @@
 "use client"
 
 import { type AuthView, authMutationKeys } from "@better-auth-ui/core"
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { Lock, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
 import { cn } from "@/lib/utils"
 
 export type MagicLinkButtonProps = {
+  /** @remarks `AuthView` */
   view?: AuthView
 }
 
@@ -18,7 +20,8 @@ export type MagicLinkButtonProps = {
  * @param view - Current auth view. On `"magicLink"` this links back to password sign-in.
  */
 export function MagicLinkButton({ view }: MagicLinkButtonProps) {
-  const { basePaths, viewPaths, localization, Link } = useAuth()
+  const { basePaths, emailAndPassword, viewPaths, localization, Link } =
+    useAuth()
 
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
@@ -28,7 +31,16 @@ export function MagicLinkButton({ view }: MagicLinkButtonProps) {
   })
   const isPending = signInMutating + signUpMutating > 0
 
+  const { localization: magicLinkLocalization, viewPaths: magicLinkViewPaths } =
+    useAuthPlugin(magicLinkPlugin)
+
   const isMagicLinkView = view === "magicLink"
+
+  // On the magic-link view this button switches back to password sign-in.
+  // With password auth disabled there's nowhere to switch to, so hide it.
+  // (Other views — e.g. a phone-number plugin's surface — still get a
+  // "Continue with Magic Link" link.)
+  if (isMagicLinkView && !emailAndPassword?.enabled) return null
 
   return (
     <Button
@@ -39,7 +51,7 @@ export function MagicLinkButton({ view }: MagicLinkButtonProps) {
       asChild
     >
       <Link
-        href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : viewPaths.auth.magicLink}`}
+        href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : magicLinkViewPaths.auth.magicLink}`}
       >
         {isMagicLinkView ? <Lock /> : <Mail />}
 
@@ -47,7 +59,7 @@ export function MagicLinkButton({ view }: MagicLinkButtonProps) {
           "{{provider}}",
           isMagicLinkView
             ? localization.auth.password
-            : localization.auth.magicLink
+            : magicLinkLocalization.magicLink
         )}
       </Link>
     </Button>

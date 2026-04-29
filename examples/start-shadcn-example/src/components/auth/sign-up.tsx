@@ -35,7 +35,6 @@ import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
 import { AdditionalField } from "./additional-field"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignUpProps = {
@@ -69,7 +68,7 @@ export function SignUp({
     basePaths,
     emailAndPassword,
     localization,
-    magicLink,
+    plugins,
     redirectTo,
     socialProviders,
     username: usernameConfig,
@@ -489,7 +488,14 @@ export function SignUp({
                     {localization.auth.signUp}
                   </Button>
 
-                  {magicLink && <MagicLinkButton view="signUp" />}
+                  {plugins.flatMap((plugin) =>
+                    (plugin.authButtons ?? []).map((AuthButton, index) => (
+                      <AuthButton
+                        key={`${plugin.id}-${index.toString()}`}
+                        view="signUp"
+                      />
+                    ))
+                  )}
                 </div>
               </FieldGroup>
             </form>

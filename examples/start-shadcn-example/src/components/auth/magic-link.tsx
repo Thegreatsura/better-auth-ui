@@ -4,6 +4,7 @@ import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type MagicLinkAuthClient,
   useAuth,
+  useAuthPlugin,
   useSignInMagicLink
 } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
@@ -21,10 +22,9 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
-import { MagicLinkButton } from "./magic-link-button"
-import { PasskeyButton } from "./passkey-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type MagicLinkProps = {
@@ -50,13 +50,15 @@ export function MagicLink({
     authClient,
     basePaths,
     baseURL,
+    emailAndPassword,
     localization,
-    passkey,
+    plugins,
     redirectTo,
     socialProviders,
     viewPaths,
     Link
   } = useAuth()
+  const { localization: magicLinkLocalization } = useAuthPlugin(magicLinkPlugin)
 
   const [email, setEmail] = useState("")
 
@@ -65,7 +67,7 @@ export function MagicLink({
     {
       onSuccess: () => {
         setEmail("")
-        toast.success(localization.auth.magicLinkSent)
+        toast.success(magicLinkLocalization.magicLinkSent)
       }
     }
   )
@@ -151,12 +153,17 @@ export function MagicLink({
                 <Button type="submit" disabled={isPending}>
                   {isPending && <Spinner />}
 
-                  {localization.auth.sendMagicLink}
+                  {magicLinkLocalization.sendMagicLink}
                 </Button>
 
-                <MagicLinkButton view="magicLink" />
-
-                {passkey && <PasskeyButton />}
+                {plugins.flatMap((plugin) =>
+                  (plugin.authButtons ?? []).map((AuthButton, index) => (
+                    <AuthButton
+                      key={`${plugin.id}-${index.toString()}`}
+                      view="magicLink"
+                    />
+                  ))
+                )}
               </div>
             </FieldGroup>
           </form>
@@ -176,17 +183,19 @@ export function MagicLink({
           )}
         </div>
 
-        <div className="flex flex-col gap-3 items-center w-full mt-4">
-          <FieldDescription className="text-center">
-            {localization.auth.needToCreateAnAccount}{" "}
-            <Link
-              href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-              className="underline underline-offset-4"
-            >
-              {localization.auth.signUp}
-            </Link>
-          </FieldDescription>
-        </div>
+        {emailAndPassword?.enabled && (
+          <div className="flex flex-col gap-3 items-center w-full mt-4">
+            <FieldDescription className="text-center">
+              {localization.auth.needToCreateAnAccount}{" "}
+              <Link
+                href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+                className="underline underline-offset-4"
+              >
+                {localization.auth.signUp}
+              </Link>
+            </FieldDescription>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

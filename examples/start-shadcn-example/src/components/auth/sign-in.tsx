@@ -26,8 +26,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import { MagicLinkButton } from "./magic-link-button"
-import { PasskeyButton } from "./passkey-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignInProps = {
@@ -59,8 +57,7 @@ export function SignIn({
     baseURL,
     emailAndPassword,
     localization,
-    magicLink,
-    passkey,
+    plugins,
     redirectTo,
     socialProviders,
     username: usernameConfig,
@@ -279,9 +276,14 @@ export function SignIn({
                     {localization.auth.signIn}
                   </Button>
 
-                  {magicLink && <MagicLinkButton view="signIn" />}
-
-                  {passkey && <PasskeyButton />}
+                  {plugins.flatMap((plugin) =>
+                    (plugin.authButtons ?? []).map((AuthButton, index) => (
+                      <AuthButton
+                        key={`${plugin.id}-${index.toString()}`}
+                        view="signIn"
+                      />
+                    ))
+                  )}
                 </div>
               </FieldGroup>
             </form>
