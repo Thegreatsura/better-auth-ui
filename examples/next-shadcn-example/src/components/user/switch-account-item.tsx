@@ -28,7 +28,10 @@ export type SwitchAccountItemProps = {
 export function SwitchAccountItem({ deviceSession }: SwitchAccountItemProps) {
   const { authClient } = useAuth()
   const { mutate: setActiveSession, isPending } = useSetActiveSession(
-    authClient as MultiSessionAuthClient
+    authClient as MultiSessionAuthClient,
+    {
+      onSuccess: () => window.scrollTo({ top: 0 })
+    }
   )
 
   return (
