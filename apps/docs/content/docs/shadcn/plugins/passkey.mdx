@@ -118,7 +118,7 @@ Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot c
 
 ## Passkey management
 
-The `<Passkeys />` security card is automatically rendered on the security settings page when the plugin is registered (or when `passkey` is present in the auth context). It can also be used standalone:
+The `<Passkeys />` security card is included on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`. It can also be used standalone:
 
 ```tsx
 import { Passkeys } from "@/components/settings/security/passkeys"

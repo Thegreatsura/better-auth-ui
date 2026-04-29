@@ -54,12 +54,19 @@ export function Passkeys({ className }: PasskeysProps) {
 
   const handleDialogOpenChange = (open: boolean) => {
     setNameOpen(open)
-    setName("")
   }
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-    addPasskey({ name: name.trim() || undefined })
+    addPasskey(
+      { name: name.trim() || undefined },
+      {
+        onSuccess: () => {
+          setNameOpen(false)
+          setName("")
+        }
+      }
+    )
   }
 
   return (
@@ -127,7 +134,7 @@ export function Passkeys({ className }: PasskeysProps) {
                     </Field>
 
                     <AlertDialogFooter>
-                      <AlertDialogCancel>
+                      <AlertDialogCancel onClick={() => setName("")}>
                         {localization.settings.cancel}
                       </AlertDialogCancel>
 

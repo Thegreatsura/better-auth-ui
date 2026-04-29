@@ -16,7 +16,6 @@ export function Providers({ children }: { children: ReactNode }) {
       appearance={{ theme, setTheme }}
       deleteUser={{ enabled: true }}
       multiSession
-      passkey
       redirectTo="/settings/account"
       socialProviders={["github"]}
       navigate={navigate}
