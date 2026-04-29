@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build && bun styles",
-    "dev": "bun styles && tsc --watch",
+    "dev": "bun styles && vite build --watch",
     "styles": "cpy src/styles.css dist/ --flat",
     "test": "vitest"
   },

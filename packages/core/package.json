@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "tsc --watch",
+    "dev": "vite build --watch",
     "test": "vitest"
   },
   "files": [
