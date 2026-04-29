@@ -10,7 +10,6 @@
   "registryDependencies": [
     "https://better-auth-ui.com/r/change-password.json",
     "https://better-auth-ui.com/r/linked-accounts.json",
-    "https://better-auth-ui.com/r/passkeys.json",
     "https://better-auth-ui.com/r/active-sessions.json",
     "https://better-auth-ui.com/r/danger-zone.json"
   ],

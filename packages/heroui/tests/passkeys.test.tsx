@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { QueryClient } from "@tanstack/react-query"
+import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -6,6 +7,15 @@ import { AuthProvider } from "../src/components/auth/auth-provider"
 import { PasskeyButton } from "../src/components/passkey/passkey-button"
 import { Passkeys } from "../src/components/passkey/passkeys"
 import { passkeyPlugin } from "../src/lib/passkey/passkey-plugin"
+
+// Each render gets its own QueryClient so the React Query cache doesn't
+// leak across tests (the default `<AuthProvider>` falls back to a
+// module-level client otherwise).
+function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } }
+  })
+}
 
 // ---------------------------------------------------------------------------
 // <PasskeyButton />
@@ -34,6 +44,7 @@ function renderPasskeyButton(authClient = createPasskeyButtonAuthClient()) {
         authClient={authClient}
         navigate={() => {}}
         plugins={[passkeyPlugin()]}
+        queryClient={createTestQueryClient()}
       >
         <PasskeyButton />
       </AuthProvider>
@@ -93,21 +104,29 @@ describe("<PasskeyButton />", () => {
 function createPasskeysAuthClient(
   passkeys: { id: string; name: string | null; createdAt: Date }[] = []
 ) {
-  const listUserPasskeys = vi.fn(async () => ({ data: passkeys, error: null }))
+  const session = {
+    user: { id: "user-1", email: "user@example.com" },
+    session: { id: "session-1", token: "session-token" }
+  }
+
+  // Every query and mutation passes `fetchOptions: { throw: true }`, which
+  // means the better-auth client unwraps `{ data, error }` and resolves
+  // with `data` directly (or throws on error). The mocks mirror that.
+  const getSession = vi.fn(async () => session)
+  const listUserPasskeys = vi.fn(async () => passkeys)
   const addPasskey = vi.fn(async () => ({
-    data: { id: "new", name: null, createdAt: new Date() },
-    error: null
+    id: "new",
+    name: null,
+    createdAt: new Date()
   }))
-  const deletePasskey = vi.fn(async () => ({ data: {}, error: null }))
+  const deletePasskey = vi.fn(async () => ({}))
 
   return {
+    getSession,
     passkey: { listUserPasskeys, addPasskey, deletePasskey },
-    useSession: () => ({
-      data: { user: { id: "user-1" } },
-      isPending: false,
-      error: null
-    })
+    useSession: () => ({ data: session, isPending: false, error: null })
   } as unknown as Parameters<typeof AuthProvider>[0]["authClient"] & {
+    getSession: typeof getSession
     passkey: {
       listUserPasskeys: typeof listUserPasskeys
       addPasskey: typeof addPasskey
@@ -124,6 +143,7 @@ function renderPasskeys(authClient = createPasskeysAuthClient()) {
         authClient={authClient}
         navigate={() => {}}
         plugins={[passkeyPlugin()]}
+        queryClient={createTestQueryClient()}
       >
         <Passkeys />
       </AuthProvider>
@@ -152,7 +172,22 @@ describe("<Passkeys />", () => {
     })
   })
 
-  it("calls addPasskey when the add button is clicked", async () => {
+  it("opens the name dialog when the add button is clicked", async () => {
+    const user = userEvent.setup()
+    renderPasskeys()
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /add passkey/i })
+      ).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: /add passkey/i }))
+
+    expect(await screen.findByRole("alertdialog")).toBeInTheDocument()
+  })
+
+  it("calls addPasskey when the dialog is submitted without a name", async () => {
     const user = userEvent.setup()
     const { authClient } = renderPasskeys()
 
@@ -164,12 +199,54 @@ describe("<Passkeys />", () => {
 
     await user.click(screen.getByRole("button", { name: /add passkey/i }))
 
+    const dialog = await screen.findByRole("alertdialog")
+
+    await user.click(
+      within(dialog).getByRole("button", { name: /add passkey/i })
+    )
+
     await waitFor(() => {
       expect(authClient.passkey.addPasskey).toHaveBeenCalledTimes(1)
     })
 
     expect(authClient.passkey.addPasskey).toHaveBeenCalledWith(
       expect.objectContaining({
+        name: undefined,
+        fetchOptions: expect.objectContaining({ throw: true })
+      })
+    )
+  })
+
+  it("forwards the typed name to addPasskey", async () => {
+    const user = userEvent.setup()
+    const { authClient } = renderPasskeys()
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /add passkey/i })
+      ).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: /add passkey/i }))
+
+    const dialog = await screen.findByRole("alertdialog")
+
+    await user.type(
+      within(dialog).getByRole("textbox", { name: /passkey/i }),
+      "  My MacBook  "
+    )
+
+    await user.click(
+      within(dialog).getByRole("button", { name: /add passkey/i })
+    )
+
+    await waitFor(() => {
+      expect(authClient.passkey.addPasskey).toHaveBeenCalledTimes(1)
+    })
+
+    expect(authClient.passkey.addPasskey).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "My MacBook",
         fetchOptions: expect.objectContaining({ throw: true })
       })
     )
@@ -200,7 +277,9 @@ describe("<Passkeys />", () => {
       expect(screen.getByText("My MacBook")).toBeInTheDocument()
     })
 
-    await user.click(screen.getByRole("button", { name: /delete/i }))
+    await user.click(
+      screen.getByRole("button", { name: /delete passkey my macbook/i })
+    )
 
     await waitFor(() => {
       expect(authClient.passkey.deletePasskey).toHaveBeenCalledTimes(1)
@@ -212,5 +291,23 @@ describe("<Passkeys />", () => {
         fetchOptions: expect.objectContaining({ throw: true })
       })
     )
+  })
+
+  it("gives every delete button a unique accessible name", async () => {
+    const authClient = createPasskeysAuthClient([
+      { id: "pk-1", name: "My MacBook", createdAt: new Date("2024-01-01") },
+      { id: "pk-2", name: null, createdAt: new Date("2024-06-01") }
+    ])
+    renderPasskeys(authClient)
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /delete passkey my macbook/i })
+      ).toBeInTheDocument()
+      // The unnamed row falls back to the `passkey` localization string.
+      expect(
+        screen.getByRole("button", { name: /delete passkey passkey/i })
+      ).toBeInTheDocument()
+    })
   })
 })

@@ -25,6 +25,8 @@ export function Passkey({ passkey }: PasskeyProps) {
     authClient as PasskeyAuthClient
   )
 
+  const passkeyName = passkey.name || passkeyLocalization.passkey
+
   return (
     <div className="flex items-center gap-3">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-secondary">
@@ -32,9 +34,7 @@ export function Passkey({ passkey }: PasskeyProps) {
       </div>
 
       <div className="flex flex-col min-w-0">
-        <span className="text-sm font-medium leading-tight">
-          {passkey.name || passkeyLocalization.passkey}
-        </span>
+        <span className="text-sm font-medium leading-tight">{passkeyName}</span>
 
         <span className="text-xs text-muted">
           {new Date(passkey.createdAt).toLocaleString(undefined, {
@@ -50,6 +50,10 @@ export function Passkey({ passkey }: PasskeyProps) {
         size="sm"
         isPending={isPending}
         onPress={() => deletePasskey({ id: passkey.id })}
+        aria-label={passkeyLocalization.deletePasskey.replace(
+          "{{name}}",
+          passkeyName
+        )}
       >
         {isPending ? <Spinner color="current" size="sm" /> : <Xmark />}
         {localization.settings.delete}

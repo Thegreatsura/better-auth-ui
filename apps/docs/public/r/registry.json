@@ -183,6 +183,47 @@
       ]
     },
     {
+      "name": "passkey",
+      "type": "registry:component",
+      "title": "Passkey",
+      "description": "Passkey plugin: WebAuthn sign-in button and passkey management card. Registers a passkey sign-in button on the sign-in form and a Passkeys security card in account settings.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@better-auth/passkey",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "separator",
+        "skeleton",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/passkey/passkey-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/passkey-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/settings/security/passkeys.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/settings/security/passkey.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "forgot-password",
       "type": "registry:component",
       "title": "Forgot Password",
@@ -599,36 +640,6 @@
       ]
     },
     {
-      "name": "passkeys",
-      "type": "registry:component",
-      "title": "Passkeys",
-      "description": "Display and manage registered passkeys for the current user. Shows each passkey with name, creation date, and delete control.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "@better-auth-ui/core@latest",
-        "@better-auth/passkey",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "separator",
-        "skeleton",
-        "sonner",
-        "spinner"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/security/passkeys.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/security/passkey.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
@@ -640,7 +651,6 @@
       "registryDependencies": [
         "https://better-auth-ui.com/r/change-password.json",
         "https://better-auth-ui.com/r/linked-accounts.json",
-        "https://better-auth-ui.com/r/passkeys.json",
         "https://better-auth-ui.com/r/active-sessions.json",
         "https://better-auth-ui.com/r/danger-zone.json"
       ],

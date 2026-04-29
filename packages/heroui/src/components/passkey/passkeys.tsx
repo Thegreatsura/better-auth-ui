@@ -148,10 +148,7 @@ export function Passkeys({
                           {localization.settings.cancel}
                         </Button>
 
-                        <Button
-                          type="submit"
-                          isPending={isAdding}
-                        >
+                        <Button type="submit" isPending={isAdding}>
                           {isAdding && <Spinner color="current" size="sm" />}
 
                           {passkeyLocalization.addPasskey}
