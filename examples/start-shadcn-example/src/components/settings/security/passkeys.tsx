@@ -7,8 +7,25 @@ import {
   useAuthPlugin,
   useListPasskeys
 } from "@better-auth-ui/react"
+import { Fingerprint } from "lucide-react"
+import { type SyntheticEvent, useState } from "react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Field, FieldError } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
@@ -21,7 +38,7 @@ export type PasskeysProps = {
 }
 
 export function Passkeys({ className }: PasskeysProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
   const { data: passkeys, isPending } = useListPasskeys(
@@ -31,6 +48,19 @@ export function Passkeys({ className }: PasskeysProps) {
   const { mutate: addPasskey, isPending: isAdding } = useAddPasskey(
     authClient as PasskeyAuthClient
   )
+
+  const [nameOpen, setNameOpen] = useState(false)
+  const [name, setName] = useState("")
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setNameOpen(open)
+    setName("")
+  }
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    addPasskey({ name: name.trim() || undefined })
+  }
 
   return (
     <div>
@@ -52,15 +82,64 @@ export function Passkeys({ className }: PasskeysProps) {
                 </p>
               </div>
 
-              <Button
-                className="shrink-0"
-                size="sm"
-                disabled={isPending || isAdding}
-                onClick={() => addPasskey()}
+              <AlertDialog
+                open={nameOpen}
+                onOpenChange={handleDialogOpenChange}
               >
-                {isAdding && <Spinner />}
-                {passkeyLocalization.addPasskey}
-              </Button>
+                <AlertDialogTrigger asChild>
+                  <Button className="shrink-0" size="sm" disabled={isPending}>
+                    {passkeyLocalization.addPasskey}
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <AlertDialogHeader>
+                      <AlertDialogMedia>
+                        <Fingerprint />
+                      </AlertDialogMedia>
+
+                      <AlertDialogTitle>
+                        {passkeyLocalization.addPasskey}
+                      </AlertDialogTitle>
+
+                      <AlertDialogDescription>
+                        {passkeyLocalization.passkeysInstructions}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <Field>
+                      <Label htmlFor="passkey-name">
+                        {passkeyLocalization.passkey}
+                      </Label>
+
+                      <Input
+                        id="passkey-name"
+                        name="passkey-name"
+                        autoFocus
+                        placeholder={localization.settings.optional}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        disabled={isAdding}
+                      />
+
+                      <FieldError />
+                    </Field>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>
+                        {localization.settings.cancel}
+                      </AlertDialogCancel>
+
+                      <AlertDialogAction type="submit">
+                        {isAdding && <Spinner />}
+
+                        {passkeyLocalization.addPasskey}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </form>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
 

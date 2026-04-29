@@ -5,14 +5,22 @@ import {
   useAuthPlugin,
   useListPasskeys
 } from "@better-auth-ui/react"
+import { Fingerprint } from "@gravity-ui/icons"
 import {
+  AlertDialog,
   Button,
   Card,
   type CardProps,
   cn,
+  FieldError,
+  Form,
+  Input,
+  Label,
   Skeleton,
-  Spinner
+  Spinner,
+  TextField
 } from "@heroui/react"
+import { type SyntheticEvent, useState } from "react"
 
 import { passkeyPlugin } from "../../lib/passkey/passkey-plugin"
 import { Passkey } from "./passkey"
@@ -27,7 +35,7 @@ export function Passkeys({
   variant,
   ...props
 }: PasskeysProps & Omit<CardProps, "children">) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
   const { data: passkeys, isPending } = useListPasskeys(
@@ -36,6 +44,28 @@ export function Passkeys({
   const { mutate: addPasskey, isPending: isAdding } = useAddPasskey(
     authClient as PasskeyAuthClient
   )
+
+  const [nameOpen, setNameOpen] = useState(false)
+  const [name, setName] = useState("")
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setNameOpen(open)
+    setName("")
+  }
+
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    addPasskey(
+      { name: name.trim() || undefined },
+      {
+        onSuccess: () => {
+          setNameOpen(false)
+          setName("")
+        }
+      }
+    )
+  }
 
   return (
     <div>
@@ -56,16 +86,82 @@ export function Passkeys({
               </p>
             </div>
 
-            <Button
-              className="shrink-0"
-              size="sm"
-              isPending={isAdding}
-              isDisabled={isPending}
-              onPress={() => addPasskey()}
-            >
-              {isAdding && <Spinner color="current" size="sm" />}
-              {passkeyLocalization.addPasskey}
-            </Button>
+            <AlertDialog>
+              <Button
+                className="shrink-0"
+                size="sm"
+                isDisabled={isPending}
+                onPress={() => setNameOpen(true)}
+              >
+                {passkeyLocalization.addPasskey}
+              </Button>
+
+              <AlertDialog.Backdrop
+                isOpen={nameOpen}
+                onOpenChange={handleDialogOpenChange}
+              >
+                <AlertDialog.Container>
+                  <AlertDialog.Dialog>
+                    <Form onSubmit={handleSubmit}>
+                      <AlertDialog.CloseTrigger />
+
+                      <AlertDialog.Header>
+                        <AlertDialog.Icon status="default">
+                          <Fingerprint />
+                        </AlertDialog.Icon>
+
+                        <AlertDialog.Heading>
+                          {passkeyLocalization.addPasskey}
+                        </AlertDialog.Heading>
+                      </AlertDialog.Header>
+
+                      <AlertDialog.Body className="overflow-visible">
+                        <p className="text-muted text-sm">
+                          {passkeyLocalization.passkeysInstructions}
+                        </p>
+
+                        <TextField
+                          className="mt-4"
+                          name="passkey-name"
+                          isDisabled={isAdding}
+                          value={name}
+                          onChange={setName}
+                        >
+                          <Label>{passkeyLocalization.passkey}</Label>
+
+                          <Input
+                            autoFocus
+                            placeholder={localization.settings.optional}
+                            variant="secondary"
+                          />
+
+                          <FieldError />
+                        </TextField>
+                      </AlertDialog.Body>
+
+                      <AlertDialog.Footer>
+                        <Button
+                          slot="close"
+                          variant="tertiary"
+                          isDisabled={isAdding}
+                        >
+                          {localization.settings.cancel}
+                        </Button>
+
+                        <Button
+                          type="submit"
+                          isPending={isAdding}
+                        >
+                          {isAdding && <Spinner color="current" size="sm" />}
+
+                          {passkeyLocalization.addPasskey}
+                        </Button>
+                      </AlertDialog.Footer>
+                    </Form>
+                  </AlertDialog.Dialog>
+                </AlertDialog.Container>
+              </AlertDialog.Backdrop>
+            </AlertDialog>
           </div>
 
           {isPending ? (
