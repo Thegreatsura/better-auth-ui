@@ -13,7 +13,7 @@ import type { SocialLayout } from "../components/auth/provider-buttons"
 declare module "@better-auth-ui/core" {
   /** Widens `useAuth().plugins` to the heroui-typed `AuthPlugin`. */
   interface AuthPluginRegister {
-    plugin: AuthPlugin
+    heroui: AuthPlugin
   }
 }
 

@@ -30,25 +30,39 @@ export interface AuthPluginBase {
 }
 
 /**
- * Module-augmentation slot for narrowing the plugin type returned by
- * `useAuth()`. UI packages widen `plugin` here (e.g. heroui's variant-typed
- * `AuthPlugin`) so consumers don't have to pass `useAuth<AuthPlugin>()`.
+ * Composable module-augmentation slot for narrowing the plugin type returned
+ * by `useAuth()`. Each augmentation registers under its own key so multiple
+ * augmentations (e.g. a UI package and a user-land template) can coexist
+ * without colliding on a single shared property.
+ *
+ * The resolved {@link AuthPlugin} type is the union of every registered
+ * value, so `useAuth().plugins` is typed as the broadest plugin shape
+ * across all augmentations a consumer has imported.
+ *
+ * Pick any unique string as the key — the key is only used to keep slots
+ * disjoint during declaration merging and is never read at runtime.
  *
  * @example
  * declare module "@better-auth-ui/core" {
- *   interface AuthPluginRegister { plugin: HeroUIAuthPlugin }
+ *   interface AuthPluginRegister {
+ *     // Use a key unique to your package or app, e.g. the package name.
+ *     myUiPackage: MyAuthPlugin
+ *   }
  * }
  */
 // biome-ignore lint/suspicious/noEmptyInterface: declaration-merging slot
 export interface AuthPluginRegister {}
 
 /**
- * Resolved auth plugin type. UI packages widen this via the
- * `AuthPluginRegister` module-augmentation slot; without any augmentation it
- * falls back to the framework-agnostic `AuthPluginBase`.
+ * Resolved auth plugin type. Consumers widen this via keyed augmentations on
+ * {@link AuthPluginRegister}; the resolved type is the union of every
+ * registered value. With no augmentations it falls back to the
+ * framework-agnostic {@link AuthPluginBase}.
  */
-export type AuthPlugin = AuthPluginRegister extends { plugin: infer P }
-  ? P extends AuthPluginBase
-    ? P
+export type AuthPlugin = [keyof AuthPluginRegister] extends [never]
+  ? AuthPluginBase
+  : AuthPluginRegister[keyof AuthPluginRegister] extends infer P
+    ? P extends AuthPluginBase
+      ? P
+      : AuthPluginBase
     : AuthPluginBase
-  : AuthPluginBase

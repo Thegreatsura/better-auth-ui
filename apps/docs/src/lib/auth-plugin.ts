@@ -6,7 +6,7 @@ import type {
 declare module "@better-auth-ui/core" {
   /** Widens `useAuth().plugins` to the shadcn-typed `AuthPlugin`. */
   interface AuthPluginRegister {
-    plugin: AuthPlugin
+    shadcn: AuthPlugin
   }
 }
 
