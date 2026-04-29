@@ -35,10 +35,11 @@ export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
   return (
     <Link
       href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : magicLinkViewPaths.auth.magicLink}`}
+      isDisabled={isPending}
       className={cn(
         buttonVariants({ variant: "tertiary" }),
         "w-full gap-2",
-        isPending && "status-disabled pointer-events-none"
+        isPending && "status-disabled"
       )}
     >
       {isMagicLinkView ? <Lock /> : <Envelope />}
