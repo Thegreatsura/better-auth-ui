@@ -54,3 +54,8 @@ Thumbs.db
 # heroui-agents-md
 .heroui-docs/
 .playwright-mcp/
+
+.vscode/
+.claude/
+.agents/
+.cursor/
