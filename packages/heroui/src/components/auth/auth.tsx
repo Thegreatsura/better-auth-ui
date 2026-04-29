@@ -37,18 +37,6 @@ const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
 /**
  * Render the appropriate authentication view based on the provided `view` or `path`.
  *
- * View resolution order:
- *   1. Plugin **overrides** via `plugins[].views.auth[currentView]` — these
- *      always win (first plugin to register wins).
- *   2. Plugin **fallbacks** via `plugins[].fallbackViews.auth[currentView]` —
- *      only consulted when the built-in flow isn't viable (currently:
- *      `signIn` when `emailAndPassword.enabled === false`).
- *   3. Built-in components (`SignIn`, `SignUp`, ...).
- *
- * Additionally, when `emailAndPassword.enabled === false`, password-only
- * views (`signUp` / `forgotPassword` / `resetPassword`) redirect to `signIn`
- * since those flows have no meaning without a password.
- *
  * @param path - Route path used to resolve an auth view when `view` is not provided
  * @param socialLayout - Social layout to apply to sign-in/sign-up/magic-link views
  * @param socialPosition - Position for social buttons ("top" or "bottom")

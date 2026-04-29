@@ -1,6 +1,7 @@
 import {
   type MagicLinkAuthClient,
   useAuth,
+  useAuthPlugin,
   useSignInMagicLink
 } from "@better-auth-ui/react"
 import {
@@ -20,6 +21,7 @@ import {
 } from "@heroui/react"
 import { type SyntheticEvent, useState } from "react"
 
+import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -55,6 +57,7 @@ export function MagicLink({
     socialProviders,
     viewPaths
   } = useAuth()
+  const { localization: magicLinkLocalization } = useAuthPlugin(magicLinkPlugin)
 
   const [email, setEmail] = useState("")
 
@@ -62,7 +65,7 @@ export function MagicLink({
     useSignInMagicLink(authClient as MagicLinkAuthClient, {
       onSuccess: () => {
         setEmail("")
-        toast.success(localization.auth.magicLinkSent)
+        toast.success(magicLinkLocalization.magicLinkSent)
       }
     })
 
@@ -127,7 +130,7 @@ export function MagicLink({
             <Button type="submit" className="w-full" isPending={isPending}>
               {isPending && <Spinner color="current" size="sm" />}
 
-              {localization.auth.sendMagicLink}
+              {magicLinkLocalization.sendMagicLink}
             </Button>
 
             {plugins.flatMap((plugin) =>

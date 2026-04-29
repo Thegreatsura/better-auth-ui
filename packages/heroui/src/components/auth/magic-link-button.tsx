@@ -20,11 +20,17 @@ export type MagicLinkButtonProps = {
  * @returns The rendered Link element with the appropriate href, icon, and label
  */
 export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
-  const { basePaths, viewPaths, localization } = useAuth()
+  const { basePaths, emailAndPassword, viewPaths, localization } = useAuth()
   const { localization: magicLinkLocalization, viewPaths: magicLinkViewPaths } =
     useAuthPlugin(magicLinkPlugin)
 
   const isMagicLinkView = view === "magicLink"
+
+  // On the magic-link view this button switches back to password sign-in.
+  // With password auth disabled there's nowhere to switch to, so hide it.
+  // (Other views — e.g. a phone-number plugin's surface — still get a
+  // "Continue with Magic Link" link.)
+  if (isMagicLinkView && !emailAndPassword?.enabled) return null
 
   return (
     <Link
