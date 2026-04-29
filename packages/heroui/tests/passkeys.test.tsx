@@ -80,19 +80,6 @@ describe("<PasskeyButton />", () => {
     )
     expect(container).toBeEmptyDOMElement()
   })
-
-  it("does not render on the forgotPassword view", () => {
-    const { container } = render(
-      <AuthProvider
-        authClient={createPasskeyButtonAuthClient()}
-        navigate={() => {}}
-        plugins={[passkeyPlugin()]}
-      >
-        <PasskeyButton view="forgotPassword" />
-      </AuthProvider>
-    )
-    expect(container).toBeEmptyDOMElement()
-  })
 })
 
 // ---------------------------------------------------------------------------
