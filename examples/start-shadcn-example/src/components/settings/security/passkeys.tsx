@@ -4,6 +4,7 @@ import {
   type PasskeyAuthClient,
   useAddPasskey,
   useAuth,
+  useAuthPlugin,
   useListPasskeys
 } from "@better-auth-ui/react"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
+import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
 import { cn } from "@/lib/utils"
 import { Passkey } from "./passkey"
 
@@ -20,6 +22,7 @@ export type PasskeysProps = {
 
 export function Passkeys({ className }: PasskeysProps) {
   const { authClient } = useAuth()
+  const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
   const { data: passkeys, isPending } = useListPasskeys(
     authClient as PasskeyAuthClient
@@ -31,7 +34,9 @@ export function Passkeys({ className }: PasskeysProps) {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-3">Passkeys</h2>
+      <h2 className="text-sm font-semibold mb-3">
+        {passkeyLocalization.passkeys}
+      </h2>
 
       <Card className={cn("p-0", className)}>
         <CardContent className="p-0">
@@ -39,11 +44,11 @@ export function Passkeys({ className }: PasskeysProps) {
             <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-medium leading-tight">
-                  Manage your passkeys for secure access.
+                  {passkeyLocalization.passkeysDescription}
                 </p>
 
                 <p className="text-muted-foreground text-xs mt-0.5">
-                  Securely access your account without a password.
+                  {passkeyLocalization.passkeysInstructions}
                 </p>
               </div>
 
@@ -54,7 +59,7 @@ export function Passkeys({ className }: PasskeysProps) {
                 onClick={() => addPasskey()}
               >
                 {isAdding && <Spinner />}
-                Add passkey
+                {passkeyLocalization.addPasskey}
               </Button>
             </CardContent>
           </Card>

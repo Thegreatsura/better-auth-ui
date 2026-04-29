@@ -1,0 +1,132 @@
+---
+title: Passkey
+description: Add passwordless passkey sign-in and device management to your authentication flow.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
+
+The passkey plugin adds passwordless authentication using WebAuthn. Users can sign in with their device authenticator (Touch ID, Face ID, Windows Hello) and manage registered passkeys from their security settings.
+
+### `<SignIn />`
+
+<ComponentPreview name="shadcn-passkey-sign-in" />
+
+### `<Passkeys />`
+
+<ComponentPreview name="shadcn-passkeys" />
+
+It contributes:
+
+- A "Continue with Passkey" button rendered alongside the password sign-in button
+- A `<Passkeys />` security card for listing, adding, and deleting registered passkeys
+- `useSignInPasskey`, `useAddPasskey`, `useDeletePasskey`, and `useListPasskeys` hooks
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the `@better-auth/passkey` package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { passkey } from "@better-auth/passkey" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    passkey({ // [!code highlight]
+      rpID: "your-app.com", // [!code highlight]
+      rpName: "Your App Name" // [!code highlight]
+    }) // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `passkeyClient()` to your auth client so `authClient.signIn.passkey` and `authClient.passkey.*` are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { passkeyClient } from "@better-auth/passkey/client" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [passkeyClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Install the UI plugin
+
+Run the shadcn CLI to install the passkey button, passkey management card, and the `passkeyPlugin()` factory into your project:
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/passkey.json
+```
+
+This drops the following into your codebase:
+
+- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/passkey/passkey-plugin.ts` — `passkeyPlugin()` factory
+- `src/components/auth/passkey-button.tsx` — the "Continue with Passkey" sign-in button
+- `src/components/settings/security/passkeys.tsx` — the passkey management card
+- `src/components/settings/security/passkey.tsx` — individual passkey row with delete control
+
+</Step>
+<Step>
+### Register the plugin
+
+Pass `passkeyPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { passkeyPlugin } from "@/lib/passkey/passkey-plugin" // [!code highlight]
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  plugins={[passkeyPlugin()]} // [!code highlight]
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Options
+
+```ts
+passkeyPlugin({
+  // Override any of the plugin's localization strings.
+  localization: {
+    passkeys: "Security Keys"
+  }
+})
+```
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-plugin.ts" name="PasskeyPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-localization.ts" name="PasskeyLocalization" />
+
+Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot components.
+
+## Passkey management
+
+The `<Passkeys />` security card is automatically rendered on the security settings page when the plugin is registered (or when `passkey` is present in the auth context). It can also be used standalone:
+
+```tsx
+import { Passkeys } from "@/components/settings/security/passkeys"
+
+<Passkeys />
+```
+
+See the [`<Passkeys />`](/docs/shadcn/components/settings/security/passkeys) component docs for props and customization.
