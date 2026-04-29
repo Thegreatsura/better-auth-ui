@@ -1,7 +1,4 @@
-import type {
-  AuthView,
-  AuthPlugin as CoreAuthPlugin
-} from "@better-auth-ui/core"
+import type { AuthPluginBase, AuthView } from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
 
 export type { AuthPluginViewPaths } from "@better-auth-ui/core"
@@ -10,7 +7,6 @@ export type { AuthPluginViewPaths } from "@better-auth-ui/core"
 export type AuthButtonProps = {
   className?: string
   children?: ReactNode
-  isPending?: boolean
   /** Current auth view — lets buttons context-switch (e.g. show "back to sign-in"). */
   view?: AuthView
 }
@@ -72,7 +68,7 @@ export type AuthPlugin<
   TAuthViewProps = any,
   // biome-ignore lint/suspicious/noExplicitAny: any
   TSettingsViewProps = any
-> = CoreAuthPlugin &
+> = AuthPluginBase &
   TComponents & {
     views?: AuthPluginViews<TAuthViewProps, TSettingsViewProps>
     fallbackViews?: AuthPluginFallbackViews<TAuthViewProps>

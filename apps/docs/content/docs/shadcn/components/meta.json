@@ -15,7 +15,6 @@
     "auth/sign-out",
     "auth/forgot-password",
     "auth/reset-password",
-    "auth/magic-link",
     "---Settings---",
     "settings/settings",
     "settings/account/account-settings",

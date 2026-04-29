@@ -1,4 +1,4 @@
-import type { AuthView } from "@better-auth-ui/core"
+import { type AuthView, authMutationKeys } from "@better-auth-ui/core"
 import {
   type PasskeyAuthClient,
   useAuth,
@@ -7,15 +7,16 @@ import {
 } from "@better-auth-ui/react"
 import { Fingerprint } from "@gravity-ui/icons"
 import { Button, Spinner } from "@heroui/react"
+import { useIsMutating } from "@tanstack/react-query"
 
 import { passkeyPlugin } from "../../lib/passkey/passkey-plugin"
 
 export type PasskeyButtonProps = {
-  isPending?: boolean
+  /** @remarks `AuthView` */
   view?: AuthView
 }
 
-export function PasskeyButton({ isPending, view }: PasskeyButtonProps) {
+export function PasskeyButton({ view }: PasskeyButtonProps) {
   const { authClient, localization, redirectTo, navigate } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
@@ -26,16 +27,22 @@ export function PasskeyButton({ isPending, view }: PasskeyButtonProps) {
     }
   )
 
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
+
   // Passkey sign-in isn't relevant on sign-up / forgot-password flows.
   if (view === "signUp" || view === "forgotPassword") return null
-
-  const isDisabled = isPending || passkeyPending
 
   return (
     <Button
       className="w-full"
       variant="tertiary"
-      isDisabled={isDisabled}
+      isDisabled={isPending}
       isPending={passkeyPending}
       onPress={() => signInPasskey()}
     >

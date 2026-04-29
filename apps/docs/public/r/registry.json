@@ -64,11 +64,10 @@
       "name": "sign-in",
       "type": "registry:component",
       "title": "Sign In",
-      "description": "A complete sign-in form component with email/password, magic link, and social provider support.",
+      "description": "A complete sign-in form component with email/password and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@better-auth/passkey",
         "better-auth",
         "lucide-react"
       ],
@@ -89,14 +88,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/magic-link-button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/auth/passkey-button.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/auth/provider-button.tsx",
           "type": "registry:component"
         },
@@ -110,7 +101,7 @@
       "name": "sign-up",
       "type": "registry:component",
       "title": "Sign Up",
-      "description": "A complete sign-up form component with name, email, password fields, magic link, and social provider support.",
+      "description": "A complete sign-up form component with name, email, password fields, and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
@@ -134,10 +125,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/magic-link-button.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/auth/provider-button.tsx",
           "type": "registry:component"
         },
@@ -151,11 +138,10 @@
       "name": "magic-link",
       "type": "registry:component",
       "title": "Magic Link",
-      "description": "A magic link sign-in form component with email input and optional social provider support.",
+      "description": "Magic-link plugin: passwordless email sign-in form, toggle button between password and magic-link routes, and the AuthPlugin scaffolding that registers the view with `<Auth>`.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@better-auth/passkey",
         "better-auth",
         "lucide-react"
       ],
@@ -163,6 +149,7 @@
         "button",
         "card",
         "input",
+        "label",
         "field",
         "separator",
         "sonner",
@@ -170,15 +157,19 @@
       ],
       "files": [
         {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/magic-link/magic-link-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/components/auth/magic-link.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/components/auth/magic-link-button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/auth/passkey-button.tsx",
           "type": "registry:component"
         },
         {
@@ -273,7 +264,6 @@
         "https://better-auth-ui.com/r/auth-provider.json",
         "https://better-auth-ui.com/r/sign-in.json",
         "https://better-auth-ui.com/r/sign-up.json",
-        "https://better-auth-ui.com/r/magic-link.json",
         "https://better-auth-ui.com/r/forgot-password.json",
         "https://better-auth-ui.com/r/reset-password.json",
         "https://better-auth-ui.com/r/sign-out.json"

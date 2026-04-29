@@ -1,6 +1,8 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type MagicLinkAuthClient,
   useAuth,
+  useAuthPlugin,
   useSignInMagicLink
 } from "@better-auth-ui/react"
 import {
@@ -18,9 +20,10 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 
-import type { AuthPlugin } from "../../lib/auth-plugin"
+import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
@@ -32,12 +35,11 @@ export type MagicLinkProps = {
 }
 
 /**
- * Render a card-based sign-in form that sends an email magic link and optionally shows social provider buttons.
+ * Magic-link sign-in form.
  *
- * @param className - Additional CSS class names applied to the card container
- * @param socialLayout - Layout style for social provider buttons
- * @param socialPosition - Position of social provider buttons; `"top"` or `"bottom"`. Defaults to `"bottom"`.
- * @returns The magic-link sign-in UI as a JSX element
+ * @param socialLayout - Provider button layout.
+ * @param socialPosition - `"top"` or `"bottom"`. Defaults to `"bottom"`.
+ * @param variant - Card variant.
  */
 export function MagicLink({
   className,
@@ -50,24 +52,34 @@ export function MagicLink({
     authClient,
     basePaths,
     baseURL,
+    emailAndPassword,
     localization,
     plugins,
     redirectTo,
     socialProviders,
     viewPaths
-  } = useAuth<AuthPlugin>()
+  } = useAuth()
+  const { localization: magicLinkLocalization } = useAuthPlugin(magicLinkPlugin)
 
   const [email, setEmail] = useState("")
 
-  const { mutate: signInMagicLink, isPending: magicLinkPending } =
-    useSignInMagicLink(authClient as MagicLinkAuthClient, {
+  const { mutate: signInMagicLink } = useSignInMagicLink(
+    authClient as MagicLinkAuthClient,
+    {
       onSuccess: () => {
         setEmail("")
-        toast.success(localization.auth.magicLinkSent)
+        toast.success(magicLinkLocalization.magicLinkSent)
       }
-    })
+    }
+  )
 
-  const isPending = magicLinkPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -92,10 +104,7 @@ export function MagicLink({
         {socialPosition === "top" && (
           <>
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
 
             {showSeparator && (
@@ -128,15 +137,14 @@ export function MagicLink({
             <Button type="submit" className="w-full" isPending={isPending}>
               {isPending && <Spinner color="current" size="sm" />}
 
-              {localization.auth.sendMagicLink}
+              {magicLinkLocalization.sendMagicLink}
             </Button>
 
-            {plugins?.flatMap((plugin) =>
+            {plugins.flatMap((plugin) =>
               (plugin.authButtons ?? []).map((AuthButton, index) => (
                 <AuthButton
                   key={`${plugin.id}-${index.toString()}`}
                   view="magicLink"
-                  isPending={isPending}
                 />
               ))
             )}
@@ -150,26 +158,25 @@ export function MagicLink({
             )}
 
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
           </>
         )}
       </Card.Content>
 
-      <Card.Footer className="flex-col">
-        <Description className="text-sm">
-          {localization.auth.needToCreateAnAccount}{" "}
-          <Link
-            href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-            className="text-accent decoration-accent no-underline hover:underline"
-          >
-            {localization.auth.signUp}
-          </Link>
-        </Description>
-      </Card.Footer>
+      {emailAndPassword?.enabled && (
+        <Card.Footer className="flex-col">
+          <Description className="text-sm">
+            {localization.auth.needToCreateAnAccount}{" "}
+            <Link
+              href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
+              className="text-accent decoration-accent no-underline hover:underline"
+            >
+              {localization.auth.signUp}
+            </Link>
+          </Description>
+        </Card.Footer>
+      )}
     </Card>
   )
 }

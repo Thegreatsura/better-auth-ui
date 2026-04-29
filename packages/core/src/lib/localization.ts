@@ -36,12 +36,6 @@ export const localization = {
     /** @remarks `"Invalid reset password token"` */
     invalidResetPasswordToken: "Invalid reset password token",
 
-    /** @remarks `"Magic Link"` */
-    magicLink: "Magic Link",
-
-    /** @remarks `"Magic link sent to your email"` */
-    magicLinkSent: "Magic link sent to your email",
-
     /** @remarks `"Name"` */
     name: "Name",
 
@@ -86,9 +80,6 @@ export const localization = {
 
     /** @remarks `"Reset Password"` */
     resetPassword: "Reset Password",
-
-    /** @remarks `"Send Magic Link"` */
-    sendMagicLink: "Send Magic Link",
 
     /** @remarks `"Send reset link"` */
     sendResetLink: "Send reset link",

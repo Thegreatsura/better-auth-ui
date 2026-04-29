@@ -1,4 +1,5 @@
 export * from "./magic-link/magic-link-localization"
+export * from "./magic-link/magic-link-mutation-keys"
 export * from "./magic-link/magic-link-plugin"
 export * from "./passkey/passkey-localization"
 export * from "./passkey/passkey-plugin"

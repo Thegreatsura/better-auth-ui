@@ -27,7 +27,7 @@ On the server, every call returns a new `QueryClient` so request caches never bl
 <Step>
 ### Configure AuthProvider
 
-Configure `AuthProvider` with Next.js navigation and wrap it in `QueryClientProvider` so `AuthProvider` picks up your shared client instead of spinning up its internal fallback. Register any plugins you want enabled by passing their factories inline to the `plugins` prop.
+Configure `AuthProvider` with Next.js navigation and wrap it in `QueryClientProvider` so `AuthProvider` picks up your shared client instead of spinning up its internal fallback.
 
 ```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-heroui-example/src/components/providers.tsx
 ```
@@ -47,12 +47,12 @@ Wrap your application with the `Providers` component in your root layout.
 <Step>
 ### Create the Auth Page
 
-Create a dynamic auth page that renders the appropriate authentication view based on the path. For plugin-contributed paths (e.g. `/auth/magic-link` from `magicLinkPlugin()`), spread the plugin's `viewPaths.auth` into the validation set:
+Create a dynamic auth page that renders the appropriate authentication view based on the path:
 
 ```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-heroui-example/src/app/auth/[path]/page.tsx
 ```
 
-The built-in `viewPaths.auth` object contains `sign-in`, `sign-up`, `sign-out`, `forgot-password`, and `reset-password`. Spread each plugin's `viewPaths.auth` to add its segments. If you aren't using any plugins, you can drop the spread and use `viewPaths.auth` directly.
+The built-in `viewPaths.auth` object contains `sign-in`, `sign-up`, `sign-out`, `forgot-password`, and `reset-password`. If you register plugins that contribute their own auth paths, spread each plugin's `viewPaths.auth` into the validation set — see the per-plugin docs (e.g. [Magic Link](/docs/heroui/plugins/magic-link)).
 
 </Step>
 <Step>
@@ -152,36 +152,6 @@ export default function Dashboard() {
 ```
 
 In combination, the async server component handles the initial render (including SSR hydration with no auth flash) and `useAuthenticate` handles everything after — giving you both first-paint protection and live reactivity to session changes.
-
-## Adding More Plugins
-
-To add another plugin, import its factory and append it to the `plugins` array on `AuthProvider`:
-
-```tsx title="components/providers.tsx"
-import {
-  magicLinkPlugin,
-  multiSessionPlugin,
-  passkeyPlugin
-} from "@better-auth-ui/heroui/plugins"
-
-<AuthProvider
-  plugins={[magicLinkPlugin(), multiSessionPlugin(), passkeyPlugin()]}
-  /* ... */
-/>
-```
-
-Then spread each plugin's view paths in the routes that need to validate them:
-
-```tsx title="app/auth/[path]/page.tsx"
-const authViewPaths = {
-  ...viewPaths.auth,
-  ...magicLinkPlugin().viewPaths?.auth,
-  ...passkeyPlugin().viewPaths?.auth
-  // ...etc
-}
-```
-
-Install each plugin's matching client on your `authClient` too (e.g. `magicLinkClient()` on `createAuthClient` alongside `magicLink()` on the Better Auth server).
 
 ## Example Project
 

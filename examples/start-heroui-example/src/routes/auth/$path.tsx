@@ -1,16 +1,10 @@
 import { viewPaths } from "@better-auth-ui/core"
 import { Auth } from "@better-auth-ui/heroui"
-import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { createFileRoute, notFound } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/auth/$path")({
   beforeLoad({ params: { path } }) {
-    if (
-      !Object.values({
-        ...viewPaths.auth,
-        ...magicLinkPlugin().viewPaths.auth
-      }).includes(path)
-    ) {
+    if (!Object.values(viewPaths.auth).includes(path)) {
       throw notFound()
     }
   },

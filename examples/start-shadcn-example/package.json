@@ -4,11 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
     "deploy": "bun run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "registry:build": "shadcn build --output ../../apps/docs/public/r && cp -r src/components/auth src/components/user src/components/settings src/components/ui ../../apps/docs/src/components/ && cp -r src/components/auth src/components/user src/components/settings src/components/ui ../next-shadcn-example/src/components/"
+    "registry:build": "bash scripts/build-registry.sh"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.33.2",

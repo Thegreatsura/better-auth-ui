@@ -4,11 +4,23 @@ import {
   magicLinkLocalization
 } from "./magic-link-localization"
 
+declare module "@better-auth-ui/core" {
+  /** Widens `AuthViewPaths` by adding the `"magicLink"` path when this plugin is imported. */
+  interface AuthViewPaths {
+    /** @default "magic-link" */
+    magicLink?: string
+  }
+}
+
 export type MagicLinkPluginOptions = {
-  /** Partial override for the plugin's default localization strings. */
+  /**
+   * Override the plugin's default localization strings.
+   * @remarks `MagicLinkLocalization`
+   */
   localization?: Partial<MagicLinkLocalization>
   /**
    * URL segment for the magic-link view.
+   * @remarks `string`
    * @default "magic-link"
    */
   path?: string

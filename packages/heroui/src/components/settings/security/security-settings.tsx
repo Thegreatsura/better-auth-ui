@@ -2,7 +2,6 @@ import { useAuth } from "@better-auth-ui/react"
 import { type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
 
-import type { AuthPlugin } from "../../../lib/auth-plugin"
 import { ActiveSessions } from "./active-sessions"
 import { ChangePassword } from "./change-password"
 import { DangerZone } from "./danger-zone"
@@ -28,8 +27,7 @@ export function SecuritySettings({
   variant,
   ...props
 }: SecuritySettingsProps & ComponentProps<"div">) {
-  const { deleteUser, emailAndPassword, plugins, socialProviders } =
-    useAuth<AuthPlugin>()
+  const { deleteUser, emailAndPassword, plugins, socialProviders } = useAuth()
 
   return (
     <div
@@ -38,7 +36,7 @@ export function SecuritySettings({
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
       {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
-      {plugins?.flatMap((plugin) =>
+      {plugins.flatMap((plugin) =>
         plugin.securityCards?.map((Card, index) => (
           <Card key={`${plugin.id}-${index.toString()}`} variant={variant} />
         ))

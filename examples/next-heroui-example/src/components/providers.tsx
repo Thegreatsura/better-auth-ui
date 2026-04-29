@@ -1,7 +1,6 @@
 "use client"
 
 import { AuthProvider } from "@better-auth-ui/heroui"
-import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -23,7 +22,6 @@ export function Providers({ children }: { children: ReactNode }) {
         appearance={{ theme, setTheme }}
         deleteUser={{ enabled: true }}
         multiSession
-        plugins={[magicLinkPlugin()]}
         redirectTo="/settings/account"
         socialProviders={["google", "github"]}
         navigate={({ to, replace }) =>

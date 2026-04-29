@@ -32,8 +32,6 @@ export const authMutationKeys = {
     email: ["auth", "signIn", "email"] as const,
     /** Key for `signIn.social`. */
     social: ["auth", "signIn", "social"] as const,
-    /** Key for `signIn.magicLink`. */
-    magicLink: ["auth", "signIn", "magicLink"] as const,
     /** Key for `signIn.passkey`. */
     passkey: ["auth", "signIn", "passkey"] as const,
     /** Key for `signIn.username`. */

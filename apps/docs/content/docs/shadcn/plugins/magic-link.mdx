@@ -1,0 +1,217 @@
+---
+title: Magic Link
+description: Add passwordless email sign-in to your authentication flow.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
+
+The magic-link plugin adds a passwordless email sign-in flow. The user enters their email, receives a one-time link, and is signed in when they click it.
+
+<ComponentPreview name="shadcn-magic-link" />
+
+It contributes:
+
+- A `<MagicLink />` view at `/auth/magic-link`
+- A "Continue with Magic Link" button rendered alongside the password sign-in button
+- A `useSignInMagicLink` mutation hook
+
+When `emailAndPassword.enabled === false`, `<MagicLink />` automatically takes over `/auth/sign-in` as the primary passwordless surface.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Add the [Magic Link](https://www.better-auth.com/docs/plugins/magic-link) plugin to your Better Auth server config and wire up `sendMagicLink` to your email provider:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { magicLink } from "better-auth/plugins" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    magicLink({ // [!code highlight]
+      sendMagicLink: async ({ email, url }) => { // [!code highlight]
+        // Send `url` to `email` via your email provider. // [!code highlight]
+      } // [!code highlight]
+    }) // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `magicLinkClient()` to your auth client so `authClient.signIn.magicLink` is available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { magicLinkClient } from "better-auth/client/plugins" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [magicLinkClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Install the UI plugin
+
+Run the shadcn CLI to install the magic-link form, the toggle button, and the `magicLinkPlugin()` factory into your project:
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/magic-link.json
+```
+
+This drops the following into your codebase:
+
+- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/magic-link/magic-link-plugin.ts` — `magicLinkPlugin()` factory
+- `src/components/auth/magic-link.tsx` — the magic-link form
+- `src/components/auth/magic-link-button.tsx` — the toggle button
+- `src/components/auth/provider-button(s).tsx` — social provider buttons used by the form
+
+</Step>
+<Step>
+### Register the plugin
+
+Pass `magicLinkPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  plugins={[magicLinkPlugin()]} // [!code highlight]
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+<Step>
+### Allow the new view path
+
+The plugin contributes a `magic-link` segment to `viewPaths.auth`. Spread `magicLinkPlugin().viewPaths?.auth` into your auth route's allowed-paths set so `/auth/magic-link` resolves correctly:
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="routes/auth/$path.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { createFileRoute, notFound } from "@tanstack/react-router"
+
+import { Auth } from "@/components/auth/auth"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+
+export const Route = createFileRoute("/auth/$path")({
+  beforeLoad({ params: { path } }) {
+    if (
+      !Object.values({
+        ...viewPaths.auth,
+        ...magicLinkPlugin().viewPaths?.auth // [!code highlight]
+      }).includes(path)
+    ) {
+      throw notFound()
+    }
+  },
+  component: AuthPage
+})
+
+function AuthPage() {
+  const { path } = Route.useParams()
+  return <Auth path={path} />
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="app/auth/[path]/page.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { notFound } from "next/navigation"
+
+import { Auth } from "@/components/auth/auth"
+import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+
+export default async function AuthPage({
+  params
+}: {
+  params: Promise<{ path: string }>
+}) {
+  const { path } = await params
+
+  if (
+    !Object.values({
+      ...viewPaths.auth,
+      ...magicLinkPlugin().viewPaths?.auth // [!code highlight]
+    }).includes(path)
+  ) {
+    notFound()
+  }
+
+  return <Auth path={path} />
+}
+```
+
+</Tab>
+</Tabs>
+
+</Step>
+</Steps>
+
+## Options
+
+```ts
+magicLinkPlugin({
+  // Override the URL segment. Default: "magic-link"
+  path: "email-link",
+  // Override any of the plugin's localization strings.
+  localization: {
+    sendMagicLink: "Email me a link"
+  }
+})
+```
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/magic-link/magic-link-plugin.ts" name="MagicLinkPluginOptions" />
+
+## Localization
+
+| Key             | Default                              |
+| --------------- | ------------------------------------ |
+| `magicLink`     | `"Magic Link"`                       |
+| `sendMagicLink` | `"Send Magic Link"`                  |
+| `magicLinkSent` | `"Check your email for the magic link"` |
+
+Read these from `useAuthPlugin(magicLinkPlugin).localization` inside custom slot components.
+
+## Email template
+
+Pair the plugin with the [`<MagicLinkEmail />`](/docs/shadcn/components/email/magic-link-email) component to send a styled email from your `sendMagicLink` callback.
+
+## Passwordless-only flows
+
+If you disable email + password auth entirely, the magic-link form is promoted to the primary sign-in view automatically — no extra config needed:
+
+```tsx
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  emailAndPassword={{ enabled: false }}
+  plugins={[magicLinkPlugin()]}
+>
+  {children}
+</AuthProvider>
+```
+
+`/auth/sign-in` now renders `<MagicLink />`, and the `signUp` / `forgotPassword` / `resetPassword` routes redirect to it.

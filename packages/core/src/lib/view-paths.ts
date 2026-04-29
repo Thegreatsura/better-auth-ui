@@ -1,10 +1,9 @@
 /**
  * View path segments for authentication routes.
  *
- * The required keys are the fixed built-ins every install ships with. Optional
- * keys are contributed by plugins (e.g. `magicLinkPlugin` adds `magicLink`) and
- * merged in at runtime via `AuthProvider`'s `plugins` prop. Access them via
- * `useAuth().viewPaths` or the composed result of `resolveViewPaths(plugins)`.
+ * Contains the fixed built-ins every install ships with. Plugin-contributed
+ * paths (e.g. `magicLinkPlugin`'s `magicLink`) live on the plugin object and
+ * are read via `useAuthPlugin(plugin).viewPaths.auth.*`.
  */
 export interface AuthViewPaths {
   /**
@@ -32,15 +31,6 @@ export interface AuthViewPaths {
    * @default "sign-out"
    */
   signOut: string
-  /**
-   * Path segment for the magic link authentication view.
-   *
-   * Contributed by `magicLinkPlugin`; `undefined` when the plugin isn't
-   * registered.
-   *
-   * @default "magic-link"
-   */
-  magicLink?: string
 }
 
 /**

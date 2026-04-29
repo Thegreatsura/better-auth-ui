@@ -19,7 +19,6 @@ import {
 } from "react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import type { AuthPlugin } from "../../lib/auth-plugin"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
@@ -46,13 +45,11 @@ declare module "@better-auth-ui/core" {
   }
 }
 
-export type AuthProviderProps<
-  TAuthClient = AuthClient,
-  TPlugin extends AuthPlugin = AuthPlugin
-> = PropsWithChildren<DeepPartial<AuthConfig>> & {
+export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
+  DeepPartial<AuthConfig>
+> & {
   authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
-  plugins?: TPlugin[]
   /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
@@ -70,28 +67,17 @@ export type AuthProviderProps<
 export function AuthProvider({
   children,
   queryClient,
-  plugins,
   ...config
 }: AuthProviderProps) {
-  const pluginAuthViewPaths: Record<string, string> = {}
-  const pluginSettingsViewPaths: Record<string, string> = {}
-  for (const plugin of plugins ?? []) {
-    Object.assign(pluginAuthViewPaths, plugin.viewPaths?.auth)
-    Object.assign(pluginSettingsViewPaths, plugin.viewPaths?.settings)
-  }
-
   const mergedConfig = deepmerge(defaultAuthConfig, {
     ...config,
-    plugins,
     viewPaths: {
       auth: {
         ...defaultAuthConfig.viewPaths.auth,
-        ...pluginAuthViewPaths,
         ...config.viewPaths?.auth
       },
       settings: {
         ...defaultAuthConfig.viewPaths.settings,
-        ...pluginSettingsViewPaths,
         ...config.viewPaths?.settings
       }
     }
@@ -124,21 +110,19 @@ export function AuthProvider({
 /**
  * Accesses the current authentication configuration from AuthContext.
  *
- * Generic over the plugin type so UI packages can narrow `plugins` to their
- * framework-specific `AuthPlugin` variant (e.g. heroui's plugin type with
- * heroui-typed `AuthButton` / `SecurityCard` slot components).
+ * UI packages widen the plugin type globally via the `Register` interface
+ * (see module augmentation in `@better-auth-ui/heroui`), so callers don't
+ * need to pass a generic.
  *
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth<
-  TPlugin extends AuthPlugin = AuthPlugin
->(): AuthConfig & { plugins?: TPlugin[] } {
+export function useAuth(): AuthConfig {
   const context = useContext(AuthContext)
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")
   }
 
-  return context as AuthConfig & { plugins?: TPlugin[] }
+  return context
 }

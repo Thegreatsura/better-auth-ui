@@ -10,10 +10,6 @@ describe("viewPaths.auth", () => {
     expect(viewPaths.auth).toHaveProperty("signOut")
   })
 
-  it("should not ship plugin-contributed paths by default", () => {
-    expect(viewPaths.auth.magicLink).toBeUndefined()
-  })
-
   it("should have correct path values", () => {
     expect(viewPaths.auth.signIn).toBe("sign-in")
     expect(viewPaths.auth.signUp).toBe("sign-up")

@@ -1,5 +1,6 @@
 import type { SocialProvider } from "better-auth/social-providers"
 
+import type { AuthPlugin } from "../lib/auth-plugin"
 import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
@@ -67,6 +68,13 @@ export interface AuthConfig {
   /** Whether Passkey plugin is enabled */
   passkey?: boolean
   /**
+   * Registered auth plugins. UI packages widen the element type via the
+   * `AuthPluginRegister` module-augmentation slot.
+   * @remarks `AuthPlugin[]`
+   * @default []
+   */
+  plugins: AuthPlugin[]
+  /**
    * Default redirect path after successful authentication
    * @default "/"
    */
@@ -118,6 +126,7 @@ export const defaultAuthConfig: AuthConfig = {
     minPasswordLength: 8,
     maxPasswordLength: 128
   },
+  plugins: [],
   redirectTo: "/",
   viewPaths,
   localization,

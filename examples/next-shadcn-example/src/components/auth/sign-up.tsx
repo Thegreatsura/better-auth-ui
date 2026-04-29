@@ -1,6 +1,9 @@
 "use client"
 
-import { parseAdditionalFieldValue } from "@better-auth-ui/core"
+import {
+  authMutationKeys,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -8,6 +11,7 @@ import {
   useSignUpEmail
 } from "@better-auth-ui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
+import { useIsMutating } from "@tanstack/react-query"
 import { Check, Eye, EyeOff, X } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
@@ -31,7 +35,6 @@ import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
 import { AdditionalField } from "./additional-field"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignUpProps = {
@@ -65,7 +68,7 @@ export function SignUp({
     basePaths,
     emailAndPassword,
     localization,
-    magicLink,
+    plugins,
     redirectTo,
     socialProviders,
     username: usernameConfig,
@@ -106,26 +109,29 @@ export function SignUp({
     }
   }
 
-  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail(
-    authClient,
-    {
-      onError: (error) => {
-        setPassword("")
-        setConfirmPassword("")
-        toast.error(error.error?.message || error.message)
-      },
-      onSuccess: () => {
-        if (emailAndPassword?.requireEmailVerification) {
-          toast.success(localization.auth.verifyYourEmail)
-          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-        } else {
-          navigate({ to: redirectTo })
-        }
+  const { mutate: signUpEmail } = useSignUpEmail(authClient, {
+    onError: (error) => {
+      setPassword("")
+      setConfirmPassword("")
+      toast.error(error.error?.message || error.message)
+    },
+    onSuccess: () => {
+      if (emailAndPassword?.requireEmailVerification) {
+        toast.success(localization.auth.verifyYourEmail)
+        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      } else {
+        navigate({ to: redirectTo })
       }
     }
-  )
+  })
 
-  const isPending = signUpPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -207,10 +213,7 @@ export function SignUp({
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
 
               {showSeparator && (
@@ -485,8 +488,13 @@ export function SignUp({
                     {localization.auth.signUp}
                   </Button>
 
-                  {magicLink && (
-                    <MagicLinkButton view="signUp" isPending={isPending} />
+                  {plugins.flatMap((plugin) =>
+                    (plugin.authButtons ?? []).map((AuthButton, index) => (
+                      <AuthButton
+                        key={`${plugin.id}-${index.toString()}`}
+                        view="signUp"
+                      />
+                    ))
                   )}
                 </div>
               </FieldGroup>
@@ -502,10 +510,7 @@ export function SignUp({
               )}
 
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
             </>
           )}
