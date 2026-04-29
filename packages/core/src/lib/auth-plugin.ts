@@ -28,3 +28,22 @@ export interface AuthPlugin {
    */
   viewPaths?: AuthPluginViewPaths
 }
+
+/**
+ * Module-augmentation slot for narrowing the plugin type returned by
+ * `useAuth()`. UI packages widen `plugin` here (e.g. heroui's variant-typed
+ * `AuthPlugin`) so consumers don't have to pass `useAuth<AuthPlugin>()`.
+ *
+ * @example
+ * declare module "@better-auth-ui/core" {
+ *   interface AuthPluginRegister { plugin: HeroUIAuthPlugin }
+ * }
+ */
+// biome-ignore lint/suspicious/noEmptyInterface: declaration-merging slot
+export interface AuthPluginRegister {}
+
+export type ResolvedAuthPlugin = AuthPluginRegister extends { plugin: infer P }
+  ? P extends AuthPlugin
+    ? P
+    : AuthPlugin
+  : AuthPlugin

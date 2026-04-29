@@ -36,7 +36,7 @@ export function SecuritySettings({
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
       {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
-      {plugins?.flatMap((plugin) =>
+      {plugins.flatMap((plugin) =>
         plugin.securityCards?.map((Card, index) => (
           <Card key={`${plugin.id}-${index.toString()}`} variant={variant} />
         ))

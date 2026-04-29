@@ -19,7 +19,6 @@ import {
 } from "react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import type { AuthPlugin } from "../../lib/auth-plugin"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
@@ -46,31 +45,11 @@ declare module "@better-auth-ui/core" {
   }
 }
 
-/**
- * Module-augmentation slot for narrowing the plugin type returned by
- * `useAuth()`. UI packages widen `plugin` here (e.g. heroui's variant-typed
- * `AuthPlugin`) so consumers don't have to pass `useAuth<AuthPlugin>()`.
- *
- * @example
- * declare module "@better-auth-ui/react" {
- *   interface AuthPluginRegister { plugin: HeroUIAuthPlugin }
- * }
- */
-// biome-ignore lint/suspicious/noEmptyInterface: declaration-merging slot
-export interface AuthPluginRegister {}
-
-export type ResolvedAuthPlugin = AuthPluginRegister extends { plugin: infer P }
-  ? P extends AuthPlugin
-    ? P
-    : AuthPlugin
-  : AuthPlugin
-
 export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
   DeepPartial<AuthConfig>
 > & {
   authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
-  plugins?: ResolvedAuthPlugin[]
   /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
@@ -88,12 +67,10 @@ export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
 export function AuthProvider({
   children,
   queryClient,
-  plugins,
   ...config
 }: AuthProviderProps) {
   const mergedConfig = deepmerge(defaultAuthConfig, {
     ...config,
-    plugins,
     viewPaths: {
       auth: {
         ...defaultAuthConfig.viewPaths.auth,
@@ -140,12 +117,12 @@ export function AuthProvider({
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth(): AuthConfig & { plugins?: ResolvedAuthPlugin[] } {
+export function useAuth(): AuthConfig {
   const context = useContext(AuthContext)
 
   if (!context) {
     throw new Error("[Better Auth UI] AuthProvider is required")
   }
 
-  return context as AuthConfig & { plugins?: ResolvedAuthPlugin[] }
+  return context
 }

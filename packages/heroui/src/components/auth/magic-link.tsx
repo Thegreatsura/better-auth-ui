@@ -130,7 +130,7 @@ export function MagicLink({
               {localization.auth.sendMagicLink}
             </Button>
 
-            {plugins?.flatMap((plugin) =>
+            {plugins.flatMap((plugin) =>
               (plugin.authButtons ?? []).map((AuthButton, index) => (
                 <AuthButton
                   key={`${plugin.id}-${index.toString()}`}

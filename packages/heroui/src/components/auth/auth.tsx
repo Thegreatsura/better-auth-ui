@@ -70,11 +70,11 @@ export function Auth({
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
   }
 
-  const authPathViews = Object.fromEntries(
-    Object.entries(viewPaths.auth).map(([k, v]) => [v, k])
-  ) as Record<string, AuthView>
-
-  const authView = view || (path ? authPathViews[path] : undefined)
+  const authView =
+    view ||
+    (Object.keys(viewPaths.auth) as AuthView[]).find(
+      (key) => viewPaths.auth[key] === path
+    )
 
   // When email + password auth is disabled, password-only views (signUp,
   // forgotPassword, resetPassword) have no meaning. Redirect them to signIn,
@@ -100,18 +100,16 @@ export function Auth({
 
   // 1. Plugin overrides (`views.auth[currentView]`) — these always win,
   //    including over built-in views. First plugin to register wins.
-  for (const plugin of plugins ?? []) {
-    if (!plugin.viewPaths?.auth) continue
+  for (const plugin of plugins) {
+    const pluginAuthPaths = plugin.viewPaths?.auth
+    if (!pluginAuthPaths) continue
 
-    const pluginPathViews = Object.fromEntries(
-      Object.entries(plugin.viewPaths.auth).map(([k, v]) => [v, k])
-    ) as Record<string, AuthView>
-
-    const pluginView = view || (path ? pluginPathViews[path] : undefined)
+    const pluginView =
+      view ??
+      Object.keys(pluginAuthPaths).find((key) => pluginAuthPaths[key] === path)
     if (!pluginView) continue
 
     const PluginView = plugin.views?.auth?.[pluginView]
-
     if (!PluginView) continue
 
     return (
@@ -127,7 +125,7 @@ export function Auth({
   //    (password auth is off). Used by `magicLinkPlugin` to render the
   //    magic-link form as the primary passwordless sign-in surface.
   if (authView === "signIn" && !emailAndPassword?.enabled) {
-    const Fallback = plugins?.find(
+    const Fallback = plugins.find(
       (plugin) => plugin.fallbackViews?.auth?.signIn
     )?.fallbackViews?.auth?.signIn
 
