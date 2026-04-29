@@ -13,10 +13,14 @@ declare module "@better-auth-ui/core" {
 }
 
 export type MagicLinkPluginOptions = {
-  /** Partial override for the plugin's default localization strings. */
+  /**
+   * Override the plugin's default localization strings.
+   * @remarks `MagicLinkLocalization`
+   */
   localization?: Partial<MagicLinkLocalization>
   /**
    * URL segment for the magic-link view.
+   * @remarks `string`
    * @default "magic-link"
    */
   path?: string

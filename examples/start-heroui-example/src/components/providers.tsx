@@ -1,5 +1,4 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
-import { magicLinkPlugin } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useTheme } from "next-themes"
@@ -18,7 +17,6 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       multiSession
       passkey
-      plugins={[magicLinkPlugin()]}
       redirectTo="/settings/account"
       socialProviders={["github"]}
       navigate={navigate}

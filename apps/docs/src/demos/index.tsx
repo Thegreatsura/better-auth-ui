@@ -1,7 +1,7 @@
 import type { ComponentType } from "react"
 import { AuthDemo as HeroUIAuthDemo } from "./heroui/auth/auth"
 import { ForgotPasswordDemo as HeroUIForgotPasswordDemo } from "./heroui/auth/forgot-password"
-import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/auth/magic-link"
+import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/magic-link/magic-link"
 import { ResetPasswordDemo as HeroUIResetPasswordDemo } from "./heroui/auth/reset-password"
 import { SignInDemo as HeroUISignInDemo } from "./heroui/auth/sign-in"
 import { SignOutDemo as HeroUISignOutDemo } from "./heroui/auth/sign-out"
