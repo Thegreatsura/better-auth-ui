@@ -73,25 +73,16 @@ export function AuthProvider({
   plugins,
   ...config
 }: AuthProviderProps) {
-  const pluginAuthViewPaths: Record<string, string> = {}
-  const pluginSettingsViewPaths: Record<string, string> = {}
-  for (const plugin of plugins ?? []) {
-    Object.assign(pluginAuthViewPaths, plugin.viewPaths?.auth)
-    Object.assign(pluginSettingsViewPaths, plugin.viewPaths?.settings)
-  }
-
   const mergedConfig = deepmerge(defaultAuthConfig, {
     ...config,
     plugins,
     viewPaths: {
       auth: {
         ...defaultAuthConfig.viewPaths.auth,
-        ...pluginAuthViewPaths,
         ...config.viewPaths?.auth
       },
       settings: {
         ...defaultAuthConfig.viewPaths.settings,
-        ...pluginSettingsViewPaths,
         ...config.viewPaths?.settings
       }
     }

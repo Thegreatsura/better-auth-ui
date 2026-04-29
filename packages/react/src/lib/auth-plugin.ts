@@ -1,7 +1,4 @@
-import type {
-  AuthView,
-  AuthPlugin as CoreAuthPlugin
-} from "@better-auth-ui/core"
+import type { AuthPlugin as CoreAuthPlugin } from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
 
 export type { AuthPluginViewPaths } from "@better-auth-ui/core"
@@ -11,8 +8,12 @@ export type AuthButtonProps = {
   className?: string
   children?: ReactNode
   isPending?: boolean
-  /** Current auth view — lets buttons context-switch (e.g. show "back to sign-in"). */
-  view?: AuthView
+  /**
+   * Current auth view — lets buttons context-switch (e.g. show "back to sign-in").
+   * Widened to `string` because plugin-contributed views (e.g. `"magicLink"`,
+   * `"passkey"`) aren't part of the built-in `AuthView` union.
+   */
+  view?: string
 }
 
 /** Props for plugin-contributed cards under `/settings/security`. */

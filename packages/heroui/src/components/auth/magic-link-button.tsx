@@ -1,12 +1,17 @@
-import type { AuthView } from "@better-auth-ui/core"
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { Envelope, Lock } from "@gravity-ui/icons"
 import { cn, Link } from "@heroui/react"
 import { buttonVariants } from "@heroui/styles"
 
+import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
+
 export type MagicLinkButtonProps = {
   isPending?: boolean
-  view?: AuthView
+  /**
+   * Current auth view. Widened to `string` because plugin-contributed views
+   * (e.g. `"magicLink"`) aren't part of the built-in `AuthView` union.
+   */
+  view?: string
 }
 
 /**
@@ -18,12 +23,14 @@ export type MagicLinkButtonProps = {
  */
 export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
   const { basePaths, viewPaths, localization } = useAuth()
+  const { localization: magicLinkLocalization, viewPaths: magicLinkViewPaths } =
+    useAuthPlugin(magicLinkPlugin)
 
   const isMagicLinkView = view === "magicLink"
 
   return (
     <Link
-      href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : viewPaths.auth.magicLink}`}
+      href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : magicLinkViewPaths.auth.magicLink}`}
       className={cn(
         buttonVariants({ variant: "tertiary" }),
         "w-full gap-2",
@@ -36,7 +43,7 @@ export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
         "{{provider}}",
         isMagicLinkView
           ? localization.auth.password
-          : localization.auth.magicLink
+          : magicLinkLocalization.magicLink
       )}
     </Link>
   )
