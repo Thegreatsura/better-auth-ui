@@ -45,6 +45,7 @@ export function ProviderButton({
       isPending={providerPending}
       onPress={() => signInSocial({ provider, callbackURL })}
       {...props}
+      aria-label={getProviderName(provider)}
     >
       {providerPending ? (
         <Spinner color="current" size="sm" />

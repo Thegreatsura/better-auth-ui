@@ -40,11 +40,16 @@ for target in "${TARGETS[@]}"; do
   mkdir -p "$target_components" "$target_lib"
 
   # Prune stale mirrors so renames/deletes propagate.
+  # Guard against empty variables to avoid catastrophic deletes (e.g. rm -rf /).
   for dir in "${COMPONENT_DIRS[@]}"; do
-    rm -rf "$target_components/$dir"
+    : "${target_components:?target_components is empty}"
+    : "${dir:?component dir entry is empty}"
+    rm -rf -- "$target_components/$dir"
   done
   for entry in "${LIB_ENTRIES[@]}"; do
-    rm -rf "$target_lib/$entry"
+    : "${target_lib:?target_lib is empty}"
+    : "${entry:?lib entry is empty}"
+    rm -rf -- "$target_lib/$entry"
   done
 
   # Copy the fresh sources.
