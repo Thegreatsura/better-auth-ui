@@ -17,7 +17,7 @@ export type AuthPluginViewPaths = {
  * may ship. UI packages extend this with framework-specific slot components
  * (see `AuthPlugin` in `@better-auth-ui/react`).
  */
-export interface AuthPlugin {
+export interface AuthPluginBase {
   /** Unique identifier. Used as a React key and localization namespace. */
   id: string
   /** Localization defaults contributed by the plugin. */
@@ -42,8 +42,13 @@ export interface AuthPlugin {
 // biome-ignore lint/suspicious/noEmptyInterface: declaration-merging slot
 export interface AuthPluginRegister {}
 
-export type ResolvedAuthPlugin = AuthPluginRegister extends { plugin: infer P }
-  ? P extends AuthPlugin
+/**
+ * Resolved auth plugin type. UI packages widen this via the
+ * `AuthPluginRegister` module-augmentation slot; without any augmentation it
+ * falls back to the framework-agnostic `AuthPluginBase`.
+ */
+export type AuthPlugin = AuthPluginRegister extends { plugin: infer P }
+  ? P extends AuthPluginBase
     ? P
-    : AuthPlugin
-  : AuthPlugin
+    : AuthPluginBase
+  : AuthPluginBase

@@ -1,6 +1,6 @@
 import type { SocialProvider } from "better-auth/social-providers"
 
-import type { ResolvedAuthPlugin } from "../lib/auth-plugin"
+import type { AuthPlugin } from "../lib/auth-plugin"
 import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
@@ -70,10 +70,10 @@ export interface AuthConfig {
   /**
    * Registered auth plugins. UI packages widen the element type via the
    * `AuthPluginRegister` module-augmentation slot.
-   * @remarks `ResolvedAuthPlugin[]`
+   * @remarks `AuthPlugin[]`
    * @default []
    */
-  plugins: ResolvedAuthPlugin[]
+  plugins: AuthPlugin[]
   /**
    * Default redirect path after successful authentication
    * @default "/"
