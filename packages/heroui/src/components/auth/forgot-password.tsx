@@ -25,7 +25,7 @@ export type ForgotPasswordProps = {
  * Render a card-based "Forgot Password" form that sends a password-reset email.
  *
  * The form displays an email input, submit button, and a link back to sign-in.
- * Toasts are displayed on success or error via the `useForgotPassword` hook.
+ * Toasts are displayed on success or error via the `useRequestPasswordReset` hook.
  *
  * @param className - Optional additional CSS class names applied to the card
  * @returns The forgot-password form UI as a JSX element
@@ -56,7 +56,7 @@ export function ForgotPassword({
 
   return (
     <Card
-      className={cn("w-full max-w-sm p-4 md:p-6", className)}
+      className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
       {...props}
     >
@@ -66,7 +66,7 @@ export function ForgotPassword({
         </Card.Title>
       </Card.Header>
 
-      <Card.Content>
+      <Card.Content className="gap-4">
         <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <TextField
             name="email"
@@ -93,12 +93,12 @@ export function ForgotPassword({
         </Form>
       </Card.Content>
 
-      <Card.Footer className="flex-col">
+      <Card.Footer className="flex-col gap-3">
         <Description className="text-sm">
           {localization.auth.rememberYourPassword}{" "}
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-            className="text-accent decoration-accent no-underline hover:underline"
+            className="text-accent no-underline hover:underline decoration-accent-hover"
           >
             {localization.auth.signIn}
           </Link>

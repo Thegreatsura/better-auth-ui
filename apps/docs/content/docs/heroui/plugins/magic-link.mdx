@@ -8,6 +8,8 @@ import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
 The magic-link plugin adds a passwordless email sign-in flow. The user enters their email, receives a one-time link, and is signed in when they click it.
 
+### `<MagicLink />`
+
 <ComponentPreview name="heroui-magic-link" />
 
 It contributes:
@@ -167,11 +169,7 @@ magicLinkPlugin({
 
 ## Localization
 
-| Key             | Default                              |
-| --------------- | ------------------------------------ |
-| `magicLink`     | `"Magic Link"`                       |
-| `sendMagicLink` | `"Send Magic Link"`                  |
-| `magicLinkSent` | `"Check your email for the magic link"` |
+<auto-type-table path="../../../../../../packages/core/src/plugins/magic-link/magic-link-localization.ts" name="MagicLinkLocalization" />
 
 Read these from `useAuthPlugin(magicLinkPlugin).localization` inside custom slot components.
 

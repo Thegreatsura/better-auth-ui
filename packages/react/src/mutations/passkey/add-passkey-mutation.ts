@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { passkeyMutationKeys } from "@better-auth-ui/core/plugins"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
@@ -20,7 +20,7 @@ type AddPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
 export function addPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = authMutationKeys.passkey.addPasskey
+  const mutationKey = passkeyMutationKeys.addPasskey
 
   // biome-ignore lint/suspicious/noConfusingVoidType: void allows no-arg mutate
   const mutationFn = (params?: AddPasskeyParams<TAuthClient> | void) =>

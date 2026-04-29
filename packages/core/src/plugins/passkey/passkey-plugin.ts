@@ -5,6 +5,10 @@ import {
 } from "./passkey-localization"
 
 export type PasskeyPluginOptions = {
+  /**
+   * Override the plugin's default localization strings.
+   * @remarks `PasskeyLocalization`
+   */
   localization?: Partial<PasskeyLocalization>
 }
 

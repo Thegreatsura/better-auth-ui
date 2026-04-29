@@ -13,6 +13,7 @@ import { OtpEmailDemo as HeroUIOtpEmailDemo } from "./heroui/email/otp-email"
 import { PasswordChangedEmailDemo as HeroUIPasswordChangedEmailDemo } from "./heroui/email/password-changed-email"
 import { ResetPasswordEmailDemo as HeroUIResetPasswordEmailDemo } from "./heroui/email/reset-password-email"
 import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/magic-link/magic-link"
+import { PasskeySignInDemo as HeroUIPasskeySignInDemo } from "./heroui/passkey/passkey-sign-in"
 import { AccountSettingsDemo as HeroUIAccountSettingsDemo } from "./heroui/settings/account/account-settings"
 import { AppearanceDemo as HeroUIAppearanceDemo } from "./heroui/settings/account/appearance"
 import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/account/change-email"
@@ -81,6 +82,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-manage-accounts": HeroUIManageAccountsDemo,
   "heroui-new-device-email": HeroUINewDeviceEmailDemo,
   "heroui-otp-email": HeroUIOtpEmailDemo,
+  "heroui-passkey-sign-in": HeroUIPasskeySignInDemo,
   "heroui-passkeys": HeroUIPasskeysDemo,
   "heroui-password-changed-email": HeroUIPasswordChangedEmailDemo,
   "heroui-reset-password": HeroUIResetPasswordDemo,

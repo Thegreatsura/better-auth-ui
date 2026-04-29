@@ -1,22 +1,21 @@
-import { AuthProvider, Passkeys } from "@better-auth-ui/heroui"
+import { AuthProvider, SignIn } from "@better-auth-ui/heroui"
 import { passkeyPlugin } from "@better-auth-ui/heroui/plugins"
 
 import { authClient } from "@/lib/auth-client"
 
-export function PasskeysDemo() {
+export function PasskeySignInDemo() {
   return (
     <AuthProvider
       authClient={authClient}
       navigate={() => {}}
       plugins={[passkeyPlugin()]}
+      socialProviders={["github", "google"]}
       appearance={{
         theme: "system",
         setTheme: () => {}
       }}
     >
-      <div className="w-full">
-        <Passkeys />
-      </div>
+      <SignIn />
     </AuthProvider>
   )
 }
