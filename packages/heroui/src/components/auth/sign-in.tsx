@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -21,6 +22,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 
 import { FieldSeparator } from "./field-separator"
@@ -72,39 +74,38 @@ export function SignIn({
     }
   )
 
-  const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
-    authClient,
+  const { mutate: signInEmail } = useSignInEmail(authClient, {
+    onError: (error, { email }) => {
+      setPassword("")
+
+      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+        toast.danger(error.error?.message || error.message, {
+          actionProps: {
+            children: localization.auth.resend,
+            onClick: () =>
+              sendVerificationEmail({
+                email,
+                callbackURL: `${baseURL}${redirectTo}`
+              })
+          }
+        })
+      } else {
+        toast.danger(error.error?.message || error.message)
+      }
+    },
+    onSuccess: () => navigate({ to: redirectTo })
+  })
+
+  const { mutate: signInUsername } = useSignInUsername(
+    authClient as UsernameAuthClient,
     {
-      onError: (error, { email }) => {
-        setPassword("")
-
-        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-          toast.danger(error.error?.message || error.message, {
-            actionProps: {
-              children: localization.auth.resend,
-              onClick: () =>
-                sendVerificationEmail({
-                  email,
-                  callbackURL: `${baseURL}${redirectTo}`
-                })
-            }
-          })
-        } else {
-          toast.danger(error.error?.message || error.message)
-        }
-      },
-      onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
-
-  const { mutate: signInUsername, isPending: signInUsernamePending } =
-    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.danger(error.error?.message || error.message)
       },
       onSuccess: () => navigate({ to: redirectTo })
-    })
+    }
+  )
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -127,7 +128,13 @@ export function SignIn({
     }
   }
 
-  const isPending = signInEmailPending || signInUsernamePending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
@@ -147,10 +154,7 @@ export function SignIn({
         {socialPosition === "top" && (
           <>
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
 
             {showSeparator && (
@@ -235,7 +239,6 @@ export function SignIn({
                   <AuthButton
                     key={`${plugin.id}-${index.toString()}`}
                     view="signIn"
-                    isPending={isPending}
                   />
                 ))
               )}
@@ -250,10 +253,7 @@ export function SignIn({
             )}
 
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
           </>
         )}

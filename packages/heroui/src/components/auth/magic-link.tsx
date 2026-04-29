@@ -1,3 +1,4 @@
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type MagicLinkAuthClient,
   useAuth,
@@ -19,6 +20,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 
 import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
@@ -33,12 +35,11 @@ export type MagicLinkProps = {
 }
 
 /**
- * Render a card-based sign-in form that sends an email magic link and optionally shows social provider buttons.
+ * Magic-link sign-in form.
  *
- * @param className - Additional CSS class names applied to the card container
- * @param socialLayout - Layout style for social provider buttons
- * @param socialPosition - Position of social provider buttons; `"top"` or `"bottom"`. Defaults to `"bottom"`.
- * @returns The magic-link sign-in UI as a JSX element
+ * @param socialLayout - Provider button layout.
+ * @param socialPosition - `"top"` or `"bottom"`. Defaults to `"bottom"`.
+ * @param variant - Card variant.
  */
 export function MagicLink({
   className,
@@ -62,15 +63,23 @@ export function MagicLink({
 
   const [email, setEmail] = useState("")
 
-  const { mutate: signInMagicLink, isPending: magicLinkPending } =
-    useSignInMagicLink(authClient as MagicLinkAuthClient, {
+  const { mutate: signInMagicLink } = useSignInMagicLink(
+    authClient as MagicLinkAuthClient,
+    {
       onSuccess: () => {
         setEmail("")
         toast.success(magicLinkLocalization.magicLinkSent)
       }
-    })
+    }
+  )
 
-  const isPending = magicLinkPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -95,10 +104,7 @@ export function MagicLink({
         {socialPosition === "top" && (
           <>
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
 
             {showSeparator && (
@@ -139,7 +145,6 @@ export function MagicLink({
                 <AuthButton
                   key={`${plugin.id}-${index.toString()}`}
                   view="magicLink"
-                  isPending={isPending}
                 />
               ))
             )}
@@ -153,10 +158,7 @@ export function MagicLink({
             )}
 
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
           </>
         )}

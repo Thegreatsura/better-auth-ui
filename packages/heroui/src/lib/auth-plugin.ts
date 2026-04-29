@@ -1,11 +1,11 @@
 import type {
   AccountCardProps,
-  AuthButtonProps,
   AuthPlugin as AuthPluginPrimitive,
+  AuthPluginComponents as BaseAuthPluginComponents,
   SecurityCardProps,
   UserMenuItemProps
 } from "@better-auth-ui/react"
-import type { ButtonProps, CardProps } from "@heroui/react"
+import type { CardProps } from "@heroui/react"
 import type { ComponentType } from "react"
 
 import type { SocialLayout } from "../components/auth/provider-buttons"
@@ -17,12 +17,11 @@ declare module "@better-auth-ui/core" {
   }
 }
 
-/** Heroui slot component shapes — narrows the framework-agnostic defaults with heroui variant unions. */
-export type AuthPluginComponents = {
-  /** Rendered alongside the submit button in sign-in / sign-up / forgot-password. */
-  authButtons?: ComponentType<
-    AuthButtonProps & { variant?: ButtonProps["variant"] }
-  >[]
+/** Heroui slot component shapes — inherits from the framework-agnostic defaults and narrows slots that receive a heroui variant from the host. */
+export type AuthPluginComponents = Omit<
+  BaseAuthPluginComponents,
+  "securityCards" | "accountCards"
+> & {
   /** Rendered as cards inside security settings (e.g. passkey list). */
   securityCards?: ComponentType<
     SecurityCardProps & { variant?: CardProps["variant"] }

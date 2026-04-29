@@ -7,7 +7,6 @@ export type { AuthPluginViewPaths } from "@better-auth-ui/core"
 export type AuthButtonProps = {
   className?: string
   children?: ReactNode
-  isPending?: boolean
   /** Current auth view — lets buttons context-switch (e.g. show "back to sign-in"). */
   view?: AuthView
 }

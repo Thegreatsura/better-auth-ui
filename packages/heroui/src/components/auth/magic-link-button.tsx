@@ -1,26 +1,32 @@
-import type { AuthView } from "@better-auth-ui/core"
+import { type AuthView, authMutationKeys } from "@better-auth-ui/core"
 import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { Envelope, Lock } from "@gravity-ui/icons"
 import { cn, Link } from "@heroui/react"
 import { buttonVariants } from "@heroui/styles"
+import { useIsMutating } from "@tanstack/react-query"
 
 import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
 
 export type MagicLinkButtonProps = {
-  isPending?: boolean
   /** @remarks `AuthView` */
   view?: AuthView
 }
 
 /**
- * Renders a full-width tertiary link-style button that navigates to either the magic-link or sign-in route.
+ * Toggle button between the password sign-in and magic-link routes.
  *
- * @param isPending - If true, applies disabled styling and prevents interaction
- * @param view - Current auth view; when `"magicLink"`, the button targets the sign-in/password variant
- * @returns The rendered Link element with the appropriate href, icon, and label
+ * @param view - Current auth view. On `"magicLink"` this links back to password sign-in.
  */
-export function MagicLinkButton({ isPending, view }: MagicLinkButtonProps) {
+export function MagicLinkButton({ view }: MagicLinkButtonProps) {
   const { basePaths, emailAndPassword, viewPaths, localization } = useAuth()
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
+
   const { localization: magicLinkLocalization, viewPaths: magicLinkViewPaths } =
     useAuthPlugin(magicLinkPlugin)
 

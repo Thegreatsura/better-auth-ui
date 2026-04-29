@@ -1,4 +1,7 @@
-import { parseAdditionalFieldValue } from "@better-auth-ui/core"
+import {
+  authMutationKeys,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -23,6 +26,7 @@ import {
   toast
 } from "@heroui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 import { AdditionalField } from "./additional-field"
 import { FieldSeparator } from "./field-separator"
@@ -98,30 +102,33 @@ export function SignUp({
     }
   }
 
-  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail(
-    authClient,
-    {
-      onError: (error) => {
-        setPassword("")
-        setConfirmPassword("")
-        toast.danger(error.error?.message || error.message)
-      },
-      onSuccess: () => {
-        if (emailAndPassword?.requireEmailVerification) {
-          toast.success(localization.auth.verifyYourEmail)
-          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-        } else {
-          navigate({ to: redirectTo })
-        }
+  const { mutate: signUpEmail } = useSignUpEmail(authClient, {
+    onError: (error) => {
+      setPassword("")
+      setConfirmPassword("")
+      toast.danger(error.error?.message || error.message)
+    },
+    onSuccess: () => {
+      if (emailAndPassword?.requireEmailVerification) {
+        toast.success(localization.auth.verifyYourEmail)
+        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      } else {
+        navigate({ to: redirectTo })
       }
     }
-  )
+  })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
-  const isPending = signUpPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -194,10 +201,7 @@ export function SignUp({
         {socialPosition === "top" && (
           <>
             {!!socialProviders?.length && (
-              <ProviderButtons
-                isPending={isPending}
-                socialLayout={socialLayout}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
 
             {showSeparator && (
@@ -402,7 +406,6 @@ export function SignUp({
                   <AuthButton
                     key={`${plugin.id}-${index.toString()}`}
                     view="signUp"
-                    isPending={isPending}
                   />
                 ))
               )}
@@ -417,10 +420,7 @@ export function SignUp({
             )}
 
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
           </>
         )}
