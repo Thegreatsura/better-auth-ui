@@ -7,7 +7,7 @@ import type { SocialProvider } from "better-auth/social-providers"
 export type ProviderButtonProps = {
   provider: SocialProvider
   display?: "full" | "name" | "icon"
-} & Omit<ButtonProps, "children" | "onPress" | "isPending">
+} & Omit<ButtonProps, "children" | "onPress" | "isPending" | "isDisabled">
 
 /**
  * Social provider sign-in button.
@@ -18,7 +18,6 @@ export type ProviderButtonProps = {
 export function ProviderButton({
   provider,
   display = "full",
-  isDisabled,
   variant = "tertiary",
   ...props
 }: ProviderButtonProps) {
@@ -42,7 +41,7 @@ export function ProviderButton({
   return (
     <Button
       variant={variant}
-      isDisabled={isDisabled || isPending}
+      isDisabled={isPending}
       isPending={providerPending}
       onPress={() => signInSocial({ provider, callbackURL })}
       {...props}

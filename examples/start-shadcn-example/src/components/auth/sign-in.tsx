@@ -1,5 +1,6 @@
 "use client"
 
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type UsernameAuthClient,
   useAuth,
@@ -7,6 +8,7 @@ import {
   useSignInEmail,
   useSignInUsername
 } from "@better-auth-ui/react"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -76,41 +78,46 @@ export function SignIn({
     }
   )
 
-  const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
-    authClient,
+  const { mutate: signInEmail } = useSignInEmail(authClient, {
+    onError: (error, { email }) => {
+      setPassword("")
+
+      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+        toast.error(error.error?.message || error.message, {
+          action: {
+            label: localization.auth.resend,
+            onClick: () =>
+              sendVerificationEmail({
+                email,
+                callbackURL: `${baseURL}${redirectTo}`
+              })
+          }
+        })
+      } else {
+        toast.error(error.error?.message || error.message)
+      }
+    },
+    onSuccess: () => navigate({ to: redirectTo })
+  })
+
+  const { mutate: signInUsername } = useSignInUsername(
+    authClient as UsernameAuthClient,
     {
-      onError: (error, { email }) => {
-        setPassword("")
-
-        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-          toast.error(error.error?.message || error.message, {
-            action: {
-              label: localization.auth.resend,
-              onClick: () =>
-                sendVerificationEmail({
-                  email,
-                  callbackURL: `${baseURL}${redirectTo}`
-                })
-            }
-          })
-        } else {
-          toast.error(error.error?.message || error.message)
-        }
-      },
-      onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
-
-  const { mutate: signInUsername, isPending: signInUsernamePending } =
-    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)
       },
       onSuccess: () => navigate({ to: redirectTo })
-    })
+    }
+  )
 
-  const isPending = signInEmailPending || signInUsernamePending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -154,10 +161,7 @@ export function SignIn({
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
 
               {showSeparator && (
@@ -275,11 +279,9 @@ export function SignIn({
                     {localization.auth.signIn}
                   </Button>
 
-                  {magicLink && (
-                    <MagicLinkButton view="signIn" isPending={isPending} />
-                  )}
+                  {magicLink && <MagicLinkButton view="signIn" />}
 
-                  {passkey && <PasskeyButton isPending={isPending} />}
+                  {passkey && <PasskeyButton />}
                 </div>
               </FieldGroup>
             </form>
@@ -294,10 +296,7 @@ export function SignIn({
               )}
 
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
             </>
           )}

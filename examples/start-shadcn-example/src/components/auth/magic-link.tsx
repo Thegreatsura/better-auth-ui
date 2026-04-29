@@ -1,10 +1,12 @@
 "use client"
 
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   type MagicLinkAuthClient,
   useAuth,
   useSignInMagicLink
 } from "@better-auth-ui/react"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 
@@ -58,15 +60,23 @@ export function MagicLink({
 
   const [email, setEmail] = useState("")
 
-  const { mutate: signInMagicLink, isPending: magicLinkPending } =
-    useSignInMagicLink(authClient as MagicLinkAuthClient, {
+  const { mutate: signInMagicLink } = useSignInMagicLink(
+    authClient as MagicLinkAuthClient,
+    {
       onSuccess: () => {
         setEmail("")
         toast.success(localization.auth.magicLinkSent)
       }
-    })
+    }
+  )
 
-  const isPending = magicLinkPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -90,10 +100,7 @@ export function MagicLink({
           {socialPosition === "top" && (
             <>
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
 
               {showSeparator && (
@@ -147,9 +154,9 @@ export function MagicLink({
                   {localization.auth.sendMagicLink}
                 </Button>
 
-                <MagicLinkButton view="magicLink" isPending={isPending} />
+                <MagicLinkButton view="magicLink" />
 
-                {passkey && <PasskeyButton isPending={isPending} />}
+                {passkey && <PasskeyButton />}
               </div>
             </FieldGroup>
           </form>
@@ -163,10 +170,7 @@ export function MagicLink({
               )}
 
               {socialProviders && socialProviders.length > 0 && (
-                <ProviderButtons
-                  socialLayout={socialLayout}
-                  isPending={isPending}
-                />
+                <ProviderButtons socialLayout={socialLayout} />
               )}
             </>
           )}
