@@ -27,7 +27,7 @@ export type AuthProps = {
  */
 const PASSWORD_ONLY_VIEWS = ["signUp", "forgotPassword", "resetPassword"]
 
-const AUTH_VIEWS: Record<AuthView, ComponentType<AuthProps>> = {
+const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
   signIn: SignIn,
   signOut: SignOut,
   signUp: SignUp,

@@ -1,3 +1,4 @@
+import type { AuthView } from "@better-auth-ui/core"
 import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
 import { Envelope, Lock } from "@gravity-ui/icons"
 import { cn, Link } from "@heroui/react"
@@ -7,11 +8,8 @@ import { magicLinkPlugin } from "../../lib/magic-link/magic-link-plugin"
 
 export type MagicLinkButtonProps = {
   isPending?: boolean
-  /**
-   * Current auth view. Widened to `string` because plugin-contributed views
-   * (e.g. `"magicLink"`) aren't part of the built-in `AuthView` union.
-   */
-  view?: string
+  /** @remarks `AuthView` */
+  view?: AuthView
 }
 
 /**

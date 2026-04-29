@@ -1,3 +1,4 @@
+import type { AuthView } from "@better-auth-ui/core"
 import {
   type PasskeyAuthClient,
   useAuth,
@@ -11,11 +12,8 @@ import { passkeyPlugin } from "../../lib/passkey/passkey-plugin"
 
 export type PasskeyButtonProps = {
   isPending?: boolean
-  /**
-   * Current auth view. Widened to `string` because plugin-contributed views
-   * (e.g. `"magicLink"`) aren't part of the built-in `AuthView` union.
-   */
-  view?: string
+  /** @remarks `AuthView` */
+  view?: AuthView
 }
 
 export function PasskeyButton({ isPending, view }: PasskeyButtonProps) {
