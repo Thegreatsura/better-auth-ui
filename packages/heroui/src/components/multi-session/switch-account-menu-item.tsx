@@ -1,45 +1,49 @@
-import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
-import { Persons } from "@gravity-ui/icons"
-import { Dropdown, Label } from "@heroui/react"
+import {
+  type MultiSessionAuthClient,
+  useAuth,
+  useSetActiveSession
+} from "@better-auth-ui/react"
+import { Dropdown, Spinner } from "@heroui/react"
+import type { Session, User } from "better-auth"
+import { UserView } from "../user/user-view"
 
-import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
-
-import { SwitchAccountMenu } from "./switch-account-menu"
+type DeviceSession = {
+  session: Session
+  user: User
+}
 
 export type SwitchAccountMenuItemProps = {
-  className?: string
+  deviceSession: DeviceSession
 }
 
 /**
- * Render a dropdown menu item for switching between multiple authenticated sessions.
+ * Render a dropdown item for switching to a different authenticated session.
  *
- * This component renders as a submenu trigger that opens the switch account menu.
- * It should be rendered inside a Dropdown.Menu.
- *
- * @param className - Optional additional CSS class names
- * @returns The switch account menu item as a JSX element
+ * @param deviceSession - The device session to display and switch to when pressed
+ * @returns The switch account dropdown item as a JSX element
  */
 export function SwitchAccountMenuItem({
-  className
+  deviceSession
 }: SwitchAccountMenuItemProps) {
-  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
+  const { authClient } = useAuth()
+  const { mutate: setActiveSession, isPending } = useSetActiveSession(
+    authClient as MultiSessionAuthClient,
+    {
+      onSuccess: () => window.scrollTo({ top: 0 })
+    }
+  )
 
   return (
-    <Dropdown.SubmenuTrigger>
-      <Dropdown.Item
-        className={className}
-        textValue={multiSessionLocalization.switchAccount}
-      >
-        <Persons className="text-muted" />
+    <Dropdown.Item
+      className="px-2"
+      isDisabled={isPending}
+      onPress={() =>
+        setActiveSession({ sessionToken: deviceSession.session.token })
+      }
+    >
+      <UserView user={deviceSession.user} />
 
-        <Label>{multiSessionLocalization.switchAccount}</Label>
-
-        <Dropdown.SubmenuIndicator />
-      </Dropdown.Item>
-
-      <Dropdown.Popover className="min-w-40 md:min-w-56 max-w-[48svw]">
-        <SwitchAccountMenu />
-      </Dropdown.Popover>
-    </Dropdown.SubmenuTrigger>
+      {isPending && <Spinner color="current" size="sm" className="ml-auto" />}
+    </Dropdown.Item>
   )
 }

@@ -42,7 +42,8 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { authClient, localization } = useAuth()
-  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: user } = useUser(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =

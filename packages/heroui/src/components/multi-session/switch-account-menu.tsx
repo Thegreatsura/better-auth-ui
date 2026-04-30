@@ -9,9 +9,8 @@ import { Check, CirclePlus } from "@gravity-ui/icons"
 import { Dropdown, Label, Separator } from "@heroui/react"
 
 import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
-
-import { SwitchAccountItem } from "./switch-account-item"
 import { UserView } from "../user/user-view"
+import { SwitchAccountMenuItem } from "./switch-account-menu-item"
 
 /**
  * Render the menu content for switching between multiple authenticated sessions.
@@ -24,7 +23,8 @@ import { UserView } from "../user/user-view"
  */
 export function SwitchAccountMenu() {
   const { authClient, basePaths, viewPaths } = useAuth()
-  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
   const { data: deviceSessions, isPending } = useListDeviceSessions(
     authClient as MultiSessionAuthClient
@@ -44,7 +44,7 @@ export function SwitchAccountMenu() {
             (deviceSession) => deviceSession.session.id !== session?.session?.id
           )
           .map((deviceSession) => (
-            <SwitchAccountItem
+            <SwitchAccountMenuItem
               key={deviceSession.session.id}
               deviceSession={deviceSession}
             />

@@ -30,7 +30,8 @@ export function ManageAccounts({
   ...props
 }: ManageAccountsProps & Omit<CardProps, "children">) {
   const { authClient } = useAuth()
-  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
 
   const { data: deviceSessions, isPending } = useListDeviceSessions(
