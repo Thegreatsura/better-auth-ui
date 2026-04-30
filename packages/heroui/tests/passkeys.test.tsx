@@ -85,6 +85,7 @@ describe("<PasskeyButton />", () => {
         authClient={createPasskeyButtonAuthClient()}
         navigate={() => {}}
         plugins={[passkeyPlugin()]}
+        queryClient={createTestQueryClient()}
       >
         <PasskeyButton view="signUp" />
       </AuthProvider>
