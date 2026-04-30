@@ -65,8 +65,6 @@ export interface AuthConfig {
   magicLink?: boolean
   /** Whether Multi Session plugin is enabled */
   multiSession?: boolean
-  /** Whether Passkey plugin is enabled */
-  passkey?: boolean
   /**
    * Registered auth plugins. UI packages widen the element type via the
    * `AuthPluginRegister` module-augmentation slot.

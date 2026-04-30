@@ -1,0 +1,110 @@
+---
+title: Passkey
+description: Add passwordless passkey sign-in and device management to your authentication flow.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The passkey plugin adds passwordless authentication using WebAuthn. Users can sign in with their device authenticator (Touch ID, Face ID, Windows Hello) and manage registered passkeys from their security settings.
+
+### `<SignIn />`
+
+<ComponentPreview name="heroui-passkey-sign-in" />
+
+### `<Passkeys />`
+
+<ComponentPreview name="heroui-passkeys" />
+
+It contributes:
+
+- A "Continue with Passkey" button rendered on the sign-in and magic-link views (hidden on sign-up)
+- A `<Passkeys />` security card for listing, adding, and deleting registered passkeys
+- `useSignInPasskey`, `useAddPasskey`, `useDeletePasskey`, and `useListPasskeys` hooks
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the [`@better-auth/passkey`](https://www.better-auth.com/docs/plugins/passkey) package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { passkey } from "@better-auth/passkey" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    passkey() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `passkeyClient()` to your auth client so `authClient.signIn.passkey` and `authClient.passkey.*` are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { passkeyClient } from "@better-auth/passkey/client" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [passkeyClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `passkeyPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { passkeyPlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  plugins={[passkeyPlugin()]} // [!code highlight]
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Options
+
+```ts
+passkeyPlugin({
+  // Override any of the plugin's localization strings.
+  localization: {
+    passkeys: "Security Keys"
+  }
+})
+```
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-plugin.ts" name="PasskeyPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-localization.ts" name="PasskeyLocalization" />
+
+Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot components.
+
+## Passkey management
+
+The `<Passkeys />` security card is automatically rendered on the security settings page when the plugin is registered. It can also be used standalone:
+
+```tsx
+import { Passkeys } from "@better-auth-ui/heroui/plugins"
+
+<Passkeys />
+```
+
+See the [`<Passkeys />`](/docs/heroui/components/settings/security/passkeys) component docs for props and customization.

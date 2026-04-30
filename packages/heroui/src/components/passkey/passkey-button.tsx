@@ -35,8 +35,8 @@ export function PasskeyButton({ view }: PasskeyButtonProps) {
   })
   const isPending = signInMutating + signUpMutating > 0
 
-  // Passkey sign-in isn't relevant on sign-up / forgot-password flows.
-  if (view === "signUp" || view === "forgotPassword") return null
+  // Passkey sign-in isn't relevant on the sign-up flow.
+  if (view === "signUp") return null
 
   return (
     <Button

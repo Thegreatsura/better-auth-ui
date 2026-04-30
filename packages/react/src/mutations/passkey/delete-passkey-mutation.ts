@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { passkeyMutationKeys } from "@better-auth-ui/core/plugins"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -21,7 +21,7 @@ type DeletePasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
 export function deletePasskeyOptions<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = authMutationKeys.passkey.deletePasskey
+  const mutationKey = passkeyMutationKeys.deletePasskey
 
   const mutationFn = (params: DeletePasskeyParams<TAuthClient>) =>
     authClient.passkey.deletePasskey({

@@ -215,6 +215,9 @@ export const localization = {
     /** @remarks `"Delete"` */
     delete: "Delete",
 
+    /** @remarks `"Optional"` */
+    optional: "Optional",
+
     /** @remarks `"Profile"` */
     profile: "Profile",
 

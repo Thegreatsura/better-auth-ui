@@ -32,8 +32,6 @@ export const authMutationKeys = {
     email: ["auth", "signIn", "email"] as const,
     /** Key for `signIn.social`. */
     social: ["auth", "signIn", "social"] as const,
-    /** Key for `signIn.passkey`. */
-    passkey: ["auth", "signIn", "passkey"] as const,
     /** Key for `signIn.username`. */
     username: ["auth", "signIn", "username"] as const
   },
@@ -55,16 +53,6 @@ export const authMutationKeys = {
   resetPassword: ["auth", "resetPassword"] as const,
   /** Key for `sendVerificationEmail`. */
   sendVerificationEmail: ["auth", "sendVerificationEmail"] as const,
-
-  /** Passkey mutations. */
-  passkey: {
-    /** Prefix matching every passkey mutation. */
-    all: ["auth", "passkey"] as const,
-    /** Key for `passkey.addPasskey`. */
-    addPasskey: ["auth", "passkey", "addPasskey"] as const,
-    /** Key for `passkey.deletePasskey`. */
-    deletePasskey: ["auth", "passkey", "deletePasskey"] as const
-  },
 
   /** Multi-session mutations. */
   multiSession: {

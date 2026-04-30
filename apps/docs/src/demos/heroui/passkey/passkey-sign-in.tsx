@@ -1,23 +1,21 @@
-import { AuthProvider } from "@better-auth-ui/heroui"
-import type { ReactNode } from "react"
+import { AuthProvider, SignIn } from "@better-auth-ui/heroui"
+import { passkeyPlugin } from "@better-auth-ui/heroui/plugins"
 
 import { authClient } from "@/lib/auth-client"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function PasskeySignInDemo() {
   return (
     <AuthProvider
       authClient={authClient}
-      magicLink
-      multiSession
-      deleteUser={{ enabled: true }}
       navigate={() => {}}
+      plugins={[passkeyPlugin()]}
       socialProviders={["github", "google"]}
       appearance={{
         theme: "system",
         setTheme: () => {}
       }}
     >
-      {children}
+      <SignIn />
     </AuthProvider>
   )
 }

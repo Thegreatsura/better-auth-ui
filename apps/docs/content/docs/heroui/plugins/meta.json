@@ -1,5 +1,5 @@
 {
   "icon": "Plug",
   "defaultOpen": true,
-  "pages": ["magic-link"]
+  "pages": ["magic-link", "passkey"]
 }

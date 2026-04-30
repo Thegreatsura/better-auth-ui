@@ -3,6 +3,8 @@ export const passkeyLocalization = {
   passkey: "Passkey",
   /** @remarks `"Add passkey"` */
   addPasskey: "Add passkey",
+  /** @remarks `"Delete passkey {{name}}"` */
+  deletePasskey: "Delete passkey {{name}}",
   /** @remarks `"Passkeys"` */
   passkeys: "Passkeys",
   /** @remarks `"Manage your passkeys for secure access."` */

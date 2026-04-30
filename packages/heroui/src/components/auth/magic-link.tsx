@@ -90,7 +90,7 @@ export function MagicLink({
 
   return (
     <Card
-      className={cn("w-full max-w-sm p-4 md:p-6", className)}
+      className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
       {...props}
     >
@@ -165,12 +165,12 @@ export function MagicLink({
       </Card.Content>
 
       {emailAndPassword?.enabled && (
-        <Card.Footer className="flex-col">
+        <Card.Footer className="flex-col gap-3">
           <Description className="text-sm">
             {localization.auth.needToCreateAnAccount}{" "}
             <Link
               href={`${basePaths.auth}/${viewPaths.auth.signUp}`}
-              className="text-accent decoration-accent no-underline hover:underline"
+              className="text-accent no-underline hover:underline decoration-accent-hover"
             >
               {localization.auth.signUp}
             </Link>

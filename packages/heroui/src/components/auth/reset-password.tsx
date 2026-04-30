@@ -93,7 +93,7 @@ export function ResetPassword({
 
   return (
     <Card
-      className={cn("w-full max-w-sm p-4 md:p-6", className)}
+      className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
       {...props}
     >
@@ -103,7 +103,7 @@ export function ResetPassword({
         </Card.Title>
       </Card.Header>
 
-      <Card.Content>
+      <Card.Content className="gap-4">
         <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <TextField
             minLength={emailAndPassword?.minPasswordLength}
@@ -199,12 +199,12 @@ export function ResetPassword({
         </Form>
       </Card.Content>
 
-      <Card.Footer className="flex-col">
+      <Card.Footer className="flex-col gap-3">
         <Description className="text-sm">
           {localization.auth.rememberYourPassword}{" "}
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-            className="text-accent decoration-accent no-underline hover:underline"
+            className="text-accent no-underline hover:underline decoration-accent-hover"
           >
             {localization.auth.signIn}
           </Link>

@@ -3,12 +3,14 @@
 import {
   type PasskeyAuthClient,
   useAuth,
+  useAuthPlugin,
   useDeletePasskey
 } from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
+import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
 
 export type PasskeyProps = {
   passkey: {
@@ -20,10 +22,13 @@ export type PasskeyProps = {
 
 export function Passkey({ passkey }: PasskeyProps) {
   const { authClient, localization } = useAuth()
+  const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
   const { mutate: deletePasskey, isPending } = useDeletePasskey(
     authClient as PasskeyAuthClient
   )
+
+  const passkeyName = passkey.name || passkeyLocalization.passkey
 
   return (
     <Card className="bg-transparent border-0 ring-0 shadow-none">
@@ -34,7 +39,7 @@ export function Passkey({ passkey }: PasskeyProps) {
 
         <div className="flex flex-col min-w-0">
           <span className="text-sm font-medium leading-tight">
-            {passkey.name || "Passkey"}
+            {passkeyName}
           </span>
 
           <span className="text-xs text-muted-foreground">
@@ -51,6 +56,10 @@ export function Passkey({ passkey }: PasskeyProps) {
           size="sm"
           disabled={isPending}
           onClick={() => deletePasskey({ id: passkey.id })}
+          aria-label={passkeyLocalization.deletePasskey.replace(
+            "{{name}}",
+            passkeyName
+          )}
         >
           {isPending ? <Spinner /> : <X />}
           {localization.settings.delete}
