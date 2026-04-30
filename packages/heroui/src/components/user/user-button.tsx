@@ -4,8 +4,7 @@ import {
   ArrowRightToSquare,
   ChevronsExpandVertical,
   Gear,
-  PersonPlus,
-  Persons
+  PersonPlus
 } from "@gravity-ui/icons"
 import {
   Button,
@@ -17,7 +16,6 @@ import {
   Separator
 } from "@heroui/react"
 
-import { SwitchAccountMenu } from "./switch-account-menu"
 import { ThemeToggleItem } from "./theme-toggle-item"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
@@ -58,13 +56,19 @@ export function UserButton({
     basePaths,
     viewPaths,
     localization,
-    multiSession,
+    plugins,
     appearance: { theme, setTheme, themes }
   } = useAuth()
 
   const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
 
   const { data: session, isPending: sessionPending } = useSession(authClient)
+
+  const userMenuItems = plugins.flatMap((plugin) =>
+    plugin.userMenuItems?.map((Item, index) => (
+      <Item key={`${plugin.id}-${index.toString()}`} />
+    ))
+  )
 
   return (
     <Dropdown>
@@ -116,21 +120,7 @@ export function UserButton({
                 <Label>{localization.settings.settings}</Label>
               </Dropdown.Item>
 
-              {multiSession && (
-                <Dropdown.SubmenuTrigger>
-                  <Dropdown.Item textValue={localization.auth.switchAccount}>
-                    <Persons className="text-muted" />
-
-                    <Label>{localization.auth.switchAccount}</Label>
-
-                    <Dropdown.SubmenuIndicator />
-                  </Dropdown.Item>
-
-                  <Dropdown.Popover className="min-w-40 md:min-w-56 max-w-[48svw]">
-                    <SwitchAccountMenu />
-                  </Dropdown.Popover>
-                </Dropdown.SubmenuTrigger>
-              )}
+              {userMenuItems}
 
               {showThemeToggle && <ThemeToggleItem />}
 

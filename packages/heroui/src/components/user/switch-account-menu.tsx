@@ -1,11 +1,14 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
 import { Check, CirclePlus } from "@gravity-ui/icons"
 import { Dropdown, Label, Separator } from "@heroui/react"
+
+import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
 import { SwitchAccountItem } from "./switch-account-item"
 import { UserView } from "./user-view"
@@ -20,7 +23,8 @@ import { UserView } from "./user-view"
  * @returns The switch account menu content as a JSX element
  */
 export function SwitchAccountMenu() {
-  const { authClient, basePaths, viewPaths, localization } = useAuth()
+  const { authClient, basePaths, viewPaths } = useAuth()
+  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
   const { data: deviceSessions, isPending } = useListDeviceSessions(
     authClient as MultiSessionAuthClient
@@ -49,12 +53,12 @@ export function SwitchAccountMenu() {
         <Separator />
 
         <Dropdown.Item
-          textValue={localization.auth.addAccount}
+          textValue={multiSessionLocalization.addAccount}
           href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
         >
           <CirclePlus className="text-muted" />
 
-          <Label>{localization.auth.addAccount}</Label>
+          <Label>{multiSessionLocalization.addAccount}</Label>
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown.Popover>

@@ -1,10 +1,14 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
 import { Card, type CardProps, cn } from "@heroui/react"
+
+import { multiSessionPlugin } from "../../../lib/multi-session/multi-session-plugin"
+
 import { ManageAccount } from "./manage-account"
 
 export type ManageAccountsProps = {
@@ -25,7 +29,8 @@ export function ManageAccounts({
   variant,
   ...props
 }: ManageAccountsProps & Omit<CardProps, "children">) {
-  const { authClient, localization } = useAuth()
+  const { authClient } = useAuth()
+  const { localization: multiSessionLocalization } = useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
 
   const { data: deviceSessions, isPending } = useListDeviceSessions(
@@ -52,7 +57,7 @@ export function ManageAccounts({
   return (
     <div>
       <h2 className={cn("text-sm font-semibold mb-3")}>
-        {localization.settings.manageAccounts}
+        {multiSessionLocalization.manageAccounts}
       </h2>
 
       <Card className={cn(className)} variant={variant} {...props}>
