@@ -14,9 +14,9 @@ import {
 import { Button, Dropdown, Spinner, toast } from "@heroui/react"
 import type { Session, User } from "better-auth"
 
-import { multiSessionPlugin } from "../../../lib/multi-session/multi-session-plugin"
+import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
-import { UserView } from "../../user/user-view"
+import { UserView } from "../user/user-view"
 
 export type DeviceSession = {
   session: Session

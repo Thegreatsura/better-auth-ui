@@ -7,7 +7,7 @@ import {
 } from "@better-auth-ui/react"
 import { Card, type CardProps, cn } from "@heroui/react"
 
-import { multiSessionPlugin } from "../../../lib/multi-session/multi-session-plugin"
+import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
 import { ManageAccount } from "./manage-account"
 

@@ -11,7 +11,7 @@ import { Dropdown, Label, Separator } from "@heroui/react"
 import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
 import { SwitchAccountItem } from "./switch-account-item"
-import { UserView } from "./user-view"
+import { UserView } from "../user/user-view"
 
 /**
  * Render the menu content for switching between multiple authenticated sessions.
