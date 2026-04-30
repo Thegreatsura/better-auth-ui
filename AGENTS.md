@@ -1,18 +1,16 @@
 # Package Manager
 
-This workspace uses **Bun** — NOT pnpm or npm. Always prefix Nx commands with `bun` (e.g., `bun nx build`, `bun nx run-many`, `bun nx affected`). Use `bun install` / `bun add` for dependencies. Ignore any `pnpm`/`npm` examples below — substitute `bun` instead.
+This workspace uses **bun** — NOT pnpm or npm.
 
 # Biome
 
-This project uses Biome (`biome.json`) for formatting and linting.
-
-**Before declaring any task complete**, run:
+After every edit, run:
 
 ```bash
 bunx biome check --write .
 ```
 
-If Biome reports errors it can't auto-fix, resolve them and re-run until the command exits cleanly. Do not declare the task done with unfixable Biome errors outstanding.
+Don't finish with Biome errors outstanding.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
