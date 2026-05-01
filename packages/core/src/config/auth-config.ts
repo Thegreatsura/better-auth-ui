@@ -61,8 +61,6 @@ export interface AuthConfig {
    * @remarks `Localization`
    */
   localization: Localization
-  /** Whether Magic Link plugin is enabled */
-  magicLink?: boolean
   /**
    * Registered auth plugins. UI packages widen the element type via the
    * `AuthPluginRegister` module-augmentation slot.

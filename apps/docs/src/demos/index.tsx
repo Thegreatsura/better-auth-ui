@@ -94,6 +94,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-sign-in": HeroUISignInDemo,
   "heroui-sign-out": HeroUISignOutDemo,
   "heroui-sign-up": HeroUISignUpDemo,
+  "heroui-switch-account-submenu": HeroUISwitchAccountSubmenuDemo,
   "heroui-user-avatar": HeroUIUserAvatarDemo,
   "heroui-user-button": HeroUIUserButtonDemo,
   "heroui-user-button-icon": HeroUIUserButtonIconDemo,
@@ -129,6 +130,5 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-user-button": ShadcnUserButtonDemo,
   "shadcn-user-button-icon": ShadcnUserButtonIconDemo,
   "shadcn-user-profile": ShadcnUserProfileDemo,
-  "shadcn-user-view": ShadcnUserViewDemo,
-  "heroui-switch-account-submenu": HeroUISwitchAccountSubmenuDemo
+  "shadcn-user-view": ShadcnUserViewDemo
 }

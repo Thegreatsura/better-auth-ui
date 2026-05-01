@@ -27,10 +27,11 @@ export function AccountSettings({
 }: AccountSettingsProps & ComponentProps<"div">) {
   const {
     emailAndPassword,
-    magicLink,
     plugins,
     appearance: { setTheme }
   } = useAuth()
+
+  const hasMagicLink = plugins.some((plugin) => plugin.id === "magicLink")
 
   return (
     <div
@@ -38,7 +39,7 @@ export function AccountSettings({
       {...props}
     >
       <UserProfile variant={variant} />
-      {(emailAndPassword?.enabled || magicLink) && (
+      {(emailAndPassword?.enabled || hasMagicLink) && (
         <ChangeEmail variant={variant} />
       )}
       {setTheme && <Appearance variant={variant} />}
