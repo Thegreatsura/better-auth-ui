@@ -11,8 +11,13 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, MultiSessionAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-type ListDeviceSessionsData<TAuthClient extends MultiSessionAuthClient> =
-  InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
+export type ListDeviceSessionsData<
+  TAuthClient extends MultiSessionAuthClient = MultiSessionAuthClient
+> = InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
+
+export type ListDeviceSession<
+  TAuthClient extends MultiSessionAuthClient = MultiSessionAuthClient
+> = NonNullable<ListDeviceSessionsData<TAuthClient>>[number]
 
 export type ListDeviceSessionsParams<
   TAuthClient extends MultiSessionAuthClient

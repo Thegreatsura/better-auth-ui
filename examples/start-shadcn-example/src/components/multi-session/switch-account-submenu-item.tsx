@@ -1,9 +1,9 @@
 "use client"
 
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
-  type useListDeviceSessions,
   useSetActiveSession
 } from "@better-auth-ui/react"
 
@@ -11,12 +11,8 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
 
-export type DeviceSession = NonNullable<
-  ReturnType<typeof useListDeviceSessions>["data"]
->[number]
-
 export type SwitchAccountSubmenuItemProps = {
-  deviceSession: DeviceSession
+  deviceSession: ListDeviceSession
 }
 
 /**

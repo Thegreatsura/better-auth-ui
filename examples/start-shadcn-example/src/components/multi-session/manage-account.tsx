@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
   useAuthPlugin,
@@ -8,7 +9,6 @@ import {
   useSession,
   useSetActiveSession
 } from "@better-auth-ui/react"
-import type { Session, User } from "better-auth"
 import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
 
@@ -24,13 +24,8 @@ import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
-export type DeviceSession = {
-  session: Session
-  user: User
-}
-
 export type ManageAccountProps = {
-  deviceSession?: DeviceSession | null
+  deviceSession?: ListDeviceSession | null
   isPending?: boolean
 }
 

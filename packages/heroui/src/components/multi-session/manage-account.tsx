@@ -1,4 +1,5 @@
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
   useAuthPlugin,
@@ -12,19 +13,13 @@ import {
   Ellipsis
 } from "@gravity-ui/icons"
 import { Button, Dropdown, Spinner, toast } from "@heroui/react"
-import type { Session, User } from "better-auth"
 
 import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
 import { UserView } from "../user/user-view"
 
-export type DeviceSession = {
-  session: Session
-  user: User
-}
-
 export type ManageAccountProps = {
-  deviceSession?: DeviceSession | null
+  deviceSession?: ListDeviceSession | null
   isPending?: boolean
 }
 

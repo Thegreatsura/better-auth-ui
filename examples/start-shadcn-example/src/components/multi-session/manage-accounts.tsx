@@ -42,7 +42,7 @@ export function ManageAccounts({ className }: ManageAccountsProps) {
 
   const allRows = [
     {
-      key: "current",
+      key: session?.session.id ?? "current",
       deviceSession: !isPending ? session : null,
       isPending
     },
