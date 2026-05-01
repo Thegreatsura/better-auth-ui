@@ -11,14 +11,18 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, PasskeyAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-type ListPasskeysData<TAuthClient extends PasskeyAuthClient> = InferData<
+export type ListPasskeysData<TAuthClient extends PasskeyAuthClient> = InferData<
   TAuthClient["passkey"]["listUserPasskeys"]
 >
 
 export type ListPasskeysParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["listUserPasskeys"]>[0]
 
-type ListPasskeysOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+export type ListPasskey<
+  TAuthClient extends PasskeyAuthClient = PasskeyAuthClient
+> = NonNullable<ListPasskeysData<TAuthClient>>[number]
+
+export type ListPasskeysOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof listPasskeysOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >

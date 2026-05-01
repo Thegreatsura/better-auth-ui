@@ -12,10 +12,11 @@ import { sessionOptions } from "../../queries/auth/session-query"
 export type SignInUsernameParams<TAuthClient extends UsernameAuthClient> =
   Parameters<TAuthClient["signIn"]["username"]>[0]
 
-type SignInUsernameOptions<TAuthClient extends UsernameAuthClient> = Omit<
-  ReturnType<typeof signInUsernameOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
->
+export type SignInUsernameOptions<TAuthClient extends UsernameAuthClient> =
+  Omit<
+    ReturnType<typeof signInUsernameOptions<TAuthClient>>,
+    "mutationKey" | "mutationFn"
+  >
 
 /**
  * Mutation options factory for username/password sign-in.

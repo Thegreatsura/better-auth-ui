@@ -9,11 +9,12 @@ export type RevokeMultiSessionParams<
   TAuthClient extends MultiSessionAuthClient
 > = Parameters<TAuthClient["multiSession"]["revoke"]>[0]
 
-type RevokeMultiSessionOptions<TAuthClient extends MultiSessionAuthClient> =
-  Omit<
-    ReturnType<typeof revokeMultiSessionOptions<TAuthClient>>,
-    "mutationKey" | "mutationFn"
-  >
+export type RevokeMultiSessionOptions<
+  TAuthClient extends MultiSessionAuthClient
+> = Omit<
+  ReturnType<typeof revokeMultiSessionOptions<TAuthClient>>,
+  "mutationKey" | "mutationFn"
+>
 
 /**
  * Mutation options factory for revoking a device session in multi-session mode.

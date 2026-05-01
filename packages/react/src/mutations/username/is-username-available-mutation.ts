@@ -7,10 +7,11 @@ import type { UsernameAuthClient } from "../../lib/auth-client"
 export type IsUsernameAvailableParams<TAuthClient extends UsernameAuthClient> =
   Parameters<TAuthClient["isUsernameAvailable"]>[0]
 
-type IsUsernameAvailableOptions<TAuthClient extends UsernameAuthClient> = Omit<
-  ReturnType<typeof isUsernameAvailableOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
->
+export type IsUsernameAvailableOptions<TAuthClient extends UsernameAuthClient> =
+  Omit<
+    ReturnType<typeof isUsernameAvailableOptions<TAuthClient>>,
+    "mutationKey" | "mutationFn"
+  >
 
 /**
  * Mutation options factory for checking username availability.

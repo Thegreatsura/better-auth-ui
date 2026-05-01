@@ -8,7 +8,7 @@ export type ResetPasswordParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["resetPassword"]
 >[0]
 
-type ResetPasswordOptions<TAuthClient extends AuthClient> = Omit<
+export type ResetPasswordOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof resetPasswordOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

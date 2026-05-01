@@ -12,7 +12,7 @@ export type UpdateUserParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["updateUser"]
 >[0]
 
-type UpdateUserOptions<TAuthClient extends AuthClient> = Omit<
+export type UpdateUserOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof updateUserOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

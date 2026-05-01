@@ -23,11 +23,12 @@ export type ListDeviceSessionsParams<
   TAuthClient extends MultiSessionAuthClient
 > = Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 
-type ListDeviceSessionsOptions<TAuthClient extends MultiSessionAuthClient> =
-  Omit<
-    ReturnType<typeof listDeviceSessionsOptions<TAuthClient>>,
-    "queryKey" | "queryFn"
-  >
+export type ListDeviceSessionsOptions<
+  TAuthClient extends MultiSessionAuthClient
+> = Omit<
+  ReturnType<typeof listDeviceSessionsOptions<TAuthClient>>,
+  "queryKey" | "queryFn"
+>
 
 /**
  * Query options factory for the current user's device sessions.

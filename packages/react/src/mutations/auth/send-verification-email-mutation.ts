@@ -7,7 +7,7 @@ import type { AuthClient } from "../../lib/auth-client"
 export type SendVerificationEmailParams<TAuthClient extends AuthClient> =
   Parameters<TAuthClient["sendVerificationEmail"]>[0]
 
-type SendVerificationEmailOptions<TAuthClient extends AuthClient> = Omit<
+export type SendVerificationEmailOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof sendVerificationEmailOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

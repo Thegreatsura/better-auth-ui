@@ -8,13 +8,17 @@ import type { APIError } from "better-auth"
 
 import type { AuthServer } from "../../../lib/auth-server"
 
-type AccountInfoData<TAuth extends AuthServer> = Awaited<
+export type AccountInfoData<TAuth extends AuthServer = AuthServer> = Awaited<
   ReturnType<TAuth["api"]["accountInfo"]>
 >
 
-type AccountInfoParams<TAuth extends AuthServer> = Parameters<
+export type AccountInfoParams<TAuth extends AuthServer> = Parameters<
   TAuth["api"]["accountInfo"]
 >[0]
+
+export type AccountInfo<TAuth extends AuthServer = AuthServer> = NonNullable<
+  AccountInfoData<TAuth>
+>
 
 /**
  * Query options factory for provider-specific account info.

@@ -13,7 +13,7 @@ export type DeleteUserParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["deleteUser"]
 >[0]
 
-type DeleteUserOptions<TAuthClient extends AuthClient> = Omit<
+export type DeleteUserOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof deleteUserOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

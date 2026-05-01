@@ -8,13 +8,16 @@ import type { APIError } from "better-auth"
 
 import type { PasskeyAuthServer } from "../../../lib/auth-server"
 
-type ListPasskeysData<TAuth extends PasskeyAuthServer> = Awaited<
+export type ListPasskeysData<TAuth extends PasskeyAuthServer> = Awaited<
   ReturnType<TAuth["api"]["listPasskeys"]>
 >
 
-type ListPasskeysParams<TAuth extends PasskeyAuthServer> = Parameters<
+export type ListPasskeysParams<TAuth extends PasskeyAuthServer> = Parameters<
   TAuth["api"]["listPasskeys"]
 >[0]
+
+export type ListPasskey<TAuth extends PasskeyAuthServer = PasskeyAuthServer> =
+  NonNullable<ListPasskeysData<TAuth>>[number]
 
 /**
  * Query options factory for the current user's passkeys.

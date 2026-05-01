@@ -15,7 +15,7 @@ export type ListDeviceSession<
   TAuth extends MultiSessionAuthServer = MultiSessionAuthServer
 > = NonNullable<ListDeviceSessionsData<TAuth>>[number]
 
-type ListDeviceSessionsParams<TAuth extends MultiSessionAuthServer> =
+export type ListDeviceSessionsParams<TAuth extends MultiSessionAuthServer> =
   Parameters<TAuth["api"]["listDeviceSessions"]>[0]
 
 /**
