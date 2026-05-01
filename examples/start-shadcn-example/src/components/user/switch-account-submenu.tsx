@@ -1,69 +1,42 @@
 "use client"
 
-import {
-  type MultiSessionAuthClient,
-  useAuth,
-  useAuthPlugin,
-  useListDeviceSessions,
-  useSession
-} from "@better-auth-ui/react"
-import { Check, CirclePlus } from "lucide-react"
+import { useAuthPlugin } from "@better-auth-ui/react"
+import { UsersRound } from "lucide-react"
 
 import {
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuSubContent
+  DropdownMenuSub,
+  DropdownMenuSubTrigger
 } from "@/components/ui/dropdown-menu"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
-import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
-import { UserView } from "./user-view"
+import { SwitchAccountSubmenuContent } from "./switch-account-submenu-content"
+
+export type SwitchAccountSubmenuProps = {
+  className?: string
+}
 
 /**
- * Render the submenu content for switching between multiple authenticated sessions.
+ * Render a submenu trigger for switching between multiple authenticated sessions.
  *
- * Shows the current session with a checkmark, lists other device sessions that can be activated,
- * and provides an option to add a new account. This component should be rendered inside a
- * DropdownMenuSub to defer the useListDeviceSessions query until the submenu is opened.
+ * This component renders as a dropdown menu item that opens a submenu containing
+ * the switch account menu. It should be rendered inside the UserButton dropdown
+ * as a userMenuItem from the multiSessionPlugin.
  *
- * @returns The switch account submenu content as a JSX element
+ * @param className - Optional additional CSS class names
+ * @returns The switch account submenu as a JSX element
  */
-export function SwitchAccountSubmenu() {
-  const { authClient, basePaths, viewPaths, Link } = useAuth()
+export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
   const { localization: multiSessionLocalization } =
     useAuthPlugin(multiSessionPlugin)
-  const { data: session } = useSession(authClient)
-  const { data: deviceSessions, isPending } = useListDeviceSessions(
-    authClient as MultiSessionAuthClient
-  )
 
   return (
-    <DropdownMenuSubContent className="min-w-48 md:min-w-56 max-w-[48svw]">
-      <DropdownMenuItem>
-        <UserView isPending={isPending} />
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger className={className}>
+        <UsersRound className="text-muted-foreground" />
 
-        {!isPending && <Check className="ml-auto" />}
-      </DropdownMenuItem>
+        {multiSessionLocalization.switchAccount}
+      </DropdownMenuSubTrigger>
 
-      {deviceSessions
-        ?.filter(
-          (deviceSession) => deviceSession.session.id !== session?.session.id
-        )
-        .map((deviceSession) => (
-          <SwitchAccountSubmenuItem
-            key={deviceSession.session.id}
-            deviceSession={deviceSession}
-          />
-        ))}
-
-      <DropdownMenuSeparator />
-
-      <DropdownMenuItem asChild>
-        <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
-          <CirclePlus className="text-muted-foreground" />
-
-          {multiSessionLocalization.addAccount}
-        </Link>
-      </DropdownMenuItem>
-    </DropdownMenuSubContent>
+      <SwitchAccountSubmenuContent />
+    </DropdownMenuSub>
   )
 }
