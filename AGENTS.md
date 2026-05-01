@@ -10,9 +10,13 @@ After every edit, run:
 bunx biome check --write .
 ```
 
-Don't finish with Biome errors outstanding.
-Don't finish with nx build errors outstanding for the project.
-Don't finish with nx typecheck errors outstanding for repo.
+## Quality Gates
+
+Before completing any task, ensure all of the following pass:
+
+1. **Biome** — No linting or formatting errors in modified files
+2. **Build** — The affected project builds successfully (`nx build`)
+3. **TypeCheck** — No TypeScript errors in the workspace (`nx typecheck`)
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

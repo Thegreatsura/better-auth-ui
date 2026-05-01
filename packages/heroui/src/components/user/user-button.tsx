@@ -64,10 +64,11 @@ export function UserButton({
 
   const { data: session, isPending: sessionPending } = useSession(authClient)
 
-  const userMenuItems = plugins.flatMap((plugin) =>
-    plugin.userMenuItems?.map((Item, index) => (
-      <Item key={`${plugin.id}-${index.toString()}`} />
-    ))
+  const userMenuItems = plugins.flatMap(
+    (plugin) =>
+      plugin.userMenuItems?.map((Item, index) => (
+        <Item key={`${plugin.id}-${index.toString()}`} />
+      )) ?? []
   )
 
   return (
