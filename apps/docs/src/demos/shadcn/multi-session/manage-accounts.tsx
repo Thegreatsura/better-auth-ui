@@ -1,15 +1,14 @@
-import type { ReactNode } from "react"
-
 import { AuthProvider } from "@/components/auth/auth-provider"
+import { ManageAccounts } from "@/components/multi-session/manage-accounts"
 import { authClient } from "@/lib/auth-client"
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function ManageAccountsDemo() {
   return (
     <AuthProvider
       authClient={authClient}
-      deleteUser={{ enabled: true }}
       navigate={() => {}}
-      socialProviders={["github", "google"]}
+      plugins={[multiSessionPlugin()]}
       appearance={{
         theme: "system",
         setTheme: () => {}
@@ -19,7 +18,9 @@ export function Providers({ children }: { children: ReactNode }) {
         <a {...props} href={undefined} />
       )}
     >
-      {children}
+      <div className="w-full">
+        <ManageAccounts />
+      </div>
     </AuthProvider>
   )
 }

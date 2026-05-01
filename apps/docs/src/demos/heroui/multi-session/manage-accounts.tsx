@@ -1,22 +1,25 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
-import type { ReactNode } from "react"
+import {
+  ManageAccounts,
+  multiSessionPlugin
+} from "@better-auth-ui/heroui/plugins"
 
 import { authClient } from "@/lib/auth-client"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function ManageAccountsDemo() {
   return (
     <AuthProvider
       authClient={authClient}
-      magicLink
-      deleteUser={{ enabled: true }}
       navigate={() => {}}
-      socialProviders={["github", "google"]}
+      plugins={[multiSessionPlugin()]}
       appearance={{
         theme: "system",
         setTheme: () => {}
       }}
     >
-      {children}
+      <div className="w-full">
+        <ManageAccounts />
+      </div>
     </AuthProvider>
   )
 }

@@ -21,7 +21,6 @@
     "settings/account/user-profile",
     "settings/account/change-email",
     "settings/account/appearance",
-    "settings/account/manage-accounts",
     "settings/security/security-settings",
     "settings/security/change-password",
     "settings/security/linked-accounts",
