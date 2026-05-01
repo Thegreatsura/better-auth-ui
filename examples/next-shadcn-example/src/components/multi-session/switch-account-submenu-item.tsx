@@ -1,22 +1,18 @@
 "use client"
 
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
-  type useListDeviceSessions,
   useSetActiveSession
 } from "@better-auth-ui/react"
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
-import { UserView } from "./user-view"
+import { UserView } from "@/components/user/user-view"
 
-export type DeviceSession = NonNullable<
-  ReturnType<typeof useListDeviceSessions>["data"]
->[number]
-
-export type SwitchAccountItemProps = {
-  deviceSession: DeviceSession
+export type SwitchAccountSubmenuItemProps = {
+  deviceSession: ListDeviceSession
 }
 
 /**
@@ -25,7 +21,9 @@ export type SwitchAccountItemProps = {
  * @param deviceSession - The device session to display and switch to when selected
  * @returns The switch account dropdown menu item as a JSX element
  */
-export function SwitchAccountItem({ deviceSession }: SwitchAccountItemProps) {
+export function SwitchAccountSubmenuItem({
+  deviceSession
+}: SwitchAccountSubmenuItemProps) {
   const { authClient } = useAuth()
   const { mutate: setActiveSession, isPending } = useSetActiveSession(
     authClient as MultiSessionAuthClient,
