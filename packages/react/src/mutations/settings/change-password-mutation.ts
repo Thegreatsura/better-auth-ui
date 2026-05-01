@@ -8,7 +8,7 @@ export type ChangePasswordParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["changePassword"]
 >[0]
 
-type ChangePasswordOptions<TAuthClient extends AuthClient> = Omit<
+export type ChangePasswordOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof changePasswordOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

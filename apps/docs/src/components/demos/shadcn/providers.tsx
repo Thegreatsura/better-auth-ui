@@ -7,7 +7,6 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <AuthProvider
       authClient={authClient}
-      multiSession
       deleteUser={{ enabled: true }}
       navigate={() => {}}
       socialProviders={["github", "google"]}

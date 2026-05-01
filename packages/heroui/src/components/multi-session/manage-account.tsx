@@ -1,6 +1,8 @@
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useRevokeMultiSession,
   useSetActiveSession,
   useUser
@@ -11,17 +13,13 @@ import {
   Ellipsis
 } from "@gravity-ui/icons"
 import { Button, Dropdown, Spinner, toast } from "@heroui/react"
-import type { Session, User } from "better-auth"
 
-import { UserView } from "../../user/user-view"
+import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 
-export type DeviceSession = {
-  session: Session
-  user: User
-}
+import { UserView } from "../user/user-view"
 
 export type ManageAccountProps = {
-  deviceSession?: DeviceSession | null
+  deviceSession?: ListDeviceSession | null
   isPending?: boolean
 }
 
@@ -39,6 +37,8 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { authClient, localization } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: user } = useUser(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
@@ -92,7 +92,7 @@ export function ManageAccount({
           <Dropdown.Popover>
             <Dropdown.Menu>
               <Dropdown.Item
-                textValue={localization.auth.switchAccount}
+                textValue={multiSessionLocalization.switchAccount}
                 onAction={() =>
                   setActiveSession({
                     sessionToken: deviceSession.session.token
@@ -100,7 +100,7 @@ export function ManageAccount({
                 }
               >
                 <ArrowRightArrowLeft className="text-muted" />
-                {localization.auth.switchAccount}
+                {multiSessionLocalization.switchAccount}
               </Dropdown.Item>
 
               <Dropdown.Item

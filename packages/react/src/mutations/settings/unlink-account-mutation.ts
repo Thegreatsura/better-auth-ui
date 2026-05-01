@@ -9,7 +9,7 @@ export type UnlinkAccountParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["unlinkAccount"]
 >[0]
 
-type UnlinkAccountOptions<TAuthClient extends AuthClient> = Omit<
+export type UnlinkAccountOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof unlinkAccountOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

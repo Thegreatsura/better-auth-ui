@@ -9,7 +9,7 @@ export type ChangeEmailParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["changeEmail"]
 >[0]
 
-type ChangeEmailOptions<TAuthClient extends AuthClient> = Omit<
+export type ChangeEmailOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof changeEmailOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

@@ -12,7 +12,7 @@ import { sessionOptions } from "../../queries/auth/session-query"
 export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["signIn"]["passkey"]>[0]
 
-type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+export type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof signInPasskeyOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

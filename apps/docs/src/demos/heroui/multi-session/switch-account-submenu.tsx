@@ -1,0 +1,20 @@
+import { AuthProvider, UserButton } from "@better-auth-ui/heroui"
+import { multiSessionPlugin } from "@better-auth-ui/heroui/plugins"
+import { authClient } from "@/lib/auth-client"
+
+export function SwitchAccountSubmenuDemo() {
+  return (
+    <AuthProvider
+      authClient={authClient}
+      navigate={() => {}}
+      plugins={[multiSessionPlugin()]}
+      socialProviders={["github", "google"]}
+      appearance={{
+        theme: "system",
+        setTheme: () => {}
+      }}
+    >
+      <UserButton />
+    </AuthProvider>
+  )
+}

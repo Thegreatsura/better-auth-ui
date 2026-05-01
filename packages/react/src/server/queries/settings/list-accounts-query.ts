@@ -8,13 +8,17 @@ import type { APIError } from "better-auth"
 
 import type { AuthServer } from "../../../lib/auth-server"
 
-type ListAccountsData<TAuth extends AuthServer> = Awaited<
+export type ListAccountsData<TAuth extends AuthServer = AuthServer> = Awaited<
   ReturnType<TAuth["api"]["listUserAccounts"]>
 >
 
-type ListAccountsParams<TAuth extends AuthServer> = Parameters<
+export type ListAccountsParams<TAuth extends AuthServer> = Parameters<
   TAuth["api"]["listUserAccounts"]
 >[0]
+
+export type ListAccount<TAuth extends AuthServer = AuthServer> = NonNullable<
+  ListAccountsData<TAuth>
+>[number]
 
 /**
  * Query options factory for the current user's linked social accounts.

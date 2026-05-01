@@ -7,10 +7,11 @@ import type { MagicLinkAuthClient } from "../../lib/auth-client"
 export type SignInMagicLinkParams<TAuthClient extends MagicLinkAuthClient> =
   Parameters<TAuthClient["signIn"]["magicLink"]>[0]
 
-type SignInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient> = Omit<
-  ReturnType<typeof signInMagicLinkOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
->
+export type SignInMagicLinkOptions<TAuthClient extends MagicLinkAuthClient> =
+  Omit<
+    ReturnType<typeof signInMagicLinkOptions<TAuthClient>>,
+    "mutationKey" | "mutationFn"
+  >
 
 /**
  * Mutation options factory for magic-link sign-in.

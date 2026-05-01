@@ -12,7 +12,7 @@ export type SignOutParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["signOut"]
 >[0]
 
-type SignOutOptions<TAuthClient extends AuthClient> = Omit<
+export type SignOutOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof signOutOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

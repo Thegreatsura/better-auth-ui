@@ -13,11 +13,12 @@ import { OtpEmailDemo as HeroUIOtpEmailDemo } from "./heroui/email/otp-email"
 import { PasswordChangedEmailDemo as HeroUIPasswordChangedEmailDemo } from "./heroui/email/password-changed-email"
 import { ResetPasswordEmailDemo as HeroUIResetPasswordEmailDemo } from "./heroui/email/reset-password-email"
 import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/magic-link/magic-link"
+import { ManageAccountsDemo as HeroUIManageAccountsDemo } from "./heroui/multi-session/manage-accounts"
+import { SwitchAccountSubmenuDemo as HeroUISwitchAccountSubmenuDemo } from "./heroui/multi-session/switch-account-submenu"
 import { PasskeySignInDemo as HeroUIPasskeySignInDemo } from "./heroui/passkey/passkey-sign-in"
 import { AccountSettingsDemo as HeroUIAccountSettingsDemo } from "./heroui/settings/account/account-settings"
 import { AppearanceDemo as HeroUIAppearanceDemo } from "./heroui/settings/account/appearance"
 import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/account/change-email"
-import { ManageAccountsDemo as HeroUIManageAccountsDemo } from "./heroui/settings/account/manage-accounts"
 import { UserProfileDemo as HeroUIUserProfileDemo } from "./heroui/settings/account/user-profile"
 import { ActiveSessionsDemo as HeroUIActiveSessionsDemo } from "./heroui/settings/security/active-sessions"
 import { ChangePasswordDemo as HeroUIChangePasswordDemo } from "./heroui/settings/security/change-password"
@@ -44,10 +45,11 @@ import { OtpEmailDemo as ShadcnOtpEmailDemo } from "./shadcn/email/otp-email"
 import { PasswordChangedEmailDemo as ShadcnPasswordChangedEmailDemo } from "./shadcn/email/password-changed-email"
 import { ResetPasswordEmailDemo as ShadcnResetPasswordEmailDemo } from "./shadcn/email/reset-password-email"
 import { MagicLinkDemo as ShadcnMagicLinkDemo } from "./shadcn/magic-link/magic-link"
+import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/multi-session/manage-accounts"
+import { SwitchAccountSubmenuDemo as ShadcnSwitchAccountSubmenuDemo } from "./shadcn/multi-session/switch-account-submenu"
 import { AccountSettingsDemo as ShadcnAccountSettingsDemo } from "./shadcn/settings/account/account-settings"
 import { AppearanceDemo as ShadcnAppearanceDemo } from "./shadcn/settings/account/appearance"
 import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/account/change-email"
-import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/settings/account/manage-accounts"
 import { UserProfileDemo as ShadcnUserProfileDemo } from "./shadcn/settings/account/user-profile"
 import { ActiveSessionsDemo as ShadcnActiveSessionsDemo } from "./shadcn/settings/security/active-sessions"
 import { ChangePasswordDemo as ShadcnChangePasswordDemo } from "./shadcn/settings/security/change-password"
@@ -92,6 +94,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-sign-in": HeroUISignInDemo,
   "heroui-sign-out": HeroUISignOutDemo,
   "heroui-sign-up": HeroUISignUpDemo,
+  "heroui-switch-account-submenu": HeroUISwitchAccountSubmenuDemo,
   "heroui-user-avatar": HeroUIUserAvatarDemo,
   "heroui-user-button": HeroUIUserButtonDemo,
   "heroui-user-button-icon": HeroUIUserButtonIconDemo,
@@ -122,6 +125,7 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-sign-in": ShadcnSignInDemo,
   "shadcn-sign-out": ShadcnSignOutDemo,
   "shadcn-sign-up": ShadcnSignUpDemo,
+  "shadcn-switch-account-submenu": ShadcnSwitchAccountSubmenuDemo,
   "shadcn-user-avatar": ShadcnUserAvatarDemo,
   "shadcn-user-button": ShadcnUserButtonDemo,
   "shadcn-user-button-icon": ShadcnUserButtonIconDemo,

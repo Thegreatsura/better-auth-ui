@@ -7,7 +7,7 @@ import type { AuthClient } from "../../lib/auth-client"
 export type RequestPasswordResetParams<TAuthClient extends AuthClient> =
   Parameters<TAuthClient["requestPasswordReset"]>[0]
 
-type RequestPasswordResetOptions<TAuthClient extends AuthClient> = Omit<
+export type RequestPasswordResetOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof requestPasswordResetOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

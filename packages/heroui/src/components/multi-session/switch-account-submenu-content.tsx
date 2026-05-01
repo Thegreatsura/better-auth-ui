@@ -1,26 +1,30 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
 import { Check, CirclePlus } from "@gravity-ui/icons"
 import { Dropdown, Label, Separator } from "@heroui/react"
 
-import { SwitchAccountItem } from "./switch-account-item"
-import { UserView } from "./user-view"
+import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
+import { UserView } from "../user/user-view"
+import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
 
 /**
- * Render the menu content for switching between multiple authenticated sessions.
+ * Render the submenu content for switching between multiple authenticated sessions.
  *
  * Shows the current session with a checkmark, lists other device sessions that can be activated,
  * and provides an option to add a new account. This component should be rendered inside a
  * Dropdown.SubmenuTrigger to defer the useListDeviceSessions query until the submenu is opened.
  *
- * @returns The switch account menu content as a JSX element
+ * @returns The switch account submenu content as a JSX element
  */
-export function SwitchAccountMenu() {
-  const { authClient, basePaths, viewPaths, localization } = useAuth()
+export function SwitchAccountSubmenuContent() {
+  const { authClient, basePaths, viewPaths } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
   const { data: deviceSessions, isPending } = useListDeviceSessions(
     authClient as MultiSessionAuthClient
@@ -40,7 +44,7 @@ export function SwitchAccountMenu() {
             (deviceSession) => deviceSession.session.id !== session?.session?.id
           )
           .map((deviceSession) => (
-            <SwitchAccountItem
+            <SwitchAccountSubmenuItem
               key={deviceSession.session.id}
               deviceSession={deviceSession}
             />
@@ -49,12 +53,12 @@ export function SwitchAccountMenu() {
         <Separator />
 
         <Dropdown.Item
-          textValue={localization.auth.addAccount}
+          textValue={multiSessionLocalization.addAccount}
           href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
         >
           <CirclePlus className="text-muted" />
 
-          <Label>{localization.auth.addAccount}</Label>
+          <Label>{multiSessionLocalization.addAccount}</Label>
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown.Popover>

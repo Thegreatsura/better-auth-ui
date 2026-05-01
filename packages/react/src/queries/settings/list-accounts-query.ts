@@ -11,7 +11,7 @@ import type { BetterFetchError } from "better-auth/react"
 import type { AuthClient, InferData } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-type ListAccountsData<TAuthClient extends AuthClient> = InferData<
+export type ListAccountsData<TAuthClient extends AuthClient> = InferData<
   TAuthClient["listAccounts"]
 >
 
@@ -19,7 +19,10 @@ export type ListAccountsParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["listAccounts"]
 >[0]
 
-type ListAccountsOptions<TAuthClient extends AuthClient> = Omit<
+export type ListAccount<TAuthClient extends AuthClient = AuthClient> =
+  NonNullable<ListAccountsData<TAuthClient>>[number]
+
+export type ListAccountsOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof listAccountsOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >

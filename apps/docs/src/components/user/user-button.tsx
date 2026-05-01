@@ -14,8 +14,7 @@ import {
   Moon,
   Settings,
   Sun,
-  UserPlus2,
-  UsersRound
+  UserPlus2
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -25,13 +24,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { SwitchAccountMenu } from "./switch-account-menu"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
 
@@ -77,7 +73,7 @@ export function UserButton({
     basePaths,
     viewPaths,
     localization,
-    multiSession,
+    plugins,
     Link,
     appearance: { theme, setTheme, themes }
   } = useAuth()
@@ -151,16 +147,10 @@ export function UserButton({
               </Link>
             </DropdownMenuItem>
 
-            {multiSession && (
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <UsersRound className="text-muted-foreground" />
-
-                  {localization.auth.switchAccount}
-                </DropdownMenuSubTrigger>
-
-                <SwitchAccountMenu />
-              </DropdownMenuSub>
+            {plugins.flatMap((plugin) =>
+              plugin.userMenuItems?.map((Item, index) => (
+                <Item key={`${plugin.id}-${index.toString()}`} />
+              ))
             )}
 
             <DropdownMenuSeparator />

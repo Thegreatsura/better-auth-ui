@@ -1,10 +1,11 @@
 import { useAuth } from "@better-auth-ui/react"
 import { type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
+
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
-import { ManageAccounts } from "./manage-accounts"
 import { UserProfile } from "./user-profile"
+
 export type AccountSettingsProps = {
   className?: string
   variant?: CardProps["variant"]
@@ -13,7 +14,7 @@ export type AccountSettingsProps = {
 /**
  * Renders the account settings layout including user profile, change email, appearance, and accounts management.
  *
- * UserProfile, ChangeEmail, and Appearance are always rendered; Accounts is rendered when `multiSession` is enabled.
+ * UserProfile, ChangeEmail, and Appearance are always rendered; accountCards are rendered from plugins.
  *
  * @param className - Optional additional CSS class names for the outer container.
  * @param variant - Card variant forwarded to each account settings card.
@@ -25,11 +26,12 @@ export function AccountSettings({
   ...props
 }: AccountSettingsProps & ComponentProps<"div">) {
   const {
-    multiSession,
     emailAndPassword,
-    magicLink,
+    plugins,
     appearance: { setTheme }
   } = useAuth()
+
+  const hasMagicLink = plugins.some((plugin) => plugin.id === "magicLink")
 
   return (
     <div
@@ -37,11 +39,15 @@ export function AccountSettings({
       {...props}
     >
       <UserProfile variant={variant} />
-      {(emailAndPassword?.enabled || magicLink) && (
+      {(emailAndPassword?.enabled || hasMagicLink) && (
         <ChangeEmail variant={variant} />
       )}
       {setTheme && <Appearance variant={variant} />}
-      {multiSession && <ManageAccounts variant={variant} />}
+      {plugins.flatMap((plugin) =>
+        plugin.accountCards?.map((Card, index) => (
+          <Card key={`${plugin.id}-${index.toString()}`} variant={variant} />
+        ))
+      )}
     </div>
   )
 }

@@ -224,6 +224,57 @@
       ]
     },
     {
+      "name": "multi-session",
+      "type": "registry:component",
+      "title": "Multi Session",
+      "description": "Multi-session plugin: Enable multiple concurrent sessions with account switching. Registers account management cards in account settings and a switch account submenu in the user button.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "dropdown-menu",
+        "separator",
+        "sonner",
+        "spinner",
+        "https://better-auth-ui.com/r/user-view.json"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/multi-session/multi-session-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/multi-session/manage-accounts.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/multi-session/manage-account.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/multi-session/switch-account-submenu.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/multi-session/switch-account-submenu-content.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/multi-session/switch-account-submenu-item.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "forgot-password",
       "type": "registry:component",
       "title": "Forgot Password",
@@ -378,14 +429,6 @@
         {
           "path": "src/components/user/user-button.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/user/switch-account-menu.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/user/switch-account-item.tsx",
-          "type": "registry:component"
         }
       ]
     },
@@ -471,36 +514,6 @@
       ]
     },
     {
-      "name": "manage-accounts",
-      "type": "registry:component",
-      "title": "Manage Accounts",
-      "description": "Display and manage multiple signed-in accounts for multi-session support. Shows all device sessions with actions to switch between or revoke sessions.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "@better-auth-ui/core@latest",
-        "better-auth",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "dropdown-menu",
-        "sonner",
-        "spinner",
-        "https://better-auth-ui.com/r/user-view.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/account/manage-accounts.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/account/manage-account.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "account-settings",
       "type": "registry:component",
       "title": "Account Settings",
@@ -512,8 +525,7 @@
       "registryDependencies": [
         "https://better-auth-ui.com/r/user-profile.json",
         "https://better-auth-ui.com/r/change-email.json",
-        "https://better-auth-ui.com/r/appearance.json",
-        "https://better-auth-ui.com/r/manage-accounts.json"
+        "https://better-auth-ui.com/r/appearance.json"
       ],
       "files": [
         {

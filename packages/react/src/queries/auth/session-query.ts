@@ -9,15 +9,18 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient, InferData } from "../../lib/auth-client"
 
-export type SessionData<TAuthClient extends AuthClient> = InferData<
-  TAuthClient["getSession"]
+export type SessionData<TAuthClient extends AuthClient = AuthClient> =
+  InferData<TAuthClient["getSession"]>
+
+export type Session<TAuthClient extends AuthClient = AuthClient> = NonNullable<
+  SessionData<TAuthClient>
 >
 
 export type SessionParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["getSession"]
 >[0]
 
-type SessionOptions<TAuthClient extends AuthClient> = Omit<
+export type SessionOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof sessionOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >

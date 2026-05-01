@@ -8,7 +8,7 @@ import { useListPasskeys } from "../../queries/passkey/list-passkeys-query"
 export type DeletePasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["deletePasskey"]>[0]
 
-type DeletePasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
+export type DeletePasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof deletePasskeyOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

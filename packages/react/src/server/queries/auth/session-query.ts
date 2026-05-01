@@ -8,11 +8,15 @@ import type { APIError } from "better-auth"
 
 import type { AuthServer } from "../../../lib/auth-server"
 
-type SessionData<TAuth extends AuthServer> = Awaited<
+export type SessionData<TAuth extends AuthServer = AuthServer> = Awaited<
   ReturnType<TAuth["api"]["getSession"]>
 >
 
-type SessionParams<TAuth extends AuthServer> = Parameters<
+export type Session<TAuth extends AuthServer = AuthServer> = NonNullable<
+  SessionData<TAuth>
+>
+
+export type SessionParams<TAuth extends AuthServer> = Parameters<
   TAuth["api"]["getSession"]
 >[0]
 

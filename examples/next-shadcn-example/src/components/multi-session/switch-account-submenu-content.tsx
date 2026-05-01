@@ -3,6 +3,7 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
@@ -13,8 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu"
-import { SwitchAccountItem } from "./switch-account-item"
-import { UserView } from "./user-view"
+import { UserView } from "@/components/user/user-view"
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
+import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
 
 /**
  * Render the submenu content for switching between multiple authenticated sessions.
@@ -25,8 +27,10 @@ import { UserView } from "./user-view"
  *
  * @returns The switch account submenu content as a JSX element
  */
-export function SwitchAccountMenu() {
-  const { authClient, basePaths, viewPaths, localization, Link } = useAuth()
+export function SwitchAccountSubmenuContent() {
+  const { authClient, basePaths, viewPaths, Link } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
   const { data: deviceSessions, isPending } = useListDeviceSessions(
     authClient as MultiSessionAuthClient
@@ -45,7 +49,7 @@ export function SwitchAccountMenu() {
           (deviceSession) => deviceSession.session.id !== session?.session.id
         )
         .map((deviceSession) => (
-          <SwitchAccountItem
+          <SwitchAccountSubmenuItem
             key={deviceSession.session.id}
             deviceSession={deviceSession}
           />
@@ -57,7 +61,7 @@ export function SwitchAccountMenu() {
         <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
           <CirclePlus className="text-muted-foreground" />
 
-          {localization.auth.addAccount}
+          {multiSessionLocalization.addAccount}
         </Link>
       </DropdownMenuItem>
     </DropdownMenuSubContent>

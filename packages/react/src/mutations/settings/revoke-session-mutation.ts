@@ -9,7 +9,7 @@ export type RevokeSessionParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["revokeSession"]
 >[0]
 
-type RevokeSessionOptions<TAuthClient extends AuthClient> = Omit<
+export type RevokeSessionOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof revokeSessionOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

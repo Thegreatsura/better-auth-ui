@@ -8,7 +8,7 @@ export type SignInSocialParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["signIn"]["social"]
 >[0]
 
-type SignInSocialOptions<TAuthClient extends AuthClient> = Omit<
+export type SignInSocialOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof signInSocialOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

@@ -26,7 +26,6 @@ export function Providers({ children }: { children: ReactNode }) {
         }
       ]}
       deleteUser={{ enabled: true }}
-      multiSession
       socialProviders={["github", "google"]}
       redirectTo="/settings/account"
       navigate={navigate}

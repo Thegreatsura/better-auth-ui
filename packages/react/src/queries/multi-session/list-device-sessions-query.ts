@@ -11,18 +11,24 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, MultiSessionAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-type ListDeviceSessionsData<TAuthClient extends MultiSessionAuthClient> =
-  InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
+export type ListDeviceSessionsData<
+  TAuthClient extends MultiSessionAuthClient = MultiSessionAuthClient
+> = InferData<TAuthClient["multiSession"]["listDeviceSessions"]>
+
+export type ListDeviceSession<
+  TAuthClient extends MultiSessionAuthClient = MultiSessionAuthClient
+> = NonNullable<ListDeviceSessionsData<TAuthClient>>[number]
 
 export type ListDeviceSessionsParams<
   TAuthClient extends MultiSessionAuthClient
 > = Parameters<TAuthClient["multiSession"]["listDeviceSessions"]>[0]
 
-type ListDeviceSessionsOptions<TAuthClient extends MultiSessionAuthClient> =
-  Omit<
-    ReturnType<typeof listDeviceSessionsOptions<TAuthClient>>,
-    "queryKey" | "queryFn"
-  >
+export type ListDeviceSessionsOptions<
+  TAuthClient extends MultiSessionAuthClient
+> = Omit<
+  ReturnType<typeof listDeviceSessionsOptions<TAuthClient>>,
+  "queryKey" | "queryFn"
+>
 
 /**
  * Query options factory for the current user's device sessions.

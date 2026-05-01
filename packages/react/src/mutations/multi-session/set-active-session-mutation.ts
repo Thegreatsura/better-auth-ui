@@ -17,7 +17,9 @@ import { useListDeviceSessions } from "../../queries/multi-session/list-device-s
 export type SetActiveSessionParams<TAuthClient extends MultiSessionAuthClient> =
   Parameters<TAuthClient["multiSession"]["setActive"]>[0]
 
-type SetActiveSessionOptions<TAuthClient extends MultiSessionAuthClient> = Omit<
+export type SetActiveSessionOptions<
+  TAuthClient extends MultiSessionAuthClient
+> = Omit<
   ReturnType<typeof setActiveSessionOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >

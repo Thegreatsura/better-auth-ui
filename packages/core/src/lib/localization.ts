@@ -3,9 +3,6 @@ export const localization = {
     /** @remarks `"Account"` */
     account: "Account",
 
-    /** @remarks `"Add Account"` */
-    addAccount: "Add Account",
-
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
 
@@ -95,9 +92,6 @@ export const localization = {
 
     /** @remarks `"Sign Up"` */
     signUp: "Sign Up",
-
-    /** @remarks `"Switch Account"` */
-    switchAccount: "Switch Account",
 
     /** @remarks `"Username"` */
     username: "Username",
@@ -208,9 +202,6 @@ export const localization = {
 
     /** @remarks `"Light"` */
     light: "Light",
-
-    /** @remarks `"Manage accounts"` */
-    manageAccounts: "Manage accounts",
 
     /** @remarks `"Delete"` */
     delete: "Delete",

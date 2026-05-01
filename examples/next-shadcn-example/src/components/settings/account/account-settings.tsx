@@ -6,7 +6,6 @@ import type { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
-import { ManageAccounts } from "./manage-accounts"
 import { UserProfile } from "./user-profile"
 
 export type AccountSettingsProps = {
@@ -16,20 +15,19 @@ export type AccountSettingsProps = {
 /**
  * Renders the account settings layout.
  *
- * Uses `emailAndPassword`, `plugins`, `appearance.setTheme`, and
- * `multiSession` from `useAuth()` to conditionally show sections:
+ * Uses `emailAndPassword`, `plugins`, and `appearance.setTheme` from `useAuth()`
+ * to conditionally show sections:
  * - `UserProfile` always renders.
  * - `ChangeEmail` renders when `emailAndPassword?.enabled` is truthy or the
  *   `magicLink` plugin is registered.
  * - `Appearance` renders when `setTheme` is truthy.
- * - `ManageAccounts` renders when `multiSession` is truthy.
+ * - Plugin-contributed account cards are rendered via the plugins array.
  */
 export function AccountSettings({
   className,
   ...props
 }: AccountSettingsProps & ComponentProps<"div">) {
   const {
-    multiSession,
     emailAndPassword,
     plugins,
     appearance: { setTheme }
@@ -45,7 +43,12 @@ export function AccountSettings({
       <UserProfile />
       {(emailAndPassword?.enabled || hasMagicLink) && <ChangeEmail />}
       {setTheme && <Appearance />}
-      {multiSession && <ManageAccounts />}
+      {plugins.flatMap(
+        (plugin) =>
+          plugin.accountCards?.map((Card, index) => (
+            <Card key={`${plugin.id}-${index.toString()}`} />
+          )) ?? []
+      )}
     </div>
   )
 }

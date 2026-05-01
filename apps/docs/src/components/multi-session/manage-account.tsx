@@ -1,15 +1,17 @@
 "use client"
 
 import {
+  type ListDeviceSession,
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useRevokeMultiSession,
   useSession,
   useSetActiveSession
 } from "@better-auth-ui/react"
-import type { Session, User } from "better-auth"
 import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -20,14 +22,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
-
-export type DeviceSession = {
-  session: Session
-  user: User
-}
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
 export type ManageAccountProps = {
-  deviceSession?: DeviceSession | null
+  deviceSession?: ListDeviceSession | null
   isPending?: boolean
 }
 
@@ -46,6 +44,8 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { authClient, localization } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
@@ -103,7 +103,7 @@ export function ManageAccount({
                 }
               >
                 <ArrowLeftRight className="text-muted-foreground" />
-                {localization.auth.switchAccount}
+                {multiSessionLocalization.switchAccount}
               </DropdownMenuItem>
 
               <DropdownMenuItem

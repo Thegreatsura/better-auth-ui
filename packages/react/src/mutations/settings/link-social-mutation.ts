@@ -8,7 +8,7 @@ export type LinkSocialParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["linkSocial"]
 >[0]
 
-type LinkSocialOptions<TAuthClient extends AuthClient> = Omit<
+export type LinkSocialOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof linkSocialOptions<TAuthClient>>,
   "mutationKey" | "mutationFn"
 >
