@@ -1,49 +1,42 @@
 "use client"
 
+import { useAuthPlugin } from "@better-auth-ui/react"
+import { UsersRound } from "lucide-react"
+
 import {
-  type MultiSessionAuthClient,
-  useAuth,
-  type useListDeviceSessions,
-  useSetActiveSession
-} from "@better-auth-ui/react"
-
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Spinner } from "@/components/ui/spinner"
-import { UserView } from "./user-view"
-
-export type DeviceSession = NonNullable<
-  ReturnType<typeof useListDeviceSessions>["data"]
->[number]
+  DropdownMenuSub,
+  DropdownMenuSubTrigger
+} from "@/components/ui/dropdown-menu"
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
+import { SwitchAccountSubmenu } from "./switch-account-submenu"
 
 export type SwitchAccountItemProps = {
-  deviceSession: DeviceSession
+  className?: string
 }
 
 /**
- * Render a dropdown menu item for switching to a different authenticated session.
+ * Render a submenu trigger for switching between multiple authenticated sessions.
  *
- * @param deviceSession - The device session to display and switch to when selected
- * @returns The switch account dropdown menu item as a JSX element
+ * This component renders as a dropdown menu item that opens a submenu containing
+ * the switch account menu. It should be rendered inside the UserButton dropdown
+ * as a userMenuItem from the multiSessionPlugin.
+ *
+ * @param className - Optional additional CSS class names
+ * @returns The switch account menu item as a JSX element
  */
-export function SwitchAccountItem({ deviceSession }: SwitchAccountItemProps) {
-  const { authClient } = useAuth()
-  const { mutate: setActiveSession, isPending } = useSetActiveSession(
-    authClient as MultiSessionAuthClient,
-    {
-      onSuccess: () => window.scrollTo({ top: 0 })
-    }
-  )
+export function SwitchAccountItem({ className }: SwitchAccountItemProps) {
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
 
   return (
-    <DropdownMenuItem
-      disabled={isPending}
-      onSelect={() =>
-        setActiveSession({ sessionToken: deviceSession.session.token })
-      }
-    >
-      <UserView user={deviceSession.user} />
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger className={className}>
+        <UsersRound className="text-muted-foreground" />
 
-      {isPending && <Spinner className="ml-auto size-4" />}
-    </DropdownMenuItem>
+        {multiSessionLocalization.switchAccount}
+      </DropdownMenuSubTrigger>
+
+      <SwitchAccountSubmenu />
+    </DropdownMenuSub>
   )
 }

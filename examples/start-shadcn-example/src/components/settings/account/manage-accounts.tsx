@@ -3,11 +3,13 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 import { cn } from "@/lib/utils"
 import { ManageAccount } from "./manage-account"
 
@@ -24,7 +26,9 @@ export type ManageAccountsProps = {
  * @returns A JSX element containing the accounts management card
  */
 export function ManageAccounts({ className }: ManageAccountsProps) {
-  const { authClient, localization } = useAuth()
+  const { authClient } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
 
   const { data: deviceSessions, isPending } = useListDeviceSessions(
@@ -51,7 +55,7 @@ export function ManageAccounts({ className }: ManageAccountsProps) {
   return (
     <div>
       <h2 className="text-sm font-semibold mb-3">
-        {localization.settings.manageAccounts}
+        {multiSessionLocalization.manageAccounts}
       </h2>
 
       <Card className={cn("p-0", className)}>

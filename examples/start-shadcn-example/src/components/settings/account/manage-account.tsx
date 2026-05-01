@@ -3,6 +3,7 @@
 import {
   type MultiSessionAuthClient,
   useAuth,
+  useAuthPlugin,
   useRevokeMultiSession,
   useSession,
   useSetActiveSession
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
 import { UserView } from "@/components/user/user-view"
+import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
 export type DeviceSession = {
   session: Session
@@ -46,6 +48,8 @@ export function ManageAccount({
   isPending
 }: ManageAccountProps) {
   const { authClient, localization } = useAuth()
+  const { localization: multiSessionLocalization } =
+    useAuthPlugin(multiSessionPlugin)
   const { data: session } = useSession(authClient)
 
   const { mutate: setActiveSession, isPending: isSwitching } =
@@ -103,7 +107,7 @@ export function ManageAccount({
                 }
               >
                 <ArrowLeftRight className="text-muted-foreground" />
-                {localization.auth.switchAccount}
+                {multiSessionLocalization.switchAccount}
               </DropdownMenuItem>
 
               <DropdownMenuItem
