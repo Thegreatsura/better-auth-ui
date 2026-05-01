@@ -9,7 +9,7 @@ import {
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
-import { UserView } from "./user-view"
+import { UserView } from "@/components/user/user-view"
 
 export type DeviceSession = NonNullable<
   ReturnType<typeof useListDeviceSessions>["data"]

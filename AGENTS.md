@@ -11,6 +11,7 @@ bunx biome check --write .
 ```
 
 Don't finish with Biome errors outstanding.
+Don't finish with nx build errors outstanding for the project.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

@@ -14,9 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuSubContent
 } from "@/components/ui/dropdown-menu"
+import { UserView } from "@/components/user/user-view"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
-import { UserView } from "./user-view"
 
 /**
  * Render the submenu content for switching between multiple authenticated sessions.

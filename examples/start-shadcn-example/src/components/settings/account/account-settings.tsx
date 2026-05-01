@@ -4,9 +4,9 @@ import { useAuth } from "@better-auth-ui/react"
 import type { ComponentProps } from "react"
 
 import { cn } from "@/lib/utils"
+import { ManageAccounts } from "../../multi-session/manage-accounts"
 import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
-import { ManageAccounts } from "./manage-accounts"
 import { UserProfile } from "./user-profile"
 
 export type AccountSettingsProps = {

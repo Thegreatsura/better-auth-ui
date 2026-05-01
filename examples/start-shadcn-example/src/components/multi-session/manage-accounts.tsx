@@ -7,6 +7,7 @@ import {
   useListDeviceSessions,
   useSession
 } from "@better-auth-ui/react"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
