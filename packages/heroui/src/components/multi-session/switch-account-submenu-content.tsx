@@ -10,18 +10,18 @@ import { Dropdown, Label, Separator } from "@heroui/react"
 
 import { multiSessionPlugin } from "../../lib/multi-session/multi-session-plugin"
 import { UserView } from "../user/user-view"
-import { SwitchAccountMenuItem } from "./switch-account-menu-item"
+import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
 
 /**
- * Render the menu content for switching between multiple authenticated sessions.
+ * Render the submenu content for switching between multiple authenticated sessions.
  *
  * Shows the current session with a checkmark, lists other device sessions that can be activated,
  * and provides an option to add a new account. This component should be rendered inside a
  * Dropdown.SubmenuTrigger to defer the useListDeviceSessions query until the submenu is opened.
  *
- * @returns The switch account menu content as a JSX element
+ * @returns The switch account submenu content as a JSX element
  */
-export function SwitchAccountMenu() {
+export function SwitchAccountSubmenuContent() {
   const { authClient, basePaths, viewPaths } = useAuth()
   const { localization: multiSessionLocalization } =
     useAuthPlugin(multiSessionPlugin)
@@ -44,7 +44,7 @@ export function SwitchAccountMenu() {
             (deviceSession) => deviceSession.session.id !== session?.session?.id
           )
           .map((deviceSession) => (
-            <SwitchAccountMenuItem
+            <SwitchAccountSubmenuItem
               key={deviceSession.session.id}
               deviceSession={deviceSession}
             />

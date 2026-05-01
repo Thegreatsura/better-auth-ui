@@ -12,7 +12,7 @@ type DeviceSession = {
   user: User
 }
 
-export type SwitchAccountMenuItemProps = {
+export type SwitchAccountSubmenuItemProps = {
   deviceSession: DeviceSession
 }
 
@@ -22,9 +22,9 @@ export type SwitchAccountMenuItemProps = {
  * @param deviceSession - The device session to display and switch to when pressed
  * @returns The switch account dropdown item as a JSX element
  */
-export function SwitchAccountMenuItem({
+export function SwitchAccountSubmenuItem({
   deviceSession
-}: SwitchAccountMenuItemProps) {
+}: SwitchAccountSubmenuItemProps) {
   const { authClient } = useAuth()
   const { mutate: setActiveSession, isPending } = useSetActiveSession(
     authClient as MultiSessionAuthClient,
