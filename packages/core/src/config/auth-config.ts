@@ -6,7 +6,6 @@ import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
 import type { AdditionalFields } from "./additional-fields-config"
-import type { AppearanceConfig } from "./appearance-config"
 import type { AvatarConfig } from "./avatar-config"
 import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
@@ -24,12 +23,6 @@ export interface AuthConfig {
    * @remarks `AdditionalFields`
    */
   additionalFields?: AdditionalFields
-  /**
-   * Appearance/theme configuration
-   * @remarks `AppearanceConfig`
-   * @default { themes: ["system", "light", "dark"] }
-   */
-  appearance: AppearanceConfig
   /**
    * Avatar upload, optimization, and deletion configuration.
    * @remarks `AvatarConfig`
@@ -102,9 +95,6 @@ export interface AuthConfig {
 }
 
 export const defaultAuthConfig: AuthConfig = {
-  appearance: {
-    themes: ["system", "light", "dark"]
-  },
   avatar: {
     enabled: true,
     resize: resizeAvatar,

@@ -29,9 +29,9 @@ export function SecuritySettings({ className }: SecuritySettingsProps) {
       {emailAndPassword?.enabled && <ChangePassword />}
       {!!socialProviders?.length && <LinkedAccounts />}
       {plugins.flatMap(
-        (plugin) =>
+        (plugin, pluginIndex) =>
           plugin.securityCards?.map((Card, index) => (
-            <Card key={`${plugin.id}-${index.toString()}`} />
+            <Card key={`${pluginIndex.toString()}-${index.toString()}`} />
           )) ?? []
       )}
       <ActiveSessions />

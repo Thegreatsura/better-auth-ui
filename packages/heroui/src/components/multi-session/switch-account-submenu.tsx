@@ -1,4 +1,4 @@
-import { useAuthPlugin } from "@better-auth-ui/react"
+import { useAuth, useAuthPlugin, useSession } from "@better-auth-ui/react"
 import { Persons } from "@gravity-ui/icons"
 import { Dropdown, Label } from "@heroui/react"
 
@@ -20,8 +20,14 @@ export type SwitchAccountSubmenuProps = {
  * @returns The switch account submenu as a JSX element
  */
 export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
+  const { authClient } = useAuth()
+  const { data: session } = useSession(authClient)
   const { localization: multiSessionLocalization } =
     useAuthPlugin(multiSessionPlugin)
+
+  if (!session) {
+    return null
+  }
 
   return (
     <Dropdown.SubmenuTrigger>

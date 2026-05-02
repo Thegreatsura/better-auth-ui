@@ -1,4 +1,4 @@
-import type { AuthPlugin } from "../../lib/auth-plugin"
+import { createAuthPlugin } from "../../lib/create-auth-plugin"
 import {
   type PasskeyLocalization,
   passkeyLocalization
@@ -12,9 +12,9 @@ export type PasskeyPluginOptions = {
   localization?: Partial<PasskeyLocalization>
 }
 
-export function passkeyPlugin(options: PasskeyPluginOptions = {}) {
-  return {
-    id: "passkey",
+export const passkeyPlugin = createAuthPlugin(
+  "passkey",
+  (options: PasskeyPluginOptions = {}) => ({
     localization: { ...passkeyLocalization, ...options.localization }
-  } satisfies AuthPlugin
-}
+  })
+)

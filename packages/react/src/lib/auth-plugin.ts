@@ -30,13 +30,13 @@ export type UserMenuItemProps = {
 
 /** Framework-agnostic slot component shapes. UI packages narrow these via `TComponents`. */
 export type AuthPluginComponents = {
-  /** Rendered alongside the submit button in sign-in / sign-up / forgot-password. */
+  /** Rendered below the submit button in auth forms. */
   authButtons?: ComponentType<AuthButtonProps>[]
-  /** Rendered as cards inside security settings (e.g. passkey list). */
+  /** Rendered as cards inside security settings. */
   securityCards?: ComponentType<SecurityCardProps>[]
-  /** Rendered as cards inside account settings (e.g. multi-session accounts). */
+  /** Rendered as cards inside account settings. */
   accountCards?: ComponentType<AccountCardProps>[]
-  /** Rendered as items inside the `UserButton` dropdown (e.g. account switcher). */
+  /** Rendered as items inside the `UserButton` dropdown. */
   userMenuItems?: ComponentType<UserMenuItemProps>[]
 }
 

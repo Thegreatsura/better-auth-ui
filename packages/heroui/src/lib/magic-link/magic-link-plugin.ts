@@ -1,3 +1,4 @@
+import { createAuthPlugin } from "@better-auth-ui/core"
 import {
   magicLinkPlugin as coreMagicLinkPlugin,
   type MagicLinkPluginOptions
@@ -5,10 +6,10 @@ import {
 
 import { MagicLink } from "../../components/auth/magic-link"
 import { MagicLinkButton } from "../../components/auth/magic-link-button"
-import type { AuthPlugin } from "../auth-plugin"
 
-export function magicLinkPlugin(options: MagicLinkPluginOptions = {}) {
-  return {
+export const magicLinkPlugin = createAuthPlugin(
+  coreMagicLinkPlugin.id,
+  (options: MagicLinkPluginOptions = {}) => ({
     ...coreMagicLinkPlugin(options),
     authButtons: [MagicLinkButton],
     views: {
@@ -21,5 +22,5 @@ export function magicLinkPlugin(options: MagicLinkPluginOptions = {}) {
     fallbackViews: {
       auth: { signIn: MagicLink }
     }
-  } satisfies AuthPlugin
-}
+  })
+)

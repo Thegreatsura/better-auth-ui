@@ -2,7 +2,7 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth
+  useAuthPlugin
 } from "@better-auth-ui/react"
 import { Display, Moon, Sun } from "@gravity-ui/icons"
 import {
@@ -15,6 +15,8 @@ import {
   useIsHydrated
 } from "@heroui/react"
 
+import { themePlugin } from "../../lib/theme/theme-plugin"
+
 export type AppearanceProps = {
   className?: string
   variant?: CardProps["variant"]
@@ -24,36 +26,27 @@ export type AppearanceProps = {
  * Renders a theme selector card with visual theme previews.
  *
  * Displays a card containing radio buttons for selecting between system, light,
- * and dark themes. Each option shows a visual preview of the theme. Only renders
- * if theme settings are configured (theme, setTheme, and themes are provided).
- *
- * @param className - Optional additional CSS class names for the card container.
- * @returns A JSX element containing the theme selector card, or null if theme settings are not configured.
+ * and dark themes. Each option shows a visual preview of the theme. Theme options
+ * are conditionally shown based on the `themes` array provided via the theme plugin.
  */
 export function Appearance({
   className,
   variant,
   ...props
 }: AppearanceProps & Omit<CardProps, "children">) {
-  const {
-    localization,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
+  const { useTheme, localization } = useAuthPlugin(themePlugin)
+  const { theme, setTheme, themes = [] } = useTheme()
   const hydrated = useIsHydrated()
-
-  if (!setTheme || !themes?.length) {
-    return null
-  }
 
   return (
     <div>
       <h2 className={cn("text-sm font-semibold mb-3")}>
-        {localization.settings.appearance}
+        {localization.appearance}
       </h2>
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
-          <Label>{localization.settings.theme}</Label>
+          <Label>{localization.theme}</Label>
 
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
@@ -78,7 +71,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Display className="text-muted" />
-                        {localization.settings.system}
+                        {localization.system}
                       </Label>
 
                       <Radio.Control>
@@ -107,7 +100,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Sun className="text-muted" />
-                        {localization.settings.light}
+                        {localization.light}
                       </Label>
 
                       <Radio.Control>
@@ -136,7 +129,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Moon className="text-muted" />
-                        {localization.settings.dark}
+                        {localization.dark}
                       </Label>
 
                       <Radio.Control>

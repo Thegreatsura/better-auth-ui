@@ -1,4 +1,4 @@
-import type { AuthPlugin } from "../../lib/auth-plugin"
+import { createAuthPlugin } from "../../lib/create-auth-plugin"
 import {
   type MultiSessionLocalization,
   multiSessionLocalization
@@ -12,9 +12,9 @@ export type MultiSessionPluginOptions = {
   localization?: Partial<MultiSessionLocalization>
 }
 
-export function multiSessionPlugin(options: MultiSessionPluginOptions = {}) {
-  return {
-    id: "multiSession",
+export const multiSessionPlugin = createAuthPlugin(
+  "multiSession",
+  (options: MultiSessionPluginOptions = {}) => ({
     localization: { ...multiSessionLocalization, ...options.localization }
-  } satisfies AuthPlugin
-}
+  })
+)

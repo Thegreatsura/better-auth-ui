@@ -10,10 +10,6 @@ export function MagicLinkDemo() {
       navigate={() => {}}
       plugins={[magicLinkPlugin()]}
       socialProviders={["github", "google"]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       <MagicLink />
     </AuthProvider>

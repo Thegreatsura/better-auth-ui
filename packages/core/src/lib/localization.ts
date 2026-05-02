@@ -154,9 +154,6 @@ export const localization = {
     /** @remarks `"Link your {{provider}} account"` */
     linkProvider: "Link your {{provider}} account",
 
-    /** @remarks `"Appearance"` */
-    appearance: "Appearance",
-
     /** @remarks `"Cancel"` */
     cancel: "Cancel",
 
@@ -181,9 +178,6 @@ export const localization = {
     /** @remarks `"Enter your current password"` */
     currentPasswordPlaceholder: "Enter your current password",
 
-    /** @remarks `"Dark"` */
-    dark: "Dark",
-
     /** @remarks `"Danger zone"` */
     dangerZone: "Danger zone",
 
@@ -199,9 +193,6 @@ export const localization = {
 
     /** @remarks `"Your account has been deleted."` */
     deleteUserSuccess: "Your account has been deleted.",
-
-    /** @remarks `"Light"` */
-    light: "Light",
 
     /** @remarks `"Delete"` */
     delete: "Delete",
@@ -239,12 +230,6 @@ export const localization = {
 
     /** @remarks `"Settings"` */
     settings: "Settings",
-
-    /** @remarks `"System"` */
-    system: "System",
-
-    /** @remarks `"Theme"` */
-    theme: "Theme",
 
     /** @remarks `"Time"` */
     time: "Time",

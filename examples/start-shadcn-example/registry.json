@@ -275,6 +275,36 @@
       ]
     },
     {
+      "name": "theme",
+      "type": "registry:component",
+      "title": "Theme",
+      "description": "Theme plugin: theme-library agnostic theme selection. Registers an Appearance card in account settings and a theme toggle in the user button. Pass `useTheme` from your theme library (e.g. next-themes) or static `setTheme`.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "lucide-react"
+      ],
+      "registryDependencies": ["card", "field", "label", "radio-group", "tabs"],
+      "files": [
+        {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/theme/theme-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/theme/appearance.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/theme/theme-toggle-item.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "forgot-password",
       "type": "registry:component",
       "title": "Forgot Password",
@@ -411,7 +441,7 @@
       "name": "user-button",
       "type": "registry:component",
       "title": "User Button",
-      "description": "Renders a user button with dropdown menu showing user info, settings link, theme controls, and sign-in/sign-out actions.",
+      "description": "Renders a user button with dropdown menu showing user info, settings link, plugin-contributed menu items (e.g. theme toggle, account switcher), and sign-in/sign-out actions.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
@@ -422,7 +452,6 @@
         "button",
         "dropdown-menu",
         "spinner",
-        "tabs",
         "https://better-auth-ui.com/r/user-view.json"
       ],
       "files": [
@@ -496,36 +525,17 @@
       ]
     },
     {
-      "name": "appearance",
-      "type": "registry:component",
-      "title": "Appearance",
-      "description": "A theme selector card with visual theme previews for system, light, and dark themes.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "@better-auth-ui/core@latest",
-        "lucide-react"
-      ],
-      "registryDependencies": ["card", "field", "label", "radio-group"],
-      "files": [
-        {
-          "path": "src/components/settings/account/appearance.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "account-settings",
       "type": "registry:component",
       "title": "Account Settings",
-      "description": "A container component that displays account settings including user profile, change email, appearance, and accounts management.",
+      "description": "A container component that displays account settings including user profile, change email, and plugin-contributed account cards (e.g. appearance from the theme plugin, multi-session accounts).",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest"
       ],
       "registryDependencies": [
         "https://better-auth-ui.com/r/user-profile.json",
-        "https://better-auth-ui.com/r/change-email.json",
-        "https://better-auth-ui.com/r/appearance.json"
+        "https://better-auth-ui.com/r/change-email.json"
       ],
       "files": [
         {
@@ -655,7 +665,7 @@
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
+      "description": "A container component that displays security settings including password management, linked accounts, plugin-contributed security cards (e.g. passkeys), active sessions, and danger zone.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest"
