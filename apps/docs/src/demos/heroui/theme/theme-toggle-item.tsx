@@ -1,6 +1,6 @@
 import { AuthProvider, UserButton } from "@better-auth-ui/heroui"
 import { themePlugin } from "@better-auth-ui/heroui/plugins"
-import { useTheme } from "@heroui/react"
+import { useTheme } from "fumadocs-ui/provider/base"
 import { authClient } from "@/lib/auth-client"
 
 export function ThemeToggleItemDemo() {

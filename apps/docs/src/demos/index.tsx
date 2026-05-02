@@ -17,7 +17,6 @@ import { ManageAccountsDemo as HeroUIManageAccountsDemo } from "./heroui/multi-s
 import { SwitchAccountSubmenuDemo as HeroUISwitchAccountSubmenuDemo } from "./heroui/multi-session/switch-account-submenu"
 import { PasskeySignInDemo as HeroUIPasskeySignInDemo } from "./heroui/passkey/passkey-sign-in"
 import { AccountSettingsDemo as HeroUIAccountSettingsDemo } from "./heroui/settings/account/account-settings"
-import { AppearanceDemo as HeroUIAppearanceDemo } from "./heroui/settings/account/appearance"
 import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/account/change-email"
 import { UserProfileDemo as HeroUIUserProfileDemo } from "./heroui/settings/account/user-profile"
 import { ActiveSessionsDemo as HeroUIActiveSessionsDemo } from "./heroui/settings/security/active-sessions"
@@ -27,6 +26,7 @@ import { LinkedAccountsDemo as HeroUILinkedAccountsDemo } from "./heroui/setting
 import { PasskeysDemo as HeroUIPasskeysDemo } from "./heroui/settings/security/passkeys"
 import { SecuritySettingsDemo as HeroUISecuritySettingsDemo } from "./heroui/settings/security/security-settings"
 import { SettingsDemo as HeroUISettingsDemo } from "./heroui/settings/settings"
+import { AppearanceDemo as HeroUIAppearanceDemo } from "./heroui/theme/appearance"
 import { ThemeToggleItemDemo as HeroUIThemeToggleItemDemo } from "./heroui/theme/theme-toggle-item"
 import { UserAvatarDemo as HeroUIUserAvatarDemo } from "./heroui/user/user-avatar"
 import { UserButtonDemo as HeroUIUserButtonDemo } from "./heroui/user/user-button"
@@ -71,7 +71,7 @@ export interface DemoItem {
 export const demos: Record<string, ComponentType> = {
   "heroui-account-settings": HeroUIAccountSettingsDemo,
   "heroui-active-sessions": HeroUIActiveSessionsDemo,
-  "heroui-appearance": HeroUIAppearanceDemo,
+  "heroui-theme-appearance": HeroUIAppearanceDemo,
   "heroui-auth": HeroUIAuthDemo,
   "heroui-change-email": HeroUIChangeEmailDemo,
   "heroui-change-password": HeroUIChangePasswordDemo,
