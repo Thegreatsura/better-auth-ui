@@ -10,10 +10,7 @@ import {
   ChevronsUpDown,
   LogIn,
   LogOut,
-  Monitor,
-  Moon,
   Settings,
-  Sun,
   UserPlus2
 } from "lucide-react"
 
@@ -26,7 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
@@ -36,7 +32,6 @@ export type UserButtonProps = {
   align?: "center" | "end" | "start" | undefined
   sideOffset?: number
   size?: "default" | "icon"
-  themeToggle?: boolean
   variant?:
     | "default"
     | "destructive"
@@ -56,7 +51,6 @@ export type UserButtonProps = {
  * @param align - Alignment of the dropdown menu relative to the trigger
  * @param sideOffset - Offset between the trigger and the dropdown menu
  * @param size - "icon" renders only the avatar; "default" renders a full button with label and chevron
- * @param themeToggle - When true, renders a theme picker in the menu; defaults to true
  * @param variant - Visual variant of the trigger button
  * @returns The dropdown menu component with user actions
  */
@@ -65,20 +59,10 @@ export function UserButton({
   align,
   sideOffset,
   size = "default",
-  themeToggle = true,
   variant = "ghost"
 }: UserButtonProps) {
-  const {
-    authClient,
-    basePaths,
-    viewPaths,
-    localization,
-    plugins,
-    Link,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
-
-  const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
+  const { authClient, basePaths, viewPaths, localization, plugins, Link } =
+    useAuth()
 
   const { isPending: settingActiveSession } = useSetActiveSession(
     authClient as MultiSessionAuthClient
@@ -147,58 +131,13 @@ export function UserButton({
               </Link>
             </DropdownMenuItem>
 
-            {plugins.flatMap((plugin) =>
+            {plugins.flatMap((plugin, pluginIndex) =>
               plugin.userMenuItems?.map((Item, index) => (
-                <Item key={`${plugin.id}-${index.toString()}`} />
+                <Item key={`${pluginIndex.toString()}-${index.toString()}`} />
               ))
             )}
 
             <DropdownMenuSeparator />
-
-            {showThemeToggle && (
-              <>
-                <DropdownMenuItem
-                  className="justify-between py-0.75 hover:bg-transparent! cursor-default!"
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  {localization.settings.theme}
-
-                  <Tabs value={theme} onValueChange={setTheme}>
-                    <TabsList className="h-6!">
-                      {themes.includes("system") && (
-                        <TabsTrigger
-                          value="system"
-                          className="size-5 p-0"
-                          aria-label={localization.settings.system}
-                        >
-                          <Monitor className="size-3" />
-                        </TabsTrigger>
-                      )}
-                      {themes.includes("light") && (
-                        <TabsTrigger
-                          value="light"
-                          className="size-5 p-0"
-                          aria-label={localization.settings.light}
-                        >
-                          <Sun className="size-3" />
-                        </TabsTrigger>
-                      )}
-                      {themes.includes("dark") && (
-                        <TabsTrigger
-                          value="dark"
-                          className="size-5 p-0"
-                          aria-label={localization.settings.dark}
-                        >
-                          <Moon className="size-3" />
-                        </TabsTrigger>
-                      )}
-                    </TabsList>
-                  </Tabs>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-              </>
-            )}
 
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signOut}`}>
@@ -225,6 +164,12 @@ export function UserButton({
                 {localization.auth.signUp}
               </Link>
             </DropdownMenuItem>
+
+            {plugins.flatMap((plugin, pluginIndex) =>
+              plugin.userMenuItems?.map((Item, index) => (
+                <Item key={`${pluginIndex.toString()}-${index.toString()}`} />
+              ))
+            )}
           </>
         )}
       </DropdownMenuContent>

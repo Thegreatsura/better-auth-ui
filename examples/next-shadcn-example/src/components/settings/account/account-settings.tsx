@@ -4,7 +4,6 @@ import { useAuth } from "@better-auth-ui/react"
 import type { ComponentProps } from "react"
 
 import { cn } from "@/lib/utils"
-import { Appearance } from "./appearance"
 import { ChangeEmail } from "./change-email"
 import { UserProfile } from "./user-profile"
 
@@ -27,11 +26,7 @@ export function AccountSettings({
   className,
   ...props
 }: AccountSettingsProps & ComponentProps<"div">) {
-  const {
-    emailAndPassword,
-    plugins,
-    appearance: { setTheme }
-  } = useAuth()
+  const { emailAndPassword, plugins } = useAuth()
 
   const hasMagicLink = plugins.some((plugin) => plugin.id === "magicLink")
 
@@ -42,11 +37,10 @@ export function AccountSettings({
     >
       <UserProfile />
       {(emailAndPassword?.enabled || hasMagicLink) && <ChangeEmail />}
-      {setTheme && <Appearance />}
       {plugins.flatMap(
-        (plugin) =>
+        (plugin, pluginIndex) =>
           plugin.accountCards?.map((Card, index) => (
-            <Card key={`${plugin.id}-${index.toString()}`} />
+            <Card key={`${pluginIndex.toString()}-${index.toString()}`} />
           )) ?? []
       )}
     </div>
