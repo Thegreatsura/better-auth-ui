@@ -7,7 +7,6 @@ import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
 import type { AdditionalFields } from "./additional-fields-config"
 import type { AvatarConfig } from "./avatar-config"
-import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
 import type { UsernameConfig } from "./username-config"
 
@@ -39,11 +38,6 @@ export interface AuthConfig {
    * @default ""
    */
   baseURL: string
-  /**
-   * Allow users to delete their account
-   * @remarks `DeleteUserConfig`
-   */
-  deleteUser?: DeleteUserConfig
   /**
    * Email and password authentication configuration
    * @remarks `EmailAndPasswordConfig`

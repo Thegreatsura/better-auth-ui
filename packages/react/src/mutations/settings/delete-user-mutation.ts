@@ -1,12 +1,7 @@
-import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
-import {
-  mutationOptions,
-  useMutation,
-  useQueryClient
-} from "@tanstack/react-query"
+import { authMutationKeys } from "@better-auth-ui/core"
+import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
-import { useAuth } from "../../components/auth/auth-provider"
 import type { AuthClient } from "../../lib/auth-client"
 
 export type DeleteUserParams<TAuthClient extends AuthClient> = Parameters<
@@ -47,10 +42,8 @@ export function deleteUserOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for deleting the authenticated user's account.
  *
- * Wraps `authClient.deleteUser`, clears the auth cache on success unless
- * `deleteUser.sendDeleteAccountVerification` is configured (in which case the
- * user is still signed in until they confirm via email), and forwards React
- * Query mutation options such as `onSuccess`, `onError`, and `retry`.
+ * Wraps `authClient.deleteUser` and forwards React Query mutation options
+ * such as `onSuccess`, `onError`, and `retry`.
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
@@ -59,18 +52,8 @@ export function useDeleteUser<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options?: DeleteUserOptions<TAuthClient>
 ) {
-  const queryClient = useQueryClient()
-  const { deleteUser } = useAuth()
-
   return useMutation({
     ...deleteUserOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      if (!deleteUser?.sendDeleteAccountVerification) {
-        queryClient.removeQueries({ queryKey: authQueryKeys.all })
-      }
-
-      await options?.onSuccess?.(...args)
-    }
+    ...options
   })
 }

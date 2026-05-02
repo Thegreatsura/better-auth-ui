@@ -1,3 +1,5 @@
+export * from "./delete-user/delete-user-localization"
+export * from "./delete-user/delete-user-plugin"
 export * from "./magic-link/magic-link-localization"
 export * from "./magic-link/magic-link-mutation-keys"
 export * from "./magic-link/magic-link-plugin"
