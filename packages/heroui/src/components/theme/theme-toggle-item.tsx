@@ -4,6 +4,8 @@ import { Dropdown, Label, Tabs } from "@heroui/react"
 
 import { themePlugin } from "../../lib/theme/theme-plugin"
 
+const ACTIVE_TAB_SELECTOR = '[role="tab"][aria-selected="true"]'
+
 /**
  * Theme toggle dropdown item used inside `UserButton`. Callers are responsible
  * for ensuring theming is configured before rendering this component.
@@ -12,8 +14,52 @@ export function ThemeToggleItem() {
   const { useTheme, localization } = useAuthPlugin(themePlugin)
   const { theme, setTheme, themes = [] } = useTheme()
 
+  // Up/Down on a Tab escapes back to the previous/next sibling menu item so
+  // users can keep navigating the menu with the arrow keys after they've
+  // entered the Tabs.
+  const handleTabsKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return
+
+    const target = event.target as HTMLElement
+    if (target.getAttribute("role") !== "tab") return
+
+    const wrapper = target.closest<HTMLElement>('[role="menuitem"]')
+    const menu = wrapper?.closest<HTMLElement>('[role="menu"]')
+    if (!wrapper || !menu) return
+
+    const items = Array.from(
+      menu.querySelectorAll<HTMLElement>(
+        '[role="menuitem"]:not([data-disabled])'
+      )
+    )
+    const currentIndex = items.indexOf(wrapper)
+    const nextIndex =
+      event.key === "ArrowDown" ? currentIndex + 1 : currentIndex - 1
+    const next = items[nextIndex]
+    if (!next) return
+
+    event.preventDefault()
+    next.focus()
+  }
+
   return (
-    <Dropdown.Item className="py-1 pe-2">
+    <Dropdown.Item
+      className="py-1 pe-2"
+      // The Tabs aren't part of the menu's keyboard-navigation list, so
+      // arrow-key nav can't reach them. When the wrapper menu item receives
+      // focus we delegate focus to the active Tab so the user can switch
+      // themes with Left/Right arrows. React Aria's useFocus only fires when
+      // the wrapper itself receives focus (not when a child does), so no
+      // re-entry guard is required.
+      onFocus={(e) => {
+        const activeTab =
+          e.currentTarget.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR)
+        activeTab?.focus({ preventScroll: true })
+      }}
+      // Without this the menu auto-closes after the user changes themes
+      // because clicking on a Tab bubbles up as a menu-item activation.
+      shouldCloseOnSelect={false}
+    >
       <Label>{localization.theme}</Label>
 
       <Tabs
@@ -21,7 +67,7 @@ export function ThemeToggleItem() {
         selectedKey={theme}
         onSelectionChange={(key) => setTheme(key as string)}
       >
-        <Tabs.ListContainer>
+        <Tabs.ListContainer onKeyDown={handleTabsKeyDown}>
           <Tabs.List
             aria-label={localization.theme}
             className="*:h-5 *:w-5 *:p-0"
