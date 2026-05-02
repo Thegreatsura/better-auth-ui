@@ -27,6 +27,7 @@ import { LinkedAccountsDemo as HeroUILinkedAccountsDemo } from "./heroui/setting
 import { PasskeysDemo as HeroUIPasskeysDemo } from "./heroui/settings/security/passkeys"
 import { SecuritySettingsDemo as HeroUISecuritySettingsDemo } from "./heroui/settings/security/security-settings"
 import { SettingsDemo as HeroUISettingsDemo } from "./heroui/settings/settings"
+import { ThemeToggleItemDemo as HeroUIThemeToggleItemDemo } from "./heroui/theme/theme-toggle-item"
 import { UserAvatarDemo as HeroUIUserAvatarDemo } from "./heroui/user/user-avatar"
 import { UserButtonDemo as HeroUIUserButtonDemo } from "./heroui/user/user-button"
 import { UserButtonIconDemo as HeroUIUserButtonIconDemo } from "./heroui/user/user-button-icon"
@@ -99,6 +100,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-user-button": HeroUIUserButtonDemo,
   "heroui-user-button-icon": HeroUIUserButtonIconDemo,
   "heroui-user-profile": HeroUIUserProfileDemo,
+  "heroui-theme-toggle-item": HeroUIThemeToggleItemDemo,
   "heroui-user-view": HeroUIUserViewDemo,
   "shadcn-account-settings": ShadcnAccountSettingsDemo,
   "shadcn-active-sessions": ShadcnActiveSessionsDemo,
