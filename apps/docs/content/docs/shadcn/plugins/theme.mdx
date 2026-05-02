@@ -38,7 +38,6 @@ export function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <AuthProvider
         authClient={authClient}
-        navigate={navigate}
         plugins={[
           themePlugin({ useTheme }) // [!code highlight]
         ]}
@@ -63,7 +62,6 @@ const [theme, setTheme] = useState("system") // [!code highlight]
 
 <AuthProvider
   authClient={authClient}
-  navigate={navigate}
   plugins={[
     themePlugin({ // [!code highlight]
       theme, // [!code highlight]
