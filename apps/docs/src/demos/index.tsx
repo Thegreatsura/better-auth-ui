@@ -106,7 +106,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-user-view": HeroUIUserViewDemo,
   "shadcn-account-settings": ShadcnAccountSettingsDemo,
   "shadcn-active-sessions": ShadcnActiveSessionsDemo,
-  "shadcn-appearance": ShadcnAppearanceDemo,
+  "shadcn-theme-appearance": ShadcnAppearanceDemo,
   "shadcn-auth": ShadcnAuthDemo,
   "shadcn-change-email": ShadcnChangeEmailDemo,
   "shadcn-change-password": ShadcnChangePasswordDemo,

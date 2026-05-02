@@ -26,7 +26,8 @@ export type AppearanceProps = {
  * Renders a theme selector card with visual theme previews.
  *
  * Displays a card containing radio buttons for selecting between system, light,
- * and dark themes. Each option shows a visual preview of the theme.
+ * and dark themes. Each option shows a visual preview of the theme. Theme options
+ * are conditionally shown based on the `themes` array provided via the theme plugin.
  */
 export function Appearance({
   className,

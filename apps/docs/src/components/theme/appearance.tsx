@@ -29,11 +29,10 @@ export type AppearanceProps = {
  * Renders a theme selector card with visual theme previews.
  *
  * Displays a card containing radio buttons for selecting between system, light,
- * and dark themes. Each option shows a visual preview of the theme. Only renders
- * if theme settings are configured (theme, setTheme, and themes are provided).
+ * and dark themes. Each option shows a visual preview of the theme.
  *
  * @param className - Optional additional CSS class names for the card container.
- * @returns A JSX element containing the theme selector card, or null if theme settings are not configured.
+ * @returns A JSX element containing the theme selector card.
  */
 export function Appearance({ className }: AppearanceProps) {
   const { useTheme, localization } = useAuthPlugin(themePlugin)

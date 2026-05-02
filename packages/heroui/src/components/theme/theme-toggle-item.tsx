@@ -17,9 +17,13 @@ export function ThemeToggleItem() {
   // The Tabs aren't part of the menu's keyboard-navigation list, so arrow-key
   // nav can't reach them on its own. When the wrapper menu item receives focus
   // we delegate focus to the active Tab so the user can switch themes with the
-  // Left/Right arrows. React Aria's useFocus only fires when the wrapper itself
-  // receives focus (not when a child does), so no re-entry guard is required.
+  // Left/Right arrows. React's synthetic `onFocus` bubbles (it's wired to
+  // `focusin`), so we must guard against child-originated events: without the
+  // `target === currentTarget` check, an arrow-key focus move between tabs
+  // bubbles up here and the still-stale `aria-selected="true"` lookup yanks
+  // focus back to the previously selected tab.
   const focusActiveTab = (event: React.FocusEvent<Element>) => {
+    if (event.target !== event.currentTarget) return
     const activeTab =
       event.currentTarget.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR)
     activeTab?.focus({ preventScroll: true })

@@ -38,9 +38,10 @@ export function createAuthPlugin<
 >(
   id: TId,
   factory: (...args: TArgs) => TResult
-): ((...args: TArgs) => TResult & { id: TId }) & { id: TId } {
-  const wrapped = (...args: TArgs) => ({ ...factory(...args), id })
-  return Object.assign(wrapped, { id }) as ((
-    ...args: TArgs
-  ) => TResult & { id: TId }) & { id: TId }
+): ((...args: TArgs) => Omit<TResult, "id"> & { id: TId }) & { id: TId } {
+  const wrapped = (...args: TArgs): Omit<TResult, "id"> & { id: TId } => ({
+    ...factory(...args),
+    id
+  })
+  return Object.assign(wrapped, { id })
 }
