@@ -441,7 +441,7 @@
       "name": "user-button",
       "type": "registry:component",
       "title": "User Button",
-      "description": "Renders a user button with dropdown menu showing user info, settings link, theme controls, and sign-in/sign-out actions.",
+      "description": "Renders a user button with dropdown menu showing user info, settings link, plugin-contributed menu items (e.g. theme toggle, account switcher), and sign-in/sign-out actions.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
@@ -452,7 +452,6 @@
         "button",
         "dropdown-menu",
         "spinner",
-        "tabs",
         "https://better-auth-ui.com/r/user-view.json"
       ],
       "files": [
@@ -666,7 +665,7 @@
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
+      "description": "A container component that displays security settings including password management, linked accounts, plugin-contributed security cards (e.g. passkeys), active sessions, and danger zone.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest"

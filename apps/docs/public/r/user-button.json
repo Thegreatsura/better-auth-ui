@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "user-button",
   "title": "User Button",
-  "description": "Renders a user button with dropdown menu showing user info, settings link, theme controls, and sign-in/sign-out actions.",
+  "description": "Renders a user button with dropdown menu showing user info, settings link, plugin-contributed menu items (e.g. theme toggle, account switcher), and sign-in/sign-out actions.",
   "dependencies": [
     "@better-auth-ui/react@latest",
     "@better-auth-ui/core@latest",
@@ -13,7 +13,6 @@
     "button",
     "dropdown-menu",
     "spinner",
-    "tabs",
     "https://better-auth-ui.com/r/user-view.json"
   ],
   "files": [

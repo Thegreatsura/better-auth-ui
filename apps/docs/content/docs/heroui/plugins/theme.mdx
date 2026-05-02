@@ -45,14 +45,16 @@ The plugin invokes `useTheme()` inside its slot components on every render, so t
 <Step>
 ### Or pass static theme state
 
-If you don't have a hook (e.g. you're managing the theme with `useState` or a custom controller), pass `setTheme` and `theme` directly. The two forms are mutually exclusive — you pass either `useTheme` **or** `setTheme`.
+If you don't have a hook (e.g. you're managing the theme with `useState` or a custom controller), pass both `theme` **and** `setTheme` from a stateful source. The plugin re-runs on every render of the parent, so slot components stay in sync as long as your state owner re-renders on change.
 
 ```tsx title="components/providers.tsx"
+const [theme, setTheme] = useState("system") // [!code highlight]
+
 <AuthProvider
   authClient={authClient}
   plugins={[
     themePlugin({ // [!code highlight]
-      theme: currentTheme, // [!code highlight]
+      theme, // [!code highlight]
       setTheme, // [!code highlight]
       themes: ["system", "light", "dark"] // [!code highlight]
     }) // [!code highlight]
@@ -61,6 +63,8 @@ If you don't have a hook (e.g. you're managing the theme with `useState` or a cu
   {children}
 </AuthProvider>
 ```
+
+The two forms are mutually exclusive — you pass either `useTheme` **or** the `theme`/`setTheme` pair.
 
 </Step>
 </Steps>

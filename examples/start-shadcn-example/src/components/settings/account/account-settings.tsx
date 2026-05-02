@@ -14,13 +14,13 @@ export type AccountSettingsProps = {
 /**
  * Renders the account settings layout.
  *
- * Uses `emailAndPassword`, `plugins`, and `appearance.setTheme` from `useAuth()`
- * to conditionally show sections:
+ * Uses `emailAndPassword` and `plugins` from `useAuth()` to conditionally
+ * show sections:
  * - `UserProfile` always renders.
  * - `ChangeEmail` renders when `emailAndPassword?.enabled` is truthy or the
  *   `magicLink` plugin is registered.
- * - `Appearance` renders when `setTheme` is truthy.
- * - Plugin-contributed account cards are rendered via the plugins array.
+ * - Plugin-contributed account cards are rendered via the plugins array
+ *   (e.g. `Appearance` from the theme plugin, multi-session accounts).
  */
 export function AccountSettings({
   className,

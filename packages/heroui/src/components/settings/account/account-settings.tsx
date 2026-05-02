@@ -11,9 +11,12 @@ export type AccountSettingsProps = {
 }
 
 /**
- * Renders the account settings layout including user profile, change email, and accounts management.
+ * Renders the account settings layout.
  *
- * UserProfile and ChangeEmail are always rendered; accountCards are rendered from plugins.
+ * `UserProfile` always renders. `ChangeEmail` renders when password auth is
+ * enabled or the `magicLink` plugin is registered. Plugin-contributed account
+ * cards (e.g. `Appearance` from the theme plugin, multi-session accounts) are
+ * rendered via the plugins array.
  *
  * @param className - Optional additional CSS class names for the outer container.
  * @param variant - Card variant forwarded to each account settings card.

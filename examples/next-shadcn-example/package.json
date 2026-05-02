@@ -10,7 +10,7 @@
     "format": "biome format --write"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.13",
+    "@biomejs/biome": "^2.4.14",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -25,7 +25,7 @@
     "@better-auth-ui/react": "*",
     "@neondatabase/serverless": "^1.0.2",
     "@tanstack/react-pacer": "^0.22.0",
-    "@tanstack/react-query": "^5.100.6",
+    "@tanstack/react-query": "^5.100.8",
     "better-auth": "^1.6.9",
     "bowser": "^2.11.0",
     "class-variance-authority": "^0.7.1",

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "security-settings",
   "title": "Security Settings",
-  "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
+  "description": "A container component that displays security settings including password management, linked accounts, plugin-contributed security cards (e.g. passkeys), active sessions, and danger zone.",
   "dependencies": [
     "@better-auth-ui/react@latest",
     "@better-auth-ui/core@latest"

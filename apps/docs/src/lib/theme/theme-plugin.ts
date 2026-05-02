@@ -19,16 +19,12 @@ export type UseThemeHook = () => {
   themes?: string[]
 }
 
-type BaseThemeOptions = {
+type CommonThemeOptions = {
   /**
    * Override the plugin's default localization strings.
    * @remarks `ThemeLocalization`
    */
   localization?: Partial<ThemeLocalization>
-  /**
-   * Initial theme value.
-   */
-  theme?: string
   /**
    * Available theme options.
    * @default ["system", "light", "dark"]
@@ -36,19 +32,27 @@ type BaseThemeOptions = {
   themes?: string[]
 }
 
-export type ThemePluginOptions = BaseThemeOptions &
+export type ThemePluginOptions = CommonThemeOptions &
   (
     | {
         /**
          * A theme hook (e.g. next-themes' `useTheme`) called inside the
-         * plugin factory to read live theme state. When provided,
-         * `setTheme` is not required.
+         * plugin's slot components on every render. The hook owns the live
+         * theme value, so `theme`/`setTheme` are not accepted in this form.
          */
         useTheme: UseThemeHook
+        theme?: never
         setTheme?: never
       }
     | {
-        /** Function to set the theme. */
+        /**
+         * Current theme value. Required when not using a hook so slot
+         * components can highlight the active option. Pass it from a
+         * stateful source (e.g. `useState`, Context) so updates flow
+         * through `<AuthProvider>` and re-render slot components.
+         */
+        theme: string
+        /** Setter that updates the value `theme` is read from. */
         setTheme: (theme: string) => void
         useTheme?: never
       }
@@ -57,15 +61,17 @@ export type ThemePluginOptions = BaseThemeOptions &
 export const themePlugin = createAuthPlugin(
   coreThemePlugin.id,
   ({ useTheme, ...rest }: ThemePluginOptions) => {
-    // No-op `setTheme` baseline keeps core's required option satisfied when
-    // the consumer is passing a hook (and therefore omitting `setTheme`).
+    // No-op `setTheme` baseline keeps core's required option satisfied on the
+    // hook branch (where the consumer doesn't pass a setter); on the static
+    // branch the spread overrides it with the consumer's real setter.
     const base = coreThemePlugin({ setTheme: () => {}, ...rest })
     return {
       ...base,
       // Slot components always call `plugin.useTheme()` — invoking the hook
       // inside their render keeps it in scope of any `<ThemeProvider>` the
-      // consumer mounts. When the consumer passed static config instead, we
-      // synthesize a stub that returns those same values.
+      // consumer mounts. On the static branch the factory re-runs on every
+      // parent render, so the synthesized closure stays in sync with the
+      // consumer's `theme` state.
       useTheme:
         useTheme ??
         (() => ({
