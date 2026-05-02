@@ -26,13 +26,13 @@ export function SecuritySettings({ className }: SecuritySettingsProps) {
     <div className={cn("flex w-full flex-col gap-4 md:gap-6", className)}>
       {emailAndPassword?.enabled && <ChangePassword />}
       {!!socialProviders?.length && <LinkedAccounts />}
+      <ActiveSessions />
       {plugins.flatMap(
         (plugin, pluginIndex) =>
           plugin.securityCards?.map((Card, index) => (
             <Card key={`${pluginIndex.toString()}-${index.toString()}`} />
           )) ?? []
       )}
-      <ActiveSessions />
     </div>
   )
 }

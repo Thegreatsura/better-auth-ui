@@ -1,16 +1,19 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
-import type { ReactNode } from "react"
+import { DangerZone, deleteUserPlugin } from "@better-auth-ui/heroui/plugins"
 
 import { authClient } from "@/lib/auth-client"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function DangerZoneDemo() {
   return (
     <AuthProvider
       authClient={authClient}
       navigate={() => {}}
+      plugins={[deleteUserPlugin()]}
       socialProviders={["github", "google"]}
     >
-      {children}
+      <div className="w-full">
+        <DangerZone />
+      </div>
     </AuthProvider>
   )
 }
