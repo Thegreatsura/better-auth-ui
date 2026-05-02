@@ -17,18 +17,16 @@ Pass `themePlugin()` to `<AuthProvider>` with your theme management functions:
 
 ```tsx title="components/providers.tsx"
 import { AuthProvider } from "@better-auth-ui/heroui"
-import { themePlugin } from "@better-auth-ui/heroui/plugins"
+import { themePlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
 
 <AuthProvider
   authClient={authClient}
-  navigate={navigate}
   plugins={[
-    themePlugin({
-      theme: "system",
-      setTheme: (theme) => console.log("set theme to", theme)
-      // Optional: limit which themes are available (default: ["system", "light", "dark"])
-      // themes: ["system", "light", "dark"]
-    })
+    themePlugin({ // [!code highlight]
+      theme: currentTheme, // [!code highlight]
+      themes: ["system", "light", "dark"], // [!code highlight]
+      setTheme: (theme) => setTheme(theme) // [!code highlight]
+    }) // [!code highlight]
   ]}
 >
   {children}
@@ -45,23 +43,21 @@ The plugin is theme-library agnostic. Connect it to your preferred theme managem
 
 ```tsx title="app/providers.tsx"
 import { AuthProvider } from "@better-auth-ui/heroui"
-import { useRouter } from "next/navigation"
+import { themePlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
 import { ThemeProvider, useTheme } from "next-themes"
+import { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
 
-function AuthProviderWrapper({ children }: { children: React.ReactNode }) {
+function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <AuthProvider
         authClient={authClient}
-        navigate={({ to, replace }) =>
-          replace ? router.replace(to) : router.push(to)
-        }
         plugins={[
-          themePlugin(useTheme()))
+          themePlugin(useTheme()))  // [!code highlight]
         ]}
       >
         {children}
@@ -81,11 +77,11 @@ function AuthProviderWrapper({ children }: { children: React.ReactNode }) {
 
 <ComponentPreview name="heroui-theme-toggle-item" />
 
-### `<AppearanceCard />`
+### `<Appearance />`
 
 <ComponentPreview name="heroui-appearance" />
 
-The `<AppearanceCard />` card is automatically rendered in `<AccountSettings />` when the plugin is registered.
+The `<Appearance />` card is automatically rendered in `<AccountSettings />` when the plugin is registered.
 
 **Usage**
 

@@ -1,5 +1,6 @@
 import { AuthProvider, UserButton } from "@better-auth-ui/heroui"
 import { themePlugin } from "@better-auth-ui/heroui/plugins"
+import { useTheme } from "@heroui/react"
 import { authClient } from "@/lib/auth-client"
 
 export function ThemeToggleItemDemo() {
@@ -7,7 +8,7 @@ export function ThemeToggleItemDemo() {
     <AuthProvider
       authClient={authClient}
       navigate={() => {}}
-      plugins={[themePlugin()]}
+      plugins={[themePlugin(useTheme())]}
     >
       <UserButton />
     </AuthProvider>
