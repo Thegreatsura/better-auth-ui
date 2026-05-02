@@ -1,22 +1,21 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { Passkeys } from "@/components/settings/security/passkeys"
+import { SignIn } from "@/components/auth/sign-in"
 import { authClient } from "@/lib/auth-client"
 import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
 
-export function PasskeysDemo() {
+export function PasskeySignInDemo() {
   return (
     <AuthProvider
       authClient={authClient}
       navigate={() => {}}
       plugins={[passkeyPlugin()]}
+      socialProviders={["github", "google"]}
       Link={(props) => (
         // biome-ignore lint/a11y/useValidAnchor: ignore
         <a {...props} href={undefined} />
       )}
     >
-      <div className="w-full">
-        <Passkeys />
-      </div>
+      <SignIn />
     </AuthProvider>
   )
 }

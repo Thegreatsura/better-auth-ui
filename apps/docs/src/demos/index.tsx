@@ -48,6 +48,7 @@ import { ResetPasswordEmailDemo as ShadcnResetPasswordEmailDemo } from "./shadcn
 import { MagicLinkDemo as ShadcnMagicLinkDemo } from "./shadcn/magic-link/magic-link"
 import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as ShadcnSwitchAccountSubmenuDemo } from "./shadcn/multi-session/switch-account-submenu"
+import { PasskeySignInDemo as ShadcnPasskeySignInDemo } from "./shadcn/passkey/passkey-sign-in"
 import { AccountSettingsDemo as ShadcnAccountSettingsDemo } from "./shadcn/settings/account/account-settings"
 import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/account/change-email"
 import { UserProfileDemo as ShadcnUserProfileDemo } from "./shadcn/settings/account/user-profile"
@@ -119,6 +120,7 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-manage-accounts": ShadcnManageAccountsDemo,
   "shadcn-new-device-email": ShadcnNewDeviceEmailDemo,
   "shadcn-otp-email": ShadcnOtpEmailDemo,
+  "shadcn-passkey-sign-in": ShadcnPasskeySignInDemo,
   "shadcn-passkeys": ShadcnPasskeysDemo,
   "shadcn-password-changed-email": ShadcnPasswordChangedEmailDemo,
   "shadcn-reset-password": ShadcnResetPasswordDemo,
