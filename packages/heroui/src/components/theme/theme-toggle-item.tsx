@@ -14,6 +14,17 @@ export function ThemeToggleItem() {
   const { useTheme, localization } = useAuthPlugin(themePlugin)
   const { theme, setTheme, themes = [] } = useTheme()
 
+  // The Tabs aren't part of the menu's keyboard-navigation list, so arrow-key
+  // nav can't reach them on its own. When the wrapper menu item receives focus
+  // we delegate focus to the active Tab so the user can switch themes with the
+  // Left/Right arrows. React Aria's useFocus only fires when the wrapper itself
+  // receives focus (not when a child does), so no re-entry guard is required.
+  const focusActiveTab = (event: React.FocusEvent<Element>) => {
+    const activeTab =
+      event.currentTarget.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR)
+    activeTab?.focus({ preventScroll: true })
+  }
+
   // Up/Down on a Tab escapes back to the previous/next sibling menu item so
   // users can keep navigating the menu with the arrow keys after they've
   // entered the Tabs.
@@ -45,19 +56,10 @@ export function ThemeToggleItem() {
   return (
     <Dropdown.Item
       className="py-1 pe-2"
-      // The Tabs aren't part of the menu's keyboard-navigation list, so
-      // arrow-key nav can't reach them. When the wrapper menu item receives
-      // focus we delegate focus to the active Tab so the user can switch
-      // themes with Left/Right arrows. React Aria's useFocus only fires when
-      // the wrapper itself receives focus (not when a child does), so no
-      // re-entry guard is required.
-      onFocus={(e) => {
-        const activeTab =
-          e.currentTarget.querySelector<HTMLElement>(ACTIVE_TAB_SELECTOR)
-        activeTab?.focus({ preventScroll: true })
-      }}
-      // Without this the menu auto-closes after the user changes themes
-      // because clicking on a Tab bubbles up as a menu-item activation.
+      onFocus={focusActiveTab}
+      // Without `shouldCloseOnSelect={false}` the menu auto-closes after the
+      // user changes themes, because clicking on a Tab bubbles up as a
+      // menu-item activation.
       shouldCloseOnSelect={false}
     >
       <Label>{localization.theme}</Label>
