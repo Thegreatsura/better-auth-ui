@@ -10,10 +10,6 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       navigate={() => {}}
       socialProviders={["github", "google"]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       {children}
     </AuthProvider>
