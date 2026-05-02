@@ -35,12 +35,12 @@ export function SecuritySettings({
     >
       {emailAndPassword?.enabled && <ChangePassword variant={variant} />}
       {!!socialProviders?.length && <LinkedAccounts variant={variant} />}
+      <ActiveSessions variant={variant} />
       {plugins.flatMap((plugin) =>
         plugin.securityCards?.map((Card, index) => (
           <Card key={`${plugin.id}-${index.toString()}`} variant={variant} />
         ))
       )}
-      <ActiveSessions variant={variant} />
     </div>
   )
 }
