@@ -27,7 +27,6 @@ export type UserButtonProps = {
    * @default "bottom"
    */
   placement?: DropdownPopoverProps["placement"]
-  themeToggle?: boolean
   variant?: ButtonProps["variant"]
 }
 
