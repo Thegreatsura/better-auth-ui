@@ -48,6 +48,7 @@ export function ThemeToggleItem() {
       )
     )
     const currentIndex = items.indexOf(wrapper)
+    if (currentIndex === -1) return
     const nextIndex =
       event.key === "ArrowDown" ? currentIndex + 1 : currentIndex - 1
     const next = items[nextIndex]
