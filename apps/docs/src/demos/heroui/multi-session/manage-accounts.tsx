@@ -12,10 +12,6 @@ export function ManageAccountsDemo() {
       authClient={authClient}
       navigate={() => {}}
       plugins={[multiSessionPlugin()]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       <div className="w-full">
         <ManageAccounts />

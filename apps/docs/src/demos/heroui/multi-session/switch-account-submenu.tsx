@@ -9,10 +9,6 @@ export function SwitchAccountSubmenuDemo() {
       navigate={() => {}}
       plugins={[multiSessionPlugin()]}
       socialProviders={["github", "google"]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       <UserButton />
     </AuthProvider>

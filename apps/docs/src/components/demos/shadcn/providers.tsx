@@ -10,10 +10,6 @@ export function Providers({ children }: { children: ReactNode }) {
       deleteUser={{ enabled: true }}
       navigate={() => {}}
       socialProviders={["github", "google"]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
       Link={(props) => (
         // biome-ignore lint/a11y/useValidAnchor: ignore
         <a {...props} href={undefined} />

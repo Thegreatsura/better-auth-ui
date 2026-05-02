@@ -9,10 +9,6 @@ export function ManageAccountsDemo() {
       authClient={authClient}
       navigate={() => {}}
       plugins={[multiSessionPlugin()]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
       Link={(props) => (
         // biome-ignore lint/a11y/useValidAnchor: ignore
         <a {...props} href={undefined} />

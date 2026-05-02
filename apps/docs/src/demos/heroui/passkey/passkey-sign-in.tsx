@@ -10,10 +10,6 @@ export function PasskeySignInDemo() {
       navigate={() => {}}
       plugins={[passkeyPlugin()]}
       socialProviders={["github", "google"]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       <SignIn />
     </AuthProvider>

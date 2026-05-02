@@ -9,10 +9,6 @@ export function PasskeysDemo() {
       authClient={authClient}
       navigate={() => {}}
       plugins={[passkeyPlugin()]}
-      appearance={{
-        theme: "system",
-        setTheme: () => {}
-      }}
     >
       <div className="w-full">
         <Passkeys />
