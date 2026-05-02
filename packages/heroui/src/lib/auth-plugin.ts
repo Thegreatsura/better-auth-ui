@@ -22,11 +22,11 @@ export type AuthPluginComponents = Omit<
   BaseAuthPluginComponents,
   "securityCards" | "accountCards"
 > & {
-  /** Rendered as cards inside security settings (e.g. passkey list). */
+  /** Rendered as cards inside security settings */
   securityCards?: ComponentType<
     SecurityCardProps & { variant?: CardProps["variant"] }
   >[]
-  /** Rendered as cards inside account settings (e.g. multi-session accounts). */
+  /** Rendered as cards inside account settings */
   accountCards?: ComponentType<
     AccountCardProps & { variant?: CardProps["variant"] }
   >[]

@@ -1,5 +1,4 @@
 export * from "./additional-fields-config"
-export * from "./appearance-config"
 export * from "./auth-config"
 export * from "./avatar-config"
 export * from "./delete-user-config"

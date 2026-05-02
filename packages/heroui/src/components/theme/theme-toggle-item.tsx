@@ -1,35 +1,32 @@
-import { useAuth } from "@better-auth-ui/react"
+import { useAuthPlugin } from "@better-auth-ui/react"
 import { Display, Moon, Sun } from "@gravity-ui/icons"
 import { Dropdown, Label, Tabs } from "@heroui/react"
 
+import { themePlugin } from "../../lib/theme/theme-plugin"
+
 /**
  * Theme toggle dropdown item used inside `UserButton`. Callers are responsible
- * for ensuring theming is configured (i.e. `appearance.theme`,
- * `appearance.setTheme`, and `appearance.themes` are available) before
- * rendering this component.
+ * for ensuring theming is configured before rendering this component.
  */
 export function ThemeToggleItem() {
-  const {
-    localization,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
+  const { localization, theme, setTheme, themes } = useAuthPlugin(themePlugin)
 
   return (
     <Dropdown.Item className="py-1 pe-2">
-      <Label>{localization.settings.theme}</Label>
+      <Label>{localization.theme}</Label>
 
       <Tabs
         className="ml-auto"
         selectedKey={theme}
-        onSelectionChange={(key) => setTheme?.(key as string)}
+        onSelectionChange={(key) => setTheme(key as string)}
       >
         <Tabs.ListContainer>
           <Tabs.List
-            aria-label={localization.settings.theme}
+            aria-label={localization.theme}
             className="*:h-5 *:w-5 *:p-0"
           >
             {themes.includes("system") && (
-              <Tabs.Tab id="system" aria-label={localization.settings.system}>
+              <Tabs.Tab id="system" aria-label={localization.system}>
                 <Display className="size-3" />
 
                 <Tabs.Indicator />
@@ -37,7 +34,7 @@ export function ThemeToggleItem() {
             )}
 
             {themes.includes("light") && (
-              <Tabs.Tab id="light" aria-label={localization.settings.light}>
+              <Tabs.Tab id="light" aria-label={localization.light}>
                 <Sun className="size-3" />
 
                 <Tabs.Indicator />
@@ -45,7 +42,7 @@ export function ThemeToggleItem() {
             )}
 
             {themes.includes("dark") && (
-              <Tabs.Tab id="dark" aria-label={localization.settings.dark}>
+              <Tabs.Tab id="dark" aria-label={localization.dark}>
                 <Moon className="size-3" />
 
                 <Tabs.Indicator />

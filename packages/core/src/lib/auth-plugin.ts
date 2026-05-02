@@ -27,6 +27,10 @@ export interface AuthPluginBase {
    * (e.g. `<Auth>`, `MagicLinkButton`) via `useAuthPlugin(plugin).viewPaths`.
    */
   viewPaths?: AuthPluginViewPaths
+  /**
+   * Additional properties contributed by the plugin.
+   */
+  [key: string]: unknown
 }
 
 /**

@@ -2,7 +2,7 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth
+  useAuthPlugin
 } from "@better-auth-ui/react"
 import { Display, Moon, Sun } from "@gravity-ui/icons"
 import {
@@ -14,6 +14,8 @@ import {
   RadioGroup,
   useIsHydrated
 } from "@heroui/react"
+
+import { themePlugin } from "../../lib/theme/theme-plugin"
 
 export type AppearanceProps = {
   className?: string
@@ -35,25 +37,18 @@ export function Appearance({
   variant,
   ...props
 }: AppearanceProps & Omit<CardProps, "children">) {
-  const {
-    localization,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
+  const { theme, setTheme, themes, localization } = useAuthPlugin(themePlugin)
   const hydrated = useIsHydrated()
-
-  if (!setTheme || !themes?.length) {
-    return null
-  }
 
   return (
     <div>
       <h2 className={cn("text-sm font-semibold mb-3")}>
-        {localization.settings.appearance}
+        {localization.appearance}
       </h2>
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
-          <Label>{localization.settings.theme}</Label>
+          <Label>{localization.theme}</Label>
 
           <RadioGroup
             variant={variant === "transparent" ? "secondary" : "primary"}
@@ -78,7 +73,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Display className="text-muted" />
-                        {localization.settings.system}
+                        {localization.system}
                       </Label>
 
                       <Radio.Control>
@@ -107,7 +102,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Sun className="text-muted" />
-                        {localization.settings.light}
+                        {localization.light}
                       </Label>
 
                       <Radio.Control>
@@ -136,7 +131,7 @@ export function Appearance({
                     <div className="flex gap-2 justify-between">
                       <Label className="flex gap-2 items-center">
                         <Moon className="text-muted" />
-                        {localization.settings.dark}
+                        {localization.dark}
                       </Label>
 
                       <Radio.Control>

@@ -16,7 +16,6 @@ import {
   Separator
 } from "@heroui/react"
 
-import { ThemeToggleItem } from "./theme-toggle-item"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
 
@@ -33,34 +32,21 @@ export type UserButtonProps = {
 }
 
 /**
- * Render a user account dropdown button that shows account actions, session switching, and theme controls.
- *
- * Renders either an icon-only trigger or a full button showing the current user state; its dropdown contains account settings, multi-session switching (when enabled), theme selection (when enabled), and sign-in/sign-out flows depending on authentication state.
+ * Render a user account dropdown button that shows account actions.
  *
  * @param className - Additional CSS classes applied to the trigger element
  * @param placement - Dropdown popover placement (e.g., "bottom", "top-start", "bottom-end")
  * @param size - "icon" renders an avatar-only trigger; "default" renders a button with label and chevron
  * @param variant - Button visual variant passed to the underlying Button component
- * @param themeToggle - When true and theming is available, show theme selection controls in the menu
  * @returns The user button and its dropdown menu as a JSX element
  */
 export function UserButton({
   className,
   placement = "bottom",
   size = "default",
-  variant = "ghost",
-  themeToggle = true
+  variant = "ghost"
 }: UserButtonProps) {
-  const {
-    authClient,
-    basePaths,
-    viewPaths,
-    localization,
-    plugins,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
-
-  const showThemeToggle = themeToggle && theme && setTheme && !!themes?.length
+  const { authClient, basePaths, viewPaths, localization, plugins } = useAuth()
 
   const { data: session, isPending: sessionPending } = useSession(authClient)
 
@@ -70,7 +56,6 @@ export function UserButton({
         <Item key={`${plugin.id}-${index.toString()}`} />
       )) ?? []
   )
-
   return (
     <Dropdown>
       {size === "icon" ? (
@@ -123,8 +108,6 @@ export function UserButton({
 
               {userMenuItems}
 
-              {showThemeToggle && <ThemeToggleItem />}
-
               <Separator />
 
               <Dropdown.Item
@@ -156,13 +139,7 @@ export function UserButton({
                 <Label>{localization.auth.signUp}</Label>
               </Dropdown.Item>
 
-              {showThemeToggle && (
-                <>
-                  <Separator />
-
-                  <ThemeToggleItem />
-                </>
-              )}
+              {userMenuItems}
             </>
           )}
         </Dropdown.Menu>

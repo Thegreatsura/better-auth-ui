@@ -154,9 +154,6 @@ export const localization = {
     /** @remarks `"Link your {{provider}} account"` */
     linkProvider: "Link your {{provider}} account",
 
-    /** @remarks `"Appearance"` */
-    appearance: "Appearance",
-
     /** @remarks `"Cancel"` */
     cancel: "Cancel",
 

@@ -1,4 +1,6 @@
 export const themeLocalization = {
+  /** @remarks `"Appearance"` */
+  appearance: "Appearance",
   /** @remarks `"Theme"` */
   theme: "Theme",
   /** @remarks `"System"` */
