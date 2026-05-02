@@ -5,6 +5,7 @@ import { ResetPasswordDemo as HeroUIResetPasswordDemo } from "./heroui/auth/rese
 import { SignInDemo as HeroUISignInDemo } from "./heroui/auth/sign-in"
 import { SignOutDemo as HeroUISignOutDemo } from "./heroui/auth/sign-out"
 import { SignUpDemo as HeroUISignUpDemo } from "./heroui/auth/sign-up"
+import { DangerZoneDemo as HeroUIDangerZoneDemo } from "./heroui/delete-user/danger-zone"
 import { EmailChangedEmailDemo as HeroUIEmailChangedEmailDemo } from "./heroui/email/email-changed-email"
 import { EmailVerificationEmailDemo as HeroUIEmailVerificationEmailDemo } from "./heroui/email/email-verification-email"
 import { MagicLinkEmailDemo as HeroUIMagicLinkEmailDemo } from "./heroui/email/magic-link-email"
@@ -21,7 +22,6 @@ import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/acco
 import { UserProfileDemo as HeroUIUserProfileDemo } from "./heroui/settings/account/user-profile"
 import { ActiveSessionsDemo as HeroUIActiveSessionsDemo } from "./heroui/settings/security/active-sessions"
 import { ChangePasswordDemo as HeroUIChangePasswordDemo } from "./heroui/settings/security/change-password"
-import { DangerZoneDemo as HeroUIDangerZoneDemo } from "./heroui/settings/security/danger-zone"
 import { LinkedAccountsDemo as HeroUILinkedAccountsDemo } from "./heroui/settings/security/linked-accounts"
 import { PasskeysDemo as HeroUIPasskeysDemo } from "./heroui/settings/security/passkeys"
 import { SecuritySettingsDemo as HeroUISecuritySettingsDemo } from "./heroui/settings/security/security-settings"
@@ -38,6 +38,7 @@ import { ResetPasswordDemo as ShadcnResetPasswordDemo } from "./shadcn/auth/rese
 import { SignInDemo as ShadcnSignInDemo } from "./shadcn/auth/sign-in"
 import { SignOutDemo as ShadcnSignOutDemo } from "./shadcn/auth/sign-out"
 import { SignUpDemo as ShadcnSignUpDemo } from "./shadcn/auth/sign-up"
+import { DangerZoneDemo as ShadcnDangerZoneDemo } from "./shadcn/delete-user/danger-zone"
 import { EmailChangedEmailDemo as ShadcnEmailChangedEmailDemo } from "./shadcn/email/email-changed-email"
 import { EmailVerificationEmailDemo as ShadcnEmailVerificationEmailDemo } from "./shadcn/email/email-verification-email"
 import { MagicLinkEmailDemo as ShadcnMagicLinkEmailDemo } from "./shadcn/email/magic-link-email"
@@ -54,7 +55,6 @@ import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/acco
 import { UserProfileDemo as ShadcnUserProfileDemo } from "./shadcn/settings/account/user-profile"
 import { ActiveSessionsDemo as ShadcnActiveSessionsDemo } from "./shadcn/settings/security/active-sessions"
 import { ChangePasswordDemo as ShadcnChangePasswordDemo } from "./shadcn/settings/security/change-password"
-import { DangerZoneDemo as ShadcnDangerZoneDemo } from "./shadcn/settings/security/danger-zone"
 import { LinkedAccountsDemo as ShadcnLinkedAccountsDemo } from "./shadcn/settings/security/linked-accounts"
 import { PasskeysDemo as ShadcnPasskeysDemo } from "./shadcn/settings/security/passkeys"
 import { SecuritySettingsDemo as ShadcnSecuritySettingsDemo } from "./shadcn/settings/security/security-settings"
@@ -77,7 +77,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-auth": HeroUIAuthDemo,
   "heroui-change-email": HeroUIChangeEmailDemo,
   "heroui-change-password": HeroUIChangePasswordDemo,
-  "heroui-danger-zone": HeroUIDangerZoneDemo,
+  "heroui-delete-user-danger-zone": HeroUIDangerZoneDemo,
   "heroui-email-changed-email": HeroUIEmailChangedEmailDemo,
   "heroui-email-verification-email": HeroUIEmailVerificationEmailDemo,
   "heroui-forgot-password": HeroUIForgotPasswordDemo,
@@ -110,7 +110,7 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-auth": ShadcnAuthDemo,
   "shadcn-change-email": ShadcnChangeEmailDemo,
   "shadcn-change-password": ShadcnChangePasswordDemo,
-  "shadcn-danger-zone": ShadcnDangerZoneDemo,
+  "shadcn-delete-user-danger-zone": ShadcnDangerZoneDemo,
   "shadcn-email-changed-email": ShadcnEmailChangedEmailDemo,
   "shadcn-email-verification-email": ShadcnEmailVerificationEmailDemo,
   "shadcn-forgot-password": ShadcnForgotPasswordDemo,

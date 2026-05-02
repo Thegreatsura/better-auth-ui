@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
 import { getQueryClient } from "@/lib/query-client"
 import { AuthProvider } from "./auth/auth-provider"
 import { Toaster } from "./ui/sonner"
@@ -18,12 +19,12 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider
         authClient={authClient}
-        deleteUser={{ enabled: true }}
         redirectTo="/settings/account"
         socialProviders={["google", "github"]}
         navigate={({ to, replace }) =>
           replace ? router.replace(to) : router.push(to)
         }
+        plugins={[deleteUserPlugin()]}
         Link={Link}
       >
         {children}

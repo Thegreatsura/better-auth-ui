@@ -131,9 +131,9 @@ export function UserButton({
               </Link>
             </DropdownMenuItem>
 
-            {plugins.flatMap((plugin, pluginIndex) =>
+            {plugins.flatMap((plugin) =>
               plugin.userMenuItems?.map((Item, index) => (
-                <Item key={`${pluginIndex.toString()}-${index.toString()}`} />
+                <Item key={`${plugin.id}-${index.toString()}`} />
               ))
             )}
 
@@ -165,9 +165,9 @@ export function UserButton({
               </Link>
             </DropdownMenuItem>
 
-            {plugins.flatMap((plugin, pluginIndex) =>
+            {plugins.flatMap((plugin) =>
               plugin.userMenuItems?.map((Item, index) => (
-                <Item key={`${pluginIndex.toString()}-${index.toString()}`} />
+                <Item key={`${plugin.id}-${index.toString()}`} />
               ))
             )}
           </>

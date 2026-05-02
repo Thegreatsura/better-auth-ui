@@ -38,9 +38,9 @@ export function AccountSettings({
       <UserProfile />
       {(emailAndPassword?.enabled || hasMagicLink) && <ChangeEmail />}
       {plugins.flatMap(
-        (plugin, pluginIndex) =>
+        (plugin) =>
           plugin.accountCards?.map((Card, index) => (
-            <Card key={`${pluginIndex.toString()}-${index.toString()}`} />
+            <Card key={`${plugin.id}-${index.toString()}`} />
           )) ?? []
       )}
     </div>

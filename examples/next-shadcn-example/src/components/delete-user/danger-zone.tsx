@@ -1,23 +1,22 @@
 "use client"
 
 import { useAuth } from "@better-auth-ui/react"
+import type { ComponentProps } from "react"
 
 import { cn } from "@/lib/utils"
 import { DeleteUser } from "./delete-user"
 
-export type DangerZoneProps = {
-  className?: string
-}
+export type DangerZoneProps = Omit<ComponentProps<"div">, "children">
 
 /**
  * Renders the danger zone heading and {@link DeleteUser}.
- * Gate with `deleteUser.enabled` at the call site (e.g. {@link SecuritySettings}).
+ * Registered as a `securityCard` by `deleteUserPlugin()`; gate by registering the plugin.
  */
-export function DangerZone({ className }: DangerZoneProps) {
+export function DangerZone({ className, ...props }: DangerZoneProps) {
   const { localization } = useAuth()
 
   return (
-    <div className={cn(className)}>
+    <div className={cn("flex w-full flex-col", className)} {...props}>
       <h2 className="text-sm font-semibold mb-3">
         {localization.settings.dangerZone}
       </h2>

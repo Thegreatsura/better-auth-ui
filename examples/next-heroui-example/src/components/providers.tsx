@@ -1,6 +1,7 @@
 "use client"
 
 import { AuthProvider } from "@better-auth-ui/heroui"
+import { deleteUserPlugin } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -17,12 +18,12 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider
         authClient={authClient}
-        deleteUser={{ enabled: true }}
         redirectTo="/settings/account"
         socialProviders={["google", "github"]}
         navigate={({ to, replace }) =>
           replace ? router.replace(to) : router.push(to)
         }
+        plugins={[deleteUserPlugin()]}
       >
         {children}
 

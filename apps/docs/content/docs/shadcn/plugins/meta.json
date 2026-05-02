@@ -1,5 +1,5 @@
 {
   "icon": "Plug",
   "defaultOpen": true,
-  "pages": ["magic-link", "multi-session", "passkey", "theme"]
+  "pages": ["delete-user", "magic-link", "multi-session", "passkey", "theme"]
 }

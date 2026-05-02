@@ -16,9 +16,9 @@ SRC_COMPONENTS="$EXAMPLE_DIR/src/components"
 SRC_LIB="$EXAMPLE_DIR/src/lib"
 
 # Components subdirectories that are mirrored into every target.
-COMPONENT_DIRS=(auth user settings ui multi-session theme)
+COMPONENT_DIRS=(auth delete-user multi-session settings theme ui user)
 # Lib entries (file or directory) that are mirrored into every target.
-LIB_ENTRIES=(auth-plugin.ts magic-link passkey multi-session theme)
+LIB_ENTRIES=(auth-plugin.ts delete-user magic-link multi-session passkey theme)
 
 # Targets that consume the registry sources.
 TARGETS=(
@@ -37,7 +37,7 @@ rm -rf -- "$REGISTRY_OUTPUT"
 mkdir -p "$REGISTRY_OUTPUT"
 
 echo "→ shadcn build → $REGISTRY_OUTPUT"
-(cd "$EXAMPLE_DIR" && shadcn build --output "$REGISTRY_OUTPUT")
+(cd "$EXAMPLE_DIR" && bunx shadcn build --output "$REGISTRY_OUTPUT")
 
 for target in "${TARGETS[@]}"; do
   target_components="$target/src/components"

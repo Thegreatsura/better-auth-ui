@@ -1,4 +1,10 @@
-import { useAuth, useDeleteUser, useListAccounts } from "@better-auth-ui/react"
+import { authQueryKeys } from "@better-auth-ui/core"
+import {
+  useAuth,
+  useAuthPlugin,
+  useDeleteUser,
+  useListAccounts
+} from "@better-auth-ui/react"
 import { TriangleExclamation } from "@gravity-ui/icons"
 import {
   AlertDialog,
@@ -14,7 +20,10 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useQueryClient } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
+
+import { deleteUserPlugin } from "../../lib/delete-user/delete-user-plugin"
 
 export type DeleteUserProps = {
   className?: string
@@ -29,16 +38,16 @@ export function DeleteUser({
   variant,
   ...props
 }: DeleteUserProps & Omit<CardProps, "children">) {
+  const { authClient, basePaths, localization, navigate, viewPaths } = useAuth()
+
   const {
-    authClient,
-    basePaths,
-    deleteUser: deleteUserConfig,
-    localization,
-    navigate,
-    viewPaths
-  } = useAuth()
+    localization: deleteUserLocalization,
+    sendDeleteAccountVerification
+  } = useAuthPlugin(deleteUserPlugin)
 
   const { data: accounts } = useListAccounts(authClient)
+
+  const queryClient = useQueryClient()
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [password, setPassword] = useState("")
@@ -46,8 +55,7 @@ export function DeleteUser({
   const hasCredentialAccount = accounts?.some(
     (account) => account.providerId === "credential"
   )
-  const needsPassword =
-    !deleteUserConfig?.sendDeleteAccountVerification && hasCredentialAccount
+  const needsPassword = !sendDeleteAccountVerification && hasCredentialAccount
 
   const { mutate: deleteUser, isPending } = useDeleteUser(authClient)
 
@@ -68,10 +76,11 @@ export function DeleteUser({
         setConfirmOpen(false)
         setPassword("")
 
-        if (deleteUserConfig?.sendDeleteAccountVerification) {
-          toast.success(localization.settings.deleteUserVerificationSent)
+        if (sendDeleteAccountVerification) {
+          toast.success(deleteUserLocalization.deleteUserVerificationSent)
         } else {
-          toast.success(localization.settings.deleteUserSuccess)
+          toast.success(deleteUserLocalization.deleteUserSuccess)
+          queryClient.removeQueries({ queryKey: authQueryKeys.all })
           navigate({
             to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
             replace: true
@@ -90,11 +99,11 @@ export function DeleteUser({
       <Card.Content className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium leading-tight">
-            {localization.settings.deleteUser}
+            {deleteUserLocalization.deleteUser}
           </p>
 
           <p className="text-muted text-xs mt-0.5">
-            {localization.settings.deleteUserDescription}
+            {deleteUserLocalization.deleteUserDescription}
           </p>
         </div>
 
@@ -105,7 +114,7 @@ export function DeleteUser({
             variant="danger"
             onPress={() => setConfirmOpen(true)}
           >
-            {localization.settings.deleteUser}
+            {deleteUserLocalization.deleteUser}
           </Button>
 
           <AlertDialog.Backdrop
@@ -123,13 +132,13 @@ export function DeleteUser({
                     </AlertDialog.Icon>
 
                     <AlertDialog.Heading>
-                      {localization.settings.deleteUser}
+                      {deleteUserLocalization.deleteUser}
                     </AlertDialog.Heading>
                   </AlertDialog.Header>
 
                   <AlertDialog.Body className="overflow-visible">
                     <p className="text-muted text-sm">
-                      {localization.settings.deleteUserDescription}
+                      {deleteUserLocalization.deleteUserDescription}
                     </p>
 
                     {needsPassword && (
@@ -171,7 +180,7 @@ export function DeleteUser({
                     >
                       {isPending && <Spinner color="current" size="sm" />}
 
-                      {localization.settings.deleteUser}
+                      {deleteUserLocalization.deleteUser}
                     </Button>
                   </AlertDialog.Footer>
                 </Form>
