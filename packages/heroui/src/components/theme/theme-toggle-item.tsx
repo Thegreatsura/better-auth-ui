@@ -9,7 +9,8 @@ import { themePlugin } from "../../lib/theme/theme-plugin"
  * for ensuring theming is configured before rendering this component.
  */
 export function ThemeToggleItem() {
-  const { localization, theme, setTheme, themes } = useAuthPlugin(themePlugin)
+  const { useTheme, localization } = useAuthPlugin(themePlugin)
+  const { theme, setTheme, themes = [] } = useTheme()
 
   return (
     <Dropdown.Item className="py-1 pe-2">

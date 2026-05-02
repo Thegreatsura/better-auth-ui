@@ -1,4 +1,4 @@
-import type { AuthPlugin } from "../../lib/auth-plugin"
+import { createAuthPlugin } from "../../lib/create-auth-plugin"
 import { type ThemeLocalization, themeLocalization } from "./theme-localization"
 
 export type ThemePluginOptions = {
@@ -12,7 +12,7 @@ export type ThemePluginOptions = {
    */
   theme?: string
   /**
-   * Function to set the theme
+   * Function to set the theme.
    */
   setTheme: (theme: string) => void
   /**
@@ -22,12 +22,12 @@ export type ThemePluginOptions = {
   themes?: string[]
 }
 
-export function themePlugin(options: ThemePluginOptions) {
-  return {
-    id: "theme" as const,
+export const themePlugin = createAuthPlugin(
+  "theme",
+  (options: ThemePluginOptions) => ({
     localization: { ...themeLocalization, ...options.localization },
     theme: options.theme ?? "system",
-    setTheme: options.setTheme ?? (() => {}),
+    setTheme: options.setTheme,
     themes: options.themes ?? ["system", "light", "dark"]
-  } satisfies AuthPlugin
-}
+  })
+)

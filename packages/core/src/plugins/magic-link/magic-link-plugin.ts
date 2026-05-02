@@ -1,10 +1,13 @@
-import type { AuthPlugin } from "../../lib/auth-plugin"
+import { createAuthPlugin } from "../../lib/create-auth-plugin"
+// Side-effect import so this file participates in declaration merging on the
+// same module instance that external consumers reach via `@better-auth-ui/core`.
+import type {} from "../../lib/view-paths"
 import {
   type MagicLinkLocalization,
   magicLinkLocalization
 } from "./magic-link-localization"
 
-declare module "@better-auth-ui/core" {
+declare module "../../lib/view-paths" {
   /** Widens `AuthViewPaths` by adding the `"magicLink"` path when this plugin is imported. */
   interface AuthViewPaths {
     /** @default "magic-link" */
@@ -26,12 +29,12 @@ export type MagicLinkPluginOptions = {
   path?: string
 }
 
-export function magicLinkPlugin(options: MagicLinkPluginOptions = {}) {
-  return {
-    id: "magicLink",
+export const magicLinkPlugin = createAuthPlugin(
+  "magicLink",
+  (options: MagicLinkPluginOptions = {}) => ({
     localization: { ...magicLinkLocalization, ...options.localization },
     viewPaths: {
       auth: { magicLink: options.path ?? "magic-link" }
     }
-  } satisfies AuthPlugin
-}
+  })
+)

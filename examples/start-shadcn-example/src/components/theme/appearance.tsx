@@ -4,8 +4,7 @@ import {
   ThemePreviewDark,
   ThemePreviewLight,
   ThemePreviewSystem,
-  useAuth,
-  useSession
+  useAuthPlugin
 } from "@better-auth-ui/react"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { themePlugin } from "@/lib/theme/theme-plugin"
 import { cn } from "@/lib/utils"
 
 export type AppearanceProps = {
@@ -36,32 +36,26 @@ export type AppearanceProps = {
  * @returns A JSX element containing the theme selector card, or null if theme settings are not configured.
  */
 export function Appearance({ className }: AppearanceProps) {
-  const {
-    authClient,
-    localization,
-    appearance: { theme, setTheme, themes }
-  } = useAuth()
-  const { data: session } = useSession(authClient)
+  const { useTheme, localization } = useAuthPlugin(themePlugin)
+  const { theme, setTheme, themes = [] } = useTheme()
 
   const [isMounted, setIsMounted] = useState(false)
   useEffect(() => setIsMounted(true), [])
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-3">
-        {localization.settings.appearance}
-      </h2>
+      <h2 className="text-sm font-semibold mb-3">{localization.appearance}</h2>
 
       <Card className={cn(className)}>
         <CardContent>
           <Field>
-            <Label>{localization.settings.theme}</Label>
+            <Label>{localization.theme}</Label>
 
             <RadioGroup
-              value={isMounted && session ? theme : ""}
+              value={isMounted ? theme : ""}
               onValueChange={setTheme}
               className="grid gap-3 grid-cols-2 sm:grid-cols-3"
-              disabled={!isMounted || !session || !theme}
+              disabled={!isMounted || !theme}
             >
               {themes.includes("system") && (
                 <FieldLabel htmlFor="system">
@@ -71,7 +65,7 @@ export function Appearance({ className }: AppearanceProps) {
                         <FieldTitle>
                           <Monitor className="size-4 text-muted-foreground" />
 
-                          {localization.settings.system}
+                          {localization.system}
                         </FieldTitle>
 
                         <RadioGroupItem value="system" id="system" />
@@ -91,7 +85,7 @@ export function Appearance({ className }: AppearanceProps) {
                         <FieldTitle>
                           <Sun className="size-4 text-muted-foreground" />
 
-                          {localization.settings.light}
+                          {localization.light}
                         </FieldTitle>
 
                         <RadioGroupItem value="light" id="light" />
@@ -111,7 +105,7 @@ export function Appearance({ className }: AppearanceProps) {
                         <FieldTitle>
                           <Moon className="size-4 text-muted-foreground" />
 
-                          {localization.settings.dark}
+                          {localization.dark}
                         </FieldTitle>
 
                         <RadioGroupItem value="dark" id="dark" />

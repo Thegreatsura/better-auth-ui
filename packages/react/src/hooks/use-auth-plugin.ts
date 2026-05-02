@@ -1,9 +1,20 @@
 "use client"
 
-import { useMemo } from "react"
-
 import { useAuth } from "../components/auth/auth-provider"
 import type { AuthPlugin } from "../lib/auth-plugin"
+
+/**
+ * Plugin factory shape accepted by {@link useAuthPlugin}. The `id` is read as
+ * a static property — the factory is never invoked — so plugins with required
+ * options (e.g. `themePlugin`'s `setTheme`) can still be looked up.
+ *
+ * Always produced by `createAuthPlugin` from `@better-auth-ui/core`.
+ */
+export type AuthPluginFactory<T extends AuthPlugin = AuthPlugin> = {
+  id: string
+  // biome-ignore lint/suspicious/noExplicitAny: factory args vary by plugin
+  (...args: any[]): T
+}
 
 /**
  * Access a registered plugin by passing its factory.
@@ -23,14 +34,15 @@ import type { AuthPlugin } from "../lib/auth-plugin"
  * }
  * ```
  */
-export function useAuthPlugin<T extends AuthPlugin>(pluginFactory: () => T): T {
+export function useAuthPlugin<T extends AuthPlugin>(
+  pluginFactory: AuthPluginFactory<T>
+): T {
   const { plugins } = useAuth()
-  const id = useMemo(() => pluginFactory().id, [pluginFactory])
-  const plugin = plugins?.find((p) => p.id === id)
+  const plugin = plugins?.find((p) => p.id === pluginFactory.id)
 
   if (!plugin) {
     throw new Error(
-      `[Better Auth UI] useAuthPlugin: plugin "${id}" is not registered on AuthProvider.`
+      `[Better Auth UI] useAuthPlugin: plugin "${pluginFactory.id}" is not registered on AuthProvider.`
     )
   }
 

@@ -1,3 +1,4 @@
+import { createAuthPlugin } from "@better-auth-ui/core"
 import {
   passkeyPlugin as corePasskeyPlugin,
   type PasskeyPluginOptions
@@ -5,12 +6,12 @@ import {
 
 import { PasskeyButton } from "../../components/passkey/passkey-button"
 import { Passkeys } from "../../components/passkey/passkeys"
-import type { AuthPlugin } from "../auth-plugin"
 
-export function passkeyPlugin(options: PasskeyPluginOptions = {}) {
-  return {
+export const passkeyPlugin = createAuthPlugin(
+  corePasskeyPlugin.id,
+  (options: PasskeyPluginOptions = {}) => ({
     ...corePasskeyPlugin(options),
     authButtons: [PasskeyButton],
     securityCards: [Passkeys]
-  } satisfies AuthPlugin
-}
+  })
+)

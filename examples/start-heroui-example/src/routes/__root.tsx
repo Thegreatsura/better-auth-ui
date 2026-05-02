@@ -6,7 +6,6 @@ import {
   Scripts
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
@@ -46,17 +45,11 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
 
       <body className="antialiased min-h-svh flex flex-col">
-        <ThemeProvider
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>
-            <Header />
+        <Providers>
+          <Header />
 
-            {children}
-          </Providers>
-        </ThemeProvider>
+          {children}
+        </Providers>
 
         <TanStackDevtools
           config={{

@@ -34,7 +34,8 @@ export function Appearance({
   variant,
   ...props
 }: AppearanceProps & Omit<CardProps, "children">) {
-  const { theme, setTheme, themes, localization } = useAuthPlugin(themePlugin)
+  const { useTheme, localization } = useAuthPlugin(themePlugin)
+  const { theme, setTheme, themes = [] } = useTheme()
   const hydrated = useIsHydrated()
 
   return (

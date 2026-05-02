@@ -49,7 +49,6 @@ import { MagicLinkDemo as ShadcnMagicLinkDemo } from "./shadcn/magic-link/magic-
 import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as ShadcnSwitchAccountSubmenuDemo } from "./shadcn/multi-session/switch-account-submenu"
 import { AccountSettingsDemo as ShadcnAccountSettingsDemo } from "./shadcn/settings/account/account-settings"
-import { AppearanceDemo as ShadcnAppearanceDemo } from "./shadcn/settings/account/appearance"
 import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/account/change-email"
 import { UserProfileDemo as ShadcnUserProfileDemo } from "./shadcn/settings/account/user-profile"
 import { ActiveSessionsDemo as ShadcnActiveSessionsDemo } from "./shadcn/settings/security/active-sessions"
@@ -59,6 +58,8 @@ import { LinkedAccountsDemo as ShadcnLinkedAccountsDemo } from "./shadcn/setting
 import { PasskeysDemo as ShadcnPasskeysDemo } from "./shadcn/settings/security/passkeys"
 import { SecuritySettingsDemo as ShadcnSecuritySettingsDemo } from "./shadcn/settings/security/security-settings"
 import { SettingsDemo as ShadcnSettingsDemo } from "./shadcn/settings/settings"
+import { AppearanceDemo as ShadcnAppearanceDemo } from "./shadcn/theme/appearance"
+import { ThemeToggleItemDemo as ShadcnThemeToggleItemDemo } from "./shadcn/theme/theme-toggle-item"
 import { UserAvatarDemo as ShadcnUserAvatarDemo } from "./shadcn/user/user-avatar"
 import { UserButtonDemo as ShadcnUserButtonDemo } from "./shadcn/user/user-button"
 import { UserButtonIconDemo as ShadcnUserButtonIconDemo } from "./shadcn/user/user-button-icon"
@@ -132,5 +133,6 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-user-button": ShadcnUserButtonDemo,
   "shadcn-user-button-icon": ShadcnUserButtonIconDemo,
   "shadcn-user-profile": ShadcnUserProfileDemo,
-  "shadcn-user-view": ShadcnUserViewDemo
+  "shadcn-user-view": ShadcnUserViewDemo,
+  "shadcn-theme-toggle-item": ShadcnThemeToggleItemDemo
 }

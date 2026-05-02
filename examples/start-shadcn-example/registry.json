@@ -508,7 +508,7 @@
       "registryDependencies": ["card", "field", "label", "radio-group"],
       "files": [
         {
-          "path": "src/components/settings/account/appearance.tsx",
+          "path": "src/components/theme/appearance.tsx",
           "type": "registry:component"
         }
       ]
