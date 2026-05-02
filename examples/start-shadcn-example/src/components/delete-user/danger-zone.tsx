@@ -11,13 +11,13 @@ export type DangerZoneProps = {
 
 /**
  * Renders the danger zone heading and {@link DeleteUser}.
- * Gate with `deleteUser.enabled` at the call site (e.g. {@link SecuritySettings}).
+ * Registered as a `securityCard` by `deleteUserPlugin()`; gate by registering the plugin.
  */
 export function DangerZone({ className }: DangerZoneProps) {
   const { localization } = useAuth()
 
   return (
-    <div className={cn(className)}>
+    <div className={cn("flex w-full flex-col", className)}>
       <h2 className="text-sm font-semibold mb-3">
         {localization.settings.dangerZone}
       </h2>

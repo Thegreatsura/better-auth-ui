@@ -1,6 +1,13 @@
 "use client"
 
-import { useAuth, useDeleteUser, useListAccounts } from "@better-auth-ui/react"
+import { authQueryKeys } from "@better-auth-ui/core"
+import {
+  useAuth,
+  useAuthPlugin,
+  useDeleteUser,
+  useListAccounts
+} from "@better-auth-ui/react"
+import { useQueryClient } from "@tanstack/react-query"
 import { TriangleAlert } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
@@ -22,6 +29,7 @@ import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
 import { cn } from "@/lib/utils"
 
 export type DeleteUserProps = {
@@ -32,16 +40,16 @@ export type DeleteUserProps = {
  * Danger-zone card to delete the authenticated account, with a confirmation dialog and toasts.
  */
 export function DeleteUser({ className }: DeleteUserProps) {
+  const { authClient, basePaths, localization, viewPaths, navigate } = useAuth()
+
   const {
-    authClient,
-    basePaths,
-    deleteUser: deleteUserConfig,
-    localization,
-    viewPaths,
-    navigate
-  } = useAuth()
+    localization: deleteUserLocalization,
+    sendDeleteAccountVerification
+  } = useAuthPlugin(deleteUserPlugin)
 
   const { data: accounts } = useListAccounts(authClient)
+
+  const queryClient = useQueryClient()
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [password, setPassword] = useState("")
@@ -49,8 +57,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
   const hasCredentialAccount = accounts?.some(
     (account) => account.providerId === "credential"
   )
-  const needsPassword =
-    !deleteUserConfig?.sendDeleteAccountVerification && hasCredentialAccount
+  const needsPassword = !sendDeleteAccountVerification && hasCredentialAccount
 
   const { mutate: deleteUser, isPending } = useDeleteUser(authClient)
 
@@ -71,10 +78,11 @@ export function DeleteUser({ className }: DeleteUserProps) {
         setConfirmOpen(false)
         setPassword("")
 
-        if (deleteUserConfig?.sendDeleteAccountVerification) {
-          toast.success(localization.settings.deleteUserVerificationSent)
+        if (sendDeleteAccountVerification) {
+          toast.success(deleteUserLocalization.deleteUserVerificationSent)
         } else {
-          toast.success(localization.settings.deleteUserSuccess)
+          toast.success(deleteUserLocalization.deleteUserSuccess)
+          queryClient.removeQueries({ queryKey: authQueryKeys.all })
           navigate({
             to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
             replace: true
@@ -89,18 +97,18 @@ export function DeleteUser({ className }: DeleteUserProps) {
       <CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium leading-tight">
-            {localization.settings.deleteUser}
+            {deleteUserLocalization.deleteUser}
           </p>
 
           <p className="text-muted-foreground text-xs mt-0.5">
-            {localization.settings.deleteUserDescription}
+            {deleteUserLocalization.deleteUserDescription}
           </p>
         </div>
 
         <AlertDialog open={confirmOpen} onOpenChange={handleDialogOpenChange}>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" size="sm" disabled={!accounts}>
-              {localization.settings.deleteUser}
+              {deleteUserLocalization.deleteUser}
             </Button>
           </AlertDialogTrigger>
 
@@ -112,11 +120,11 @@ export function DeleteUser({ className }: DeleteUserProps) {
                 </AlertDialogMedia>
 
                 <AlertDialogTitle>
-                  {localization.settings.deleteUser}
+                  {deleteUserLocalization.deleteUser}
                 </AlertDialogTitle>
 
                 <AlertDialogDescription>
-                  {localization.settings.deleteUserDescription}
+                  {deleteUserLocalization.deleteUserDescription}
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -150,7 +158,7 @@ export function DeleteUser({ className }: DeleteUserProps) {
                 <AlertDialogAction variant="destructive">
                   {isPending && <Spinner />}
 
-                  {localization.settings.deleteUser}
+                  {deleteUserLocalization.deleteUser}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </form>

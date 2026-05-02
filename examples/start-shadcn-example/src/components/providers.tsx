@@ -3,6 +3,7 @@ import { ThemeProvider, useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 import { themePlugin } from "@/lib/theme/theme-plugin"
 import { AuthProvider } from "./auth/auth-provider"
@@ -20,11 +21,14 @@ export function Providers({ children }: { children: ReactNode }) {
     >
       <AuthProvider
         authClient={authClient}
-        deleteUser={{ enabled: true }}
         redirectTo="/settings/account"
         socialProviders={["github"]}
         navigate={navigate}
-        plugins={[multiSessionPlugin(), themePlugin({ useTheme })]}
+        plugins={[
+          deleteUserPlugin(),
+          multiSessionPlugin(),
+          themePlugin({ useTheme })
+        ]}
         Link={Link}
       >
         {children}
