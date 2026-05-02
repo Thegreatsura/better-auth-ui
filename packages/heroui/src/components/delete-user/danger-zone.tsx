@@ -1,8 +1,8 @@
 import { useAuth } from "@better-auth-ui/react"
 import { type CardProps, cn } from "@heroui/react"
+import type { ComponentProps } from "react"
 import { DeleteUser } from "./delete-user"
-export type DangerZoneProps = {
-  className?: string
+export type DangerZoneProps = Omit<ComponentProps<"div">, "children"> & {
   variant?: CardProps["variant"]
 }
 
