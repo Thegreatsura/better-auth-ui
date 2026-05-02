@@ -1,3 +1,4 @@
+import { authQueryKeys } from "@better-auth-ui/core"
 import {
   useAuth,
   useAuthPlugin,
@@ -19,6 +20,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
+import { useQueryClient } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 
 import { deleteUserPlugin } from "../../lib/delete-user/delete-user-plugin"
@@ -44,6 +46,8 @@ export function DeleteUser({
   } = useAuthPlugin(deleteUserPlugin)
 
   const { data: accounts } = useListAccounts(authClient)
+
+  const queryClient = useQueryClient()
 
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [password, setPassword] = useState("")
@@ -76,8 +80,9 @@ export function DeleteUser({
           toast.success(deleteUserLocalization.deleteUserVerificationSent)
         } else {
           toast.success(deleteUserLocalization.deleteUserSuccess)
+          queryClient.removeQueries({ queryKey: authQueryKeys.all })
           navigate({
-            to: `${basePaths.auth}/${viewPaths.auth.signOut}`,
+            to: `${basePaths.auth}/${viewPaths.auth.signIn}`,
             replace: true
           })
         }

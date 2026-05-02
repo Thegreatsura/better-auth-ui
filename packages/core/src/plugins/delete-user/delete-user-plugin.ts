@@ -18,7 +18,7 @@ export type DeleteUserPluginOptions = {
 }
 
 export const deleteUserPlugin = createAuthPlugin(
-  "delete-user",
+  "deleteUser",
   (options: DeleteUserPluginOptions = {}) => ({
     localization: { ...deleteUserLocalization, ...options.localization },
     sendDeleteAccountVerification:
