@@ -10,8 +10,12 @@
     "lucide-react"
   ],
   "registryDependencies": [
+    "alert-dialog",
     "button",
     "card",
+    "field",
+    "input",
+    "label",
     "separator",
     "skeleton",
     "spinner"

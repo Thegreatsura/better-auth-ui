@@ -194,8 +194,12 @@
         "lucide-react"
       ],
       "registryDependencies": [
+        "alert-dialog",
         "button",
         "card",
+        "field",
+        "input",
+        "label",
         "separator",
         "skeleton",
         "spinner"
@@ -300,6 +304,46 @@
         },
         {
           "path": "src/components/theme/theme-toggle-item.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "delete-user",
+      "type": "registry:component",
+      "title": "Delete User",
+      "description": "Delete-user plugin: danger zone card with account deletion and confirmation dialog. Registers a DangerZone security card in account settings that is shown when the plugin is registered.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "button",
+        "card",
+        "field",
+        "input",
+        "label",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/delete-user/delete-user-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/delete-user/danger-zone.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/delete-user/delete-user.tsx",
           "type": "registry:component"
         }
       ]
@@ -632,36 +676,6 @@
       ]
     },
     {
-      "name": "danger-zone",
-      "type": "registry:component",
-      "title": "Danger Zone",
-      "description": "A danger zone section with a delete user card and confirmation dialog for permanently deleting the user account.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "@better-auth-ui/core@latest",
-        "better-auth",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "field",
-        "input",
-        "sonner",
-        "spinner"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/security/danger-zone.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/security/delete-user.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
@@ -673,8 +687,7 @@
       "registryDependencies": [
         "https://better-auth-ui.com/r/change-password.json",
         "https://better-auth-ui.com/r/linked-accounts.json",
-        "https://better-auth-ui.com/r/active-sessions.json",
-        "https://better-auth-ui.com/r/danger-zone.json"
+        "https://better-auth-ui.com/r/active-sessions.json"
       ],
       "files": [
         {
