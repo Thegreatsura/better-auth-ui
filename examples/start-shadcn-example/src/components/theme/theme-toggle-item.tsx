@@ -19,17 +19,17 @@ export function ThemeToggleItem() {
 
   // The TabsTriggers aren't part of the menu's roving focus group, so
   // arrow-key navigation can't reach them on its own. When the wrapper
-  // menu item receives focus, we immediately delegate focus to the active
-  // TabsTrigger so the user can switch themes with the arrow keys.
+  // menu item receives focus we delegate focus to the active TabsTrigger
+  // inside, letting the user switch themes with Left/Right arrows.
   const focusActiveTab = () => {
     const activeTab = tabsListRef.current?.querySelector<HTMLElement>(
       '[role="tab"][data-state="active"]'
     )
-    activeTab?.focus()
+    activeTab?.focus({ preventScroll: true })
   }
 
-  // Move keyboard focus back to the next/previous sibling menu item when
-  // the user presses Up/Down while focused on a TabsTrigger.
+  // Up/Down on a TabsTrigger escapes back to the previous/next sibling
+  // menu item so users can keep navigating the menu with the arrow keys.
   const handleTabsKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return
 
@@ -52,7 +52,6 @@ export function ThemeToggleItem() {
     if (!next) return
 
     event.preventDefault()
-    event.stopPropagation()
     next.focus()
   }
 
@@ -61,8 +60,8 @@ export function ThemeToggleItem() {
       asChild
       onSelect={(e) => e.preventDefault()}
       onFocus={(e) => {
-        // Only delegate when the wrapper itself receives focus (not when
-        // a focus event bubbles up from the inner TabsTrigger).
+        // onFocus bubbles in React, so guard against re-entry from focus
+        // events fired by the inner TabsTrigger.
         if (e.target === e.currentTarget) focusActiveTab()
       }}
       className="justify-between"
