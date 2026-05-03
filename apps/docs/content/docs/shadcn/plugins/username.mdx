@@ -44,7 +44,7 @@ Add `usernameClient()` to your auth client so `authClient.signIn.username` and `
 
 ```ts title="lib/auth-client.ts"
 import { createAuthClient } from "better-auth/react"
-import { usernameClient } from "better-auth/react" // [!code highlight]
+import { usernameClient } from "better-auth/client/plugins" // [!code highlight]
 
 export const authClient = createAuthClient({
   plugins: [usernameClient()] // [!code highlight]
