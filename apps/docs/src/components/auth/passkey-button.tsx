@@ -11,7 +11,7 @@ import { useIsMutating } from "@tanstack/react-query"
 import { Fingerprint } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { cn } from "@/lib/utils"
 
 export type PasskeyButtonProps = {

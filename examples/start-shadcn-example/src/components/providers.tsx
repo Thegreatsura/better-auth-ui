@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router"
 import { ThemeProvider, useTheme } from "next-themes"
 import type { ReactNode } from "react"
-
+import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin"
+import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
+import { themePlugin } from "@/lib/auth/theme-plugin"
+import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
-import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
-import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
-import { themePlugin } from "@/lib/theme/theme-plugin"
-import { usernamePlugin } from "@/lib/username/username-plugin"
 import { AuthProvider } from "./auth/auth-provider"
 import { Toaster } from "./ui/sonner"
 

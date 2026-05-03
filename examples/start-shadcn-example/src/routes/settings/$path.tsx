@@ -5,7 +5,7 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 
-import { Settings } from "@/components/settings/settings"
+import { Settings } from "@/components/auth/settings/settings"
 import { auth } from "@/lib/auth"
 import { authClient } from "@/lib/auth-client"
 

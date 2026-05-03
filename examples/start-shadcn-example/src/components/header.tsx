@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router"
-
+import { UserButton } from "./auth/user/user-button"
 import { Logo } from "./logo"
-import { UserButton } from "./user/user-button"
 
 export function Header() {
   return (

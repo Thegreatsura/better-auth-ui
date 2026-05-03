@@ -157,11 +157,11 @@
       ],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/magic-link/magic-link-plugin.ts",
+          "path": "src/lib/auth/magic-link-plugin.ts",
           "type": "registry:lib"
         },
         {
@@ -208,19 +208,19 @@
       ],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/username/username-plugin.ts",
+          "path": "src/lib/auth/username-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/components/username/username-field.tsx",
+          "path": "src/components/auth/username/username-field.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/username/sign-in-username.tsx",
+          "path": "src/components/auth/username/sign-in-username.tsx",
           "type": "registry:component"
         }
       ]
@@ -249,11 +249,11 @@
       ],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/passkey/passkey-plugin.ts",
+          "path": "src/lib/auth/passkey-plugin.ts",
           "type": "registry:lib"
         },
         {
@@ -261,11 +261,11 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/passkeys.tsx",
+          "path": "src/components/auth/settings/security/passkeys.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/passkey.tsx",
+          "path": "src/components/auth/settings/security/passkey.tsx",
           "type": "registry:component"
         }
       ]
@@ -292,31 +292,31 @@
       ],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/multi-session/multi-session-plugin.ts",
+          "path": "src/lib/auth/multi-session-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/components/multi-session/manage-accounts.tsx",
+          "path": "src/components/auth/multi-session/manage-accounts.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/multi-session/manage-account.tsx",
+          "path": "src/components/auth/multi-session/manage-account.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/multi-session/switch-account-submenu.tsx",
+          "path": "src/components/auth/multi-session/switch-account-submenu.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/multi-session/switch-account-submenu-content.tsx",
+          "path": "src/components/auth/multi-session/switch-account-submenu-content.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/multi-session/switch-account-submenu-item.tsx",
+          "path": "src/components/auth/multi-session/switch-account-submenu-item.tsx",
           "type": "registry:component"
         }
       ]
@@ -334,19 +334,19 @@
       "registryDependencies": ["card", "field", "label", "radio-group", "tabs"],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/theme/theme-plugin.ts",
+          "path": "src/lib/auth/theme-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/components/theme/appearance.tsx",
+          "path": "src/components/auth/theme/appearance.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/theme/theme-toggle-item.tsx",
+          "path": "src/components/auth/theme/theme-toggle-item.tsx",
           "type": "registry:component"
         }
       ]
@@ -374,19 +374,19 @@
       ],
       "files": [
         {
-          "path": "src/lib/auth-plugin.ts",
+          "path": "src/lib/auth/auth-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/lib/delete-user/delete-user-plugin.ts",
+          "path": "src/lib/auth/delete-user-plugin.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/components/delete-user/danger-zone.tsx",
+          "path": "src/components/auth/delete-user/danger-zone.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/delete-user/delete-user.tsx",
+          "path": "src/components/auth/delete-user/delete-user.tsx",
           "type": "registry:component"
         }
       ]
@@ -498,7 +498,7 @@
       "registryDependencies": ["avatar", "skeleton"],
       "files": [
         {
-          "path": "src/components/user/user-avatar.tsx",
+          "path": "src/components/auth/user/user-avatar.tsx",
           "type": "registry:component"
         }
       ]
@@ -519,7 +519,7 @@
       ],
       "files": [
         {
-          "path": "src/components/user/user-view.tsx",
+          "path": "src/components/auth/user/user-view.tsx",
           "type": "registry:component"
         }
       ]
@@ -543,7 +543,7 @@
       ],
       "files": [
         {
-          "path": "src/components/user/user-button.tsx",
+          "path": "src/components/auth/user/user-button.tsx",
           "type": "registry:component"
         }
       ]
@@ -576,11 +576,11 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/account/user-profile.tsx",
+          "path": "src/components/auth/settings/account/user-profile.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/account/change-avatar.tsx",
+          "path": "src/components/auth/settings/account/change-avatar.tsx",
           "type": "registry:component"
         }
       ]
@@ -606,7 +606,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/account/change-email.tsx",
+          "path": "src/components/auth/settings/account/change-email.tsx",
           "type": "registry:component"
         }
       ]
@@ -626,7 +626,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/account/account-settings.tsx",
+          "path": "src/components/auth/settings/account/account-settings.tsx",
           "type": "registry:component"
         }
       ]
@@ -654,7 +654,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/change-password.tsx",
+          "path": "src/components/auth/settings/security/change-password.tsx",
           "type": "registry:component"
         }
       ]
@@ -679,11 +679,11 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/linked-accounts.tsx",
+          "path": "src/components/auth/settings/security/linked-accounts.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/linked-account.tsx",
+          "path": "src/components/auth/settings/security/linked-account.tsx",
           "type": "registry:component"
         }
       ]
@@ -709,11 +709,11 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/active-sessions.tsx",
+          "path": "src/components/auth/settings/security/active-sessions.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/active-session.tsx",
+          "path": "src/components/auth/settings/security/active-session.tsx",
           "type": "registry:component"
         }
       ]
@@ -734,7 +734,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/security-settings.tsx",
+          "path": "src/components/auth/settings/security/security-settings.tsx",
           "type": "registry:component"
         }
       ]
@@ -755,7 +755,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/settings.tsx",
+          "path": "src/components/auth/settings/settings.tsx",
           "type": "registry:component"
         }
       ]

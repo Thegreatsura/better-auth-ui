@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"

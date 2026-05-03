@@ -16,9 +16,11 @@ SRC_COMPONENTS="$EXAMPLE_DIR/src/components"
 SRC_LIB="$EXAMPLE_DIR/src/lib"
 
 # Components subdirectories that are mirrored into every target.
-COMPONENT_DIRS=(auth delete-user multi-session settings theme ui user username)
-# Lib entries (file or directory) that are mirrored into every target.
-LIB_ENTRIES=(auth-plugin.ts delete-user magic-link multi-session passkey theme username)
+COMPONENT_DIRS=(auth ui)
+# Former top-level dirs now nested under components/auth/ — prune so sync does not leave stale copies.
+STALE_COMPONENT_DIRS=(delete-user multi-session settings theme user username)
+# Plugin lib sources under src/lib/auth/ (mirrored as a whole directory).
+LIB_DIRS=(auth)
 
 # Targets that consume the registry sources.
 TARGETS=(
@@ -49,23 +51,23 @@ for target in "${TARGETS[@]}"; do
 
   # Prune stale mirrors so renames/deletes propagate.
   # Guard against empty variables to avoid catastrophic deletes (e.g. rm -rf /).
-  for dir in "${COMPONENT_DIRS[@]}"; do
+  for dir in "${COMPONENT_DIRS[@]}" "${STALE_COMPONENT_DIRS[@]}"; do
     : "${target_components:?target_components is empty}"
     : "${dir:?component dir entry is empty}"
     rm -rf -- "$target_components/$dir"
   done
-  for entry in "${LIB_ENTRIES[@]}"; do
+  for dir in "${LIB_DIRS[@]}"; do
     : "${target_lib:?target_lib is empty}"
-    : "${entry:?lib entry is empty}"
-    rm -rf -- "$target_lib/$entry"
+    : "${dir:?lib dir entry is empty}"
+    rm -rf -- "$target_lib/$dir"
   done
 
   # Copy the fresh sources.
   for dir in "${COMPONENT_DIRS[@]}"; do
     cp -R "$SRC_COMPONENTS/$dir" "$target_components/"
   done
-  for entry in "${LIB_ENTRIES[@]}"; do
-    cp -R "$SRC_LIB/$entry" "$target_lib/"
+  for dir in "${LIB_DIRS[@]}"; do
+    cp -R "$SRC_LIB/$dir" "$target_lib/"
   done
 done
 
