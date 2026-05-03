@@ -32,6 +32,9 @@ import { UserAvatarDemo as HeroUIUserAvatarDemo } from "./heroui/user/user-avata
 import { UserButtonDemo as HeroUIUserButtonDemo } from "./heroui/user/user-button"
 import { UserButtonIconDemo as HeroUIUserButtonIconDemo } from "./heroui/user/user-button-icon"
 import { UserViewDemo as HeroUIUserViewDemo } from "./heroui/user/user-view"
+import { SignInUsernameDemo as HeroUISignInUsernameDemo } from "./heroui/username/sign-in"
+import { SignUpUsernameDemo as HeroUISignUpUsernameDemo } from "./heroui/username/sign-up"
+import { UserProfileUsernameDemo as HeroUIUserProfileUsernameDemo } from "./heroui/username/user-profile"
 import { AuthDemo as ShadcnAuthDemo } from "./shadcn/auth/auth"
 import { ForgotPasswordDemo as ShadcnForgotPasswordDemo } from "./shadcn/auth/forgot-password"
 import { ResetPasswordDemo as ShadcnResetPasswordDemo } from "./shadcn/auth/reset-password"
@@ -65,6 +68,9 @@ import { UserAvatarDemo as ShadcnUserAvatarDemo } from "./shadcn/user/user-avata
 import { UserButtonDemo as ShadcnUserButtonDemo } from "./shadcn/user/user-button"
 import { UserButtonIconDemo as ShadcnUserButtonIconDemo } from "./shadcn/user/user-button-icon"
 import { UserViewDemo as ShadcnUserViewDemo } from "./shadcn/user/user-view"
+import { SignInUsernameDemo as ShadcnSignInUsernameDemo } from "./shadcn/username/sign-in"
+import { SignUpUsernameDemo as ShadcnSignUpUsernameDemo } from "./shadcn/username/sign-up"
+import { UserProfileUsernameDemo as ShadcnUserProfileUsernameDemo } from "./shadcn/username/user-profile"
 
 export interface DemoItem {
   component: ComponentType
@@ -104,6 +110,9 @@ export const demos: Record<string, ComponentType> = {
   "heroui-user-profile": HeroUIUserProfileDemo,
   "heroui-theme-toggle-item": HeroUIThemeToggleItemDemo,
   "heroui-user-view": HeroUIUserViewDemo,
+  "heroui-username-sign-in": HeroUISignInUsernameDemo,
+  "heroui-username-sign-up": HeroUISignUpUsernameDemo,
+  "heroui-username-user-profile": HeroUIUserProfileUsernameDemo,
   "shadcn-account-settings": ShadcnAccountSettingsDemo,
   "shadcn-active-sessions": ShadcnActiveSessionsDemo,
   "shadcn-theme-appearance": ShadcnAppearanceDemo,
@@ -136,5 +145,8 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-user-button-icon": ShadcnUserButtonIconDemo,
   "shadcn-user-profile": ShadcnUserProfileDemo,
   "shadcn-user-view": ShadcnUserViewDemo,
+  "shadcn-username-sign-in": ShadcnSignInUsernameDemo,
+  "shadcn-username-sign-up": ShadcnSignUpUsernameDemo,
+  "shadcn-username-user-profile": ShadcnUserProfileUsernameDemo,
   "shadcn-theme-toggle-item": ShadcnThemeToggleItemDemo
 }
