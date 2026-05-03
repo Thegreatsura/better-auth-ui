@@ -24,9 +24,9 @@ import {
 } from "@heroui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
-import { usernamePlugin } from "../../../lib/username/username-plugin"
-import { FieldSeparator } from "../field-separator"
-import { ProviderButtons, type SocialLayout } from "../provider-buttons"
+import { usernamePlugin } from "../../lib/username/username-plugin"
+import { FieldSeparator } from "../auth/field-separator"
+import { ProviderButtons, type SocialLayout } from "../auth/provider-buttons"
 
 export interface SignInUsernameProps {
   className?: string

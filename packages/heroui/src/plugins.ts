@@ -2,8 +2,6 @@
 
 // Plugin-contributed components that may be used standalone
 export * from "./components/auth/magic-link"
-export * from "./components/auth/username/sign-in-username"
-export * from "./components/auth/username/username-field"
 export * from "./components/delete-user/danger-zone"
 export * from "./components/delete-user/delete-user"
 export * from "./components/multi-session/manage-account"
@@ -14,6 +12,8 @@ export * from "./components/multi-session/switch-account-submenu-item"
 export * from "./components/passkey/passkeys"
 export * from "./components/theme/appearance"
 export * from "./components/theme/theme-toggle-item"
+export * from "./components/username/sign-in-username"
+export * from "./components/username/username-field"
 export * from "./lib/auth-plugin"
 export * from "./lib/delete-user/delete-user-plugin"
 export * from "./lib/magic-link/magic-link-plugin"

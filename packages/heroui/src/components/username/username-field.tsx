@@ -14,8 +14,8 @@ import {
 } from "@heroui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
 import { useState } from "react"
-import { usernamePlugin } from "../../../lib/username/username-plugin"
-import type { AdditionalFieldProps } from "../additional-field"
+import { usernamePlugin } from "../../lib/username/username-plugin"
+import type { AdditionalFieldProps } from "../auth/additional-field"
 
 /**
  * Renderer for the `username` additional field. Owns availability checking,

@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider } from "../src/components/auth/auth-provider"
-import { SignInUsername } from "../src/components/auth/username/sign-in-username"
-import { UsernameField } from "../src/components/auth/username/username-field"
+import { SignInUsername } from "../src/components/username/sign-in-username"
+import { UsernameField } from "../src/components/username/username-field"
 import { usernamePlugin } from "../src/lib/username/username-plugin"
 
 // Each render gets its own QueryClient so the React Query cache doesn't
