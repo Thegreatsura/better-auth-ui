@@ -2,7 +2,8 @@ import { AuthProvider } from "@better-auth-ui/heroui"
 import {
   deleteUserPlugin,
   multiSessionPlugin,
-  themePlugin
+  themePlugin,
+  usernamePlugin
 } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
@@ -21,10 +22,19 @@ export function Providers({ children }: { children: ReactNode }) {
         redirectTo="/settings/account"
         socialProviders={["github"]}
         navigate={navigate}
+        additionalFields={[
+          {
+            name: "birthday",
+            type: "date",
+            label: "Birthday",
+            signUp: true
+          }
+        ]}
         plugins={[
           deleteUserPlugin(),
           multiSessionPlugin(),
-          themePlugin({ useTheme })
+          themePlugin({ useTheme }),
+          usernamePlugin({ isUsernameAvailable: true })
         ]}
       >
         {children}

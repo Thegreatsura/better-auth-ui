@@ -2,14 +2,20 @@
 
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
+  type UsernameAuthClient,
   useAuth,
+  useAuthPlugin,
   useSendVerificationEmail,
-  useSignInEmail
+  useSignInEmail,
+  useSignInUsername
 } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
-
+import {
+  ProviderButtons,
+  type SocialLayout
+} from "@/components/auth/provider-buttons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -23,28 +29,29 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { usernamePlugin } from "@/lib/username/username-plugin"
 import { cn } from "@/lib/utils"
-import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
-export type SignInProps = {
+export type SignInUsernameProps = {
   className?: string
   socialLayout?: SocialLayout
   socialPosition?: "top" | "bottom"
 }
 
+function isEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
+
 /**
- * Render the sign-in form UI with email/password, magic link, and social provider options.
- *
- * @param className - Optional additional container class names
- * @param socialLayout - Layout style for social provider buttons
- * @param socialPosition - Position of social provider buttons; `"top"` or `"bottom"`. Defaults to `"bottom"`.
- * @returns The rendered sign-in UI as a JSX element
+ * Render the username-based sign-in form. Identical to the built-in `<SignIn>`
+ * design but routes non-email inputs through `signInUsername` instead of
+ * `signInEmail`.
  */
-export function SignIn({
+export function SignInUsername({
   className,
   socialLayout,
   socialPosition = "bottom"
-}: SignInProps) {
+}: SignInUsernameProps) {
   const {
     authClient,
     basePaths,
@@ -58,6 +65,8 @@ export function SignIn({
     navigate,
     Link
   } = useAuth()
+
+  const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
 
@@ -90,6 +99,17 @@ export function SignIn({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
+  const { mutate: signInUsername } = useSignInUsername(
+    authClient as UsernameAuthClient,
+    {
+      onError: (error) => {
+        setPassword("")
+        toast.error(error.error?.message || error.message)
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    }
+  )
+
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
   })
@@ -110,11 +130,19 @@ export function SignIn({
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    signInEmail({
-      email,
-      password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
-    })
+    if (isEmail(email)) {
+      signInEmail({
+        email,
+        password,
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      })
+    } else {
+      signInUsername({
+        username: email,
+        password,
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      })
+    }
   }
 
   const showSeparator =
@@ -148,14 +176,16 @@ export function SignIn({
             <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Field data-invalid={!!fieldErrors.email}>
-                  <Label htmlFor="email">{localization.auth.email}</Label>
+                  <Label htmlFor="email">{usernameLocalization.username}</Label>
 
                   <Input
                     id="email"
                     name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder={localization.auth.emailPlaceholder}
+                    type="text"
+                    autoComplete="username email"
+                    placeholder={
+                      usernameLocalization.usernameOrEmailPlaceholder
+                    }
                     required
                     disabled={isPending}
                     onChange={() => {
