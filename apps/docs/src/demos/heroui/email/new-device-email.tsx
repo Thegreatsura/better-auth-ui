@@ -10,7 +10,7 @@ export function NewDeviceEmailDemo() {
   )
 }
 
-import { NewDeviceEmail } from "@better-auth-ui/heroui"
+import { NewDeviceEmail } from "@better-auth-ui/heroui/email"
 import { render } from "@react-email/render"
 
 const html = await render(

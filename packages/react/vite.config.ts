@@ -17,6 +17,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: "src/index.ts",
+        email: "src/email.ts",
         server: "src/server.ts"
       },
       formats: ["es"],

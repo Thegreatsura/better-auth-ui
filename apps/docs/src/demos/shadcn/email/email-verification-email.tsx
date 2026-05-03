@@ -10,7 +10,7 @@ export function EmailVerificationEmailDemo() {
   )
 }
 
-import { EmailVerificationEmail } from "@better-auth-ui/react"
+import { EmailVerificationEmail } from "@better-auth-ui/react/email"
 import { render } from "@react-email/render"
 
 const html = await render(

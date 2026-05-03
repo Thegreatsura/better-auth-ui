@@ -1,10 +1,10 @@
 import {
   NewDeviceEmail as NewDeviceEmailPrimitive,
   type NewDeviceEmailProps
-} from "@better-auth-ui/react"
+} from "@better-auth-ui/react/email"
 import { cn } from "@heroui/react"
 
-export type { NewDeviceEmailProps } from "@better-auth-ui/react"
+export type { NewDeviceEmailProps } from "@better-auth-ui/react/email"
 
 export function NewDeviceEmail({
   colors,

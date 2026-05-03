@@ -37,6 +37,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: "src/index.tsx",
+        email: "src/email.ts",
         plugins: "src/plugins.ts"
       },
       formats: ["es"],

@@ -1,10 +1,10 @@
 import {
   MagicLinkEmail as MagicLinkEmailPrimitive,
   type MagicLinkEmailProps
-} from "@better-auth-ui/react"
+} from "@better-auth-ui/react/email"
 import { cn } from "@heroui/react"
 
-export type { MagicLinkEmailProps } from "@better-auth-ui/react"
+export type { MagicLinkEmailProps } from "@better-auth-ui/react/email"
 
 export function MagicLinkEmail({
   colors,

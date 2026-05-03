@@ -16,48 +16,51 @@ import {
 } from "@react-email/components"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
+import { cn } from "../../../lib/utils"
 import {
   type EmailClassNames,
   type EmailColors,
   EmailStyles
 } from "./email-styles"
 
-const magicLinkEmailLocalization = {
-  SIGN_IN_TO_APP_NAME: "Sign in to {appName}",
-  SIGN_IN_TO_YOUR_ACCOUNT: "Sign in to your account",
-  YOUR_ACCOUNT: "your account",
+const passwordChangedEmailLocalization = {
+  YOUR_PASSWORD_HAS_BEEN_CHANGED: "Your password has been changed",
   LOGO: "Logo",
-  CLICK_BUTTON_TO_SIGN_IN:
-    "Click the button below to sign in to your account {emailAddress}.",
-  OR_COPY_AND_PASTE_URL: "Or copy and paste this URL into your browser:",
-  THIS_LINK_EXPIRES_IN_MINUTES:
-    "This link expires in {expirationMinutes} minutes.",
+  PASSWORD_CHANGED_SUCCESSFULLY: "Password changed successfully",
+  PASSWORD_FOR_YOUR_ACCOUNT_CHANGED:
+    "The password for your {appName} account {userEmail} has been changed successfully.",
+  CHANGED_AT: "Changed at",
+  IF_YOU_MADE_THIS_CHANGE:
+    "If you made this change, you can safely ignore this email. Your account is secure.",
+  I_DIDNT_MAKE_THIS_CHANGE: "I didn't make this change",
   EMAIL_SENT_BY: "Email sent by {appName}.",
-  IF_YOU_DIDNT_REQUEST_THIS_EMAIL:
-    "If you didn't request this email, you can safely ignore it. Someone else might have typed your email address by mistake.",
+  IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE:
+    "If you didn't authorize this change, please contact support immediately {supportEmail} to secure your account.",
   POWERED_BY_BETTER_AUTH: "Powered by {betterAuth}"
 }
 
 /**
- * Localization strings for the MagicLinkEmail component.
+ * Localization strings for the PasswordChangedEmail component.
  *
- * Contains all text content used in the magic link authentication email template.
+ * Contains all text content used in the password changed notification email template.
  */
-export type MagicLinkEmailLocalization = typeof magicLinkEmailLocalization
+export type PasswordChangedEmailLocalization =
+  typeof passwordChangedEmailLocalization
 
 /**
- * Props for the MagicLinkEmail component.
+ * Props for the PasswordChangedEmail component.
  */
-export interface MagicLinkEmailProps {
-  /** Magic link URL for passwordless authentication */
-  url: string
-  /** Email address of the user signing in */
+export interface PasswordChangedEmailProps {
+  /** Email address of the user account */
   email?: string
+  /** Timestamp when the password was changed */
+  timestamp?: string
+  /** URL to secure the account if unauthorized change occurred */
+  secureAccountURL?: string
   /** Name of the application sending the email */
   appName?: string
-  /** Number of minutes until the magic link expires */
-  expirationMinutes?: number
+  /** Support email address for security concerns */
+  supportEmail?: string
   /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
   /** Custom CSS class names for styling specific parts of the email */
@@ -72,39 +75,41 @@ export interface MagicLinkEmailProps {
   head?: ReactNode
   /**
    * Localization overrides for customizing email text
-   * @remarks `MagicLinkEmailLocalization`
+   * @remarks `PasswordChangedEmailLocalization`
    */
-  localization?: Partial<MagicLinkEmailLocalization>
+  localization?: Partial<PasswordChangedEmailLocalization>
 }
 
 /**
- * Email template component that sends magic link authentication emails for passwordless sign-in.
+ * Email template component that notifies users when their password has been changed.
  *
  * This email includes:
- * - Sign-in button with magic link
- * - Fallback URL for manual copy/paste
- * - Expiration time information
- * - Security notice for unauthorized requests
+ * - Password change confirmation message
+ * - Timestamp of the change
+ * - Secure account action button if unauthorized change occurred
+ * - Security warnings and support contact information
  * - Customizable branding and styling
  * - Support for light/dark mode themes
  *
  * @example
  * ```tsx
- * <MagicLinkEmail
- *   url="https://example.com/auth/verify?token=abc123"
+ * <PasswordChangedEmail
  *   email="user@example.com"
+ *   timestamp="February 10, 2025 at 4:20 PM UTC"
+ *   secureAccountURL="https://example.com/settings/security"
  *   appName="My App"
- *   expirationMinutes={5}
+ *   supportEmail="support@example.com"
  *   logoURL="https://example.com/logo.png"
  *   darkMode={true}
  * />
  * ```
  */
-export const MagicLinkEmail = ({
-  url,
+export const PasswordChangedEmail = ({
   email,
+  timestamp,
+  secureAccountURL,
   appName,
-  expirationMinutes = 5,
+  supportEmail,
   logoURL,
   colors,
   classNames,
@@ -112,15 +117,13 @@ export const MagicLinkEmail = ({
   poweredBy,
   head,
   ...props
-}: MagicLinkEmailProps) => {
+}: PasswordChangedEmailProps) => {
   const localization = {
-    ...MagicLinkEmail.localization,
+    ...PasswordChangedEmail.localization,
     ...props.localization
   }
 
-  const previewText = appName
-    ? localization.SIGN_IN_TO_APP_NAME.replace("{appName}", appName)
-    : localization.SIGN_IN_TO_YOUR_ACCOUNT
+  const previewText = localization.YOUR_PASSWORD_HAS_BEEN_CHANGED
 
   return (
     <Html>
@@ -189,78 +192,87 @@ export const MagicLinkEmail = ({
                   classNames?.title
                 )}
               >
-                {appName
-                  ? localization.SIGN_IN_TO_APP_NAME.replace(
-                      "{appName}",
-                      appName
-                    )
-                  : localization.SIGN_IN_TO_YOUR_ACCOUNT}
+                {localization.PASSWORD_CHANGED_SUCCESSFULLY}
               </Heading>
 
-              <Text
-                className={cn("m-0 text-sm font-normal", classNames?.content)}
-              >
+              <Text className={cn("text-sm font-normal", classNames?.content)}>
                 {(() => {
-                  const [beforeEmailAddress, afterEmailAddress] =
-                    localization.CLICK_BUTTON_TO_SIGN_IN.split("{emailAddress}")
+                  const textWithAppName =
+                    localization.PASSWORD_FOR_YOUR_ACCOUNT_CHANGED.replace(
+                      "{appName}",
+                      appName || ""
+                    )
+                      .replace(/\s{2,}/g, " ")
+                      .replace(" .", ".")
+
+                  const [beforeUserEmail, afterUserEmail] =
+                    textWithAppName.split("{userEmail}")
 
                   return email ? (
                     <>
-                      {beforeEmailAddress}
+                      {beforeUserEmail}
+
                       <Link
                         href={`mailto:${email}`}
                         className="text-primary font-medium"
                       >
                         {email}
                       </Link>
-                      {afterEmailAddress}
+
+                      {afterUserEmail}
                     </>
                   ) : (
-                    localization.CLICK_BUTTON_TO_SIGN_IN.replace(
-                      "{emailAddress}",
-                      ""
-                    )
+                    textWithAppName
+                      .replace("{userEmail}", "")
                       .replace(/\s{2,}/g, " ")
                       .replace(" .", ".")
                   )
                 })()}
               </Text>
 
-              <Section className="my-6">
-                <Button
-                  href={url}
+              {timestamp && (
+                <Section
                   className={cn(
-                    "inline-block whitespace-nowrap rounded-none text-sm font-medium py-2.5 px-6 bg-primary text-primary-foreground no-underline",
-                    classNames?.button
+                    "my-6 border border-border bg-muted p-4",
+                    classNames?.codeBlock
                   )}
                 >
-                  {appName
-                    ? localization.SIGN_IN_TO_APP_NAME.replace(
-                        "{appName}",
-                        appName
-                      )
-                    : localization.SIGN_IN_TO_YOUR_ACCOUNT}
-                </Button>
-              </Section>
+                  <Text
+                    className={cn(
+                      "m-0 mb-2 text-xs text-muted-foreground",
+                      classNames?.description
+                    )}
+                  >
+                    {localization.CHANGED_AT}:
+                  </Text>
+                  <Text
+                    className={cn(
+                      "m-0 text-sm font-semibold",
+                      classNames?.content
+                    )}
+                  >
+                    {timestamp}
+                  </Text>
+                </Section>
+              )}
 
-              <Text
-                className={cn(
-                  "m-0 mb-3 text-xs text-muted-foreground",
-                  classNames?.description
-                )}
-              >
-                {localization.OR_COPY_AND_PASTE_URL}
+              <Text className={cn("text-sm font-normal", classNames?.content)}>
+                {localization.IF_YOU_MADE_THIS_CHANGE}
               </Text>
 
-              <Link
-                className={cn(
-                  "break-all text-xs text-primary",
-                  classNames?.link
-                )}
-                href={url}
-              >
-                {url}
-              </Link>
+              {secureAccountURL && (
+                <Section className="mt-6">
+                  <Button
+                    href={secureAccountURL}
+                    className={cn(
+                      "inline-block whitespace-nowrap rounded-none text-sm font-medium py-2.5 px-6 bg-primary text-primary-foreground no-underline",
+                      classNames?.button
+                    )}
+                  >
+                    {localization.I_DIDNT_MAKE_THIS_CHANGE}
+                  </Button>
+                </Section>
+              )}
 
               <Hr
                 className={cn(
@@ -269,41 +281,58 @@ export const MagicLinkEmail = ({
                 )}
               />
 
-              {expirationMinutes || appName ? (
+              {appName && (
                 <Text
                   className={cn(
-                    "m-0 mb-3 text-xs text-muted-foreground",
+                    "mb-3 text-xs text-muted-foreground",
                     classNames?.description
                   )}
                 >
-                  {expirationMinutes
-                    ? localization.THIS_LINK_EXPIRES_IN_MINUTES.replace(
-                        "{expirationMinutes}",
-                        expirationMinutes.toString()
-                      )
-                    : null}
-                  {appName && (
-                    <>
-                      {expirationMinutes ? " " : ""}
-                      {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
-                    </>
-                  )}
+                  {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
                 </Text>
-              ) : null}
+              )}
 
               <Text
                 className={cn(
-                  "m-0 text-xs text-muted-foreground",
+                  "mt-3 text-xs text-muted-foreground",
                   classNames?.description
                 )}
               >
-                {localization.IF_YOU_DIDNT_REQUEST_THIS_EMAIL}
+                {(() => {
+                  const [beforeSupportEmail, afterSupportEmail] =
+                    localization.IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE.split(
+                      "{supportEmail}"
+                    )
+
+                  return supportEmail ? (
+                    <>
+                      {beforeSupportEmail}
+                      <Link
+                        href={`mailto:${supportEmail}`}
+                        className={cn(
+                          "text-primary underline",
+                          classNames?.link
+                        )}
+                      >
+                        {supportEmail}
+                      </Link>
+                      {afterSupportEmail}
+                    </>
+                  ) : (
+                    localization.IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE.replace(
+                      "{supportEmail}",
+                      ""
+                    )
+                      .replace(/\s{2,}/g, " ")
+                      .replace(" .", ".")
+                  )
+                })()}
               </Text>
 
               {poweredBy && (
                 <Text
                   className={cn(
-                    "m-0 mt-4 text-center text-[11px] text-muted-foreground",
+                    "mt-4 mb-0 text-center text-[11px] text-muted-foreground",
                     classNames?.poweredBy
                   )}
                 >
@@ -337,13 +366,15 @@ export const MagicLinkEmail = ({
   )
 }
 
-MagicLinkEmail.localization = magicLinkEmailLocalization
+PasswordChangedEmail.localization = passwordChangedEmailLocalization
 
-MagicLinkEmail.PreviewProps = {
-  url: "https://better-auth-ui.com/auth/verify?token=example-token",
+PasswordChangedEmail.PreviewProps = {
   email: "m@example.com",
+  timestamp: "February 10, 2025 at 4:20 PM UTC",
+  secureAccountURL: "https://better-auth-ui.com/settings/security",
   appName: "Better Auth",
+  supportEmail: "support@example.com",
   darkMode: true
-} as MagicLinkEmailProps
+} as PasswordChangedEmailProps
 
-export default MagicLinkEmail
+export default PasswordChangedEmail

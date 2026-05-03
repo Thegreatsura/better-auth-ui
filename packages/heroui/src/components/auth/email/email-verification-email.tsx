@@ -1,10 +1,10 @@
 import {
   EmailVerificationEmail as EmailVerificationEmailPrimitive,
   type EmailVerificationEmailProps
-} from "@better-auth-ui/react"
+} from "@better-auth-ui/react/email"
 import { cn } from "@heroui/react"
 
-export type { EmailVerificationEmailProps } from "@better-auth-ui/react"
+export type { EmailVerificationEmailProps } from "@better-auth-ui/react/email"
 
 export function EmailVerificationEmail({
   colors,

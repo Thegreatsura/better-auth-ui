@@ -16,66 +16,47 @@ import {
 } from "@react-email/components"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
+import { cn } from "../../../lib/utils"
 import {
   type EmailClassNames,
   type EmailColors,
   EmailStyles
 } from "./email-styles"
 
-/**
- * Device information displayed in the new device email notification.
- */
-export interface DeviceInfo {
-  /** Browser name and version */
-  browser?: string
-  /** Operating system name and version */
-  os?: string
-  /** Geographic location of the sign-in */
-  location?: string
-  /** IP address of the device */
-  ipAddress?: string
-  /** Timestamp of the sign-in event */
-  timestamp?: string
-}
-
-const newDeviceEmailLocalization = {
-  NEW_SIGN_IN_DETECTED: "New sign-in detected",
+const emailChangedEmailLocalization = {
+  YOUR_EMAIL_ADDRESS_HAS_BEEN_CHANGED: "Your email address has been changed",
   LOGO: "Logo",
-  NEW_SIGN_IN_TO_YOUR_ACCOUNT:
-    "We detected a new sign-in to your {appName} account {userEmail} from a device we don't recognize.",
-  DEVICE_DETAILS: "Device details",
-  BROWSER: "Browser",
-  OPERATING_SYSTEM: "Operating System",
-  LOCATION: "Location",
-  IP_ADDRESS: "IP Address",
-  TIME: "Time",
-  IF_THIS_WAS_YOU:
-    "If this was you, you can safely ignore this email. If you don't recognize this activity, please secure your account immediately.",
-  SECURE_MY_ACCOUNT: "Secure my account",
+  EMAIL_ADDRESS_CHANGED: "Email address changed",
+  EMAIL_ADDRESS_FOR_YOUR_ACCOUNT_CHANGED:
+    "The email address for your {appName} account has been changed.",
+  PREVIOUS_EMAIL: "Previous email:",
+  NEW_EMAIL: "New email:",
+  IF_YOU_MADE_THIS_CHANGE:
+    "If you made this change, you can safely ignore this email.",
+  I_DIDNT_MAKE_THIS_CHANGE: "I didn't make this change",
   EMAIL_SENT_BY: "Email sent by {appName}.",
-  IF_YOU_DIDNT_SIGN_IN:
-    "If you didn't sign in, please contact support immediately {supportEmail} to secure your account.",
+  IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE:
+    "If you didn't authorize this change, please contact support immediately {supportEmail} to secure your account.",
   POWERED_BY_BETTER_AUTH: "Powered by {betterAuth}"
 }
 
 /**
- * Localization strings for the NewDeviceEmail component.
+ * Localization strings for the EmailChangedEmail component.
  *
- * Contains all text content used in the new device detection email template.
+ * Contains all text content used in the email changed notification email template.
  */
-export type NewDeviceEmailLocalization = typeof newDeviceEmailLocalization
+export type EmailChangedEmailLocalization = typeof emailChangedEmailLocalization
 
 /**
- * Props for the NewDeviceEmail component.
+ * Props for the EmailChangedEmail component.
  */
-export interface NewDeviceEmailProps {
-  /** Email address of the user account */
-  userEmail?: string
-  /** Information about the device that signed in */
-  deviceInfo?: DeviceInfo
-  /** URL to secure the account if unauthorized access is suspected */
-  secureAccountLink?: string
+export interface EmailChangedEmailProps {
+  /** The previous email address that was changed */
+  oldEmail?: string
+  /** The new email address */
+  newEmail?: string
+  /** URL to revert the email change if unauthorized */
+  revertURL?: string
   /** Name of the application sending the email */
   appName?: string
   /** Support email address for security concerns */
@@ -94,43 +75,38 @@ export interface NewDeviceEmailProps {
   head?: ReactNode
   /**
    * Localization overrides for customizing email text
-   * @remarks `NewDeviceEmailLocalization`
+   * @remarks `EmailChangedEmailLocalization`
    */
-  localization?: Partial<NewDeviceEmailLocalization>
+  localization?: Partial<EmailChangedEmailLocalization>
 }
 
 /**
- * Email template component that notifies users when a new device signs into their account.
+ * Email template component that notifies users when their email address has been changed.
  *
  * This email includes:
- * - Device information display (browser, OS, location, IP, timestamp)
- * - Secure account action button
- * - Security warnings and support contact information
+ * - Display of both old and new email addresses
+ * - Revert action button if unauthorized change occurred
+ * - Security information and support contact details
  * - Customizable branding and styling
  * - Support for light/dark mode themes
  *
  * @example
  * ```tsx
- * <NewDeviceEmail
- *   userEmail="user@example.com"
- *   deviceInfo={{
- *     browser: "Chrome on macOS",
- *     os: "macOS 14.0",
- *     location: "San Francisco, CA",
- *     ipAddress: "192.168.1.1",
- *     timestamp: "February 10, 2025 at 4:20 PM UTC"
- *   }}
- *   secureAccountLink="https://example.com/secure-account"
+ * <EmailChangedEmail
+ *   oldEmail="old@example.com"
+ *   newEmail="new@example.com"
+ *   revertURL="https://example.com/revert?token=abc123"
  *   appName="My App"
  *   supportEmail="support@example.com"
+ *   logoURL="https://example.com/logo.png"
  *   darkMode={true}
  * />
  * ```
  */
-export const NewDeviceEmail = ({
-  userEmail,
-  deviceInfo,
-  secureAccountLink,
+export const EmailChangedEmail = ({
+  oldEmail,
+  newEmail,
+  revertURL,
   appName,
   supportEmail,
   logoURL,
@@ -140,13 +116,13 @@ export const NewDeviceEmail = ({
   poweredBy,
   head,
   ...props
-}: NewDeviceEmailProps) => {
+}: EmailChangedEmailProps) => {
   const localization = {
-    ...NewDeviceEmail.localization,
+    ...EmailChangedEmail.localization,
     ...props.localization
   }
 
-  const previewText = localization.NEW_SIGN_IN_DETECTED
+  const previewText = localization.YOUR_EMAIL_ADDRESS_HAS_BEEN_CHANGED
 
   return (
     <Html>
@@ -215,129 +191,85 @@ export const NewDeviceEmail = ({
                   classNames?.title
                 )}
               >
-                {localization.NEW_SIGN_IN_DETECTED}
+                {localization.EMAIL_ADDRESS_CHANGED}
               </Heading>
 
               <Text className={cn("text-sm font-normal", classNames?.content)}>
-                {(() => {
-                  const textWithAppName =
-                    localization.NEW_SIGN_IN_TO_YOUR_ACCOUNT.replace(
-                      "{appName}",
-                      appName || ""
-                    )
-                      .replace(/\s{2,}/g, " ")
-                      .replace(" .", ".")
-
-                  const [beforeUserEmail, afterUserEmail] =
-                    textWithAppName.split("{userEmail}")
-
-                  return userEmail ? (
-                    <>
-                      {beforeUserEmail}
-
-                      <Link
-                        href={`mailto:${userEmail}`}
-                        className="text-primary font-medium"
-                      >
-                        {userEmail}
-                      </Link>
-
-                      {afterUserEmail}
-                    </>
-                  ) : (
-                    textWithAppName
-                      .replace("{userEmail}", "")
-                      .replace(/\s{2,}/g, " ")
-                      .replace(" .", ".")
-                  )
-                })()}
+                {localization.EMAIL_ADDRESS_FOR_YOUR_ACCOUNT_CHANGED.replace(
+                  "{appName}",
+                  appName || ""
+                )
+                  .replace(/\s{2,}/g, " ")
+                  .replace(" .", ".")}
               </Text>
 
-              {deviceInfo && (
+              {(oldEmail || newEmail) && (
                 <Section
                   className={cn(
                     "my-6 border border-border bg-muted p-4",
                     classNames?.codeBlock
                   )}
                 >
-                  <Text
-                    className={cn(
-                      "m-0 mb-3 text-xs text-muted-foreground",
-                      classNames?.description
-                    )}
-                  >
-                    {localization.DEVICE_DETAILS}:
-                  </Text>
+                  {oldEmail && (
+                    <>
+                      <Text
+                        className={cn(
+                          "m-0 mb-2 text-xs text-muted-foreground",
+                          classNames?.description
+                        )}
+                      >
+                        {localization.PREVIOUS_EMAIL}
+                      </Text>
 
-                  {deviceInfo.browser && (
-                    <Text
-                      className={cn("m-0 mb-2 text-sm", classNames?.content)}
-                    >
-                      <span className="font-semibold">
-                        {localization.BROWSER}:
-                      </span>{" "}
-                      {deviceInfo.browser}
-                    </Text>
+                      <Text
+                        className={cn(
+                          "m-0 mb-4 text-sm font-semibold",
+                          classNames?.content
+                        )}
+                      >
+                        {oldEmail}
+                      </Text>
+                    </>
                   )}
 
-                  {deviceInfo.os && (
-                    <Text
-                      className={cn("m-0 mb-2 text-sm", classNames?.content)}
-                    >
-                      <span className="font-semibold">
-                        {localization.OPERATING_SYSTEM}:
-                      </span>{" "}
-                      {deviceInfo.os}
-                    </Text>
-                  )}
+                  {newEmail && (
+                    <>
+                      <Text
+                        className={cn(
+                          "m-0 mb-2 text-xs text-muted-foreground",
+                          classNames?.description
+                        )}
+                      >
+                        {localization.NEW_EMAIL}
+                      </Text>
 
-                  {deviceInfo.location && (
-                    <Text
-                      className={cn("m-0 mb-2 text-sm", classNames?.content)}
-                    >
-                      <span className="font-semibold">
-                        {localization.LOCATION}:
-                      </span>{" "}
-                      {deviceInfo.location}
-                    </Text>
-                  )}
-
-                  {deviceInfo.ipAddress && (
-                    <Text
-                      className={cn("m-0 mb-2 text-sm", classNames?.content)}
-                    >
-                      <span className="font-semibold">
-                        {localization.IP_ADDRESS}:
-                      </span>{" "}
-                      {deviceInfo.ipAddress}
-                    </Text>
-                  )}
-
-                  {deviceInfo.timestamp && (
-                    <Text className={cn("m-0 text-sm", classNames?.content)}>
-                      <span className="font-semibold">
-                        {localization.TIME}:
-                      </span>{" "}
-                      {deviceInfo.timestamp}
-                    </Text>
+                      <Text
+                        className={cn(
+                          "m-0 text-sm font-semibold text-primary",
+                          classNames?.content
+                        )}
+                      >
+                        {newEmail}
+                      </Text>
+                    </>
                   )}
                 </Section>
               )}
 
               <Text className={cn("text-sm font-normal", classNames?.content)}>
-                {localization.IF_THIS_WAS_YOU}
+                {localization.IF_YOU_MADE_THIS_CHANGE}
               </Text>
 
-              {secureAccountLink && (
-                <Section className="mt-6">
+              {revertURL && (
+                <Section className="my-6">
                   <Button
-                    href={secureAccountLink}
+                    href={revertURL}
                     className={cn(
                       "inline-block whitespace-nowrap rounded-none text-sm font-medium py-2.5 px-6 bg-primary text-primary-foreground no-underline",
                       classNames?.button
                     )}
                   >
-                    {localization.SECURE_MY_ACCOUNT}
+                    {localization.I_DIDNT_MAKE_THIS_CHANGE}
                   </Button>
                 </Section>
               )}
@@ -368,7 +300,9 @@ export const NewDeviceEmail = ({
               >
                 {(() => {
                   const [beforeSupportEmail, afterSupportEmail] =
-                    localization.IF_YOU_DIDNT_SIGN_IN.split("{supportEmail}")
+                    localization.IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE.split(
+                      "{supportEmail}"
+                    )
 
                   return supportEmail ? (
                     <>
@@ -385,7 +319,7 @@ export const NewDeviceEmail = ({
                       {afterSupportEmail}
                     </>
                   ) : (
-                    localization.IF_YOU_DIDNT_SIGN_IN.replace(
+                    localization.IF_YOU_DIDNT_AUTHORIZE_THIS_CHANGE.replace(
                       "{supportEmail}",
                       ""
                     )
@@ -432,21 +366,16 @@ export const NewDeviceEmail = ({
   )
 }
 
-NewDeviceEmail.localization = newDeviceEmailLocalization
+EmailChangedEmail.localization = emailChangedEmailLocalization
 
-NewDeviceEmail.PreviewProps = {
-  userEmail: "m@example.com",
-  deviceInfo: {
-    browser: "Chrome on macOS",
-    os: "macOS 26.2",
-    location: "San Francisco, CA, United States",
-    ipAddress: "127.0.0.1",
-    timestamp: "February 10, 2025 at 4:20 PM UTC"
-  },
-  secureAccountLink: "https://better-auth-ui.com/auth/secure-account",
-  appName: "Better Auth",
+EmailChangedEmail.PreviewProps = {
+  oldEmail: "old@example.com",
+  newEmail: "new@example.com",
   supportEmail: "support@example.com",
+  revertURL: "https://better-auth-ui.com/auth/revert-email?token=example-token",
+  appName: "Better Auth",
+  poweredBy: true,
   darkMode: true
-} as NewDeviceEmailProps
+} as EmailChangedEmailProps
 
-export default NewDeviceEmail
+export default EmailChangedEmail

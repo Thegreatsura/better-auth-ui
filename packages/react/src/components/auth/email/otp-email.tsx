@@ -1,6 +1,5 @@
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -16,22 +15,22 @@ import {
 } from "@react-email/components"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
+import { cn } from "../../../lib/utils"
 import {
   type EmailClassNames,
   type EmailColors,
   EmailStyles
 } from "./email-styles"
 
-const emailVerificationEmailLocalization = {
-  VERIFY_YOUR_EMAIL_ADDRESS: "Verify your email address",
+const otpEmailLocalization = {
+  YOUR_VERIFICATION_CODE_IS_CODE:
+    "Your verification code is {verificationCode}",
   LOGO: "Logo",
-  CLICK_BUTTON_TO_VERIFY_EMAIL:
-    "Click the button below to verify your email address {emailAddress} for your {appName} account.",
-  VERIFY_EMAIL_ADDRESS: "Verify email address",
-  OR_COPY_AND_PASTE_URL: "Or copy and paste this URL into your browser:",
-  THIS_LINK_EXPIRES_IN_MINUTES:
-    "This link expires in {expirationMinutes} minutes.",
+  VERIFY_YOUR_EMAIL: "Verify your email",
+  WE_NEED_TO_VERIFY_YOUR_EMAIL_ADDRESS:
+    "We need to verify your email address {email} before you can access your {appName} account. Enter the code below in your open browser window.",
+  THIS_CODE_EXPIRES_IN_MINUTES:
+    "This code expires in {expirationMinutes} minutes.",
   EMAIL_SENT_BY: "Email sent by {appName}.",
   IF_YOU_DIDNT_REQUEST_THIS_EMAIL:
     "If you didn't request this email, you can safely ignore it. Someone else might have typed your email address by mistake.",
@@ -39,24 +38,23 @@ const emailVerificationEmailLocalization = {
 }
 
 /**
- * Localization strings for the EmailVerificationEmail component.
+ * Localization strings for the OtpEmail component.
  *
- * Contains all text content used in the email verification email template.
+ * Contains all text content used in the OTP (One-Time Password) email template.
  */
-export type EmailVerificationEmailLocalization =
-  typeof emailVerificationEmailLocalization
+export type OtpEmailEmailLocalization = typeof otpEmailLocalization
 
 /**
- * Props for the EmailVerificationEmail component.
+ * Props for the OtpEmail component.
  */
-export interface EmailVerificationEmailProps {
-  /** Verification URL that users must click to verify their email */
-  url: string
+export interface OtpEmailProps {
+  /** The one-time verification code to display */
+  verificationCode: string
   /** Email address being verified */
   email?: string
   /** Name of the application sending the email */
   appName?: string
-  /** Number of minutes until the verification link expires */
+  /** Number of minutes until the verification code expires */
   expirationMinutes?: number
   /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
@@ -72,16 +70,16 @@ export interface EmailVerificationEmailProps {
   head?: ReactNode
   /**
    * Localization overrides for customizing email text
-   * @remarks `EmailVerificationEmailLocalization`
+   * @remarks `OtpEmailEmailLocalization`
    */
-  localization?: Partial<EmailVerificationEmailLocalization>
+  localization?: Partial<OtpEmailEmailLocalization>
 }
 
 /**
- * Email template component that sends email verification links to users.
+ * Email template component that sends one-time password (OTP) verification codes to users.
  *
  * This email includes:
- * - Verification button and fallback URL
+ * - Large, prominently displayed verification code
  * - Expiration time information
  * - Security notice for unauthorized requests
  * - Customizable branding and styling
@@ -89,21 +87,21 @@ export interface EmailVerificationEmailProps {
  *
  * @example
  * ```tsx
- * <EmailVerificationEmail
- *   url="https://example.com/verify?token=abc123"
+ * <OtpEmail
+ *   verificationCode="069420"
  *   email="user@example.com"
  *   appName="My App"
- *   expirationMinutes={60}
+ *   expirationMinutes={10}
  *   logoURL="https://example.com/logo.png"
  *   darkMode={true}
  * />
  * ```
  */
-export const EmailVerificationEmail = ({
-  url,
+export const OtpEmail = ({
+  verificationCode,
   email,
   appName,
-  expirationMinutes = 60,
+  expirationMinutes = 10,
   logoURL,
   colors,
   classNames,
@@ -111,13 +109,16 @@ export const EmailVerificationEmail = ({
   poweredBy,
   head,
   ...props
-}: EmailVerificationEmailProps) => {
+}: OtpEmailProps) => {
   const localization = {
-    ...EmailVerificationEmail.localization,
+    ...OtpEmail.localization,
     ...props.localization
   }
 
-  const previewText = localization.VERIFY_YOUR_EMAIL_ADDRESS
+  const previewText = localization.YOUR_VERIFICATION_CODE_IS_CODE.replace(
+    "{verificationCode}",
+    verificationCode
+  )
 
   return (
     <Html>
@@ -181,30 +182,27 @@ export const EmailVerificationEmail = ({
                 ))}
 
               <Heading
-                className={cn(
-                  "m-0 mb-5 text-2xl font-semibold",
-                  classNames?.title
-                )}
+                className={cn("mb-5 text-2xl font-semibold", classNames?.title)}
               >
-                {localization.VERIFY_EMAIL_ADDRESS}
+                {localization.VERIFY_YOUR_EMAIL}
               </Heading>
 
               <Text className={cn("text-sm font-normal", classNames?.content)}>
                 {(() => {
                   const textWithAppName =
-                    localization.CLICK_BUTTON_TO_VERIFY_EMAIL.replace(
+                    localization.WE_NEED_TO_VERIFY_YOUR_EMAIL_ADDRESS.replace(
                       "{appName}",
                       appName || ""
                     )
                       .replace(/\s{2,}/g, " ")
                       .replace(" .", ".")
 
-                  const [beforeEmailAddress, afterEmailAddress] =
-                    textWithAppName.split("{emailAddress}")
+                  const [beforeEmail, afterEmail] =
+                    textWithAppName.split("{email}")
 
                   return email ? (
                     <>
-                      {beforeEmailAddress}
+                      {beforeEmail}
 
                       <Link
                         href={`mailto:${email}`}
@@ -213,47 +211,32 @@ export const EmailVerificationEmail = ({
                         {email}
                       </Link>
 
-                      {afterEmailAddress}
+                      {afterEmail}
                     </>
                   ) : (
                     textWithAppName
-                      .replace("{emailAddress}", "")
+                      .replace("{email}", "")
                       .replace(/\s{2,}/g, " ")
                       .replace(" .", ".")
                   )
                 })()}
               </Text>
 
-              <Section className="my-6">
-                <Button
-                  href={url}
+              <Section
+                className={cn(
+                  "my-6 border border-border bg-muted p-6",
+                  classNames?.codeBlock
+                )}
+              >
+                <Text
                   className={cn(
-                    "inline-block whitespace-nowrap rounded-none text-sm font-medium py-2.5 px-6 bg-primary text-primary-foreground no-underline",
-                    classNames?.button
+                    "m-0 text-center text-4xl font-semibold tracking-widest",
+                    classNames?.title
                   )}
                 >
-                  {localization.VERIFY_EMAIL_ADDRESS}
-                </Button>
+                  {verificationCode}
+                </Text>
               </Section>
-
-              <Text
-                className={cn(
-                  "mb-3 text-xs text-muted-foreground",
-                  classNames?.description
-                )}
-              >
-                {localization.OR_COPY_AND_PASTE_URL}
-              </Text>
-
-              <Link
-                className={cn(
-                  "break-all text-xs text-primary",
-                  classNames?.link
-                )}
-                href={url}
-              >
-                {url}
-              </Link>
 
               <Hr
                 className={cn(
@@ -262,28 +245,23 @@ export const EmailVerificationEmail = ({
                 )}
               />
 
-              {expirationMinutes || appName ? (
-                <Text
-                  className={cn(
-                    "mb-3 text-xs text-muted-foreground",
-                    classNames?.description
-                  )}
-                >
-                  {expirationMinutes
-                    ? localization.THIS_LINK_EXPIRES_IN_MINUTES.replace(
-                        "{expirationMinutes}",
-                        expirationMinutes.toString()
-                      )
-                    : null}
-
-                  {appName && (
-                    <>
-                      {expirationMinutes ? " " : ""}
-                      {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
-                    </>
-                  )}
-                </Text>
-              ) : null}
+              <Text
+                className={cn(
+                  "mb-3 text-xs text-muted-foreground",
+                  classNames?.description
+                )}
+              >
+                {localization.THIS_CODE_EXPIRES_IN_MINUTES.replace(
+                  "{expirationMinutes}",
+                  expirationMinutes.toString()
+                )}
+                {appName && (
+                  <>
+                    {" "}
+                    {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
+                  </>
+                )}
+              </Text>
 
               <Text
                 className={cn(
@@ -331,20 +309,13 @@ export const EmailVerificationEmail = ({
   )
 }
 
-/**
- * Default localization strings for the email verification template.
- * Can be overridden via the `localization` prop.
- */
-EmailVerificationEmail.localization = emailVerificationEmailLocalization
+OtpEmail.localization = otpEmailLocalization
 
-/**
- * Example props for previewing the email template in development.
- */
-EmailVerificationEmail.PreviewProps = {
-  url: "https://better-auth-ui.com/auth/verify-email?token=example-token",
-  appName: "Better Auth",
+OtpEmail.PreviewProps = {
+  verificationCode: "069420",
   email: "m@example.com",
+  appName: "Better Auth",
   darkMode: true
-} as EmailVerificationEmailProps
+} as OtpEmailProps
 
-export default EmailVerificationEmail
+export default OtpEmail

@@ -1,10 +1,10 @@
 import {
   OtpEmail as OtpEmailPrimitive,
   type OtpEmailProps
-} from "@better-auth-ui/react"
+} from "@better-auth-ui/react/email"
 import { cn } from "@heroui/react"
 
-export type { OtpEmailProps } from "@better-auth-ui/react"
+export type { OtpEmailProps } from "@better-auth-ui/react/email"
 
 export function OtpEmail({ colors, classNames, ...props }: OtpEmailProps) {
   return (

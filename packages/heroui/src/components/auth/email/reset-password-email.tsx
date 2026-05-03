@@ -1,10 +1,10 @@
 import {
   ResetPasswordEmail as ResetPasswordEmailPrimitive,
   type ResetPasswordEmailProps
-} from "@better-auth-ui/react"
+} from "@better-auth-ui/react/email"
 import { cn } from "@heroui/react"
 
-export type { ResetPasswordEmailProps } from "@better-auth-ui/react"
+export type { ResetPasswordEmailProps } from "@better-auth-ui/react/email"
 
 export function ResetPasswordEmail({
   colors,

@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
@@ -15,46 +16,47 @@ import {
 } from "@react-email/components"
 import type { ReactNode } from "react"
 
-import { cn } from "../../lib/utils"
+import { cn } from "../../../lib/utils"
 import {
   type EmailClassNames,
   type EmailColors,
   EmailStyles
 } from "./email-styles"
 
-const otpEmailLocalization = {
-  YOUR_VERIFICATION_CODE_IS_CODE:
-    "Your verification code is {verificationCode}",
+const resetPasswordEmailLocalization = {
+  RESET_YOUR_PASSWORD: "Reset your password",
   LOGO: "Logo",
-  VERIFY_YOUR_EMAIL: "Verify your email",
-  WE_NEED_TO_VERIFY_YOUR_EMAIL_ADDRESS:
-    "We need to verify your email address {email} before you can access your {appName} account. Enter the code below in your open browser window.",
-  THIS_CODE_EXPIRES_IN_MINUTES:
-    "This code expires in {expirationMinutes} minutes.",
+  WE_RECEIVED_REQUEST_TO_RESET_PASSWORD:
+    "We received a request to reset the password for your {appName} account {email}.",
+  RESET_PASSWORD: "Reset password",
+  OR_COPY_AND_PASTE_URL: "Or copy and paste this URL into your browser:",
+  THIS_LINK_EXPIRES_IN_MINUTES:
+    "This link expires in {expirationMinutes} minutes.",
   EMAIL_SENT_BY: "Email sent by {appName}.",
-  IF_YOU_DIDNT_REQUEST_THIS_EMAIL:
-    "If you didn't request this email, you can safely ignore it. Someone else might have typed your email address by mistake.",
+  IF_YOU_DIDNT_REQUEST_PASSWORD_RESET:
+    "If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.",
   POWERED_BY_BETTER_AUTH: "Powered by {betterAuth}"
 }
 
 /**
- * Localization strings for the OtpEmail component.
+ * Localization strings for the ResetPasswordEmail component.
  *
- * Contains all text content used in the OTP (One-Time Password) email template.
+ * Contains all text content used in the password reset email template.
  */
-export type OtpEmailEmailLocalization = typeof otpEmailLocalization
+export type ResetPasswordEmailLocalization =
+  typeof resetPasswordEmailLocalization
 
 /**
- * Props for the OtpEmail component.
+ * Props for the ResetPasswordEmail component.
  */
-export interface OtpEmailProps {
-  /** The one-time verification code to display */
-  verificationCode: string
-  /** Email address being verified */
+export interface ResetPasswordEmailProps {
+  /** Password reset URL that users must click to reset their password */
+  url: string
+  /** Email address of the user requesting password reset */
   email?: string
   /** Name of the application sending the email */
   appName?: string
-  /** Number of minutes until the verification code expires */
+  /** Number of minutes until the reset link expires */
   expirationMinutes?: number
   /** Logo URL(s) - a single string or light/dark variants. If omitted, no logo is shown. */
   logoURL?: string | { light: string; dark: string }
@@ -70,16 +72,16 @@ export interface OtpEmailProps {
   head?: ReactNode
   /**
    * Localization overrides for customizing email text
-   * @remarks `OtpEmailEmailLocalization`
+   * @remarks `ResetPasswordEmailLocalization`
    */
-  localization?: Partial<OtpEmailEmailLocalization>
+  localization?: Partial<ResetPasswordEmailLocalization>
 }
 
 /**
- * Email template component that sends one-time password (OTP) verification codes to users.
+ * Email template component that sends password reset links to users.
  *
  * This email includes:
- * - Large, prominently displayed verification code
+ * - Password reset button and fallback URL
  * - Expiration time information
  * - Security notice for unauthorized requests
  * - Customizable branding and styling
@@ -87,21 +89,21 @@ export interface OtpEmailProps {
  *
  * @example
  * ```tsx
- * <OtpEmail
- *   verificationCode="069420"
+ * <ResetPasswordEmail
+ *   url="https://example.com/auth/reset-password?token=abc123"
  *   email="user@example.com"
  *   appName="My App"
- *   expirationMinutes={10}
+ *   expirationMinutes={60}
  *   logoURL="https://example.com/logo.png"
  *   darkMode={true}
  * />
  * ```
  */
-export const OtpEmail = ({
-  verificationCode,
+export const ResetPasswordEmail = ({
+  url,
   email,
   appName,
-  expirationMinutes = 10,
+  expirationMinutes = 60,
   logoURL,
   colors,
   classNames,
@@ -109,16 +111,13 @@ export const OtpEmail = ({
   poweredBy,
   head,
   ...props
-}: OtpEmailProps) => {
+}: ResetPasswordEmailProps) => {
   const localization = {
-    ...OtpEmail.localization,
+    ...ResetPasswordEmail.localization,
     ...props.localization
   }
 
-  const previewText = localization.YOUR_VERIFICATION_CODE_IS_CODE.replace(
-    "{verificationCode}",
-    verificationCode
-  )
+  const previewText = localization.RESET_YOUR_PASSWORD
 
   return (
     <Html>
@@ -182,15 +181,18 @@ export const OtpEmail = ({
                 ))}
 
               <Heading
-                className={cn("mb-5 text-2xl font-semibold", classNames?.title)}
+                className={cn(
+                  "m-0 mb-5 text-2xl font-semibold",
+                  classNames?.title
+                )}
               >
-                {localization.VERIFY_YOUR_EMAIL}
+                {localization.RESET_YOUR_PASSWORD}
               </Heading>
 
-              <Text className={cn("text-sm font-normal", classNames?.content)}>
+              <Text className={cn("text-sm", classNames?.content)}>
                 {(() => {
                   const textWithAppName =
-                    localization.WE_NEED_TO_VERIFY_YOUR_EMAIL_ADDRESS.replace(
+                    localization.WE_RECEIVED_REQUEST_TO_RESET_PASSWORD.replace(
                       "{appName}",
                       appName || ""
                     )
@@ -222,21 +224,36 @@ export const OtpEmail = ({
                 })()}
               </Text>
 
-              <Section
-                className={cn(
-                  "my-6 border border-border bg-muted p-6",
-                  classNames?.codeBlock
-                )}
-              >
-                <Text
+              <Section className="my-6">
+                <Button
+                  href={url}
                   className={cn(
-                    "m-0 text-center text-4xl font-semibold tracking-widest",
-                    classNames?.title
+                    "inline-block whitespace-nowrap rounded-none text-sm font-medium py-2.5 px-6 bg-primary text-primary-foreground no-underline",
+                    classNames?.button
                   )}
                 >
-                  {verificationCode}
-                </Text>
+                  {localization.RESET_PASSWORD}
+                </Button>
               </Section>
+
+              <Text
+                className={cn(
+                  "m-0 mb-3 text-xs text-muted-foreground",
+                  classNames?.description
+                )}
+              >
+                {localization.OR_COPY_AND_PASTE_URL}
+              </Text>
+
+              <Link
+                className={cn(
+                  "break-all text-xs text-primary",
+                  classNames?.link
+                )}
+                href={url}
+              >
+                {url}
+              </Link>
 
               <Hr
                 className={cn(
@@ -245,37 +262,42 @@ export const OtpEmail = ({
                 )}
               />
 
-              <Text
-                className={cn(
-                  "mb-3 text-xs text-muted-foreground",
-                  classNames?.description
-                )}
-              >
-                {localization.THIS_CODE_EXPIRES_IN_MINUTES.replace(
-                  "{expirationMinutes}",
-                  expirationMinutes.toString()
-                )}
-                {appName && (
-                  <>
-                    {" "}
-                    {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
-                  </>
-                )}
-              </Text>
+              {expirationMinutes || appName ? (
+                <Text
+                  className={cn(
+                    "m-0 mb-3 text-xs text-muted-foreground",
+                    classNames?.description
+                  )}
+                >
+                  {expirationMinutes
+                    ? localization.THIS_LINK_EXPIRES_IN_MINUTES.replace(
+                        "{expirationMinutes}",
+                        expirationMinutes.toString()
+                      )
+                    : null}
+
+                  {appName && (
+                    <>
+                      {expirationMinutes ? " " : ""}
+                      {localization.EMAIL_SENT_BY.replace("{appName}", appName)}
+                    </>
+                  )}
+                </Text>
+              ) : null}
 
               <Text
                 className={cn(
-                  "mt-3 text-xs text-muted-foreground",
+                  "m-0 text-xs text-muted-foreground",
                   classNames?.description
                 )}
               >
-                {localization.IF_YOU_DIDNT_REQUEST_THIS_EMAIL}
+                {localization.IF_YOU_DIDNT_REQUEST_PASSWORD_RESET}
               </Text>
 
               {poweredBy && (
                 <Text
                   className={cn(
-                    "mt-4 mb-0 text-center text-[11px] text-muted-foreground",
+                    "m-0 mt-4 text-center text-[11px] text-muted-foreground",
                     classNames?.poweredBy
                   )}
                 >
@@ -309,13 +331,13 @@ export const OtpEmail = ({
   )
 }
 
-OtpEmail.localization = otpEmailLocalization
+ResetPasswordEmail.localization = resetPasswordEmailLocalization
 
-OtpEmail.PreviewProps = {
-  verificationCode: "069420",
+ResetPasswordEmail.PreviewProps = {
+  url: "https://better-auth-ui.com/auth/reset-password?token=example-token",
   email: "m@example.com",
   appName: "Better Auth",
   darkMode: true
-} as OtpEmailProps
+} as ResetPasswordEmailProps
 
-export default OtpEmail
+export default ResetPasswordEmail

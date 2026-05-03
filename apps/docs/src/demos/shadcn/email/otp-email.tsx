@@ -10,7 +10,7 @@ export function OtpEmailDemo() {
   )
 }
 
-import { OtpEmail } from "@better-auth-ui/react"
+import { OtpEmail } from "@better-auth-ui/react/email"
 import { render } from "@react-email/render"
 
 const html = await render(
