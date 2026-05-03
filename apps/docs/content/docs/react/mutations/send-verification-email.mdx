@@ -6,9 +6,10 @@ description: Resend the verification email to an address.
 ## Usage
 
 ```tsx
-import { useSendVerificationEmail } from "@better-auth-ui/react"
+import { useAuth, useSendVerificationEmail } from "@better-auth-ui/react"
 
-const { mutate: sendVerificationEmail } = useSendVerificationEmail()
+const { authClient } = useAuth()
+const { mutate: sendVerificationEmail } = useSendVerificationEmail(authClient)
 
 sendVerificationEmail({
   email: "alice@example.com",
@@ -27,4 +28,4 @@ const { mutate } = useMutation(sendVerificationEmailOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-send-verification-email.ts" name="UseSendVerificationEmailParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/auth/send-verification-email-mutation.ts" name="SendVerificationEmailParams" />

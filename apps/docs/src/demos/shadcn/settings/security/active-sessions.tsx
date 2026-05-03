@@ -1,4 +1,4 @@
-import { ActiveSessions } from "@/components/settings/security/active-sessions"
+import { ActiveSessions } from "@/components/auth/settings/security/active-sessions"
 
 export function ActiveSessionsDemo() {
   return (

@@ -1,4 +1,4 @@
-import { UserView } from "@/components/user/user-view"
+import { UserView } from "@/components/auth/user/user-view"
 
 export function UserViewDemo() {
   return <UserView />

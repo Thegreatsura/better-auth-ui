@@ -8,9 +8,10 @@ Refetches the sessions list on success.
 ## Usage
 
 ```tsx
-import { useRevokeSession } from "@better-auth-ui/react"
+import { useAuth, useRevokeSession } from "@better-auth-ui/react"
 
-const { mutate: revokeSession } = useRevokeSession()
+const { authClient } = useAuth()
+const { mutate: revokeSession } = useRevokeSession(authClient)
 
 revokeSession({ token: session.token })
 ```
@@ -26,4 +27,4 @@ const { mutate } = useMutation(revokeSessionOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-revoke-session.ts" name="UseRevokeSessionParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/settings/revoke-session-mutation.ts" name="RevokeSessionParams" />

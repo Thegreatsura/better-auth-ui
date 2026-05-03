@@ -14,9 +14,20 @@ Make sure you've completed the [Quick Start](/docs/shadcn) guide first.
 
 <Steps>
 <Step>
+### Set up the QueryClient
+
+Create a shared `QueryClient` factory using the canonical Next.js SSR pattern — a fresh client per server request, a singleton in the browser.
+
+```ts title="lib/query-client.ts" file=<rootDir>/../../examples/next-shadcn-example/src/lib/query-client.ts
+```
+
+On the server, every call returns a new `QueryClient` so request caches never bleed across users. On the client, the singleton keeps the React Query cache consistent across navigations so `HydrationBoundary` has a stable target to rehydrate into.
+
+</Step>
+<Step>
 ### Configure AuthProvider
 
-Configure `AuthProvider` with Next.js navigation.
+Configure `AuthProvider` with Next.js navigation and wrap it in `QueryClientProvider` so `AuthProvider` picks up your shared client instead of spinning up its internal fallback.
 
 ```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/components/providers.tsx
 ```
@@ -45,13 +56,13 @@ npx shadcn@latest add https://better-auth-ui.com/r/auth.json
 ```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/auth/[path]/page.tsx
 ```
 
-The `viewPaths.auth` object contains all valid auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, and `magic-link`.
+The `viewPaths.auth` object contains the built-in auth paths: `sign-in`, `sign-up`, `sign-out`, `forgot-password`, and `reset-password`.
 
 </Step>
 <Step>
 ### Create the Settings page
 
-If you installed the `settings` component, create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
+If you installed the `settings` component, create a dynamic settings route that renders the `Settings` component for the URL segment. This page is an async server component that validates the path, checks the session with `ensureSession` (redirecting unauthenticated users before any HTML is sent), and dehydrates the session query into the client via `HydrationBoundary` so child hooks skip their loading state on hydration.
 
 ```npm
 npx shadcn@latest add https://better-auth-ui.com/r/settings.json
@@ -67,12 +78,89 @@ The `viewPaths.settings` object contains valid settings path segments: `account`
 
 ## Protecting Routes
 
-Use the `useAuthenticate` hook to protect routes and access session data.
+Better Auth UI supports two route protection patterns depending on whether your route is server-rendered or prerendered.
 
-```tsx title="app/dashboard/page.tsx" file=<rootDir>/../../examples/next-shadcn-example/src/app/dashboard/page.tsx
+### Server-rendered routes (async server component)
+
+For SSR routes, check the session in an async server component so unauthenticated users are redirected before any HTML is streamed — no flash of unauthenticated UI. Call `ensureSession` from `@better-auth-ui/react/server` with a per-request `QueryClient` (direct `auth.api` call, no HTTP hop), and wrap the rendered children in `HydrationBoundary` so downstream `useSession` calls read from the hydrated cache under `authQueryKeys.session` on mount.
+
+```tsx title="app/dashboard/page.tsx"
+import { ensureSession } from "@better-auth-ui/react/server"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { headers } from "next/headers"
+import Link from "next/link"
+import { redirect } from "next/navigation"
+
+import { auth } from "@/lib/auth"
+import { getQueryClient } from "@/lib/query-client"
+
+export default async function Dashboard() {
+  const queryClient = getQueryClient()
+
+  const session = await ensureSession(queryClient, auth, {
+    headers: await headers()
+  })
+
+  if (!session) {
+    redirect("/auth/sign-in?redirectTo=/dashboard")
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="flex flex-col items-center my-auto">
+        <h1 className="text-2xl">Hello, {session.user.email}</h1>
+
+        <Link href="/auth/sign-out">Sign Out</Link>
+      </div>
+    </HydrationBoundary>
+  )
+}
 ```
 
-The `useAuthenticate` hook will automatically redirect unauthenticated users to the sign-in page.
+Because `ensureSession` populates the query cache during SSR and `HydrationBoundary` ships the dehydrated state to the client, child components calling `useSession` render synchronously without a loading state.
+
+If you have client components outside of any protected route that also read the session — typically a header or sidebar with a `UserButton` — prefetch the session in that subtree's server parent and wrap it in its own `HydrationBoundary`. Otherwise those components trigger a fresh client-side fetch on mount. See the [example header](https://github.com/better-auth-ui/better-auth-ui/blob/main/examples/next-shadcn-example/src/components/header.tsx) for the full pattern.
+
+### Reactive protection & prerendered routes (`useAuthenticate`)
+
+Server-side checks only run when the route loads — they can't react to session changes *while* the page is mounted (token expiry, sign-out in another tab via `multiSessionPlugin`, a revoked session from the server, etc.). And for statically prerendered or purely client-rendered routes there's no server to call in the first place. The `useAuthenticate` hook covers both: it subscribes to `useSession` and redirects unauthenticated users to the sign-in page the moment the session goes away, preserving the current URL as a `redirectTo` query param.
+
+Use it in two situations:
+
+1. **Alongside an async server component** for server-rendered routes, as a second layer that keeps the UI in sync after the initial load.
+2. **On its own** for statically prerendered or purely client-rendered routes (SSG output, client-only views, marketing pages), where server-side session access isn't available.
+
+```tsx title="app/dashboard/page.tsx"
+"use client"
+
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
+import Link from "next/link"
+
+import { Spinner } from "@/components/ui/spinner"
+
+export default function Dashboard() {
+  const { authClient } = useAuth()
+  const { data: session } = useAuthenticate(authClient)
+
+  if (!session) {
+    return (
+      <div className="flex justify-center my-auto">
+        <Spinner color="current" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center my-auto">
+      <h1 className="text-2xl">Hello, {session.user.email}</h1>
+
+      <Link href="/auth/sign-out">Sign Out</Link>
+    </div>
+  )
+}
+```
+
+In combination, the async server component handles the initial render (including SSR hydration with no auth flash) and `useAuthenticate` handles everything after — giving you both first-paint protection and live reactivity to session changes.
 
 ## Example Project
 

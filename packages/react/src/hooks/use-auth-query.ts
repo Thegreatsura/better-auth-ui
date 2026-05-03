@@ -1,11 +1,15 @@
 import { type QueryKey, useQuery } from "@tanstack/react-query"
-import { type AuthFn, authQueryOptions } from "../queries/auth-query-options"
+import {
+  type AuthQueryFn,
+  type AuthQueryOptions,
+  authQueryOptions
+} from "../queries/auth-query-options"
 
-type UseAuthQueryOptions<TFn extends AuthFn, TQueryKey extends QueryKey> = Omit<
-  ReturnType<typeof authQueryOptions<TFn, TQueryKey>>,
-  "queryKey" | "queryFn"
-> &
-  NonNullable<Parameters<TFn>[0]>
+type UseAuthQueryOptions<
+  TFn extends AuthQueryFn,
+  TPrefix extends QueryKey
+> = Omit<AuthQueryOptions<TFn, TPrefix>, "queryKey" | "queryFn"> &
+  Pick<NonNullable<Parameters<TFn>[0]>, "query" | "fetchOptions">
 
 /**
  * Escape-hatch hook for Better Auth endpoints that don't have a purpose-built
@@ -17,7 +21,7 @@ type UseAuthQueryOptions<TFn extends AuthFn, TQueryKey extends QueryKey> = Omit<
  *   Query options forwarded to `useQuery`.
  */
 export function useAuthQuery<
-  TFn extends AuthFn,
+  TFn extends AuthQueryFn,
   const TQueryKey extends QueryKey
 >(
   authFn: TFn,

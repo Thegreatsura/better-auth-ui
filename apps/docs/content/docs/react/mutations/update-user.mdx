@@ -8,9 +8,10 @@ On success, the variables are optimistically merged into the cached session's `u
 ## Usage
 
 ```tsx
-import { useUpdateUser } from "@better-auth-ui/react"
+import { useAuth, useUpdateUser } from "@better-auth-ui/react"
 
-const { mutate: updateUser, isPending } = useUpdateUser()
+const { authClient } = useAuth()
+const { mutate: updateUser, isPending } = useUpdateUser(authClient)
 
 updateUser({ name: "Alice", image: "https://.../avatar.png" })
 ```
@@ -28,4 +29,4 @@ Note: using the raw factory skips the optimistic session merge — prefer `useUp
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-update-user.ts" name="UseUpdateUserParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/settings/update-user-mutation.ts" name="UpdateUserParams" />

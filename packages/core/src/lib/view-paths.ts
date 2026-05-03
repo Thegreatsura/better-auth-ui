@@ -1,7 +1,11 @@
 /**
  * View path segments for authentication routes.
+ *
+ * Contains the fixed built-ins every install ships with. Plugin-contributed
+ * paths (e.g. `magicLinkPlugin`'s `magicLink`) live on the plugin object and
+ * are read via `useAuthPlugin(plugin).viewPaths.auth.*`.
  */
-export type AuthViewPaths = {
+export interface AuthViewPaths {
   /**
    * Path segment for the sign-in view
    * @default "sign-in"
@@ -12,11 +16,6 @@ export type AuthViewPaths = {
    * @default "sign-up"
    */
   signUp: string
-  /**
-   * Path segment for the magic link authentication view
-   * @default "magic-link"
-   */
-  magicLink: string
   /**
    * Path segment for the forgot password view
    * @default "forgot-password"
@@ -37,7 +36,7 @@ export type AuthViewPaths = {
 /**
  * View path segments for settings routes.
  */
-export type SettingsViewPaths = {
+export interface SettingsViewPaths {
   /**
    * Path segment for the account settings view
    * @default "account"
@@ -64,7 +63,6 @@ export const viewPaths: ViewPaths = {
   auth: {
     signIn: "sign-in",
     signUp: "sign-up",
-    magicLink: "magic-link",
     forgotPassword: "forgot-password",
     resetPassword: "reset-password",
     signOut: "sign-out"

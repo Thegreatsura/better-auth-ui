@@ -10,7 +10,7 @@ export function PasswordChangedEmailDemo() {
   )
 }
 
-import { PasswordChangedEmail } from "@better-auth-ui/heroui"
+import { PasswordChangedEmail } from "@better-auth-ui/heroui/email"
 import { render } from "@react-email/render"
 
 const html = await render(

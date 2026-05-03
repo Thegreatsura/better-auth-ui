@@ -1,4 +1,4 @@
-import { ChangePassword } from "@/components/settings/security/change-password"
+import { ChangePassword } from "@/components/auth/settings/security/change-password"
 
 export function ChangePasswordDemo() {
   return (

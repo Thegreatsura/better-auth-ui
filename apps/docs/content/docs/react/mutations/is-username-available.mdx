@@ -10,13 +10,22 @@ Modeled as a mutation (not a query) because callers typically trigger the check 
 ## Usage
 
 ```tsx
-import { useIsUsernameAvailable } from "@better-auth-ui/react"
+import {
+  type UsernameAuthClient,
+  useAuth,
+  useIsUsernameAvailable
+} from "@better-auth-ui/react"
 
-const { mutateAsync: checkUsername, data } = useIsUsernameAvailable()
+const { authClient } = useAuth()
+const { mutateAsync: checkUsername, data } = useIsUsernameAvailable(
+  authClient as UsernameAuthClient
+)
 
 const result = await checkUsername({ username: "alice" })
 // result.available -> boolean
 ```
+
+`useIsUsernameAvailable` requires the Better Auth `username` plugin. Cast `authClient` to `UsernameAuthClient` so TypeScript picks up the plugin-extended method signature.
 
 ## Options factory
 
@@ -29,4 +38,4 @@ const { mutate } = useMutation(isUsernameAvailableOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-is-username-available.ts" name="UseIsUsernameAvailableParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/username/is-username-available-mutation.ts" name="IsUsernameAvailableParams" />

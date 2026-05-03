@@ -8,9 +8,10 @@ Thin wrapper over [`useSession`](/docs/react/queries/session) that returns `sess
 ## Usage
 
 ```tsx
-import { useUser } from "@better-auth-ui/react"
+import { useAuth, useUser } from "@better-auth-ui/react"
 
-const { data: user } = useUser()
+const { authClient } = useAuth()
+const { data: user } = useUser(authClient)
 ```
 
 Accepts the same arguments as `useSession` — see its [Params](/docs/react/queries/session#params).

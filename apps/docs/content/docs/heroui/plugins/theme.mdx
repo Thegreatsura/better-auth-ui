@@ -1,0 +1,102 @@
+---
+title: Theme
+description: Add theme selection with system, light, and dark modes to your authentication flow.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The theme plugin adds theme selection to your authentication UI. Users can switch between system, light, and dark themes from the user button dropdown and account settings.
+
+## Setup
+
+<Steps>
+<Step>
+### Register the UI plugin
+
+The plugin is theme-library agnostic. The recommended setup is to pass your theme library's hook (e.g. `useTheme` from [next-themes](https://github.com/pacocoursey/next-themes)) so the plugin's slot components read live theme state inside your `<ThemeProvider>` — no inner wrapper required.
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { themePlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
+import { ThemeProvider, useTheme } from "next-themes"
+import type { ReactNode } from "react"
+
+import { authClient } from "@/lib/auth-client"
+
+export function Providers({ children }: { children: ReactNode }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <AuthProvider
+        authClient={authClient}
+        plugins={[
+          themePlugin({ useTheme }) // [!code highlight]
+        ]}
+      >
+        {children}
+      </AuthProvider>
+    </ThemeProvider>
+  )
+}
+```
+
+The plugin invokes `useTheme()` inside its slot components on every render, so the call always happens within your `<ThemeProvider>` even when both providers live in the same component.
+
+</Step>
+<Step>
+### Or pass static theme state
+
+If you don't have a hook (e.g. you're managing the theme with `useState` or a custom controller), pass both `theme` **and** `setTheme` from a stateful source. The plugin re-runs on every render of the parent, so slot components stay in sync as long as your state owner re-renders on change.
+
+```tsx title="components/providers.tsx"
+const [theme, setTheme] = useState("system") // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    themePlugin({ // [!code highlight]
+      theme, // [!code highlight]
+      setTheme, // [!code highlight]
+      themes: ["system", "light", "dark"] // [!code highlight]
+    }) // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+The two forms are mutually exclusive — you pass either `useTheme` **or** the `theme`/`setTheme` pair.
+
+</Step>
+</Steps>
+
+## Components
+
+### `<UserButton />`
+
+<ComponentPreview name="heroui-theme-toggle-item" />
+
+### `<Appearance />`
+
+<ComponentPreview name="heroui-theme-appearance" />
+
+The `<Appearance />` card is automatically rendered in `<AccountSettings />` when the plugin is registered.
+
+**Usage**
+
+```tsx
+import { Appearance } from "@better-auth-ui/heroui/plugins"
+
+<Appearance />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/theme/appearance.tsx" name="AppearanceProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../packages/heroui/src/lib/auth/theme-plugin.ts" name="ThemePluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/theme/theme-localization.ts" name="ThemeLocalization" />

@@ -3,9 +3,6 @@ export const localization = {
     /** @remarks `"Account"` */
     account: "Account",
 
-    /** @remarks `"Add Account"` */
-    addAccount: "Add Account",
-
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
 
@@ -36,12 +33,6 @@ export const localization = {
     /** @remarks `"Invalid reset password token"` */
     invalidResetPasswordToken: "Invalid reset password token",
 
-    /** @remarks `"Magic Link"` */
-    magicLink: "Magic Link",
-
-    /** @remarks `"Magic link sent to your email"` */
-    magicLinkSent: "Magic link sent to your email",
-
     /** @remarks `"Name"` */
     name: "Name",
 
@@ -59,9 +50,6 @@ export const localization = {
 
     /** @remarks `"OR"` */
     or: "OR",
-
-    /** @remarks `"Passkey"` */
-    passkey: "Passkey",
 
     /** @remarks `"Password"` */
     password: "Password",
@@ -90,9 +78,6 @@ export const localization = {
     /** @remarks `"Reset Password"` */
     resetPassword: "Reset Password",
 
-    /** @remarks `"Send Magic Link"` */
-    sendMagicLink: "Send Magic Link",
-
     /** @remarks `"Send reset link"` */
     sendResetLink: "Send reset link",
 
@@ -107,24 +92,6 @@ export const localization = {
 
     /** @remarks `"Sign Up"` */
     signUp: "Sign Up",
-
-    /** @remarks `"Switch Account"` */
-    switchAccount: "Switch Account",
-
-    /** @remarks `"Username"` */
-    username: "Username",
-
-    /** @remarks `"Username is available"` */
-    usernameAvailable: "Username is available",
-
-    /** @remarks `"Enter your username or email"` */
-    usernameOrEmailPlaceholder: "Enter your username or email",
-
-    /** @remarks `"Enter your username"` */
-    usernamePlaceholder: "Enter your username",
-
-    /** @remarks `"Username is already taken. Please try another."` */
-    usernameTaken: "Username is already taken. Please try another.",
 
     /** @remarks `"Verification email sent!"` */
     verificationEmailSent: "Verification email sent!",
@@ -172,11 +139,11 @@ export const localization = {
     /** @remarks `"Link your {{provider}} account"` */
     linkProvider: "Link your {{provider}} account",
 
-    /** @remarks `"Appearance"` */
-    appearance: "Appearance",
-
     /** @remarks `"Cancel"` */
     cancel: "Cancel",
+
+    /** @remarks `"Copy to clipboard"` */
+    copyToClipboard: "Copy to clipboard",
 
     /** @remarks `"Change email"` */
     changeEmail: "Change email",
@@ -196,45 +163,14 @@ export const localization = {
     /** @remarks `"Enter your current password"` */
     currentPasswordPlaceholder: "Enter your current password",
 
-    /** @remarks `"Dark"` */
-    dark: "Dark",
-
     /** @remarks `"Danger zone"` */
     dangerZone: "Danger zone",
-
-    /** @remarks `"Delete user"` */
-    deleteUser: "Delete user",
-
-    /** @remarks `"Permanently remove your account and all associated data. This cannot be undone."` */
-    deleteUserDescription:
-      "Permanently remove your account and all associated data. This cannot be undone.",
-
-    /** @remarks `"Check your email to confirm account deletion."` */
-    deleteUserVerificationSent: "Check your email to confirm account deletion.",
-
-    /** @remarks `"Your account has been deleted."` */
-    deleteUserSuccess: "Your account has been deleted.",
-
-    /** @remarks `"Light"` */
-    light: "Light",
-
-    /** @remarks `"Manage accounts"` */
-    manageAccounts: "Manage accounts",
-
-    /** @remarks `"Add passkey"` */
-    addPasskey: "Add passkey",
 
     /** @remarks `"Delete"` */
     delete: "Delete",
 
-    /** @remarks `"Passkeys"` */
-    passkeys: "Passkeys",
-
-    /** @remarks `"Manage your passkeys for secure access."` */
-    passkeysDescription: "Manage your passkeys for secure access.",
-
-    /** @remarks `"Securely access your account without a password."` */
-    passkeysInstructions: "Securely access your account without a password.",
+    /** @remarks `"Optional"` */
+    optional: "Optional",
 
     /** @remarks `"Profile"` */
     profile: "Profile",
@@ -267,11 +203,8 @@ export const localization = {
     /** @remarks `"Settings"` */
     settings: "Settings",
 
-    /** @remarks `"System"` */
-    system: "System",
-
-    /** @remarks `"Theme"` */
-    theme: "Theme",
+    /** @remarks `"Time"` */
+    time: "Time",
 
     /** @remarks `"Unlink {{provider}}"` */
     unlinkProvider: "Unlink {{provider}}",

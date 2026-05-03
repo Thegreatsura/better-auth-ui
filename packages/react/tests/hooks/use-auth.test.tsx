@@ -87,11 +87,6 @@ describe("useAuth", () => {
       const { result } = renderHook(() => useAuth(), { wrapper })
       expect(typeof result.current.navigate).toBe("function")
     })
-
-    it("should have Link component", () => {
-      const { result } = renderHook(() => useAuth(), { wrapper })
-      expect(typeof result.current.Link).toBe("function")
-    })
   })
 
   describe("configuration merging", () => {

@@ -1,30 +1,57 @@
 "use client"
 
-import { deepmerge, defaultAuthConfig } from "@better-auth-ui/core"
+import {
+  type AdditionalField,
+  type AuthConfig,
+  type DeepPartial,
+  deepmerge,
+  defaultAuthConfig
+} from "@better-auth-ui/core"
 import {
   QueryClient,
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import { type PropsWithChildren, useContext } from "react"
+import {
+  createContext,
+  type PropsWithChildren,
+  type ReactNode,
+  useContext
+} from "react"
 
-import type { AnyAuthClient } from "../../lib/auth-client"
-import type { AnyAuthConfig, AuthConfig } from "../../lib/auth-config"
-import { AuthContext } from "../../lib/auth-context"
+import type { AuthClient } from "../../lib/auth-client"
 
-const fallbackQueryClient = new QueryClient()
+const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
-const baseAuthConfig: AnyAuthConfig = {
-  ...defaultAuthConfig,
-  Link: (props) => <a {...props} />
+const fallbackQueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5000
+    }
+  }
+})
+
+declare module "@better-auth-ui/core" {
+  interface AuthConfig {
+    /**
+     * The auth client to use for the authentication context.
+     * @remarks `AuthClient`
+     */
+    authClient: AuthClient
+  }
+
+  /** Widen `AdditionalField.label` to `ReactNode` in the React package. */
+  interface AdditionalFieldRegister {
+    label: ReactNode
+  }
 }
 
-export type AuthProviderProps = PropsWithChildren<AnyAuthConfig> & {
-  authClient: AnyAuthClient
+export type AuthProviderProps<TAuthClient = AuthClient> = PropsWithChildren<
+  DeepPartial<AuthConfig>
+> & {
+  authClient: TAuthClient
   navigate: (options: { to: string; replace?: boolean }) => void
-  /**
-   * TanStack QueryClient to use for your application's queries
-   */
+  /** TanStack QueryClient to use for your application's queries */
   queryClient?: QueryClient
 }
 
@@ -43,33 +70,69 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const contextQueryClient = useContext(QueryClientContext)
-  const resolvedQueryClient =
-    queryClient || contextQueryClient || fallbackQueryClient
-
-  const mergedConfig = deepmerge(baseAuthConfig, config) as AuthConfig
+  const mergedConfig = deepmerge(defaultAuthConfig, {
+    ...config,
+    viewPaths: {
+      auth: {
+        ...defaultAuthConfig.viewPaths.auth,
+        ...config.viewPaths?.auth
+      },
+      settings: {
+        ...defaultAuthConfig.viewPaths.settings,
+        ...config.viewPaths?.settings
+      }
+    }
+  } as AuthConfig)
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("redirectTo")?.trim()) ||
     mergedConfig.redirectTo
 
-  return (
-    <AuthContext.Provider value={mergedConfig}>
-      <QueryClientProvider client={resolvedQueryClient}>
+  // Merge plugin-contributed `additionalFields` with user-supplied ones.
+  // Plugin order is preserved; user-supplied entries with the same `name`
+  // override the plugin contribution.
+  const fieldsByName = new Map<string, AdditionalField>()
+  for (const plugin of mergedConfig.plugins ?? []) {
+    for (const field of plugin.additionalFields ?? []) {
+      fieldsByName.set(field.name, field)
+    }
+  }
+  for (const field of mergedConfig.additionalFields ?? []) {
+    fieldsByName.set(field.name, field)
+  }
+  mergedConfig.additionalFields = Array.from(fieldsByName.values())
+
+  const contextQueryClient = useContext(QueryClientContext)
+
+  if (contextQueryClient) {
+    return (
+      <AuthContext.Provider value={mergedConfig}>
         {children}
-      </QueryClientProvider>
-    </AuthContext.Provider>
+      </AuthContext.Provider>
+    )
+  }
+
+  return (
+    <QueryClientProvider client={queryClient || fallbackQueryClient}>
+      <AuthContext.Provider value={mergedConfig}>
+        {children}
+      </AuthContext.Provider>
+    </QueryClientProvider>
   )
 }
 
 /**
  * Accesses the current authentication configuration from AuthContext.
  *
+ * UI packages widen the plugin type globally via the `Register` interface
+ * (see module augmentation in `@better-auth-ui/heroui`), so callers don't
+ * need to pass a generic.
+ *
  * @returns The merged authentication configuration provided by AuthProvider.
  * @throws If no AuthProvider is present in the component tree.
  */
-export function useAuth() {
+export function useAuth(): AuthConfig {
   const context = useContext(AuthContext)
 
   if (!context) {

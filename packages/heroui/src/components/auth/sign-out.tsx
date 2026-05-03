@@ -12,9 +12,9 @@ export type SignOutProps = {
  * @returns A Card containing a centered Spinner shown during the sign-out process
  */
 export function SignOut({ className }: SignOutProps) {
-  const { basePaths, navigate, viewPaths } = useAuth()
+  const { authClient, basePaths, navigate, viewPaths } = useAuth()
 
-  const { mutate: signOut } = useSignOut({
+  const { mutate: signOut } = useSignOut(authClient, {
     onError: (error) => {
       toast.danger(error.error?.message || error.message)
       navigate({

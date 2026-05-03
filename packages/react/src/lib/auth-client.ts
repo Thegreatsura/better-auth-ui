@@ -1,43 +1,45 @@
-import { passkeyClient } from "@better-auth/passkey/client"
-import {
+import type { passkeyClient } from "@better-auth/passkey/client"
+import type {
   magicLinkClient,
   multiSessionClient,
   usernameClient
 } from "better-auth/client/plugins"
-import { createAuthClient } from "better-auth/react"
-import type { AuthConfig } from "./auth-config"
+import type { createAuthClient } from "better-auth/react"
 
-export type { PathToObject } from "better-auth/client"
+export type AuthClient = ReturnType<typeof createAuthClient>
+
+// The per-plugin client types below are pure type-level declarations — no
+// runtime code is emitted for them. This avoids relying on `/* @__PURE__ */`
+// being honoured by every downstream bundler (RSC graphs, dev builds,
+// Turbopack, older configs, etc.) and keeps the plugin packages out of
+// consumers' runtime bundles entirely.
+
+export type MagicLinkAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof magicLinkClient>] }>
+>
+
+export type MultiSessionAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof multiSessionClient>] }>
+>
+
+export type PasskeyAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof passkeyClient>] }>
+>
+
+export type UsernameAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof usernameClient>] }>
+>
 
 /**
- * Type representing any auth client created with `createAuthClient`.
+ * Unwraps a Better Auth client method's `data` payload.
  *
- * Used for type flexibility when accepting auth clients that may have different
- * plugin configurations or feature sets.
+ * Pass the method type directly, e.g. `TAuthClient["getSession"]` or
+ * `TAuthClient["passkey"]["listUserPasskeys"]`. Keeping it method-typed
+ * (instead of a path-string utility) preserves IntelliSense on the derived
+ * types.
  */
-export type AnyAuthClient = Omit<ReturnType<typeof createAuthClient>, "signUp">
-
-const authClient = createAuthClient({
-  plugins: [
-    magicLinkClient(),
-    multiSessionClient(),
-    passkeyClient(),
-    usernameClient()
-  ]
-})
-
-/**
- * Type representing the default auth client with plugins enabled.
- *
- * This is the standard auth client type used throughout the React package
- * and includes all required plugins enabled.
- */
-
-type ResolveAuthClient<T> = "AuthClient" extends keyof T
-  ? T["AuthClient"]
-  : typeof authClient
-
-/**
- * The resolved auth client type, either from user augmentation or the default.
- */
-export type AuthClient = ResolveAuthClient<AuthConfig>
+export type InferData<TMethod> = TMethod extends (
+  ...args: infer _Args
+) => Promise<infer TResult extends { data: unknown }>
+  ? TResult["data"]
+  : never

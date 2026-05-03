@@ -31,11 +31,14 @@ export type ForgotPasswordProps = {
  * @returns The forgot-password form UI as a JSX element
  */
 export function ForgotPassword({ className }: ForgotPasswordProps) {
-  const { basePaths, localization, viewPaths, Link } = useAuth()
+  const { authClient, basePaths, localization, viewPaths, Link } = useAuth()
 
-  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
-    onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
-  })
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
+    }
+  )
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()

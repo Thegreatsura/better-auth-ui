@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "tsc --watch",
-    "email": "email dev --dir src/components/email -p 9000",
+    "dev": "vite build --watch",
+    "email": "email dev --dir src/components/auth/email -p 9000",
     "test": "vitest"
   },
   "files": [
@@ -19,46 +19,48 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.js"
+    "./email": {
+      "types": "./dist/email.d.ts",
+      "import": "./dist/email.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
     }
   },
   "devDependencies": {
+    "@better-auth/passkey": "^1.6.9",
     "@react-email/components": "^1.0.12",
     "@react-email/preview-server": "^5.2.10",
-    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-query": "^5.100.8",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "^19.2.14",
     "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/browser-playwright": "^4.1.4",
-    "@better-auth/passkey": "^1.6.5",
-    "better-auth": "^1.6.5",
+    "@vitest/browser-playwright": "^4.1.5",
+    "better-auth": "^1.6.9",
     "clsx": "^2.1.1",
     "playwright": "^1.59.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-email": "^6.0.0",
+    "react-email": "^6.0.5",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.2",
-    "vitest": "^4.1.4",
-    "zod": "^4.3.6"
-  },
-  "dependencies": {
-    "@better-auth-ui/core": "*"
+    "tailwindcss": "^4.2.4",
+    "vitest": "^4.1.5",
+    "zod": "^4.4.2"
   },
   "peerDependencies": {
+    "@better-auth-ui/core": "*",
+    "@better-auth/passkey": ">=1.6.9",
     "@react-email/components": ">=1.0.12",
-    "@tanstack/react-query": ">=5.99.0",
-    "@better-auth/passkey": ">=1.6.5",
-    "better-auth": ">=1.6.5",
+    "@tanstack/react-query": ">=5.100.8",
+    "better-auth": ">=1.6.9",
     "clsx": ">=2.0.0",
     "react": ">=19.2.5",
     "react-dom": ">=19.2.5",
     "tailwind-merge": ">=3.5.0",
-    "tailwindcss": ">=4.2.2",
-    "zod": ">=4.3.0"
+    "tailwindcss": ">=4.2.4",
+    "zod": ">=4.4.2"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-import { UserButton } from "@/components/user/user-button"
+import { UserButton } from "@/components/auth/user/user-button"
 
 export default function Home() {
   return (

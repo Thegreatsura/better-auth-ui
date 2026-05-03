@@ -1,30 +1,46 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
+import {
+  deleteUserPlugin,
+  multiSessionPlugin,
+  themePlugin,
+  usernamePlugin
+} from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useTheme } from "next-themes"
+import { ThemeProvider, useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
 
 export function Providers({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
-  const { theme, setTheme } = useTheme()
 
   return (
-    <AuthProvider
-      authClient={authClient}
-      appearance={{ theme, setTheme }}
-      deleteUser={{ enabled: true }}
-      magicLink
-      multiSession
-      passkey
-      redirectTo="/dashboard"
-      socialProviders={["github"]}
-      navigate={navigate}
-    >
-      {children}
+    <ThemeProvider defaultTheme="system" enableSystem disableTransitionOnChange>
+      <AuthProvider
+        authClient={authClient}
+        redirectTo="/settings/account"
+        socialProviders={["github"]}
+        navigate={navigate}
+        additionalFields={[
+          {
+            name: "birthday",
+            type: "date",
+            label: "Birthday",
+            signUp: true
+          }
+        ]}
+        plugins={[
+          deleteUserPlugin(),
+          multiSessionPlugin(),
+          themePlugin({ useTheme }),
+          usernamePlugin({ isUsernameAvailable: true })
+        ]}
+      >
+        {children}
 
-      <Toast.Provider />
-    </AuthProvider>
+        <Toast.Provider />
+      </AuthProvider>
+    </ThemeProvider>
   )
 }

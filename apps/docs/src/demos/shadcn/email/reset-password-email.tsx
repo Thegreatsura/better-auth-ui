@@ -10,7 +10,7 @@ export function ResetPasswordEmailDemo() {
   )
 }
 
-import { ResetPasswordEmail } from "@better-auth-ui/react"
+import { ResetPasswordEmail } from "@better-auth-ui/react/email"
 import { render } from "@react-email/render"
 
 const html = await render(

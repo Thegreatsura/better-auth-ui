@@ -10,6 +10,7 @@
       "description": "Wraps the Better Auth UI provider and mounts an ErrorToaster that surfaces query and mutation failures via sonner.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@tanstack/react-query",
         "better-auth"
       ],
@@ -26,13 +27,47 @@
       ]
     },
     {
+      "name": "additional-field",
+      "type": "registry:component",
+      "title": "Additional Field",
+      "description": "Renders a configured additional user field on the sign-up form and user profile, with support for string, number, boolean, date, datetime, select, combobox, slider, and hidden types.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "date-fns",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "checkbox",
+        "combobox",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "popover",
+        "select",
+        "slider",
+        "switch",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "src/components/auth/additional-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "sign-in",
       "type": "registry:component",
       "title": "Sign In",
-      "description": "A complete sign-in form component with email/password, magic link, and social provider support.",
+      "description": "A complete sign-in form component with email/password and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@latest",
-        "@better-auth/passkey",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
@@ -53,14 +88,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/magic-link-button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/auth/passkey-button.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/auth/provider-button.tsx",
           "type": "registry:component"
         },
@@ -74,9 +101,10 @@
       "name": "sign-up",
       "type": "registry:component",
       "title": "Sign Up",
-      "description": "A complete sign-up form component with name, email, password fields, magic link, and social provider support.",
+      "description": "A complete sign-up form component with name, email, password fields, and social provider support.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@tanstack/react-pacer",
         "better-auth",
         "lucide-react"
@@ -88,15 +116,12 @@
         "field",
         "input-group",
         "sonner",
-        "spinner"
+        "spinner",
+        "https://better-auth-ui.com/r/additional-field.json"
       ],
       "files": [
         {
           "path": "src/components/auth/sign-up.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/auth/magic-link-button.tsx",
           "type": "registry:component"
         },
         {
@@ -113,10 +138,10 @@
       "name": "magic-link",
       "type": "registry:component",
       "title": "Magic Link",
-      "description": "A magic link sign-in form component with email input and optional social provider support.",
+      "description": "Magic-link plugin: passwordless email sign-in form, toggle button between password and magic-link routes, and the AuthPlugin scaffolding that registers the view with `<Auth>`.",
       "dependencies": [
         "@better-auth-ui/react@latest",
-        "@better-auth/passkey",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
@@ -124,6 +149,7 @@
         "button",
         "card",
         "input",
+        "label",
         "field",
         "separator",
         "sonner",
@@ -131,15 +157,19 @@
       ],
       "files": [
         {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/magic-link-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/components/auth/magic-link.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/components/auth/magic-link-button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/auth/passkey-button.tsx",
           "type": "registry:component"
         },
         {
@@ -153,11 +183,224 @@
       ]
     },
     {
+      "name": "username",
+      "type": "registry:component",
+      "title": "Username",
+      "description": "Username plugin: username-based sign-in form and availability checking field. Registers a sign-in view that accepts both username and email, and a username field with real-time availability checking rendered on the sign-up form.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/react-pacer",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "checkbox",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "separator",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/username-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/username/username-field.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/username/sign-in-username.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "passkey",
+      "type": "registry:component",
+      "title": "Passkey",
+      "description": "Passkey plugin: WebAuthn sign-in button and passkey management card. Registers a passkey sign-in button on the sign-in form and a Passkeys security card in account settings.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@better-auth/passkey",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "button",
+        "card",
+        "field",
+        "input",
+        "label",
+        "separator",
+        "skeleton",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/passkey-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/passkey-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/security/passkeys.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/security/passkey.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "multi-session",
+      "type": "registry:component",
+      "title": "Multi Session",
+      "description": "Multi-session plugin: Enable multiple concurrent sessions with account switching. Registers account management cards in account settings and a switch account submenu in the user button.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "dropdown-menu",
+        "separator",
+        "sonner",
+        "spinner",
+        "https://better-auth-ui.com/r/user-view.json"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/multi-session-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/multi-session/manage-accounts.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/manage-account.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu-content.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu-item.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "theme",
+      "type": "registry:component",
+      "title": "Theme",
+      "description": "Theme plugin: theme-library agnostic theme selection. Registers an Appearance card in account settings and a theme toggle in the user button. Pass `useTheme` from your theme library (e.g. next-themes) or static `setTheme`.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "lucide-react"
+      ],
+      "registryDependencies": ["card", "field", "label", "radio-group", "tabs"],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/theme-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/theme/appearance.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/theme/theme-toggle-item.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "delete-user",
+      "type": "registry:component",
+      "title": "Delete User",
+      "description": "Delete-user plugin: danger zone card with account deletion and confirmation dialog. Registers a DangerZone security card in account settings that is shown when the plugin is registered.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "button",
+        "card",
+        "field",
+        "input",
+        "label",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/delete-user-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/delete-user/danger-zone.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/delete-user/delete-user.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "forgot-password",
       "type": "registry:component",
       "title": "Forgot Password",
       "description": "A form component for requesting a password reset link via email.",
-      "dependencies": ["@better-auth-ui/react@latest", "better-auth"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth"
+      ],
       "registryDependencies": [
         "button",
         "card",
@@ -180,6 +423,7 @@
       "description": "A form component for resetting password with a token from the URL.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
@@ -203,7 +447,11 @@
       "type": "registry:component",
       "title": "Sign Out",
       "description": "A component that signs the user out when mounted and displays a loading state.",
-      "dependencies": ["@better-auth-ui/react@latest", "better-auth"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth"
+      ],
       "registryDependencies": ["card", "spinner"],
       "files": [
         {
@@ -217,12 +465,14 @@
       "type": "registry:component",
       "title": "Auth",
       "description": "A unified authentication component that renders the appropriate auth view based on path or view prop.",
-      "dependencies": ["@better-auth-ui/react@latest"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest"
+      ],
       "registryDependencies": [
         "https://better-auth-ui.com/r/auth-provider.json",
         "https://better-auth-ui.com/r/sign-in.json",
         "https://better-auth-ui.com/r/sign-up.json",
-        "https://better-auth-ui.com/r/magic-link.json",
         "https://better-auth-ui.com/r/forgot-password.json",
         "https://better-auth-ui.com/r/reset-password.json",
         "https://better-auth-ui.com/r/sign-out.json"
@@ -241,13 +491,14 @@
       "description": "Renders the current user's avatar using session data. Shows a skeleton while loading and falls back to initials when no image is available.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
       "registryDependencies": ["avatar", "skeleton"],
       "files": [
         {
-          "path": "src/components/user/user-avatar.tsx",
+          "path": "src/components/auth/user/user-avatar.tsx",
           "type": "registry:component"
         }
       ]
@@ -257,14 +508,18 @@
       "type": "registry:component",
       "title": "User View",
       "description": "Renders a user view that shows the user's avatar alongside their name and email.",
-      "dependencies": ["@better-auth-ui/react@latest", "better-auth"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth"
+      ],
       "registryDependencies": [
         "skeleton",
         "https://better-auth-ui.com/r/user-avatar.json"
       ],
       "files": [
         {
-          "path": "src/components/user/user-view.tsx",
+          "path": "src/components/auth/user/user-view.tsx",
           "type": "registry:component"
         }
       ]
@@ -273,9 +528,10 @@
       "name": "user-button",
       "type": "registry:component",
       "title": "User Button",
-      "description": "Renders a user button with dropdown menu showing user info, settings link, theme controls, and sign-in/sign-out actions.",
+      "description": "Renders a user button with dropdown menu showing user info, settings link, plugin-contributed menu items (e.g. theme toggle, account switcher), and sign-in/sign-out actions.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
@@ -283,20 +539,11 @@
         "button",
         "dropdown-menu",
         "spinner",
-        "tabs",
         "https://better-auth-ui.com/r/user-view.json"
       ],
       "files": [
         {
-          "path": "src/components/user/user-button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/user/switch-account-menu.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/user/switch-account-item.tsx",
+          "path": "src/components/auth/user/user-button.tsx",
           "type": "registry:component"
         }
       ]
@@ -324,15 +571,16 @@
         "skeleton",
         "sonner",
         "spinner",
+        "https://better-auth-ui.com/r/additional-field.json",
         "https://better-auth-ui.com/r/user-avatar.json"
       ],
       "files": [
         {
-          "path": "src/components/settings/account/user-profile.tsx",
+          "path": "src/components/auth/settings/account/user-profile.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/account/change-avatar.tsx",
+          "path": "src/components/auth/settings/account/change-avatar.tsx",
           "type": "registry:component"
         }
       ]
@@ -342,7 +590,11 @@
       "type": "registry:component",
       "title": "Change Email",
       "description": "A form component for changing the user's email address with verification.",
-      "dependencies": ["@better-auth-ui/react@latest", "better-auth"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth"
+      ],
       "registryDependencies": [
         "button",
         "card",
@@ -354,50 +606,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/account/change-email.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "appearance",
-      "type": "registry:component",
-      "title": "Appearance",
-      "description": "A theme selector card with visual theme previews for system, light, and dark themes.",
-      "dependencies": ["@better-auth-ui/react@latest", "lucide-react"],
-      "registryDependencies": ["card", "field", "label", "radio-group"],
-      "files": [
-        {
-          "path": "src/components/settings/account/appearance.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "manage-accounts",
-      "type": "registry:component",
-      "title": "Manage Accounts",
-      "description": "Display and manage multiple signed-in accounts for multi-session support. Shows all device sessions with actions to switch between or revoke sessions.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "better-auth",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "dropdown-menu",
-        "sonner",
-        "spinner",
-        "https://better-auth-ui.com/r/user-view.json"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/account/manage-accounts.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/account/manage-account.tsx",
+          "path": "src/components/auth/settings/account/change-email.tsx",
           "type": "registry:component"
         }
       ]
@@ -406,17 +615,18 @@
       "name": "account-settings",
       "type": "registry:component",
       "title": "Account Settings",
-      "description": "A container component that displays account settings including user profile, change email, appearance, and accounts management.",
-      "dependencies": ["@better-auth-ui/react@latest"],
+      "description": "A container component that displays account settings including user profile, change email, and plugin-contributed account cards (e.g. appearance from the theme plugin, multi-session accounts).",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest"
+      ],
       "registryDependencies": [
         "https://better-auth-ui.com/r/user-profile.json",
-        "https://better-auth-ui.com/r/change-email.json",
-        "https://better-auth-ui.com/r/appearance.json",
-        "https://better-auth-ui.com/r/manage-accounts.json"
+        "https://better-auth-ui.com/r/change-email.json"
       ],
       "files": [
         {
-          "path": "src/components/settings/account/account-settings.tsx",
+          "path": "src/components/auth/settings/account/account-settings.tsx",
           "type": "registry:component"
         }
       ]
@@ -428,6 +638,7 @@
       "description": "A form component for users to change their password with current password verification.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "lucide-react"
       ],
@@ -443,7 +654,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/change-password.tsx",
+          "path": "src/components/auth/settings/security/change-password.tsx",
           "type": "registry:component"
         }
       ]
@@ -468,11 +679,11 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/linked-accounts.tsx",
+          "path": "src/components/auth/settings/security/linked-accounts.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/linked-account.tsx",
+          "path": "src/components/auth/settings/security/linked-account.tsx",
           "type": "registry:component"
         }
       ]
@@ -484,6 +695,7 @@
       "description": "Display and manage all active sessions for the current user with revoke controls. Shows each session's browser, OS, and creation time.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "better-auth",
         "bowser",
         "lucide-react"
@@ -497,69 +709,11 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/security/active-sessions.tsx",
+          "path": "src/components/auth/settings/security/active-sessions.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/settings/security/active-session.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "danger-zone",
-      "type": "registry:component",
-      "title": "Danger Zone",
-      "description": "A danger zone section with a delete user card and confirmation dialog for permanently deleting the user account.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "better-auth",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "field",
-        "input",
-        "sonner",
-        "spinner"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/security/danger-zone.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/security/delete-user.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "passkeys",
-      "type": "registry:component",
-      "title": "Passkeys",
-      "description": "Display and manage registered passkeys for the current user. Shows each passkey with name, creation date, and delete control.",
-      "dependencies": [
-        "@better-auth-ui/react@latest",
-        "@better-auth/passkey",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "separator",
-        "skeleton",
-        "sonner",
-        "spinner"
-      ],
-      "files": [
-        {
-          "path": "src/components/settings/security/passkeys.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/components/settings/security/passkey.tsx",
+          "path": "src/components/auth/settings/security/active-session.tsx",
           "type": "registry:component"
         }
       ]
@@ -568,18 +722,19 @@
       "name": "security-settings",
       "type": "registry:component",
       "title": "Security Settings",
-      "description": "A container component that displays security settings including password management, linked accounts, passkeys, active sessions, and danger zone.",
-      "dependencies": ["@better-auth-ui/react@latest"],
+      "description": "A container component that displays security settings including password management, linked accounts, plugin-contributed security cards (e.g. passkeys), active sessions, and danger zone.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest"
+      ],
       "registryDependencies": [
         "https://better-auth-ui.com/r/change-password.json",
         "https://better-auth-ui.com/r/linked-accounts.json",
-        "https://better-auth-ui.com/r/passkeys.json",
-        "https://better-auth-ui.com/r/active-sessions.json",
-        "https://better-auth-ui.com/r/danger-zone.json"
+        "https://better-auth-ui.com/r/active-sessions.json"
       ],
       "files": [
         {
-          "path": "src/components/settings/security/security-settings.tsx",
+          "path": "src/components/auth/settings/security/security-settings.tsx",
           "type": "registry:component"
         }
       ]
@@ -589,7 +744,10 @@
       "type": "registry:component",
       "title": "Settings",
       "description": "A unified settings component that renders the appropriate settings view based on path or view prop with tab navigation.",
-      "dependencies": ["@better-auth-ui/react@latest"],
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest"
+      ],
       "registryDependencies": [
         "tabs",
         "https://better-auth-ui.com/r/account-settings.json",
@@ -597,7 +755,7 @@
       ],
       "files": [
         {
-          "path": "src/components/settings/settings.tsx",
+          "path": "src/components/auth/settings/settings.tsx",
           "type": "registry:component"
         }
       ]
@@ -609,16 +767,17 @@
       "description": "Email template component that sends email verification links to users.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/email-verification.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-verification.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -630,16 +789,17 @@
       "description": "Email template component that sends magic link authentication emails for passwordless sign-in.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/magic-link.tsx",
+          "path": "../../packages/react/src/components/auth/email/magic-link.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -651,16 +811,17 @@
       "description": "Email template component that sends password reset links to users.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/reset-password.tsx",
+          "path": "../../packages/react/src/components/auth/email/reset-password.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -672,16 +833,17 @@
       "description": "Email template component that notifies users when their password has been changed.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/password-changed.tsx",
+          "path": "../../packages/react/src/components/auth/email/password-changed.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -693,16 +855,17 @@
       "description": "Email template component that notifies users when their email address has been changed.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/email-changed.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-changed.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -714,16 +877,17 @@
       "description": "Email template component that sends one-time password (OTP) verification codes to users.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/otp-email.tsx",
+          "path": "../../packages/react/src/components/auth/email/otp-email.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]
@@ -735,16 +899,17 @@
       "description": "Email template component that notifies users when a new device signs in to their account.",
       "dependencies": [
         "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
         "@react-email/components"
       ],
       "registryDependencies": [],
       "files": [
         {
-          "path": "../../packages/react/src/components/email/new-device.tsx",
+          "path": "../../packages/react/src/components/auth/email/new-device.tsx",
           "type": "registry:component"
         },
         {
-          "path": "../../packages/react/src/components/email/email-styles.tsx",
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component"
         }
       ]

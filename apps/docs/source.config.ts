@@ -68,7 +68,7 @@ export default defineConfig({
               stripRedundantUndefinedUnions(entry)
             }
           }
-          // renderType: renderTypeToHastFast
+          //  renderType: renderTypeToHastFast
         }
       ]
     ],

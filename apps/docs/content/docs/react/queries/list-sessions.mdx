@@ -8,12 +8,13 @@ Keyed per-user; waits for the active session before firing.
 ## Usage
 
 ```tsx
-import { useListSessions } from "@better-auth-ui/react"
+import { useAuth, useListSessions } from "@better-auth-ui/react"
 
-const { data: sessions } = useListSessions()
+const { authClient } = useAuth()
+const { data: sessions } = useListSessions(authClient)
 
 // With React Query options
-const { data: sessions } = useListSessions({ refetchOnMount: false })
+const { data: sessions } = useListSessions(authClient, { refetchOnMount: false })
 ```
 
 ## Options factory
@@ -37,4 +38,4 @@ queryClient.invalidateQueries({
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-list-sessions.ts" name="UseListSessionsParams" />
+<auto-type-table path="../../../../../../packages/react/src/queries/settings/list-sessions-query.ts" name="ListSessionsParams" />

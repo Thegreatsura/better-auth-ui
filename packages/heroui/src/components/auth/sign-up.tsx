@@ -1,9 +1,9 @@
 import {
-  useAuth,
-  useIsUsernameAvailable,
-  useSignUpEmail
-} from "@better-auth-ui/react"
-import { Check, Eye, EyeSlash, Xmark } from "@gravity-ui/icons"
+  authMutationKeys,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
+import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
+import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -20,11 +20,10 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import { useDebouncer } from "@tanstack/react-pacer"
+import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
-
+import { AdditionalField } from "./additional-field"
 import { FieldSeparator } from "./field-separator"
-import { MagicLinkButton } from "./magic-link-button"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignUpProps = {
@@ -52,76 +51,58 @@ export function SignUp({
   ...props
 }: SignUpProps & Omit<CardProps, "children">) {
   const {
+    additionalFields,
+    authClient,
     basePaths,
     emailAndPassword,
     localization,
-    magicLink,
+    plugins,
     redirectTo,
     socialProviders,
-    username: usernameConfig,
     viewPaths,
     navigate
   } = useAuth()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [username, setUsername] = useState("")
 
-  const {
-    mutate: isUsernameAvailable,
-    data: usernameData,
-    error: usernameError,
-    reset: resetUsername
-  } = useIsUsernameAvailable()
-
-  const usernameDebouncer = useDebouncer(
-    (value: string) => {
-      if (!value.trim()) {
-        resetUsername()
-        return
+  const { mutate: signUpEmail, isPending: signUpEmailPending } = useSignUpEmail(
+    authClient,
+    {
+      onError: (error) => {
+        setPassword("")
+        setConfirmPassword("")
+        toast.danger(error.error?.message || error.message)
+      },
+      onSuccess: () => {
+        if (emailAndPassword?.requireEmailVerification) {
+          toast.success(localization.auth.verifyYourEmail)
+          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+        } else {
+          navigate({ to: redirectTo })
+        }
       }
-
-      isUsernameAvailable({ username: value.trim() })
-    },
-    { wait: 500 }
+    }
   )
-
-  function handleUsernameChange(value: string) {
-    setUsername(value)
-    resetUsername()
-
-    if (usernameConfig?.isUsernameAvailable) {
-      usernameDebouncer.maybeExecute(value)
-    }
-  }
-
-  const { mutate: signUpEmail, isPending: signUpPending } = useSignUpEmail({
-    onError: (error) => {
-      setPassword("")
-      setConfirmPassword("")
-      toast.danger(error.error?.message || error.message)
-    },
-    onSuccess: () => {
-      if (emailAndPassword?.requireEmailVerification) {
-        toast.success(localization.auth.verifyYourEmail)
-        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-      } else {
-        navigate({ to: redirectTo })
-      }
-    }
-  })
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
 
-  const isPending = signUpPending
+  const signInMutating = useIsMutating({
+    mutationKey: authMutationKeys.signIn.all
+  })
+  const signUpMutating = useIsMutating({
+    mutationKey: authMutationKeys.signUp.all
+  })
+  const isPending = signInMutating + signUpMutating > 0
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    const name = formData.get("name") as string
+    // `emailAndPassword.name === false` hides the name field and submits "".
+    const name = (formData.get("name") as string | null) ?? ""
     const email = formData.get("email") as string
 
     if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
@@ -131,18 +112,34 @@ export function SignUp({
       return
     }
 
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of additionalFields ?? []) {
+      if (!field.signUp || field.readOnly) continue
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.danger(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     signUpEmail({
       name,
       email,
       password,
-      ...(usernameConfig?.enabled
-        ? {
-            username: username.trim(),
-            ...(usernameConfig.displayUsername
-              ? { displayUsername: username.trim() }
-              : {})
-          }
-        : {})
+      ...additionalFieldValues
     })
   }
 
@@ -150,7 +147,7 @@ export function SignUp({
 
   return (
     <Card
-      className={cn("w-full max-w-sm p-4 md:p-6", className)}
+      className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
       {...props}
     >
@@ -164,10 +161,7 @@ export function SignUp({
         {socialPosition === "top" && (
           <>
             {!!socialProviders?.length && (
-              <ProviderButtons
-                isPending={isPending}
-                socialLayout={socialLayout}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
 
             {showSeparator && (
@@ -178,67 +172,22 @@ export function SignUp({
 
         {emailAndPassword?.enabled && (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <TextField
-              name="name"
-              type="text"
-              autoComplete="name"
-              isDisabled={isPending}
-            >
-              <Label>{localization.auth.name}</Label>
-
-              <Input
-                placeholder={localization.auth.namePlaceholder}
-                required
-                variant={variant === "transparent" ? "primary" : "secondary"}
-              />
-
-              <FieldError />
-            </TextField>
-
-            {usernameConfig?.enabled && (
+            {emailAndPassword.name !== false && (
               <TextField
-                name="username"
+                name="name"
                 type="text"
-                autoComplete="username"
-                minLength={usernameConfig.minUsernameLength}
-                maxLength={usernameConfig.maxUsernameLength}
+                autoComplete="name"
                 isDisabled={isPending}
-                value={username}
-                onChange={handleUsernameChange}
-                isInvalid={
-                  !!usernameError || (usernameData && !usernameData.available)
-                }
               >
-                <Label>{localization.auth.username}</Label>
+                <Label>{localization.auth.name}</Label>
 
-                <InputGroup
+                <Input
+                  placeholder={localization.auth.namePlaceholder}
+                  required
                   variant={variant === "transparent" ? "primary" : "secondary"}
-                >
-                  <InputGroup.Input
-                    placeholder={localization.auth.usernamePlaceholder}
-                    required
-                  />
+                />
 
-                  {usernameConfig.isUsernameAvailable && username.trim() && (
-                    <InputGroup.Suffix className="px-2">
-                      {usernameData?.available ? (
-                        <Check className="text-success" />
-                      ) : usernameError || usernameData?.available === false ? (
-                        <Xmark className="text-danger" />
-                      ) : (
-                        <Spinner size="sm" color="current" />
-                      )}
-                    </InputGroup.Suffix>
-                  )}
-                </InputGroup>
-
-                <FieldError>
-                  {usernameError?.error?.message ||
-                    usernameError?.message ||
-                    (usernameData?.available === false
-                      ? localization.auth.usernameTaken
-                      : null)}
-                </FieldError>
+                <FieldError />
               </TextField>
             )}
 
@@ -258,6 +207,19 @@ export function SignUp({
 
               <FieldError />
             </TextField>
+
+            {additionalFields?.map(
+              (field) =>
+                field.signUp === "above" && (
+                  <AdditionalField
+                    key={field.name}
+                    name={field.name}
+                    field={field}
+                    isPending={isPending}
+                    variant={variant}
+                  />
+                )
+            )}
 
             <TextField
               minLength={emailAndPassword?.minPasswordLength}
@@ -347,15 +309,34 @@ export function SignUp({
               </TextField>
             )}
 
+            {additionalFields?.map(
+              (field) =>
+                field.signUp &&
+                field.signUp !== "above" && (
+                  <AdditionalField
+                    key={field.name}
+                    name={field.name}
+                    field={field}
+                    isPending={isPending}
+                    variant={variant}
+                  />
+                )
+            )}
+
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" isPending={isPending}>
-                {isPending && <Spinner color="current" size="sm" />}
+                {signUpEmailPending && <Spinner color="current" size="sm" />}
 
                 {localization.auth.signUp}
               </Button>
 
-              {magicLink && (
-                <MagicLinkButton view="signUp" isPending={isPending} />
+              {plugins.flatMap((plugin) =>
+                plugin.authButtons?.map((AuthButton, index) => (
+                  <AuthButton
+                    key={`${plugin.id}-${index.toString()}`}
+                    view="signUp"
+                  />
+                ))
               )}
             </div>
           </Form>
@@ -368,21 +349,18 @@ export function SignUp({
             )}
 
             {!!socialProviders?.length && (
-              <ProviderButtons
-                socialLayout={socialLayout}
-                isPending={isPending}
-              />
+              <ProviderButtons socialLayout={socialLayout} />
             )}
           </>
         )}
       </Card.Content>
 
-      <Card.Footer className="flex-col">
+      <Card.Footer className="flex-col gap-3">
         <Description className="text-sm">
           {localization.auth.alreadyHaveAnAccount}{" "}
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.signIn}`}
-            className="text-accent decoration-accent no-underline hover:underline"
+            className="text-accent no-underline hover:underline decoration-accent-hover"
           >
             {localization.auth.signIn}
           </Link>

@@ -8,15 +8,24 @@ The session is established when the user clicks the emailed link, so no session-
 ## Usage
 
 ```tsx
-import { useSignInMagicLink } from "@better-auth-ui/react"
+import {
+  type MagicLinkAuthClient,
+  useAuth,
+  useSignInMagicLink
+} from "@better-auth-ui/react"
 
-const { mutate: signInMagicLink } = useSignInMagicLink()
+const { authClient } = useAuth()
+const { mutate: signInMagicLink } = useSignInMagicLink(
+  authClient as MagicLinkAuthClient
+)
 
 signInMagicLink({
   email: "alice@example.com",
   callbackURL: "/dashboard"
 })
 ```
+
+`useSignInMagicLink` requires the Better Auth `magicLink` plugin. Cast `authClient` to `MagicLinkAuthClient` so TypeScript picks up the plugin-extended method signature.
 
 ## Options factory
 
@@ -29,4 +38,4 @@ const { mutate } = useMutation(signInMagicLinkOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/auth/use-sign-in-magic-link.ts" name="UseSignInMagicLinkParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/magic-link/sign-in-magic-link-mutation.ts" name="SignInMagicLinkParams" />

@@ -8,9 +8,10 @@ Kicks off the OAuth redirect — the linked account appears in `useListAccounts`
 ## Usage
 
 ```tsx
-import { useLinkSocial } from "@better-auth-ui/react"
+import { useAuth, useLinkSocial } from "@better-auth-ui/react"
 
-const { mutate: linkSocial } = useLinkSocial()
+const { authClient } = useAuth()
+const { mutate: linkSocial } = useLinkSocial(authClient)
 
 linkSocial({
   provider: "github",
@@ -29,4 +30,4 @@ const { mutate } = useMutation(linkSocialOptions(authClient))
 
 ## Params
 
-<auto-type-table path="../../../../../../packages/react/src/hooks/settings/use-link-social.ts" name="UseLinkSocialParams" />
+<auto-type-table path="../../../../../../packages/react/src/mutations/settings/link-social-mutation.ts" name="LinkSocialParams" />

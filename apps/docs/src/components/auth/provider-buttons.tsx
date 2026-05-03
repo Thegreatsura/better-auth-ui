@@ -7,21 +7,18 @@ import { cn } from "@/lib/utils"
 import { ProviderButton } from "./provider-button"
 
 export type ProviderButtonsProps = {
-  isPending?: boolean
   socialLayout?: SocialLayout
 }
 
 export type SocialLayout = "auto" | "horizontal" | "vertical" | "grid"
 
 /**
- * Render sign-in buttons for configured social providers. Each button owns its own sign-in mutation.
+ * Render sign-in buttons for configured social providers. Each button owns its own sign-in mutation
+ * and reads the shared sign-in pending state from React Query.
  *
- * @param isPending - External pending state (e.g. parent form submitting) that disables all buttons.
- * @param socialLayout - Preferred layout for the provider buttons; when set to `"auto"` the layout is chosen based on the number of available providers.
- * @returns A JSX element containing provider sign-in buttons.
+ * @param socialLayout - Preferred layout for the provider buttons; `"auto"` chooses based on the number of providers.
  */
 export function ProviderButtons({
-  isPending,
   socialLayout = "auto"
 }: ProviderButtonsProps) {
   const { socialProviders } = useAuth()
@@ -51,13 +48,12 @@ export function ProviderButtons({
         <ProviderButton
           key={provider}
           provider={provider}
-          isDisabled={isPending}
-          label={
+          display={
             resolvedSocialLayout === "vertical"
-              ? "continueWith"
+              ? "full"
               : resolvedSocialLayout === "grid"
-                ? "providerName"
-                : "none"
+                ? "name"
+                : "icon"
           }
           className={cn(resolvedSocialLayout === "horizontal" && "flex-1")}
         />

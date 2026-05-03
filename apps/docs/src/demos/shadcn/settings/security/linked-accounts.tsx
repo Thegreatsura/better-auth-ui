@@ -1,4 +1,4 @@
-import { LinkedAccounts } from "@/components/settings/security/linked-accounts"
+import { LinkedAccounts } from "@/components/auth/settings/security/linked-accounts"
 
 export function LinkedAccountsDemo() {
   return (

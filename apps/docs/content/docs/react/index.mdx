@@ -21,7 +21,7 @@ Wrap your app with a `QueryClientProvider` above `<AuthProvider>`.
 
 ## Cache keys
 
-All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`["auth", "signIn", "email"]`, `["auth", "updateUser"]`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
+All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`authMutationKeys.signIn.email`, `authMutationKeys.updateUser`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
 
 Read a key off the factory for cache seeding or invalidation:
 
@@ -30,12 +30,21 @@ sessionOptions(authClient).queryKey
 signInEmailOptions(authClient).mutationKey
 ```
 
+Or pull from the shared key factories in `@better-auth-ui/core`:
+
+```ts
+import { authQueryKeys, authMutationKeys } from "@better-auth-ui/core"
+
+queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+useIsMutating({ mutationKey: authMutationKeys.signIn.all })
+```
+
 ## Escape hatches
 
 For Better Auth endpoints that don't have a purpose-built hook yet, use the generic wrappers:
 
-- `useAuthQuery(authFn, queryKey, options?)` — wraps `useQuery` + `authQueryOptions`.
-- `useAuthMutation(authFn, mutationKey, options?)` — wraps `useMutation` + `authMutationOptions`.
+- `useAuthQuery(authFn, queryKey, options?)` / `authQueryOptions(authFn, queryKey, params?)` — read-style endpoints.
+- `useAuthMutation(authFn, mutationKey, options?)` / `authMutationOptions(authFn, mutationKey)` — write-style endpoints.
 
 Both wire `throw: true` into `fetchOptions` so results reject with a `BetterFetchError` instead of resolving to `{ error }`.
 
@@ -47,5 +56,8 @@ Both wire `throw: true` into `fetchOptions` so results reject with a `BetterFetc
   </Card>
   <Card title="Mutations" href="/docs/react/mutations">
     Every auth write, with mutation keys and cache side effects.
+  </Card>
+  <Card title="SSR" href="/docs/react/ssr">
+    Customize the QueryClient and prefetch auth data on the server.
   </Card>
 </Cards>

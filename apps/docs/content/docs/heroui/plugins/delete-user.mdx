@@ -1,0 +1,93 @@
+---
+title: Delete User
+description: Add account deletion with confirmation dialog to your authentication flow.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The delete-user plugin adds account deletion functionality. Users can permanently delete their account with a confirmation dialog.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the `@better-auth/delete-user` package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { deleteUser } from "@better-auth/delete-user" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    deleteUser() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `deleteUserClient()` to your auth client so `authClient.deleteUser.*` is available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { deleteUserClient } from "@better-auth/delete-user/client" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [deleteUserClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `deleteUserPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { deleteUserPlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  navigate={navigate}
+  plugins={[deleteUserPlugin()]} // [!code highlight]
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Components
+
+### `<DangerZone />`
+
+<ComponentPreview name="heroui-delete-user-danger-zone" />
+
+The `<DangerZone />` card is automatically rendered in `<SecuritySettings />` when the plugin is registered.
+
+**Usage**
+
+```tsx
+import { DangerZone } from "@better-auth-ui/heroui/plugins"
+
+<DangerZone />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/delete-user/danger-zone.tsx" name="DangerZoneProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/delete-user/delete-user-plugin.ts" name="DeleteUserPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/delete-user/delete-user-localization.ts" name="DeleteUserLocalization" />

@@ -1,4 +1,4 @@
-import { Settings } from "@/components/settings/settings"
+import { Settings } from "@/components/auth/settings/settings"
 
 export function SettingsDemo() {
   return (

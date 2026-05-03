@@ -1,33 +1,34 @@
 "use client"
 
 import { AuthProvider } from "@better-auth-ui/heroui"
+import { deleteUserPlugin } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
+import { QueryClientProvider } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import type { ReactNode } from "react"
 
 import { authClient } from "@/lib/auth-client"
+import { getQueryClient } from "@/lib/query-client"
 
 export function Providers({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
+  const queryClient = getQueryClient()
 
   return (
-    <AuthProvider
-      authClient={authClient}
-      appearance={{ theme, setTheme }}
-      deleteUser={{ enabled: true }}
-      magicLink
-      multiSession
-      redirectTo="/dashboard"
-      socialProviders={["google", "github"]}
-      navigate={({ to, replace }) =>
-        replace ? router.replace(to) : router.push(to)
-      }
-    >
-      {children}
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        authClient={authClient}
+        redirectTo="/settings/account"
+        socialProviders={["google", "github"]}
+        navigate={({ to, replace }) =>
+          replace ? router.replace(to) : router.push(to)
+        }
+        plugins={[deleteUserPlugin()]}
+      >
+        {children}
 
-      <Toast.Provider />
-    </AuthProvider>
+        <Toast.Provider />
+      </AuthProvider>
+    </QueryClientProvider>
   )
 }

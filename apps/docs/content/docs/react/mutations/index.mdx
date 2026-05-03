@@ -16,7 +16,8 @@ Use the hook in components. Use the factory anywhere TanStack Query takes a `mut
 Every mutation wires `throw: true` into `fetchOptions`, so the promise rejects with a `BetterFetchError` on failure instead of resolving with `{ error }`. This means you can rely on `error`, `isError`, `throwOnError`, and standard `onError` handlers from `useMutation`.
 
 ```tsx
-const { mutate, error } = useSignInEmail({
+const { authClient } = useAuth()
+const { mutate, error } = useSignInEmail(authClient, {
   onError: (err) => toast.error(err.message)
 })
 ```
@@ -37,19 +38,29 @@ Hooks that change auth state update the cache for you. Override `onSuccess` in t
 
 ## Tracking mutation state globally
 
-All mutation keys are prefixed with `"auth"`:
+All mutation keys are prefixed with `"auth"` and exposed through the shared `authMutationKeys` factory in `@better-auth-ui/core`. Use it instead of inlining tuples so call sites share the same source of truth as the mutation factories:
 
 ```ts
-const authPending = useIsMutating({ mutationKey: ["auth"] })
-const signInPending = useIsMutating({ mutationKey: ["auth", "signIn"] })
+import { authMutationKeys } from "@better-auth-ui/core"
+import { useIsMutating } from "@tanstack/react-query"
+
+const authPending = useIsMutating({ mutationKey: authMutationKeys.all })
+const signInPending = useIsMutating({ mutationKey: authMutationKeys.signIn.all })
+const emailSignInPending = useIsMutating({
+  mutationKey: authMutationKeys.signIn.email
+})
 ```
+
+Each grouping (`signIn`, `signUp`, `passkey`, `multiSession`) exposes an `all` prefix so you can match a whole feature at once.
 
 Match inside a `MutationCache` observer for global toasts or analytics:
 
 ```ts
+import { authMutationKeys } from "@better-auth-ui/core"
+
 new MutationCache({
   onError: (error, _vars, _ctx, mutation) => {
-    if (mutation.options.mutationKey?.[0] === "auth") {
+    if (mutation.options.mutationKey?.[0] === authMutationKeys.all[0]) {
       toast.error(error.message)
     }
   }
@@ -58,18 +69,33 @@ new MutationCache({
 
 ## Escape hatch
 
-For Better Auth write endpoints without a purpose-built hook, use `useAuthMutation`:
+For write-style endpoints without a purpose-built hook, use `useAuthMutation` (or its options factory `authMutationOptions`). Read-style endpoints should use `useAuthQuery` instead.
 
 ```tsx
-import { useAuthMutation } from "@better-auth-ui/react"
-import { useAuth } from "@better-auth-ui/react"
+import { useAuth, useAuthMutation } from "@better-auth-ui/react"
 
 const { authClient } = useAuth()
 const { mutate } = useAuthMutation(
   authClient.emailOtp.sendVerificationOtp,
   ["auth", "emailOtp", "sendVerificationOtp"]
 )
+
+mutate({ email: "user@example.com", type: "sign-in" })
 ```
+
+Variables are inferred from `authFn`'s parameter — required params reject `mutate()` at the type level, optional-param methods (e.g. `signOut`) allow it. `throw: true` is wired into `fetchOptions` so `onError` and `error` get a `BetterFetchError`.
+
+For shared mutation registration (`useIsMutating`, a global `MutationCache` observer, manual `useMutation`), use the factory directly:
+
+```ts
+authMutationOptions(authClient.emailOtp.sendVerificationOtp, [
+  "auth",
+  "emailOtp",
+  "sendVerificationOtp"
+])
+```
+
+For endpoints that already have a key in `authMutationKeys`, prefer it over an inline tuple so cache observers and `useIsMutating` checks line up.
 
 ## Available mutations
 

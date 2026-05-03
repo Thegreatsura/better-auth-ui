@@ -1,14 +1,13 @@
 import type { SocialProvider } from "better-auth/social-providers"
 
+import type { AuthPlugin } from "../lib/auth-plugin"
 import { type BasePaths, basePaths } from "../lib/base-paths"
 import { type Localization, localization } from "../lib/localization"
 import { resizeAvatar } from "../lib/utils"
 import { type ViewPaths, viewPaths } from "../lib/view-paths"
-import type { AppearanceConfig } from "./appearance-config"
+import type { AdditionalFields } from "./additional-fields-config"
 import type { AvatarConfig } from "./avatar-config"
-import type { DeleteUserConfig } from "./delete-user-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
-import type { UsernameConfig } from "./username-config"
 
 /**
  * Core authentication configuration interface.
@@ -18,11 +17,10 @@ import type { UsernameConfig } from "./username-config"
  */
 export interface AuthConfig {
   /**
-   * Appearance/theme configuration
-   * @remarks `AppearanceConfig`
-   * @default { themes: ["system", "light", "dark"] }
+   * Additional user fields rendered on sign-up and the user profile.
+   * @remarks `AdditionalFields`
    */
-  appearance: AppearanceConfig
+  additionalFields?: AdditionalFields
   /**
    * Avatar upload, optimization, and deletion configuration.
    * @remarks `AvatarConfig`
@@ -40,11 +38,6 @@ export interface AuthConfig {
    */
   baseURL: string
   /**
-   * Allow users to delete their account
-   * @remarks `DeleteUserConfig`
-   */
-  deleteUser?: DeleteUserConfig
-  /**
    * Email and password authentication configuration
    * @remarks `EmailAndPasswordConfig`
    */
@@ -54,12 +47,13 @@ export interface AuthConfig {
    * @remarks `Localization`
    */
   localization: Localization
-  /** Whether Magic Link plugin is enabled */
-  magicLink?: boolean
-  /** Whether Multi Session plugin is enabled */
-  multiSession?: boolean
-  /** Whether Passkey plugin is enabled */
-  passkey?: boolean
+  /**
+   * Registered auth plugins. UI packages widen the element type via the
+   * `AuthPluginRegister` module-augmentation slot.
+   * @remarks `AuthPlugin[]`
+   * @default []
+   */
+  plugins: AuthPlugin[]
   /**
    * Default redirect path after successful authentication
    * @default "/"
@@ -76,11 +70,6 @@ export interface AuthConfig {
    */
   viewPaths: ViewPaths
   /**
-   * Username plugin configuration
-   * @remarks `UsernameConfig`
-   */
-  username: UsernameConfig
-  /**
    * Function to navigate to a new path
    * @param options - Navigation options with href and optional replace flag
    * @default window.location.href = href (or window.location.replace if replace: true)
@@ -94,9 +83,6 @@ export interface AuthConfig {
 }
 
 export const defaultAuthConfig: AuthConfig = {
-  appearance: {
-    themes: ["system", "light", "dark"]
-  },
   avatar: {
     enabled: true,
     resize: resizeAvatar,
@@ -108,20 +94,15 @@ export const defaultAuthConfig: AuthConfig = {
   emailAndPassword: {
     enabled: true,
     forgotPassword: true,
+    name: true,
     rememberMe: false,
     minPasswordLength: 8,
     maxPasswordLength: 128
   },
+  plugins: [],
   redirectTo: "/",
   viewPaths,
   localization,
-  username: {
-    enabled: false,
-    displayUsername: true,
-    isUsernameAvailable: true,
-    minUsernameLength: 3,
-    maxUsernameLength: 30
-  },
   navigate: ({ to, replace }) => {
     if (replace) {
       window.location.replace(to)
