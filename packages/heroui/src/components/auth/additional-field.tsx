@@ -37,13 +37,26 @@ import {
   toCalendarDate,
   toCalendarDateTime
 } from "@internationalized/date"
-import { useRef, useState } from "react"
+import { type ReactNode, useRef, useState } from "react"
 
 export type AdditionalFieldProps = {
   name: string
   field: AdditionalFieldConfig
   isPending?: boolean
   variant?: CardProps["variant"]
+}
+
+declare module "@better-auth-ui/core" {
+  /**
+   * Widens `AdditionalField.label` to `ReactNode`, the `render` argument to
+   * the heroui-typed `AdditionalFieldProps`, and its return type to
+   * `ReactNode`.
+   */
+  interface AdditionalFieldRegister {
+    label: ReactNode
+    renderProps: AdditionalFieldProps
+    renderResult: ReactNode
+  }
 }
 
 /** Convert a `defaultValue` into a `CalendarDate` for HeroUI date inputs. */
@@ -136,6 +149,10 @@ export function AdditionalField({
   // Used by `inputType: "input"` with `copyable: true` so the copy button
   // reads the input's *live* value rather than a stale `defaultValue`.
   const inputRef = useRef<HTMLInputElement>(null)
+
+  if (field.render) {
+    return <>{field.render({ name, field, isPending, variant })}</>
+  }
 
   if (inputType === "hidden") {
     return (

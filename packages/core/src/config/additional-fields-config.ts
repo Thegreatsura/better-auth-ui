@@ -19,7 +19,8 @@ export type AdditionalFieldInputType =
   | "hidden"
 
 /**
- * Augmentation target for widening `AdditionalField.label` in UI packages.
+ * Augmentation target for widening `AdditionalField` slot types
+ * (`label`, `renderProps`, `renderResult`) in UI packages.
  *
  * @example
  * declare module "@better-auth-ui/core" {
@@ -35,6 +36,20 @@ export type AdditionalFieldLabel = AdditionalFieldRegister extends {
 }
   ? L
   : string
+
+/** Resolved argument type for `AdditionalField.render`. */
+export type AdditionalFieldRenderProps = AdditionalFieldRegister extends {
+  renderProps: infer P
+}
+  ? P
+  : { name: string; field: AdditionalField; isPending?: boolean }
+
+/** Resolved return type for `AdditionalField.render`. */
+export type AdditionalFieldRenderResult = AdditionalFieldRegister extends {
+  renderResult: infer R
+}
+  ? R
+  : unknown
 
 /** Option for a `select` input. */
 export interface AdditionalFieldOption {
@@ -102,6 +117,12 @@ export interface AdditionalField {
   signUp?: boolean
   /** Render on the user profile. @default true */
   profile?: boolean
+  /**
+   * Custom renderer. Replaces the host UI package's built-in input. Must emit
+   * an input named `field.name` so the value is captured by the form's
+   * `FormData`.
+   */
+  render?: (props: AdditionalFieldRenderProps) => AdditionalFieldRenderResult
 }
 
 /** Ordered list of `AdditionalField` configurations. */
