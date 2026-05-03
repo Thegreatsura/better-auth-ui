@@ -35,10 +35,10 @@ import {
 } from "@internationalized/date"
 import { useRef, useState } from "react"
 
-import type { AdditionalFieldProps } from "../../lib/auth-plugin"
+import type { AdditionalFieldProps } from "../../lib/auth/auth-plugin"
 
 // Re-exported here so the main entrypoint surface is unchanged.
-export type { AdditionalFieldProps } from "../../lib/auth-plugin"
+export type { AdditionalFieldProps } from "../../lib/auth/auth-plugin"
 
 /** Convert a `defaultValue` into a `CalendarDate` for HeroUI date inputs. */
 function toDateValue(value: unknown): CalendarDate | undefined {

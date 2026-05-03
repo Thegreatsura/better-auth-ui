@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider } from "../src/components/auth/auth-provider"
-import { PasskeyButton } from "../src/components/passkey/passkey-button"
-import { Passkeys } from "../src/components/passkey/passkeys"
-import { passkeyPlugin } from "../src/lib/passkey/passkey-plugin"
+import { PasskeyButton } from "../src/components/auth/passkey/passkey-button"
+import { Passkeys } from "../src/components/auth/passkey/passkeys"
+import { passkeyPlugin } from "../src/lib/auth/passkey-plugin"
 
 // Each render gets its own QueryClient so the React Query cache doesn't
 // leak across tests (the default `<AuthProvider>` falls back to a

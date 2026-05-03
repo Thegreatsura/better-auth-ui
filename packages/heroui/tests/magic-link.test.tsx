@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider } from "../src/components/auth/auth-provider"
-import { MagicLink } from "../src/components/auth/magic-link"
-import { magicLinkPlugin } from "../src/lib/magic-link/magic-link-plugin"
+import { MagicLink } from "../src/components/auth/magic-link/magic-link"
+import { magicLinkPlugin } from "../src/lib/auth/magic-link-plugin"
 
 /**
  * Minimal `authClient` shape required by `<MagicLink>`. We only need
