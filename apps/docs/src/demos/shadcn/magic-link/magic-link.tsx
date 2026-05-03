@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { MagicLink } from "@/components/auth/magic-link"
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"
 import { authClient } from "@/lib/auth-client"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin"
 
 export function MagicLinkDemo() {
   return (

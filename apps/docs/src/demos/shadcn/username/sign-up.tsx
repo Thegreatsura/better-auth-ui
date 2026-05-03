@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { SignUp } from "@/components/auth/sign-up"
+import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
-import { usernamePlugin } from "@/lib/username/username-plugin"
 
 export function SignUpUsernameDemo() {
   return (

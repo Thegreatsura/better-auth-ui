@@ -69,8 +69,8 @@ npx shadcn@latest add https://better-auth-ui.com/r/passkey.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/passkey/passkey-plugin.ts` — `passkeyPlugin()` factory
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/passkey-plugin.ts` — `passkeyPlugin()` factory
 - `src/components/auth/passkey-button.tsx` — the "Continue with Passkey" sign-in button
 - `src/components/settings/security/passkeys.tsx` — the passkey management card
 - `src/components/settings/security/passkey.tsx` — individual passkey row with delete control
@@ -82,7 +82,7 @@ This drops the following into your codebase:
 Pass `passkeyPlugin()` to `<AuthProvider>`:
 
 ```tsx title="components/providers.tsx"
-import { passkeyPlugin } from "@/lib/passkey/passkey-plugin" // [!code highlight]
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin" // [!code highlight]
 import { AuthProvider } from "@/components/auth/auth-provider"
 
 <AuthProvider
@@ -121,7 +121,7 @@ Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot c
 The `<Passkeys />` security card is included on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`. It can also be used standalone:
 
 ```tsx
-import { Passkeys } from "@/components/settings/security/passkeys"
+import { Passkeys } from "@/components/auth/settings/security/passkeys"
 
 <Passkeys />
 ```

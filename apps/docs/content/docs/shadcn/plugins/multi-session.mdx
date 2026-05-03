@@ -68,8 +68,8 @@ npx shadcn@latest add https://better-auth-ui.com/r/multi-session.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/multi-session/multi-session-plugin.ts` — `multiSessionPlugin()` factory
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/multi-session-plugin.ts` — `multiSessionPlugin()` factory
 - `src/components/multi-session/manage-accounts.tsx` — the account management card
 - `src/components/multi-session/manage-account.tsx` — individual account row
 - `src/components/multi-session/switch-account-submenu.tsx` — the submenu trigger
@@ -83,7 +83,7 @@ This drops the following into your codebase:
 Pass `multiSessionPlugin()` to `<AuthProvider>`:
 
 ```tsx title="components/providers.tsx"
-import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin" // [!code highlight]
+import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin" // [!code highlight]
 import { AuthProvider } from "@/components/auth/auth-provider"
 
 <AuthProvider
@@ -124,7 +124,7 @@ Read these from `useAuthPlugin(multiSessionPlugin).localization` inside custom s
 The `<ManageAccounts />` card is rendered in account settings when your layout renders plugin-contributed `accountCards` and `multiSessionPlugin()` is in `plugins`. It can also be used standalone:
 
 ```tsx
-import { ManageAccounts } from "@/components/multi-session/manage-accounts"
+import { ManageAccounts } from "@/components/auth/multi-session/manage-accounts"
 
 <ManageAccounts />
 ```

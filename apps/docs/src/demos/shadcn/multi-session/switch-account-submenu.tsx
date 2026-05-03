@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { UserButton } from "@/components/user/user-button"
+import { UserButton } from "@/components/auth/user/user-button"
+import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { authClient } from "@/lib/auth-client"
-import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
 export function SwitchAccountSubmenuDemo() {
   return (

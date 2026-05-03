@@ -1,4 +1,4 @@
-import { UserProfile } from "@/components/settings/account/user-profile"
+import { UserProfile } from "@/components/auth/settings/account/user-profile"
 
 export function UserProfileDemo() {
   return (

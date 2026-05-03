@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { SignInUsername } from "@/components/username/sign-in-username"
+import { SignInUsername } from "@/components/auth/username/sign-in-username"
+import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
-import { usernamePlugin } from "@/lib/username/username-plugin"
 
 export function SignInUsernameDemo() {
   return (

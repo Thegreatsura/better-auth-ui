@@ -71,8 +71,8 @@ npx shadcn@latest add https://better-auth-ui.com/r/magic-link.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/magic-link/magic-link-plugin.ts` — `magicLinkPlugin()` factory
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/magic-link-plugin.ts` — `magicLinkPlugin()` factory
 - `src/components/auth/magic-link.tsx` — the magic-link form
 - `src/components/auth/magic-link-button.tsx` — the toggle button
 - `src/components/auth/provider-button(s).tsx` — social provider buttons used by the form
@@ -84,7 +84,7 @@ This drops the following into your codebase:
 Pass `magicLinkPlugin()` to `<AuthProvider>`:
 
 ```tsx title="components/providers.tsx"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin" // [!code highlight]
 import { AuthProvider } from "@/components/auth/auth-provider"
 
 <AuthProvider
@@ -114,7 +114,7 @@ import { viewPaths } from "@better-auth-ui/core"
 import { createFileRoute, notFound } from "@tanstack/react-router"
 
 import { Auth } from "@/components/auth/auth"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin" // [!code highlight]
 
 export const Route = createFileRoute("/auth/$path")({
   beforeLoad({ params: { path } }) {
@@ -144,7 +144,7 @@ import { viewPaths } from "@better-auth-ui/core"
 import { notFound } from "next/navigation"
 
 import { Auth } from "@/components/auth/auth"
-import { magicLinkPlugin } from "@/lib/magic-link/magic-link-plugin" // [!code highlight]
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin" // [!code highlight]
 
 export default async function AuthPage({
   params

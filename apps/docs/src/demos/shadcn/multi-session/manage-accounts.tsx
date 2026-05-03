@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { ManageAccounts } from "@/components/multi-session/manage-accounts"
+import { ManageAccounts } from "@/components/auth/multi-session/manage-accounts"
+import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { authClient } from "@/lib/auth-client"
-import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 
 export function ManageAccountsDemo() {
   return (

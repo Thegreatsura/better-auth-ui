@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { DangerZone } from "@/components/delete-user/danger-zone"
+import { DangerZone } from "@/components/auth/delete-user/danger-zone"
+import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin"
 import { authClient } from "@/lib/auth-client"
-import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
 
 export function DangerZoneDemo() {
   return (

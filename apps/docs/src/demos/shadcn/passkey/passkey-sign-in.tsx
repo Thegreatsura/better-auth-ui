@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { SignIn } from "@/components/auth/sign-in"
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { authClient } from "@/lib/auth-client"
-import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
 
 export function PasskeySignInDemo() {
   return (

@@ -1,9 +1,9 @@
 import { useTheme } from "fumadocs-ui/provider/base"
 
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { UserButton } from "@/components/user/user-button"
+import { UserButton } from "@/components/auth/user/user-button"
+import { themePlugin } from "@/lib/auth/theme-plugin"
 import { authClient } from "@/lib/auth-client"
-import { themePlugin } from "@/lib/theme/theme-plugin"
 
 export function ThemeToggleItemDemo() {
   return (

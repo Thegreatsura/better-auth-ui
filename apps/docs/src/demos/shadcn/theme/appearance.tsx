@@ -1,9 +1,9 @@
 import { useTheme } from "fumadocs-ui/provider/base"
 
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { Appearance } from "@/components/theme/appearance"
+import { Appearance } from "@/components/auth/theme/appearance"
+import { themePlugin } from "@/lib/auth/theme-plugin"
 import { authClient } from "@/lib/auth-client"
-import { themePlugin } from "@/lib/theme/theme-plugin"
 
 export function AppearanceDemo() {
   return (

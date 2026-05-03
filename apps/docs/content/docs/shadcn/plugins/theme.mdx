@@ -31,7 +31,7 @@ import type { ReactNode } from "react"
 
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { authClient } from "@/lib/auth-client"
-import { themePlugin } from "@/lib/theme/theme-plugin" // [!code highlight]
+import { themePlugin } from "@/lib/auth/theme-plugin" // [!code highlight]
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -94,7 +94,7 @@ The `<Appearance />` card is automatically rendered in `<AccountSettings />` whe
 **Usage**
 
 ```tsx
-import { Appearance } from "@/components/theme/appearance"
+import { Appearance } from "@/components/auth/theme/appearance"
 
 <Appearance />
 ```
@@ -105,7 +105,7 @@ import { Appearance } from "@/components/theme/appearance"
 
 ## Options
 
-<auto-type-table path="../../../../../../examples/start-shadcn-example/src/lib/theme/theme-plugin.ts" name="ThemePluginOptions" />
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/lib/auth/theme-plugin.ts" name="ThemePluginOptions" />
 
 ## Localization
 

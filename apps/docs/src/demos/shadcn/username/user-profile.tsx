@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { UserProfile } from "@/components/settings/account/user-profile"
+import { UserProfile } from "@/components/auth/settings/account/user-profile"
+import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
-import { usernamePlugin } from "@/lib/username/username-plugin"
 
 export function UserProfileUsernameDemo() {
   return (

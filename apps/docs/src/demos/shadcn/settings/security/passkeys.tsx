@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/components/auth/auth-provider"
-import { Passkeys } from "@/components/settings/security/passkeys"
+import { Passkeys } from "@/components/auth/settings/security/passkeys"
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { authClient } from "@/lib/auth-client"
-import { passkeyPlugin } from "@/lib/passkey/passkey-plugin"
 
 export function PasskeysDemo() {
   return (

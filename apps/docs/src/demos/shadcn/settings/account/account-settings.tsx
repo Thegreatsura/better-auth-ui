@@ -1,4 +1,4 @@
-import { AccountSettings } from "@/components/settings/account/account-settings"
+import { AccountSettings } from "@/components/auth/settings/account/account-settings"
 
 export function AccountSettingsDemo() {
   return (

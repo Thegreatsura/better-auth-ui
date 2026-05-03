@@ -5,8 +5,8 @@ import Link from "next/link"
 
 import { auth } from "@/lib/auth"
 import { getQueryClient } from "@/lib/query-client"
+import { UserButton } from "./auth/user/user-button"
 import { Logo } from "./logo"
-import { UserButton } from "./user/user-button"
 
 export async function Header() {
   const requestHeaders = await headers()

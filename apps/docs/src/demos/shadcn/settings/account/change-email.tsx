@@ -1,4 +1,4 @@
-import { ChangeEmail } from "@/components/settings/account/change-email"
+import { ChangeEmail } from "@/components/auth/settings/account/change-email"
 
 export function ChangeEmailDemo() {
   return (

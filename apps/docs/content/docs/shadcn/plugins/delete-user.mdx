@@ -54,8 +54,8 @@ npx shadcn@latest add https://better-auth-ui.com/r/delete-user.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/delete-user/delete-user-plugin.ts` — `deleteUserPlugin()` factory
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/delete-user-plugin.ts` — `deleteUserPlugin()` factory
 - `src/components/delete-user/danger-zone.tsx` — the danger zone security card
 - `src/components/delete-user/delete-user.tsx` — the delete user card with confirmation dialog
 
@@ -66,7 +66,7 @@ This drops the following into your codebase:
 Pass `deleteUserPlugin()` to `<AuthProvider>`:
 
 ```tsx title="components/providers.tsx"
-import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin" // [!code highlight]
+import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin" // [!code highlight]
 import { AuthProvider } from "@/components/auth/auth-provider"
 
 <AuthProvider
@@ -92,7 +92,7 @@ The `<DangerZone />` card is automatically rendered in `<SecuritySettings />` wh
 **Usage**
 
 ```tsx
-import { DangerZone } from "@/components/delete-user/danger-zone"
+import { DangerZone } from "@/components/auth/delete-user/danger-zone"
 
 <DangerZone />
 ```
