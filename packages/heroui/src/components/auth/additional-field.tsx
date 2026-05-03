@@ -1,13 +1,9 @@
-import {
-  type AdditionalField as AdditionalFieldConfig,
-  resolveInputType
-} from "@better-auth-ui/core"
+import { resolveInputType } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import { Check, Copy } from "@gravity-ui/icons"
 import {
   Button,
   Calendar,
-  type CardProps,
   Checkbox,
   ComboBox,
   DateField,
@@ -37,27 +33,12 @@ import {
   toCalendarDate,
   toCalendarDateTime
 } from "@internationalized/date"
-import { type ReactNode, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
-export type AdditionalFieldProps = {
-  name: string
-  field: AdditionalFieldConfig
-  isPending?: boolean
-  variant?: CardProps["variant"]
-}
+import type { AdditionalFieldProps } from "../../lib/auth-plugin"
 
-declare module "@better-auth-ui/core" {
-  /**
-   * Widens `AdditionalField.label` to `ReactNode`, the `render` argument to
-   * the heroui-typed `AdditionalFieldProps`, and its return type to
-   * `ReactNode`.
-   */
-  interface AdditionalFieldRegister {
-    label: ReactNode
-    renderProps: AdditionalFieldProps
-    renderResult: ReactNode
-  }
-}
+// Re-exported here so the main entrypoint surface is unchanged.
+export type { AdditionalFieldProps } from "../../lib/auth-plugin"
 
 /** Convert a `defaultValue` into a `CalendarDate` for HeroUI date inputs. */
 function toDateValue(value: unknown): CalendarDate | undefined {

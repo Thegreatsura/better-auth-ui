@@ -3,6 +3,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useSignInEmail,
   useSignInUsername
 } from "@better-auth-ui/react"
 import {
@@ -61,7 +62,18 @@ export function SignInUsername({
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
-  const [username, setUsername] = useState("")
+
+  function isEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+  }
+
+  const { mutate: signInEmail } = useSignInEmail(authClient, {
+    onError: (error) => {
+      setPassword("")
+      toast.danger(error.error?.message || error.message)
+    },
+    onSuccess: () => navigate({ to: redirectTo })
+  })
 
   const { mutate: signInUsername, isPending: isSignInPending } =
     useSignInUsername(authClient as UsernameAuthClient, {
@@ -76,13 +88,22 @@ export function SignInUsername({
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
+    const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    signInUsername({
-      username: username.trim(),
-      password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
-    })
+    if (isEmail(email)) {
+      signInEmail({
+        email,
+        password,
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      })
+    } else {
+      signInUsername({
+        username: email,
+        password,
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      })
+    }
   }
 
   const signInMutating = useIsMutating({
@@ -123,12 +144,10 @@ export function SignInUsername({
         {emailAndPassword?.enabled && (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <TextField
-              name="username"
+              name="email"
               type="text"
-              autoComplete="username"
+              autoComplete="username email"
               isDisabled={isPending}
-              value={username}
-              onChange={setUsername}
             >
               <Label>{usernameLocalization.username}</Label>
 

@@ -94,6 +94,7 @@ export const defaultAuthConfig: AuthConfig = {
   emailAndPassword: {
     enabled: true,
     forgotPassword: true,
+    name: true,
     rememberMe: false,
     minPasswordLength: 8,
     maxPasswordLength: 128

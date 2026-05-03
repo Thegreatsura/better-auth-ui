@@ -32,16 +32,15 @@ export type UsernamePluginOptions = {
 
 export const usernamePlugin = createAuthPlugin(
   "username",
-  (
-    options: UsernamePluginOptions = {
-      maxUsernameLength: 30,
-      minUsernameLength: 3
-    }
-  ) => {
+  (options: UsernamePluginOptions = {}) => {
+    const minUsernameLength = options.minUsernameLength ?? 3
+    const maxUsernameLength = options.maxUsernameLength ?? 30
     const localization = { ...usernameLocalization, ...options.localization }
 
     return {
       ...options,
+      minUsernameLength,
+      maxUsernameLength,
       localization,
       additionalFields: [
         {
@@ -50,7 +49,8 @@ export const usernamePlugin = createAuthPlugin(
           label: localization.username,
           placeholder: localization.usernamePlaceholder,
           inputType: "input" as const,
-          signUp: "above" as const
+          signUp: "above" as const,
+          required: true
         },
         ...(options.displayUsername
           ? [

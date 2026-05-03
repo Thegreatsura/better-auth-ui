@@ -46,8 +46,7 @@ export function UsernameField({
     error: availabilityError,
     reset: resetAvailability
   } = useIsUsernameAvailable(authClient as UsernameAuthClient, {
-    // Errors are surfaced inline via the suffix icon and `isInvalid`; the
-    // global mutation toaster would otherwise fire on every keystroke.
+    // Bypass global error toast
     onError: () => {}
   })
 

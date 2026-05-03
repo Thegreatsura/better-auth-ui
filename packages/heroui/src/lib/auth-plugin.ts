@@ -1,3 +1,4 @@
+import type { AdditionalField as AdditionalFieldConfig } from "@better-auth-ui/core"
 import type {
   AccountCardProps,
   AuthPlugin as AuthPluginPrimitive,
@@ -6,14 +7,29 @@ import type {
   UserMenuItemProps
 } from "@better-auth-ui/react"
 import type { CardProps } from "@heroui/react"
-import type { ComponentType } from "react"
+import type { ComponentType, ReactNode } from "react"
 
 import type { SocialLayout } from "../components/auth/provider-buttons"
 
+/** Props for the heroui `<AdditionalField>` component and `field.render` callbacks. */
+export type AdditionalFieldProps = {
+  name: string
+  field: AdditionalFieldConfig
+  isPending?: boolean
+  variant?: CardProps["variant"]
+}
+
+// Lives here (rather than next to `<AdditionalField>`) so the augmentation
+// is picked up by consumers who only import from `/plugins`.
 declare module "@better-auth-ui/core" {
-  /** Widens `useAuth().plugins` to the heroui-typed `AuthPlugin`. */
   interface AuthPluginRegister {
     heroui: AuthPlugin
+  }
+
+  interface AdditionalFieldRegister {
+    label: ReactNode
+    renderProps: AdditionalFieldProps
+    renderResult: ReactNode
   }
 }
 
