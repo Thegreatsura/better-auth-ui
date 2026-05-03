@@ -4,15 +4,9 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import {
-  type UsernameAuthClient,
-  useAuth,
-  useIsUsernameAvailable,
-  useSignUpEmail
-} from "@better-auth-ui/react"
-import { useDebouncer } from "@tanstack/react-pacer"
+import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
-import { Check, Eye, EyeOff, X } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -71,7 +65,6 @@ export function SignUp({
     plugins,
     redirectTo,
     socialProviders,
-    username: usernameConfig,
     viewPaths,
     navigate,
     Link
@@ -79,35 +72,6 @@ export function SignUp({
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [username, setUsername] = useState("")
-
-  const {
-    mutate: isUsernameAvailable,
-    data: usernameData,
-    error: usernameError,
-    reset: resetUsername
-  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
-
-  const usernameDebouncer = useDebouncer(
-    (value: string) => {
-      if (!value.trim()) {
-        resetUsername()
-        return
-      }
-
-      isUsernameAvailable({ username: value.trim() })
-    },
-    { wait: 500 }
-  )
-
-  function handleUsernameChange(value: string) {
-    setUsername(value)
-    resetUsername()
-
-    if (usernameConfig?.isUsernameAvailable) {
-      usernameDebouncer.maybeExecute(value)
-    }
-  }
 
   const { mutate: signUpEmail } = useSignUpEmail(authClient, {
     onError: (error) => {
@@ -148,7 +112,8 @@ export function SignUp({
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    const name = formData.get("name") as string
+    // `emailAndPassword.name === false` hides the name field and submits "".
+    const name = (formData.get("name") as string | null) ?? ""
     const email = formData.get("email") as string
 
     if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
@@ -185,14 +150,6 @@ export function SignUp({
       name,
       email,
       password,
-      ...(usernameConfig?.enabled
-        ? {
-            username: username.trim(),
-            ...(usernameConfig.displayUsername
-              ? { displayUsername: username.trim() }
-              : {})
-          }
-        : {}),
       ...additionalFieldValues
     })
   }
@@ -227,89 +184,36 @@ export function SignUp({
           {emailAndPassword?.enabled && (
             <form onSubmit={handleSubmit}>
               <FieldGroup>
-                <Field data-invalid={!!fieldErrors.name}>
-                  <Label htmlFor="name">{localization.auth.name}</Label>
+                {emailAndPassword.name !== false && (
+                  <Field data-invalid={!!fieldErrors.name}>
+                    <Label htmlFor="name">{localization.auth.name}</Label>
 
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    placeholder={localization.auth.namePlaceholder}
-                    required
-                    disabled={isPending}
-                    onChange={() => {
-                      setFieldErrors((prev) => ({
-                        ...prev,
-                        name: undefined
-                      }))
-                    }}
-                    onInvalid={(e) => {
-                      e.preventDefault()
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      placeholder={localization.auth.namePlaceholder}
+                      required
+                      disabled={isPending}
+                      onChange={() => {
+                        setFieldErrors((prev) => ({
+                          ...prev,
+                          name: undefined
+                        }))
+                      }}
+                      onInvalid={(e) => {
+                        e.preventDefault()
 
-                      setFieldErrors((prev) => ({
-                        ...prev,
-                        name: (e.target as HTMLInputElement).validationMessage
-                      }))
-                    }}
-                    aria-invalid={!!fieldErrors.name}
-                  />
+                        setFieldErrors((prev) => ({
+                          ...prev,
+                          name: (e.target as HTMLInputElement).validationMessage
+                        }))
+                      }}
+                      aria-invalid={!!fieldErrors.name}
+                    />
 
-                  <FieldError>{fieldErrors.name}</FieldError>
-                </Field>
-
-                {usernameConfig?.enabled && (
-                  <Field
-                    data-invalid={
-                      !!usernameError ||
-                      (usernameData && !usernameData.available)
-                    }
-                  >
-                    <Label htmlFor="username">
-                      {localization.auth.username}
-                    </Label>
-
-                    <InputGroup>
-                      <InputGroupInput
-                        id="username"
-                        name="username"
-                        type="text"
-                        autoComplete="username"
-                        placeholder={localization.auth.usernamePlaceholder}
-                        required
-                        minLength={usernameConfig.minUsernameLength}
-                        maxLength={usernameConfig.maxUsernameLength}
-                        disabled={isPending}
-                        value={username}
-                        onChange={(e) => handleUsernameChange(e.target.value)}
-                        aria-invalid={
-                          !!usernameError ||
-                          (usernameData && !usernameData.available)
-                        }
-                      />
-
-                      {usernameConfig.isUsernameAvailable &&
-                        username.trim() && (
-                          <InputGroupAddon align="inline-end">
-                            {usernameData?.available ? (
-                              <Check className="text-foreground" />
-                            ) : usernameError ||
-                              usernameData?.available === false ? (
-                              <X className="text-destructive" />
-                            ) : (
-                              <Spinner />
-                            )}
-                          </InputGroupAddon>
-                        )}
-                    </InputGroup>
-
-                    <FieldError>
-                      {usernameError?.error?.message ||
-                        usernameError?.message ||
-                        (usernameData?.available === false
-                          ? localization.auth.usernameTaken
-                          : null)}
-                    </FieldError>
+                    <FieldError>{fieldErrors.name}</FieldError>
                   </Field>
                 )}
 
@@ -343,6 +247,18 @@ export function SignUp({
 
                   <FieldError>{fieldErrors.email}</FieldError>
                 </Field>
+
+                {additionalFields?.map(
+                  (field) =>
+                    field.signUp === "above" && (
+                      <AdditionalField
+                        key={field.name}
+                        name={field.name}
+                        field={field}
+                        isPending={isPending}
+                      />
+                    )
+                )}
 
                 <Field data-invalid={!!fieldErrors.password}>
                   <Label htmlFor="password">{localization.auth.password}</Label>
@@ -471,7 +387,8 @@ export function SignUp({
 
                 {additionalFields?.map(
                   (field) =>
-                    field.signUp && (
+                    field.signUp &&
+                    field.signUp !== "above" && (
                       <AdditionalField
                         key={field.name}
                         name={field.name}

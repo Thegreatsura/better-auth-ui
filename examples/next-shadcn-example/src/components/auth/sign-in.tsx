@@ -2,11 +2,9 @@
 
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
-  type UsernameAuthClient,
   useAuth,
   useSendVerificationEmail,
-  useSignInEmail,
-  useSignInUsername
+  useSignInEmail
 } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
@@ -34,10 +32,6 @@ export type SignInProps = {
   socialPosition?: "top" | "bottom"
 }
 
-function isEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-}
-
 /**
  * Render the sign-in form UI with email/password, magic link, and social provider options.
  *
@@ -60,7 +54,6 @@ export function SignIn({
     plugins,
     redirectTo,
     socialProviders,
-    username: usernameConfig,
     viewPaths,
     navigate,
     Link
@@ -97,17 +90,6 @@ export function SignIn({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
-  const { mutate: signInUsername } = useSignInUsername(
-    authClient as UsernameAuthClient,
-    {
-      onError: (error) => {
-        setPassword("")
-        toast.error(error.error?.message || error.message)
-      },
-      onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
-
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
   })
@@ -128,18 +110,11 @@ export function SignIn({
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    if (usernameConfig?.enabled && !isEmail(email)) {
-      signInUsername({
-        username: email,
-        password
-      })
-    } else {
-      signInEmail({
-        email,
-        password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
-      })
-    }
+    signInEmail({
+      email,
+      password,
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+    })
   }
 
   const showSeparator =
@@ -173,24 +148,14 @@ export function SignIn({
             <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Field data-invalid={!!fieldErrors.email}>
-                  <Label htmlFor="email">
-                    {usernameConfig?.enabled
-                      ? localization.auth.username
-                      : localization.auth.email}
-                  </Label>
+                  <Label htmlFor="email">{localization.auth.email}</Label>
 
                   <Input
                     id="email"
                     name="email"
-                    type={usernameConfig?.enabled ? "text" : "email"}
-                    autoComplete={
-                      usernameConfig?.enabled ? "username email" : "email"
-                    }
-                    placeholder={
-                      usernameConfig?.enabled
-                        ? localization.auth.usernameOrEmailPlaceholder
-                        : localization.auth.emailPlaceholder
-                    }
+                    type="email"
+                    autoComplete="email"
+                    placeholder={localization.auth.emailPlaceholder}
                     required
                     disabled={isPending}
                     onChange={() => {
