@@ -63,15 +63,13 @@ export function MagicLink({
 
   const [email, setEmail] = useState("")
 
-  const { mutate: signInMagicLink } = useSignInMagicLink(
-    authClient as MagicLinkAuthClient,
-    {
+  const { mutate: signInMagicLink, isPending: signInMagicLinkPending } =
+    useSignInMagicLink(authClient as MagicLinkAuthClient, {
       onSuccess: () => {
         setEmail("")
         toast.success(magicLinkLocalization.magicLinkSent)
       }
-    }
-  )
+    })
 
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
@@ -135,7 +133,7 @@ export function MagicLink({
 
           <div className="flex flex-col gap-3">
             <Button type="submit" className="w-full" isPending={isPending}>
-              {isPending && <Spinner color="current" size="sm" />}
+              {signInMagicLinkPending && <Spinner color="current" size="sm" />}
 
               {magicLinkLocalization.sendMagicLink}
             </Button>

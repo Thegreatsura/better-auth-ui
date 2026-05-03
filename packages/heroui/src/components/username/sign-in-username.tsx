@@ -226,7 +226,7 @@ export function SignInUsername({
                 className="w-full"
                 isPending={isSignInPending || isPending}
               >
-                {isPending && <Spinner color="current" size="sm" />}
+                {isSignInPending && <Spinner color="current" size="sm" />}
 
                 {localization.auth.signIn}
               </Button>

@@ -66,21 +66,24 @@ export function SignUp({
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const { mutate: signUpEmail } = useSignUpEmail(authClient, {
-    onError: (error) => {
-      setPassword("")
-      setConfirmPassword("")
-      toast.danger(error.error?.message || error.message)
-    },
-    onSuccess: () => {
-      if (emailAndPassword?.requireEmailVerification) {
-        toast.success(localization.auth.verifyYourEmail)
-        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-      } else {
-        navigate({ to: redirectTo })
+  const { mutate: signUpEmail, isPending: signUpEmailPending } = useSignUpEmail(
+    authClient,
+    {
+      onError: (error) => {
+        setPassword("")
+        setConfirmPassword("")
+        toast.danger(error.error?.message || error.message)
+      },
+      onSuccess: () => {
+        if (emailAndPassword?.requireEmailVerification) {
+          toast.success(localization.auth.verifyYourEmail)
+          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+        } else {
+          navigate({ to: redirectTo })
+        }
       }
     }
-  })
+  )
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -322,7 +325,7 @@ export function SignUp({
 
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" isPending={isPending}>
-                {isPending && <Spinner color="current" size="sm" />}
+                {signUpEmailPending && <Spinner color="current" size="sm" />}
 
                 {localization.auth.signUp}
               </Button>
