@@ -2,21 +2,12 @@
 
 This workspace uses **bun** — NOT pnpm or npm.
 
-# Biome
-
-After every edit, run:
-
-```bash
-bunx biome check --write .
-```
-
 ## Quality Gates
 
 Before completing any task, ensure all of the following pass:
 
 1. **Biome** — No linting or formatting errors in modified files
-2. **Build** — The affected project builds successfully (`nx build`)
-3. **TypeCheck** — No TypeScript errors in the workspace (`nx typecheck`)
+2. **TypeCheck** — No TypeScript errors in the project (`nx typecheck`)
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

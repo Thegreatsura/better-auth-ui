@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client"
 import { deleteUserPlugin } from "@/lib/delete-user/delete-user-plugin"
 import { multiSessionPlugin } from "@/lib/multi-session/multi-session-plugin"
 import { themePlugin } from "@/lib/theme/theme-plugin"
+import { usernamePlugin } from "@/lib/username/username-plugin"
 import { AuthProvider } from "./auth/auth-provider"
 import { Toaster } from "./ui/sonner"
 
@@ -27,7 +28,8 @@ export function Providers({ children }: { children: ReactNode }) {
         plugins={[
           deleteUserPlugin(),
           multiSessionPlugin(),
-          themePlugin({ useTheme })
+          themePlugin({ useTheme }),
+          usernamePlugin({ isUsernameAvailable: true })
         ]}
         Link={Link}
       >

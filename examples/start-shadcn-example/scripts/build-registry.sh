@@ -16,9 +16,9 @@ SRC_COMPONENTS="$EXAMPLE_DIR/src/components"
 SRC_LIB="$EXAMPLE_DIR/src/lib"
 
 # Components subdirectories that are mirrored into every target.
-COMPONENT_DIRS=(auth delete-user multi-session settings theme ui user)
+COMPONENT_DIRS=(auth delete-user multi-session settings theme ui user username)
 # Lib entries (file or directory) that are mirrored into every target.
-LIB_ENTRIES=(auth-plugin.ts delete-user magic-link multi-session passkey theme)
+LIB_ENTRIES=(auth-plugin.ts delete-user magic-link multi-session passkey theme username)
 
 # Targets that consume the registry sources.
 TARGETS=(

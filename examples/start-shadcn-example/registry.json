@@ -183,6 +183,49 @@
       ]
     },
     {
+      "name": "username",
+      "type": "registry:component",
+      "title": "Username",
+      "description": "Username plugin: username-based sign-in form and availability checking field. Registers a sign-in view that accepts both username and email, and a username field with real-time availability checking rendered on the sign-up form.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/react-pacer",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "checkbox",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "separator",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/username/username-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/username/username-field.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/username/sign-in-username.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "passkey",
       "type": "registry:component",
       "title": "Passkey",

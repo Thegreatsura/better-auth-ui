@@ -27,9 +27,11 @@ export type EmailAndPasswordConfig = {
    */
   minPasswordLength: number
   /**
-   * Maximum password length
-   * @default 128
+   * Whether to render the name field on the sign-up form. When `false`,
+   * sign-up submits with `name: ""`.
+   * @default true
    */
+  name?: boolean
   /** Whether to show a "Remember me" checkbox on sign-in forms */
   rememberMe?: boolean
   /** Whether email verification is required before account activation */

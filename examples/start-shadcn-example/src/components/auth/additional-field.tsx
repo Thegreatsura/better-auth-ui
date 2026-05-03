@@ -125,6 +125,10 @@ export function AdditionalField({
   // reads the input's *live* value rather than a stale `defaultValue`.
   const inputRef = useRef<HTMLInputElement>(null)
 
+  if (field.render) {
+    return <>{field.render({ name, field, isPending })}</>
+  }
+
   if (inputType === "hidden") {
     return (
       <input

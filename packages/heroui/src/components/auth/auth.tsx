@@ -86,15 +86,20 @@ export function Auth({
     return null
   }
 
-  // 1. Plugin overrides (`views.auth[currentView]`) — these always win,
-  //    including over built-in views. First plugin to register wins.
+  // 1. Plugin overrides (`views.auth[currentView]`) — first plugin wins,
+  //    including over built-in views. Resolves the view key from `view`,
+  //    then `authView` (built-in path match), then plugin-introduced paths
+  //    (e.g. `magicLink` → `/auth/magic-link`).
   for (const plugin of plugins) {
     const pluginAuthPaths = plugin.viewPaths?.auth
-    if (!pluginAuthPaths) continue
 
     const pluginView =
       view ??
-      Object.keys(pluginAuthPaths).find((key) => pluginAuthPaths[key] === path)
+      authView ??
+      (pluginAuthPaths &&
+        Object.keys(pluginAuthPaths).find(
+          (key) => pluginAuthPaths[key] === path
+        ))
     if (!pluginView) continue
 
     const PluginView = plugin.views?.auth?.[pluginView]

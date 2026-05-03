@@ -2,13 +2,8 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import {
-  type UsernameAuthClient,
-  useAuth,
-  useIsUsernameAvailable,
-  useSignUpEmail
-} from "@better-auth-ui/react"
-import { Check, Eye, EyeSlash, Xmark } from "@gravity-ui/icons"
+import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
+import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
   Card,
@@ -25,7 +20,6 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import { useDebouncer } from "@tanstack/react-pacer"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
 import { AdditionalField } from "./additional-field"
@@ -65,42 +59,12 @@ export function SignUp({
     plugins,
     redirectTo,
     socialProviders,
-    username: usernameConfig,
     viewPaths,
     navigate
   } = useAuth()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [username, setUsername] = useState("")
-
-  const {
-    mutate: isUsernameAvailable,
-    data: usernameData,
-    error: usernameError,
-    reset: resetUsername
-  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
-
-  const usernameDebouncer = useDebouncer(
-    (value: string) => {
-      if (!value.trim()) {
-        resetUsername()
-        return
-      }
-
-      isUsernameAvailable({ username: value.trim() })
-    },
-    { wait: 500 }
-  )
-
-  function handleUsernameChange(value: string) {
-    setUsername(value)
-    resetUsername()
-
-    if (usernameConfig?.isUsernameAvailable) {
-      usernameDebouncer.maybeExecute(value)
-    }
-  }
 
   const { mutate: signUpEmail } = useSignUpEmail(authClient, {
     onError: (error) => {
@@ -134,7 +98,8 @@ export function SignUp({
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    const name = formData.get("name") as string
+    // `emailAndPassword.name === false` hides the name field and submits "".
+    const name = (formData.get("name") as string | null) ?? ""
     const email = formData.get("email") as string
 
     if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
@@ -171,14 +136,6 @@ export function SignUp({
       name,
       email,
       password,
-      ...(usernameConfig?.enabled
-        ? {
-            username: username.trim(),
-            ...(usernameConfig.displayUsername
-              ? { displayUsername: username.trim() }
-              : {})
-          }
-        : {}),
       ...additionalFieldValues
     })
   }
@@ -212,67 +169,22 @@ export function SignUp({
 
         {emailAndPassword?.enabled && (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <TextField
-              name="name"
-              type="text"
-              autoComplete="name"
-              isDisabled={isPending}
-            >
-              <Label>{localization.auth.name}</Label>
-
-              <Input
-                placeholder={localization.auth.namePlaceholder}
-                required
-                variant={variant === "transparent" ? "primary" : "secondary"}
-              />
-
-              <FieldError />
-            </TextField>
-
-            {usernameConfig?.enabled && (
+            {emailAndPassword.name !== false && (
               <TextField
-                name="username"
+                name="name"
                 type="text"
-                autoComplete="username"
-                minLength={usernameConfig.minUsernameLength}
-                maxLength={usernameConfig.maxUsernameLength}
+                autoComplete="name"
                 isDisabled={isPending}
-                value={username}
-                onChange={handleUsernameChange}
-                isInvalid={
-                  !!usernameError || (usernameData && !usernameData.available)
-                }
               >
-                <Label>{localization.auth.username}</Label>
+                <Label>{localization.auth.name}</Label>
 
-                <InputGroup
+                <Input
+                  placeholder={localization.auth.namePlaceholder}
+                  required
                   variant={variant === "transparent" ? "primary" : "secondary"}
-                >
-                  <InputGroup.Input
-                    placeholder={localization.auth.usernamePlaceholder}
-                    required
-                  />
+                />
 
-                  {usernameConfig.isUsernameAvailable && username.trim() && (
-                    <InputGroup.Suffix className="px-2">
-                      {usernameData?.available ? (
-                        <Check className="text-success" />
-                      ) : usernameError || usernameData?.available === false ? (
-                        <Xmark className="text-danger" />
-                      ) : (
-                        <Spinner size="sm" color="current" />
-                      )}
-                    </InputGroup.Suffix>
-                  )}
-                </InputGroup>
-
-                <FieldError>
-                  {usernameError?.error?.message ||
-                    usernameError?.message ||
-                    (usernameData?.available === false
-                      ? localization.auth.usernameTaken
-                      : null)}
-                </FieldError>
+                <FieldError />
               </TextField>
             )}
 
@@ -292,6 +204,19 @@ export function SignUp({
 
               <FieldError />
             </TextField>
+
+            {additionalFields?.map(
+              (field) =>
+                field.signUp === "above" && (
+                  <AdditionalField
+                    key={field.name}
+                    name={field.name}
+                    field={field}
+                    isPending={isPending}
+                    variant={variant}
+                  />
+                )
+            )}
 
             <TextField
               minLength={emailAndPassword?.minPasswordLength}
@@ -383,7 +308,8 @@ export function SignUp({
 
             {additionalFields?.map(
               (field) =>
-                field.signUp && (
+                field.signUp &&
+                field.signUp !== "above" && (
                   <AdditionalField
                     key={field.name}
                     name={field.name}

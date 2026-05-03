@@ -1,10 +1,8 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
-  type UsernameAuthClient,
   useAuth,
   useSendVerificationEmail,
-  useSignInEmail,
-  useSignInUsername
+  useSignInEmail
 } from "@better-auth-ui/react"
 import {
   Button,
@@ -35,10 +33,6 @@ export interface SignInProps {
   variant?: CardProps["variant"]
 }
 
-function isEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-}
-
 /**
  * Render the sign-in UI using auth context for configuration and localization.
  *
@@ -60,7 +54,6 @@ export function SignIn({
     plugins,
     redirectTo,
     socialProviders,
-    username: usernameConfig,
     viewPaths,
     navigate
   } = useAuth()
@@ -96,17 +89,6 @@ export function SignIn({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
-  const { mutate: signInUsername } = useSignInUsername(
-    authClient as UsernameAuthClient,
-    {
-      onError: (error) => {
-        setPassword("")
-        toast.danger(error.error?.message || error.message)
-      },
-      onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
-
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -114,18 +96,11 @@ export function SignIn({
     const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    if (usernameConfig?.enabled && !isEmail(email)) {
-      signInUsername({
-        username: email,
-        password
-      })
-    } else {
-      signInEmail({
-        email,
-        password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
-      })
-    }
+    signInEmail({
+      email,
+      password,
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+    })
   }
 
   const signInMutating = useIsMutating({
@@ -167,22 +142,14 @@ export function SignIn({
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <TextField
               name="email"
-              type={usernameConfig?.enabled ? "text" : "email"}
-              autoComplete={usernameConfig?.enabled ? "username" : "email"}
+              type="email"
+              autoComplete="email"
               isDisabled={isPending}
             >
-              <Label>
-                {usernameConfig?.enabled
-                  ? localization.auth.username
-                  : localization.auth.email}
-              </Label>
+              <Label>{localization.auth.email}</Label>
 
               <Input
-                placeholder={
-                  usernameConfig?.enabled
-                    ? localization.auth.usernameOrEmailPlaceholder
-                    : localization.auth.emailPlaceholder
-                }
+                placeholder={localization.auth.emailPlaceholder}
                 variant={variant === "transparent" ? "primary" : "secondary"}
                 required
               />

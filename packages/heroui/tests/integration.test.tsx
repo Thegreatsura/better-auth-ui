@@ -20,8 +20,11 @@ const indexComponents = [
 const pluginsExports = [
   "MagicLink",
   "Passkeys",
+  "SignInUsername",
+  "UsernameField",
   "magicLinkPlugin",
-  "passkeyPlugin"
+  "passkeyPlugin",
+  "usernamePlugin"
 ] as const
 
 describe("@better-auth-ui/heroui integration", () => {

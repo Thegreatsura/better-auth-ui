@@ -1,13 +1,9 @@
-import {
-  type AdditionalField as AdditionalFieldConfig,
-  resolveInputType
-} from "@better-auth-ui/core"
+import { resolveInputType } from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/react"
 import { Check, Copy } from "@gravity-ui/icons"
 import {
   Button,
   Calendar,
-  type CardProps,
   Checkbox,
   ComboBox,
   DateField,
@@ -39,12 +35,10 @@ import {
 } from "@internationalized/date"
 import { useRef, useState } from "react"
 
-export type AdditionalFieldProps = {
-  name: string
-  field: AdditionalFieldConfig
-  isPending?: boolean
-  variant?: CardProps["variant"]
-}
+import type { AdditionalFieldProps } from "../../lib/auth-plugin"
+
+// Re-exported here so the main entrypoint surface is unchanged.
+export type { AdditionalFieldProps } from "../../lib/auth-plugin"
 
 /** Convert a `defaultValue` into a `CalendarDate` for HeroUI date inputs. */
 function toDateValue(value: unknown): CalendarDate | undefined {
@@ -136,6 +130,10 @@ export function AdditionalField({
   // Used by `inputType: "input"` with `copyable: true` so the copy button
   // reads the input's *live* value rather than a stale `defaultValue`.
   const inputRef = useRef<HTMLInputElement>(null)
+
+  if (field.render) {
+    return <>{field.render({ name, field, isPending, variant })}</>
+  }
 
   if (inputType === "hidden") {
     return (
