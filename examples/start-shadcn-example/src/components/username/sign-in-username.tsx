@@ -182,7 +182,7 @@ export function SignInUsername({
                     id="email"
                     name="email"
                     type="text"
-                    autoComplete="username email"
+                    autoComplete="username"
                     placeholder={
                       usernameLocalization.usernameOrEmailPlaceholder
                     }
