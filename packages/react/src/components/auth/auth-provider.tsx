@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type AdditionalField,
   type AuthConfig,
   type DeepPartial,
   deepmerge,
@@ -87,6 +88,20 @@ export function AuthProvider({
     (typeof window !== "undefined" &&
       new URLSearchParams(window.location.search).get("redirectTo")?.trim()) ||
     mergedConfig.redirectTo
+
+  // Merge plugin-contributed `additionalFields` with user-supplied ones.
+  // Plugin order is preserved; user-supplied entries with the same `name`
+  // override the plugin contribution.
+  const fieldsByName = new Map<string, AdditionalField>()
+  for (const plugin of mergedConfig.plugins ?? []) {
+    for (const field of plugin.additionalFields ?? []) {
+      fieldsByName.set(field.name, field)
+    }
+  }
+  for (const field of mergedConfig.additionalFields ?? []) {
+    fieldsByName.set(field.name, field)
+  }
+  mergedConfig.additionalFields = Array.from(fieldsByName.values())
 
   const contextQueryClient = useContext(QueryClientContext)
 

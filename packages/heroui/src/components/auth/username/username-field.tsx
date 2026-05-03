@@ -14,78 +14,82 @@ import {
 } from "@heroui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
 import { useState } from "react"
-
-import type { AdditionalFieldRenderProps } from "../../../lib/auth-plugin"
 import { usernamePlugin } from "../../../lib/username/username-plugin"
+import type { AdditionalFieldProps } from "../additional-field"
 
-export type UsernameFieldRendererProps = AdditionalFieldRenderProps & {
-  minLength?: number
-  maxLength?: number
-}
-
-/** Custom renderer for username field with availability checking. */
-export function UsernameFieldRenderer({
-  field,
+/**
+ * Renderer for the `username` additional field. Owns availability checking,
+ * length limits, and visual indicators. Error messages are intentionally not
+ * rendered — `<FieldError />` surfaces native validation messages and users
+ * who want richer error UI can supply their own `render`.
+ */
+export function UsernameField({
   name,
-  defaultValue,
-  onChange,
-  currentValue = "",
+  field,
   isPending,
-  variant,
-  error,
-  minLength = 3,
-  maxLength = 30
-}: UsernameFieldRendererProps) {
+  variant
+}: AdditionalFieldProps) {
   const { authClient } = useAuth()
-  const { localization } = useAuthPlugin(usernamePlugin)
-  const [value, setValue] = useState(String(defaultValue ?? ""))
+  const {
+    localization,
+    minUsernameLength,
+    maxUsernameLength,
+    isUsernameAvailable: checkAvailability
+  } = useAuthPlugin(usernamePlugin)
+
+  const currentUsername = String(field.defaultValue ?? "")
+  const [value, setValue] = useState(currentUsername)
 
   const {
-    mutate: isUsernameAvailable,
-    data: usernameData,
-    error: usernameError,
-    reset: resetUsername
-  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
+    mutate: requestAvailability,
+    data: availability,
+    error: availabilityError,
+    reset: resetAvailability
+  } = useIsUsernameAvailable(authClient as UsernameAuthClient, {
+    // Errors are surfaced inline via the suffix icon and `isInvalid`; the
+    // global mutation toaster would otherwise fire on every keystroke.
+    onError: () => {}
+  })
 
-  const usernameDebouncer = useDebouncer(
-    (val: string) => {
-      if (!val.trim() || val.trim() === currentValue) {
-        resetUsername()
+  const debouncer = useDebouncer(
+    (next: string) => {
+      const trimmed = next.trim()
+      // Skip blank input and the user's own current username (profile view).
+      if (!trimmed || trimmed === currentUsername) {
+        resetAvailability()
         return
       }
 
-      isUsernameAvailable({ username: val.trim() })
+      requestAvailability({ username: trimmed })
     },
     { wait: 500 }
   )
 
-  function handleChange(val: string) {
-    setValue(val)
-    resetUsername()
-    onChange?.(val)
+  function handleChange(next: string) {
+    setValue(next)
+    resetAvailability()
 
-    usernameDebouncer.maybeExecute(val)
+    if (checkAvailability) {
+      debouncer.maybeExecute(next)
+    }
   }
 
+  const isCheckingAvailability =
+    !!checkAvailability && !!value.trim() && value.trim() !== currentUsername
+
   const isInvalid =
-    !!error || !!usernameError || (usernameData && !usernameData.available)
-
-  const showAvailabilityIndicator =
-    value.trim() && value.trim() !== currentValue
-
-  const availabilityError =
-    usernameError?.error?.message ||
-    usernameError?.message ||
-    (usernameData?.available === false ? localization.usernameTaken : null)
+    !!availabilityError || (availability && !availability.available)
 
   return (
     <TextField
       name={name}
       type="text"
       autoComplete="username"
-      minLength={minLength}
-      maxLength={maxLength}
+      minLength={minUsernameLength}
+      maxLength={maxUsernameLength}
       isDisabled={isPending}
+      isRequired={field.required}
+      isReadOnly={field.readOnly}
       value={value}
       onChange={handleChange}
       isInvalid={isInvalid}
@@ -93,16 +97,22 @@ export function UsernameFieldRenderer({
       <Label>{field.label}</Label>
 
       <InputGroup variant={variant === "transparent" ? "primary" : "secondary"}>
-        <InputGroup.Input
-          placeholder={localization.usernamePlaceholder}
-          required={field.required}
-        />
+        <InputGroup.Input placeholder={field.placeholder} />
 
-        {showAvailabilityIndicator && (
-          <InputGroup.Suffix className="px-2">
-            {usernameData?.available ? (
+        {isCheckingAvailability && (
+          <InputGroup.Suffix
+            aria-label={
+              availability?.available
+                ? localization.usernameAvailable
+                : availability?.available === false
+                  ? localization.usernameTaken
+                  : undefined
+            }
+            className="px-2"
+          >
+            {availability?.available ? (
               <Check className="text-success" />
-            ) : usernameError || usernameData?.available === false ? (
+            ) : availabilityError || availability?.available === false ? (
               <Xmark className="text-danger" />
             ) : (
               <Spinner size="sm" color="current" />
@@ -111,7 +121,7 @@ export function UsernameFieldRenderer({
         )}
       </InputGroup>
 
-      <FieldError>{error || availabilityError}</FieldError>
+      <FieldError />
     </TextField>
   )
 }

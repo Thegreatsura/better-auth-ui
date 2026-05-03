@@ -12,7 +12,13 @@ export const usernameLocalization = {
   usernameAvailable: "Username is available",
 
   /** @remarks `"Username is already taken. Please try another."` */
-  usernameTaken: "Username is already taken. Please try another."
+  usernameTaken: "Username is already taken. Please try another.",
+
+  /** @remarks `"Display Username"` */
+  displayUsername: "Display Username",
+
+  /** @remarks `"Enter your display username"` */
+  displayUsernamePlaceholder: "Enter your display username"
 }
 
 export type UsernameLocalization = typeof usernameLocalization

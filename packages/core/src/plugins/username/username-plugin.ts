@@ -1,19 +1,8 @@
 import { createAuthPlugin } from "../../lib/create-auth-plugin"
-// Side-effect import so this file participates in declaration merging on the
-// same module instance that external consumers reach via `@better-auth-ui/core`.
-import type {} from "../../lib/view-paths"
 import {
   type UsernameLocalization,
   usernameLocalization
 } from "./username-localization"
-
-declare module "../../lib/view-paths" {
-  /** Widens `AuthViewPaths` by adding the `"signInUsername"` path when this plugin is imported. */
-  interface AuthViewPaths {
-    /** @default "sign-in-username" */
-    signInUsername?: string
-  }
-}
 
 export type UsernamePluginOptions = {
   /**
@@ -39,29 +28,7 @@ export type UsernamePluginOptions = {
    * @remarks `UsernameLocalization`
    */
   localization?: Partial<UsernameLocalization>
-  /**
-   * URL segment for the sign-in-username view.
-   * @remarks `string`
-   * @default "sign-in-username"
-   */
-  path?: string
 }
-
-/** Fields contributed by the username plugin. */
-const usernameAdditionalFields = [
-  {
-    name: "username",
-    type: "string" as const,
-    label: "Username",
-    inputType: "input" as const
-  },
-  {
-    name: "displayUsername",
-    type: "string" as const,
-    label: "Display Username",
-    inputType: "input" as const
-  }
-]
 
 export const usernamePlugin = createAuthPlugin(
   "username",
@@ -70,12 +37,34 @@ export const usernamePlugin = createAuthPlugin(
       maxUsernameLength: 30,
       minUsernameLength: 3
     }
-  ) => ({
-    ...options,
-    localization: { ...usernameLocalization, ...options.localization },
-    viewPaths: {
-      auth: { signInUsername: options.path ?? "sign-in-username" }
-    },
-    additionalFields: usernameAdditionalFields
-  })
+  ) => {
+    const localization = { ...usernameLocalization, ...options.localization }
+
+    return {
+      ...options,
+      localization,
+      additionalFields: [
+        {
+          name: "username",
+          type: "string" as const,
+          label: localization.username,
+          placeholder: localization.usernamePlaceholder,
+          inputType: "input" as const,
+          signUp: "above" as const
+        },
+        ...(options.displayUsername
+          ? [
+              {
+                name: "displayUsername",
+                type: "string" as const,
+                label: localization.displayUsername,
+                placeholder: localization.displayUsernamePlaceholder,
+                inputType: "input" as const,
+                signUp: "above" as const
+              }
+            ]
+          : [])
+      ]
+    }
+  }
 )

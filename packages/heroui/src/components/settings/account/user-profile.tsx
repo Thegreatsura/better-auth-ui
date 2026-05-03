@@ -2,32 +2,22 @@ import {
   type AdditionalFieldValue,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import {
-  type UsernameAuthClient,
-  useAuth,
-  useIsUsernameAvailable,
-  useSession,
-  useUpdateUser
-} from "@better-auth-ui/react"
-import { Check, Xmark } from "@gravity-ui/icons"
+import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/react"
 import {
   Button,
   Card,
   type CardProps,
   cn,
   FieldError,
-  Fieldset,
   Form,
   Input,
-  InputGroup,
   Label,
   Skeleton,
   Spinner,
   TextField,
   toast
 } from "@heroui/react"
-import { useDebouncer } from "@tanstack/react-pacer"
-import { type SyntheticEvent, useEffect, useState } from "react"
+import type { SyntheticEvent } from "react"
 
 import { AdditionalField } from "../../auth/additional-field"
 import { ChangeAvatar } from "./change-avatar"
@@ -38,61 +28,16 @@ export type UserProfileProps = {
 }
 
 /**
- * Render a profile card that lets the authenticated user view and update their display name, username, and avatar.
- *
- * @returns A JSX element containing the user profile card with avatar upload and editable form fields
+ * Render a profile card that lets the authenticated user view and update their
+ * display name, avatar, and any plugin- or user-supplied additional fields.
  */
 export function UserProfile({
   className,
   variant,
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
-  const {
-    additionalFields,
-    authClient,
-    localization,
-    username: usernameConfig
-  } = useAuth()
-  const { data: session } = useSession(authClient as UsernameAuthClient)
-
-  const currentUsername =
-    (usernameConfig?.displayUsername
-      ? session?.user?.displayUsername
-      : session?.user?.username) || ""
-
-  const [username, setUsername] = useState(currentUsername)
-
-  useEffect(() => {
-    setUsername(currentUsername)
-  }, [currentUsername])
-
-  const {
-    mutate: isUsernameAvailable,
-    data: usernameData,
-    error: usernameError,
-    reset: resetUsername
-  } = useIsUsernameAvailable(authClient as UsernameAuthClient)
-
-  const usernameDebouncer = useDebouncer(
-    (value: string) => {
-      if (!value.trim() || value.trim() === currentUsername) {
-        resetUsername()
-        return
-      }
-
-      isUsernameAvailable({ username: value.trim() })
-    },
-    { wait: 500 }
-  )
-
-  function handleUsernameChange(value: string) {
-    setUsername(value)
-    resetUsername()
-
-    if (usernameConfig?.isUsernameAvailable) {
-      usernameDebouncer.maybeExecute(value)
-    }
-  }
+  const { additionalFields, authClient, localization } = useAuth()
+  const { data: session } = useSession(authClient)
 
   const { mutate: updateUser, isPending } = useUpdateUser(authClient, {
     onSuccess: () => toast.success(localization.settings.profileUpdatedSuccess)
@@ -129,14 +74,6 @@ export function UserProfile({
 
     updateUser({
       name,
-      ...(usernameConfig?.enabled
-        ? {
-            username: username.trim(),
-            ...(usernameConfig.displayUsername
-              ? { displayUsername: username.trim() }
-              : {})
-          }
-        : {}),
       ...additionalFieldValues
     })
   }
@@ -149,144 +86,83 @@ export function UserProfile({
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>
         <Card.Content>
-          <Form onSubmit={handleSubmit}>
-            <Fieldset className="w-full gap-4">
-              <ChangeAvatar />
+          <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <ChangeAvatar />
 
-              <Fieldset.Group>
-                {usernameConfig?.enabled && (
-                  <TextField
-                    type="text"
-                    autoComplete="username"
-                    minLength={usernameConfig.minUsernameLength}
-                    maxLength={usernameConfig.maxUsernameLength}
-                    isDisabled={isPending || !session}
-                    value={username}
-                    onChange={handleUsernameChange}
-                    isInvalid={
-                      !!usernameError ||
-                      (usernameData && !usernameData.available)
-                    }
-                  >
-                    <Label>{localization.auth.username}</Label>
+            <TextField
+              key={session?.user?.name}
+              name="name"
+              defaultValue={session?.user.name}
+              isDisabled={isPending || !session}
+            >
+              <Label>{localization.auth.name}</Label>
 
-                    {session ? (
-                      <InputGroup
-                        variant={
-                          variant === "transparent" ? "primary" : "secondary"
-                        }
-                      >
-                        <InputGroup.Input
-                          placeholder={localization.auth.usernamePlaceholder}
-                          name="username"
-                        />
+              <Input
+                className={cn(!session && "hidden")}
+                autoComplete="name"
+                placeholder={localization.auth.name}
+                variant={variant === "transparent" ? "primary" : "secondary"}
+              />
 
-                        {usernameConfig.isUsernameAvailable &&
-                          username.trim() &&
-                          username.trim() !== currentUsername && (
-                            <InputGroup.Suffix className="px-2">
-                              {usernameData?.available ? (
-                                <Check className="text-success" />
-                              ) : usernameError ||
-                                usernameData?.available === false ? (
-                                <Xmark className="text-danger" />
-                              ) : (
-                                <Spinner size="sm" color="current" />
-                              )}
-                            </InputGroup.Suffix>
-                          )}
-                      </InputGroup>
-                    ) : (
-                      <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
-                    )}
+              {!session && (
+                <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
+              )}
 
-                    <FieldError>
-                      {usernameError?.error?.message ||
-                        usernameError?.message ||
-                        (usernameData?.available === false &&
-                          localization.auth.usernameTaken)}
-                    </FieldError>
-                  </TextField>
-                )}
+              <FieldError />
+            </TextField>
 
-                <TextField
-                  key={session?.user?.name}
-                  name="name"
-                  defaultValue={session?.user.name}
-                  isDisabled={isPending || !session}
-                >
-                  <Label>{localization.auth.name}</Label>
+            {additionalFields
+              ?.filter((field) => field.profile !== false)
+              .map((field) => {
+                if (!session) {
+                  if (field.inputType === "hidden") {
+                    return null
+                  }
 
-                  {session ? (
-                    <Input
-                      autoComplete="name"
-                      placeholder={localization.auth.name}
-                      variant={
-                        variant === "transparent" ? "primary" : "secondary"
-                      }
+                  return (
+                    <Skeleton
+                      key={field.name}
+                      className="h-10 md:h-9 w-full rounded-xl"
                     />
-                  ) : (
-                    <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
-                  )}
+                  )
+                }
 
-                  <FieldError />
-                </TextField>
+                const value = (session.user as Record<string, unknown>)[
+                  field.name
+                ]
 
-                {additionalFields
-                  ?.filter((field) => field.profile !== false)
-                  .map((field) => {
-                    if (!session) {
-                      if (field.inputType === "hidden") {
-                        return null
-                      }
+                // Re-mount when the session value loads so the field's
+                // uncontrolled `defaultValue` reflects the latest data.
+                const key = `${field.name}:${
+                  value instanceof Date
+                    ? value.toISOString()
+                    : String(value ?? "")
+                }`
 
-                      return (
-                        <Skeleton
-                          key={field.name}
-                          className="h-10 md:h-9 w-full rounded-xl"
-                        />
-                      )
-                    }
+                return (
+                  <AdditionalField
+                    key={key}
+                    name={field.name}
+                    field={{
+                      ...field,
+                      defaultValue: value as AdditionalFieldValue | null
+                    }}
+                    isPending={isPending}
+                    variant={variant}
+                  />
+                )
+              })}
 
-                    const value = (session.user as Record<string, unknown>)[
-                      field.name
-                    ]
-
-                    // Re-mount when the session value loads so the field's
-                    // uncontrolled `defaultValue` reflects the latest data.
-                    const key = `${field.name}:${
-                      value instanceof Date
-                        ? value.toISOString()
-                        : String(value ?? "")
-                    }`
-
-                    return (
-                      <AdditionalField
-                        key={key}
-                        name={field.name}
-                        field={{
-                          ...field,
-                          defaultValue: value as AdditionalFieldValue | null
-                        }}
-                        isPending={isPending}
-                        variant={variant}
-                      />
-                    )
-                  })}
-              </Fieldset.Group>
-
-              <Fieldset.Actions>
-                <Button
-                  type="submit"
-                  isPending={isPending}
-                  isDisabled={!session}
-                  size="sm"
-                >
-                  {isPending && <Spinner color="current" size="sm" />}
-                  {localization.settings.saveChanges}
-                </Button>
-              </Fieldset.Actions>
-            </Fieldset>
+            <Button
+              type="submit"
+              isPending={isPending}
+              isDisabled={!session}
+              size="sm"
+              className="self-start mt-1"
+            >
+              {isPending && <Spinner color="current" size="sm" />}
+              {localization.settings.saveChanges}
+            </Button>
           </Form>
         </Card.Content>
       </Card>

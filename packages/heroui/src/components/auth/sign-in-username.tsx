@@ -1,8 +1,9 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
+  type UsernameAuthClient,
   useAuth,
-  useSendVerificationEmail,
-  useSignInEmail
+  useAuthPlugin,
+  useSignInUsername
 } from "@better-auth-ui/react"
 import {
   Button,
@@ -22,11 +23,11 @@ import {
 } from "@heroui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
-
+import { usernamePlugin } from "../../lib/username/username-plugin"
 import { FieldSeparator } from "./field-separator"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
-export interface SignInProps {
+export interface SignInUsernameProps {
   className?: string
   socialLayout?: SocialLayout
   socialPosition?: "top" | "bottom"
@@ -34,21 +35,20 @@ export interface SignInProps {
 }
 
 /**
- * Render the sign-in UI using auth context for configuration and localization.
+ * Render the username-based sign-in UI.
  *
- * @returns The sign-in JSX element containing email/password fields, optional magic-link button, and social provider buttons.
+ * @returns The sign-in JSX element containing username/password fields, optional magic-link button, and social provider buttons.
  */
-export function SignIn({
+export function SignInUsername({
   className,
   socialLayout,
   socialPosition = "bottom",
   variant,
   ...props
-}: SignInProps & Omit<CardProps, "children">) {
+}: SignInUsernameProps & Omit<CardProps, "children">) {
   const {
     authClient,
     basePaths,
-    baseURL,
     emailAndPassword,
     localization,
     plugins,
@@ -58,46 +58,28 @@ export function SignIn({
     navigate
   } = useAuth()
 
+  const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
+
   const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
 
-  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
-    authClient,
-    {
-      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
-    }
-  )
-
-  const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error, { email }) => {
-      setPassword("")
-
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.danger(error.error?.message || error.message, {
-          actionProps: {
-            children: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
+  const { mutate: signInUsername, isPending: isSignInPending } =
+    useSignInUsername(authClient as UsernameAuthClient, {
+      onError: (error) => {
+        setPassword("")
         toast.danger(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    })
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
     const rememberMe = formData.get("rememberMe") === "on"
 
-    signInEmail({
-      email,
+    signInUsername({
+      username: username.trim(),
       password,
       ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
     })
@@ -141,15 +123,17 @@ export function SignIn({
         {emailAndPassword?.enabled && (
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <TextField
-              name="email"
-              type="email"
-              autoComplete="email"
+              name="username"
+              type="text"
+              autoComplete="username"
               isDisabled={isPending}
+              value={username}
+              onChange={setUsername}
             >
-              <Label>{localization.auth.email}</Label>
+              <Label>{usernameLocalization.username}</Label>
 
               <Input
-                placeholder={localization.auth.emailPlaceholder}
+                placeholder={usernameLocalization.usernameOrEmailPlaceholder}
                 variant={variant === "transparent" ? "primary" : "secondary"}
                 required
               />
@@ -195,7 +179,11 @@ export function SignIn({
             )}
 
             <div className="flex flex-col gap-3">
-              <Button type="submit" className="w-full" isPending={isPending}>
+              <Button
+                type="submit"
+                className="w-full"
+                isPending={isSignInPending || isPending}
+              >
                 {isPending && <Spinner color="current" size="sm" />}
 
                 {localization.auth.signIn}
@@ -205,7 +193,7 @@ export function SignIn({
                 plugin.authButtons?.map((AuthButton, index) => (
                   <AuthButton
                     key={`${plugin.id}-${index.toString()}`}
-                    view="signIn"
+                    view="signInUsername"
                   />
                 ))
               )}

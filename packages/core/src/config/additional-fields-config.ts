@@ -113,8 +113,13 @@ export interface AdditionalField {
   validate?: (
     value: AdditionalFieldValue | null | undefined
   ) => void | Promise<void>
-  /** Render on the sign-up form. @default false */
-  signUp?: boolean
+  /**
+   * Render on the sign-up form. Pass `"above"` to render between the `email`
+   * and `password` fields; otherwise the field renders below the password
+   * block. `true` is an alias for `"below"`.
+   * @default false
+   */
+  signUp?: boolean | "above" | "below"
   /** Render on the user profile. @default true */
   profile?: boolean
   /**

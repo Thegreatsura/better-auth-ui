@@ -193,7 +193,7 @@ export function SignInUsername({
                 plugin.authButtons?.map((AuthButton, index) => (
                   <AuthButton
                     key={`${plugin.id}-${index.toString()}`}
-                    view="signInUsername"
+                    view="signIn"
                   />
                 ))
               )}
