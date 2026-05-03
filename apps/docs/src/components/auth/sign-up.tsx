@@ -73,21 +73,24 @@ export function SignUp({
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const { mutate: signUpEmail } = useSignUpEmail(authClient, {
-    onError: (error) => {
-      setPassword("")
-      setConfirmPassword("")
-      toast.error(error.error?.message || error.message)
-    },
-    onSuccess: () => {
-      if (emailAndPassword?.requireEmailVerification) {
-        toast.success(localization.auth.verifyYourEmail)
-        navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-      } else {
-        navigate({ to: redirectTo })
+  const { mutate: signUpEmail, isPending: signUpEmailPending } = useSignUpEmail(
+    authClient,
+    {
+      onError: (error) => {
+        setPassword("")
+        setConfirmPassword("")
+        toast.error(error.error?.message || error.message)
+      },
+      onSuccess: () => {
+        if (emailAndPassword?.requireEmailVerification) {
+          toast.success(localization.auth.verifyYourEmail)
+          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+        } else {
+          navigate({ to: redirectTo })
+        }
       }
     }
-  })
+  )
 
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
@@ -400,7 +403,7 @@ export function SignUp({
 
                 <div className="flex flex-col gap-3">
                   <Button type="submit" disabled={isPending}>
-                    {isPending && <Spinner />}
+                    {signUpEmailPending && <Spinner />}
 
                     {localization.auth.signUp}
                   </Button>

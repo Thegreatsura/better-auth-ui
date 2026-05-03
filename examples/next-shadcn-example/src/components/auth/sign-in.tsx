@@ -68,27 +68,30 @@ export function SignIn({
     }
   )
 
-  const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error, { email }) => {
-      setPassword("")
+  const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
+    authClient,
+    {
+      onError: (error, { email }) => {
+        setPassword("")
 
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.error(error.error?.message || error.message, {
-          action: {
-            label: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
-        toast.error(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          toast.error(error.error?.message || error.message, {
+            action: {
+              label: localization.auth.resend,
+              onClick: () =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+            }
+          })
+        } else {
+          toast.error(error.error?.message || error.message)
+        }
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    }
+  )
 
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
@@ -236,7 +239,7 @@ export function SignIn({
 
                 <div className="flex flex-col gap-3">
                   <Button type="submit" disabled={isPending}>
-                    {isPending && <Spinner />}
+                    {signInEmailPending && <Spinner />}
 
                     {localization.auth.signIn}
                   </Button>

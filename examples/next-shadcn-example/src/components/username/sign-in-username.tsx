@@ -99,16 +99,14 @@ export function SignInUsername({
     onSuccess: () => navigate({ to: redirectTo })
   })
 
-  const { mutate: signInUsername } = useSignInUsername(
-    authClient as UsernameAuthClient,
-    {
+  const { mutate: signInUsername, isPending: isSignInPending } =
+    useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)
       },
       onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
+    })
 
   const signInMutating = useIsMutating({
     mutationKey: authMutationKeys.signIn.all
@@ -182,7 +180,7 @@ export function SignInUsername({
                     id="email"
                     name="email"
                     type="text"
-                    autoComplete="username email"
+                    autoComplete="username"
                     placeholder={
                       usernameLocalization.usernameOrEmailPlaceholder
                     }
@@ -266,7 +264,7 @@ export function SignInUsername({
 
                 <div className="flex flex-col gap-3">
                   <Button type="submit" disabled={isPending}>
-                    {isPending && <Spinner />}
+                    {isSignInPending && <Spinner />}
 
                     {localization.auth.signIn}
                   </Button>
