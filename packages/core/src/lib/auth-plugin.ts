@@ -1,3 +1,5 @@
+import type { AdditionalFields } from "../config/additional-fields-config"
+
 /**
  * View-path contributions kept on the plugin object.
  *
@@ -27,6 +29,11 @@ export interface AuthPluginBase {
    * (e.g. `<Auth>`, `MagicLinkButton`) via `useAuthPlugin(plugin).viewPaths`.
    */
   viewPaths?: AuthPluginViewPaths
+  /**
+   * Additional user fields contributed by the plugin. These are merged with
+   * user-defined additionalFields in the auth config.
+   */
+  additionalFields?: AdditionalFields
   /**
    * Additional properties contributed by the plugin.
    */
