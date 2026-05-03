@@ -19,9 +19,9 @@ import type { AdditionalFieldProps } from "../auth/additional-field"
 
 /**
  * Renderer for the `username` additional field. Owns availability checking,
- * length limits, and visual indicators. Error messages are intentionally not
- * rendered — `<FieldError />` surfaces native validation messages and users
- * who want richer error UI can supply their own `render`.
+ * length limits, and visual indicators. `FieldError` automatically surfaces
+ * native validation messages. Availability feedback is shown via the icon and
+ * aria-label without affecting the field's invalid state.
  */
 export function UsernameField({
   name,
@@ -76,9 +76,6 @@ export function UsernameField({
   const isCheckingAvailability =
     !!checkAvailability && !!value.trim() && value.trim() !== currentUsername
 
-  const isInvalid =
-    !!availabilityError || (availability && !availability.available)
-
   return (
     <TextField
       name={name}
@@ -91,7 +88,6 @@ export function UsernameField({
       isReadOnly={field.readOnly}
       value={value}
       onChange={handleChange}
-      isInvalid={isInvalid}
     >
       <Label>{field.label}</Label>
 

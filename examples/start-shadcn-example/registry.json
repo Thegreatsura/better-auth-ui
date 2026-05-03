@@ -197,6 +197,7 @@
       "registryDependencies": [
         "button",
         "card",
+        "checkbox",
         "field",
         "input",
         "input-group",

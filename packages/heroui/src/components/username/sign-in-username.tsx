@@ -3,6 +3,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
 } from "@better-auth-ui/react"
@@ -50,6 +51,7 @@ export function SignInUsername({
   const {
     authClient,
     basePaths,
+    baseURL,
     emailAndPassword,
     localization,
     plugins,
@@ -63,14 +65,35 @@ export function SignInUsername({
 
   const [password, setPassword] = useState("")
 
+  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
+    authClient,
+    {
+      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
+    }
+  )
+
   function isEmail(value: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
   }
 
   const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error) => {
+    onError: (error, { email }) => {
       setPassword("")
-      toast.danger(error.error?.message || error.message)
+
+      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+        toast.danger(error.error?.message || error.message, {
+          actionProps: {
+            children: localization.auth.resend,
+            onClick: () =>
+              sendVerificationEmail({
+                email,
+                callbackURL: `${baseURL}${redirectTo}`
+              })
+          }
+        })
+      } else {
+        toast.danger(error.error?.message || error.message)
+      }
     },
     onSuccess: () => navigate({ to: redirectTo })
   })
