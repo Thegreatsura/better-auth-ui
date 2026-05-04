@@ -29,6 +29,7 @@
     "@better-auth/passkey": "^1.6.9",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
+    "@marsidev/react-turnstile": "^1.5.1",
     "@neondatabase/serverless": "^1.0.2",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/react-devtools": "^0.10.2",

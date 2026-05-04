@@ -60,7 +60,7 @@ export function ForgotPassword({
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({
       email: formData.get("email") as string,
-      ...fetchOptions
+      fetchOptions
     })
   }
 
@@ -96,14 +96,14 @@ export function ForgotPassword({
           </TextField>
 
           <div className="flex flex-col gap-3">
-            {plugins
-              .filter((plugin) => plugin.captchaComponent)
-              .map((plugin) => (
+            {plugins.map((plugin) =>
+              plugin.captchaComponent ? (
                 <plugin.captchaComponent
                   key={`${plugin.id}-captcha`}
                   view="forgotPassword"
                 />
-              ))}
+              ) : null
+            )}
 
             <Button type="submit" className="w-full" isPending={isPending}>
               {isPending && <Spinner color="current" size="sm" />}

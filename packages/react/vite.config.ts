@@ -18,7 +18,10 @@ export default defineConfig({
       entry: {
         index: "src/index.ts",
         email: "src/email.ts",
-        server: "src/server.ts"
+        server: "src/server.ts",
+        "plugins/turnstile/index": "src/plugins/turnstile/index.ts",
+        "plugins/hcaptcha/index": "src/plugins/hcaptcha/index.ts",
+        "plugins/captchafox/index": "src/plugins/captchafox/index.ts"
       },
       formats: ["es"],
       fileName: "[name]"

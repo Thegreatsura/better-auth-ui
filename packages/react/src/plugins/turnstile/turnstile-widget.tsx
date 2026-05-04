@@ -1,7 +1,7 @@
 import { Turnstile } from "@marsidev/react-turnstile"
 import { useCallback, useEffect } from "react"
-import { useFetchOptions } from "../../../src/components/auth/fetch-options-provider"
-import { useAuthPlugin } from "../../../src/hooks/use-auth-plugin"
+import { useFetchOptions } from "../../components/auth/fetch-options-provider"
+import { useAuthPlugin } from "../../hooks/use-auth-plugin"
 import { turnstilePlugin } from "./turnstile-plugin"
 
 export function TurnstileWidget() {
@@ -29,7 +29,10 @@ export function TurnstileWidget() {
       onSuccess={handleSuccess}
       onError={handleClear}
       onExpire={handleClear}
-      options={{ size: "normal" }}
+      options={{
+        size: "flexible",
+        ...plugin.options
+      }}
     />
   )
 }

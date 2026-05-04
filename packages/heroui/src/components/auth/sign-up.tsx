@@ -142,7 +142,7 @@ export function SignUp({
       email,
       password,
       ...additionalFieldValues,
-      ...fetchOptions
+      fetchOptions
     })
   }
 
@@ -327,14 +327,14 @@ export function SignUp({
             )}
 
             <div className="flex flex-col gap-3">
-              {plugins
-                .filter((plugin) => plugin.captchaComponent)
-                .map((plugin) => (
+              {plugins.map((plugin) =>
+                plugin.captchaComponent ? (
                   <plugin.captchaComponent
                     key={`${plugin.id}-captcha`}
                     view="signUp"
                   />
-                ))}
+                ) : null
+              )}
 
               <Button type="submit" className="w-full" isPending={isPending}>
                 {signUpEmailPending && <Spinner color="current" size="sm" />}

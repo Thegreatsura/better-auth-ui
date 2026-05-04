@@ -106,7 +106,7 @@ export function SignIn({
       email,
       password,
       ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
-      ...fetchOptions
+      fetchOptions
     })
   }
 
@@ -202,14 +202,14 @@ export function SignIn({
             )}
 
             <div className="flex flex-col gap-3">
-              {plugins
-                .filter((plugin) => plugin.captchaComponent)
-                .map((plugin) => (
+              {plugins.map((plugin) =>
+                plugin.captchaComponent ? (
                   <plugin.captchaComponent
                     key={`${plugin.id}-captcha`}
                     view="signIn"
                   />
-                ))}
+                ) : null
+              )}
 
               <Button type="submit" className="w-full" isPending={isPending}>
                 {signInEmailPending && <Spinner color="current" size="sm" />}

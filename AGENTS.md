@@ -2,12 +2,17 @@
 
 This workspace uses **bun** — NOT pnpm or npm.
 
+## Docs
+
+When using third party libraries, use MCP to look up the docs.
+
 ## Quality Gates
 
 Before completing any task, ensure all of the following pass:
 
 1. **Biome** — No linting or formatting errors in modified files
 2. **TypeCheck** — No TypeScript errors in the project (`nx typecheck`)
+3. **Build** - Make sure the package you modified builds correctly
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

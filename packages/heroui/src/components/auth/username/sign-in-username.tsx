@@ -3,6 +3,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
@@ -61,6 +62,8 @@ export function SignInUsername({
     navigate
   } = useAuth()
 
+  const { fetchOptions } = useFetchOptions()
+
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
@@ -118,13 +121,15 @@ export function SignInUsername({
       signInEmail({
         email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     } else {
       signInUsername({
         username: email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     }
   }
@@ -221,6 +226,15 @@ export function SignInUsername({
             )}
 
             <div className="flex flex-col gap-3">
+              {plugins.map((plugin) =>
+                plugin.captchaComponent ? (
+                  <plugin.captchaComponent
+                    key={`${plugin.id}-captcha`}
+                    view="signIn"
+                  />
+                ) : null
+              )}
+
               <Button
                 type="submit"
                 className="w-full"
