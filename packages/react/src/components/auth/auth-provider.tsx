@@ -18,8 +18,8 @@ import {
   type ReactNode,
   useContext
 } from "react"
-
 import type { AuthClient } from "../../lib/auth-client"
+import { FetchOptionsProvider } from "./fetch-options-provider"
 
 const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
@@ -108,7 +108,7 @@ export function AuthProvider({
   if (contextQueryClient) {
     return (
       <AuthContext.Provider value={mergedConfig}>
-        {children}
+        <FetchOptionsProvider>{children}</FetchOptionsProvider>
       </AuthContext.Provider>
     )
   }
@@ -116,7 +116,7 @@ export function AuthProvider({
   return (
     <QueryClientProvider client={queryClient || fallbackQueryClient}>
       <AuthContext.Provider value={mergedConfig}>
-        {children}
+        <FetchOptionsProvider>{children}</FetchOptionsProvider>
       </AuthContext.Provider>
     </QueryClientProvider>
   )

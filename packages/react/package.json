@@ -10,7 +10,8 @@
   },
   "files": [
     "src",
-    "dist"
+    "dist",
+    "plugins"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -26,10 +27,14 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
-    }
+    },
+    "./plugins/turnstile": "./plugins/turnstile/index.ts",
+    "./plugins/hcaptcha": "./plugins/hcaptcha/index.ts"
   },
   "devDependencies": {
     "@better-auth/passkey": "^1.6.9",
+    "@hcaptcha/react-hcaptcha": "^2.0.0",
+    "@marsidev/react-turnstile": "^1.5.0",
     "@react-email/components": "^1.0.12",
     "@react-email/preview-server": "^5.2.10",
     "@tanstack/react-query": "^5.100.8",
@@ -52,6 +57,8 @@
   "peerDependencies": {
     "@better-auth-ui/core": "*",
     "@better-auth/passkey": ">=1.6.9",
+    "@hcaptcha/react-hcaptcha": "^2.0.0",
+    "@marsidev/react-turnstile": "^1.5.0",
     "@react-email/components": ">=1.0.12",
     "@tanstack/react-query": ">=5.100.8",
     "better-auth": ">=1.6.9",
@@ -61,6 +68,14 @@
     "tailwind-merge": ">=3.5.0",
     "tailwindcss": ">=4.2.4",
     "zod": ">=4.4.2"
+  },
+  "peerDependenciesMeta": {
+    "@hcaptcha/react-hcaptcha": {
+      "optional": true
+    },
+    "@marsidev/react-turnstile": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",

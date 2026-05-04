@@ -1,6 +1,7 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
   useAuth,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail
 } from "@better-auth-ui/react"
@@ -58,6 +59,8 @@ export function SignIn({
     navigate
   } = useAuth()
 
+  const { fetchOptions } = useFetchOptions()
+
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail(
@@ -102,7 +105,8 @@ export function SignIn({
     signInEmail({
       email,
       password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+      ...fetchOptions
     })
   }
 
@@ -198,6 +202,15 @@ export function SignIn({
             )}
 
             <div className="flex flex-col gap-3">
+              {plugins
+                .filter((plugin) => plugin.captchaComponent)
+                .map((plugin) => (
+                  <plugin.captchaComponent
+                    key={`${plugin.id}-captcha`}
+                    view="signIn"
+                  />
+                ))}
+
               <Button type="submit" className="w-full" isPending={isPending}>
                 {signInEmailPending && <Spinner color="current" size="sm" />}
 

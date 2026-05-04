@@ -1,4 +1,8 @@
-import { useAuth, useRequestPasswordReset } from "@better-auth-ui/react"
+import {
+  useAuth,
+  useFetchOptions,
+  useRequestPasswordReset
+} from "@better-auth-ui/react"
 import {
   Button,
   Card,
@@ -35,7 +39,10 @@ export function ForgotPassword({
   variant,
   ...props
 }: ForgotPasswordProps & Omit<CardProps, "children">) {
-  const { authClient, basePaths, localization, viewPaths, navigate } = useAuth()
+  const { authClient, basePaths, localization, viewPaths, navigate, plugins } =
+    useAuth()
+
+  const { fetchOptions } = useFetchOptions()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
@@ -51,7 +58,10 @@ export function ForgotPassword({
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    requestPasswordReset({ email: formData.get("email") as string })
+    requestPasswordReset({
+      email: formData.get("email") as string,
+      ...fetchOptions
+    })
   }
 
   return (
@@ -85,11 +95,22 @@ export function ForgotPassword({
             <FieldError />
           </TextField>
 
-          <Button type="submit" className="w-full" isPending={isPending}>
-            {isPending && <Spinner color="current" size="sm" />}
+          <div className="flex flex-col gap-3">
+            {plugins
+              .filter((plugin) => plugin.captchaComponent)
+              .map((plugin) => (
+                <plugin.captchaComponent
+                  key={`${plugin.id}-captcha`}
+                  view="forgotPassword"
+                />
+              ))}
 
-            {localization.auth.sendResetLink}
-          </Button>
+            <Button type="submit" className="w-full" isPending={isPending}>
+              {isPending && <Spinner color="current" size="sm" />}
+
+              {localization.auth.sendResetLink}
+            </Button>
+          </div>
         </Form>
       </Card.Content>
 

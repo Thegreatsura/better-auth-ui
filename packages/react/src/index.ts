@@ -1,6 +1,7 @@
 "use client"
 
 export * from "./components/auth/auth-provider"
+export * from "./components/auth/fetch-options-provider"
 export * from "./components/icons"
 export * from "./components/settings/account/theme-preview"
 export * from "./hooks/auth/use-authenticate"

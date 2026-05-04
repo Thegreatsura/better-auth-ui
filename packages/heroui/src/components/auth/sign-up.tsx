@@ -2,7 +2,7 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
+import { useAuth, useFetchOptions, useSignUpEmail } from "@better-auth-ui/react"
 import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
@@ -62,6 +62,8 @@ export function SignUp({
     viewPaths,
     navigate
   } = useAuth()
+
+  const { fetchOptions } = useFetchOptions()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -139,7 +141,8 @@ export function SignUp({
       name,
       email,
       password,
-      ...additionalFieldValues
+      ...additionalFieldValues,
+      ...fetchOptions
     })
   }
 
@@ -324,6 +327,15 @@ export function SignUp({
             )}
 
             <div className="flex flex-col gap-3">
+              {plugins
+                .filter((plugin) => plugin.captchaComponent)
+                .map((plugin) => (
+                  <plugin.captchaComponent
+                    key={`${plugin.id}-captcha`}
+                    view="signUp"
+                  />
+                ))}
+
               <Button type="submit" className="w-full" isPending={isPending}>
                 {signUpEmailPending && <Spinner color="current" size="sm" />}
 
