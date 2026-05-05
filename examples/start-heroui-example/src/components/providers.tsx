@@ -16,9 +16,6 @@ import { authClient } from "@/lib/auth-client"
 export function Providers({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
 
-  console.log(import.meta.env.VITE_TURNSTILE_SITE_KEY)
-  console.log(process.env.VITE_TURNSTILE_SITE_KEY)
-
   return (
     <ThemeProvider defaultTheme="system" enableSystem disableTransitionOnChange>
       <AuthProvider
