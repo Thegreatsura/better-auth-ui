@@ -21,8 +21,8 @@ export const auth = betterAuth({
     passkey(),
     username(),
     captcha({
-      provider: "cloudflare-turnstile",
-      secretKey: process.env.TURNSTILE_SECRET_KEY as string
+      provider: "hcaptcha",
+      secretKey: process.env.HCAPTCHA_SECRET_KEY as string
     })
   ],
   session: {

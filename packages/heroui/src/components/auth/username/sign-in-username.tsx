@@ -225,16 +225,18 @@ export function SignInUsername({
               </Checkbox>
             )}
 
-            <div className="flex flex-col gap-3">
-              {plugins.map((plugin) =>
-                plugin.captchaComponent ? (
-                  <plugin.captchaComponent
-                    key={`${plugin.id}-captcha`}
-                    view="signIn"
-                  />
-                ) : null
-              )}
+            {plugins.map((plugin) =>
+              plugin.captchaComponent ? (
+                <div
+                  key={`${plugin.id}-captcha`}
+                  className="flex justify-center"
+                >
+                  <plugin.captchaComponent view="signIn" />
+                </div>
+              ) : null
+            )}
 
+            <div className="flex flex-col gap-3">
               <Button
                 type="submit"
                 className="w-full"
