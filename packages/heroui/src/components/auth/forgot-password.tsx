@@ -42,11 +42,15 @@ export function ForgotPassword({
   const { authClient, basePaths, localization, viewPaths, navigate, plugins } =
     useAuth()
 
-  const { fetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
     {
+      onError: (error) => {
+        toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
+      },
       onSuccess: () => {
         toast.success(localization.auth.passwordResetEmailSent)
         navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })

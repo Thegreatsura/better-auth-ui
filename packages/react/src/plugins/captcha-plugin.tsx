@@ -19,12 +19,26 @@ export type CaptchaRenderProps = {
   setToken: (token: string) => void
   /** Call on error/expire/reset to clear the header. */
   clearToken: () => void
+  /**
+   * Wire your widget's `reset()` here. Each captcha-protected form calls it
+   * (via `resetFetchOptions`) on submission failure so the next attempt has a
+   * fresh token — captcha tokens are single-use across all supported
+   * providers (Turnstile, hCaptcha, CaptchaFox, reCAPTCHA), and Better
+   * Auth's captcha middleware consumes the token via `/siteverify` even when
+   * the auth handler later fails (e.g. wrong password, email already taken).
+   * Without a reset, retries send a spent token and are rejected as
+   * `timeout-or-duplicate`.
+   *
+   * Pass `null` to clear the registration on unmount.
+   */
+  setReset: (reset: (() => void) | null) => void
 }
 
 export type CaptchaPluginOptions = {
   /**
    * Component that renders the captcha widget. Wire your provider's success
-   * callback to `setToken` and its error/expire callbacks to `clearToken`.
+   * callback to `setToken`, its error/expire callbacks to `clearToken`, and
+   * its `reset()` to `setReset` so failed retries get a fresh token.
    *
    * Mounted as a real component so hooks (e.g. `useTheme`) work inside it.
    * Inline definitions must be PascalCase so React's rules-of-hooks lint
@@ -33,23 +47,21 @@ export type CaptchaPluginOptions = {
    * @example Cloudflare Turnstile
    * ```tsx
    * captchaPlugin({
-   *   render: ({ setToken, clearToken }) => (
-   *     <Turnstile
-   *       siteKey={env.TURNSTILE_SITE_KEY}
-   *       onSuccess={setToken}
-   *       onError={clearToken}
-   *       onExpire={clearToken}
-   *     />
-   *   )
-   * })
-   * ```
-   *
-   * @example Inline with hooks (note the PascalCase name)
-   * ```tsx
-   * captchaPlugin({
-   *   render: function HCaptchaWidget({ setToken, clearToken }) {
-   *     const { theme } = useTheme()
-   *     return <HCaptcha sitekey="..." onVerify={setToken} theme={theme} />
+   *   render: function TurnstileWidget({ setToken, clearToken, setReset }) {
+   *     const ref = useRef<TurnstileInstance>(null)
+   *     useEffect(() => {
+   *       setReset(() => ref.current?.reset())
+   *       return () => setReset(null)
+   *     }, [setReset])
+   *     return (
+   *       <Turnstile
+   *         ref={ref}
+   *         siteKey={env.TURNSTILE_SITE_KEY}
+   *         onSuccess={setToken}
+   *         onError={clearToken}
+   *         onExpire={clearToken}
+   *       />
+   *     )
    *   }
    * })
    * ```
@@ -58,8 +70,8 @@ export type CaptchaPluginOptions = {
 }
 
 function CaptchaWidget(): ReactNode {
-  const plugin = useAuthPlugin(captchaPlugin)
-  const { setFetchOptions } = useFetchOptions()
+  const { render: Render } = useAuthPlugin(captchaPlugin)
+  const { setFetchOptions, registerReset } = useFetchOptions()
 
   const setToken = useCallback(
     (token: string) => {
@@ -72,12 +84,26 @@ function CaptchaWidget(): ReactNode {
     setFetchOptions(undefined)
   }, [setFetchOptions])
 
-  useEffect(() => {
-    return () => setFetchOptions(undefined)
-  }, [setFetchOptions])
+  // Forward the consumer's reset handler into FetchOptionsProvider so any
+  // form (sign-in, sign-up, forgot-password) can refresh the widget by
+  // calling `resetFetchOptions()` from its `onError`.
+  const setReset = useCallback(
+    (reset: (() => void) | null) => {
+      registerReset(reset)
+    },
+    [registerReset]
+  )
 
-  const Render = plugin.render
-  return <Render setToken={setToken} clearToken={clearToken} />
+  useEffect(() => {
+    return () => {
+      setFetchOptions(undefined)
+      registerReset(null)
+    }
+  }, [setFetchOptions, registerReset])
+
+  return (
+    <Render setToken={setToken} clearToken={clearToken} setReset={setReset} />
+  )
 }
 
 /**
@@ -87,6 +113,16 @@ function CaptchaWidget(): ReactNode {
  * widget (Turnstile, hCaptcha, CaptchaFox, reCAPTCHA, etc.). The plugin
  * forwards the resolved token via the `x-captcha-response` header on Better
  * Auth requests, matching `better-auth/plugins` `captcha`.
+ *
+ * Each captcha-protected form (sign-in, sign-up, forgot-password) calls
+ * `resetFetchOptions()` from `useFetchOptions` after a failed submission,
+ * which clears the spent token and triggers the widget's `reset()` so the
+ * next attempt has a fresh token — captcha tokens are single-use.
+ *
+ * Note: the Better Auth `captcha` plugin protects `/sign-up/email`,
+ * `/sign-in/email`, and `/request-password-reset` by default. To also cover
+ * `/sign-in/username`, include it in the plugin's `endpoints` option on the
+ * server.
  */
 export const captchaPlugin = createAuthPlugin(
   "captcha",

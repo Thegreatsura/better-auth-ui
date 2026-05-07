@@ -62,7 +62,7 @@ export function SignInUsername({
     navigate
   } = useAuth()
 
-  const { fetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
@@ -98,6 +98,8 @@ export function SignInUsername({
         } else {
           toast.danger(error.error?.message || error.message)
         }
+
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })
@@ -107,6 +109,7 @@ export function SignInUsername({
       onError: (error) => {
         setPassword("")
         toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })

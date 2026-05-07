@@ -63,7 +63,7 @@ export function SignUp({
     navigate
   } = useAuth()
 
-  const { fetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -75,6 +75,7 @@ export function SignUp({
         setPassword("")
         setConfirmPassword("")
         toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => {
         if (emailAndPassword?.requireEmailVerification) {

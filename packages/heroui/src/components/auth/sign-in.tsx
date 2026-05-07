@@ -59,7 +59,7 @@ export function SignIn({
     navigate
   } = useAuth()
 
-  const { fetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const [password, setPassword] = useState("")
 
@@ -90,6 +90,8 @@ export function SignIn({
         } else {
           toast.danger(error.error?.message || error.message)
         }
+
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     }
