@@ -20,19 +20,9 @@ type FetchOptionsContextValue = {
   fetchOptions: FetchOptions | undefined
   /** OVERRIDES the entire fetchOptions object. Pass `undefined` to clear. */
   setFetchOptions: (fetchOptions: FetchOptions | undefined) => void
-  /**
-   * Clears `fetchOptions` and triggers any registered reset handler (e.g. the
-   * captcha widget's `reset()`) so the next request gets a fresh token. Call
-   * this from a form's `onError` after a captcha-protected mutation fails:
-   * Better Auth's captcha middleware consumes the token via `/siteverify`
-   * even when your auth handler later rejects the request, so retries with
-   * the same token are rejected as `timeout-or-duplicate`.
-   */
+  /** Clears `fetchOptions` and runs the registered reset (e.g. captcha widget). Call from form `onError`. */
   resetFetchOptions: () => void
-  /**
-   * Register a reset handler. Used internally by `captchaPlugin`'s widget;
-   * pass `null` to clear the registration on unmount.
-   */
+  /** Register a reset handler. Used by `captchaPlugin`. Pass `null` to clear. */
   registerReset: (reset: (() => void) | null) => void
 }
 

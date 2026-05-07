@@ -100,6 +100,10 @@ export function SignUp({
   })
   const isPending = signInMutating + signUpMutating > 0
 
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
+
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -327,16 +331,7 @@ export function SignUp({
                 )
             )}
 
-            {plugins.map((plugin) =>
-              plugin.captchaComponent ? (
-                <div
-                  key={`${plugin.id}-captcha`}
-                  className="flex justify-center"
-                >
-                  <plugin.captchaComponent view="signUp" />
-                </div>
-              ) : null
-            )}
+            {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" isPending={isPending}>

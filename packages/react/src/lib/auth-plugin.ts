@@ -33,7 +33,7 @@ export type AuthPluginComponents = {
   /** Rendered below the submit button in auth forms. */
   authButtons?: ComponentType<AuthButtonProps>[]
   /** Captcha widget rendered above the submit button, below additionalFields. Singular — only one captcha can be active at a time. */
-  captchaComponent?: ComponentType<AuthButtonProps>
+  captchaComponent?: ReactNode
   /** Rendered as cards inside security settings. */
   securityCards?: ComponentType<SecurityCardProps>[]
   /** Rendered as cards inside account settings. */

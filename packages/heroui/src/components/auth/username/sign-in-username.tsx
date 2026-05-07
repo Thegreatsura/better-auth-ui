@@ -147,6 +147,10 @@ export function SignInUsername({
   const isPending = signInMutating + signUpMutating > 0
   const isSignInPending = isSignInEmailPending || isSignInUsernamePending
 
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
+
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
   return (
@@ -230,16 +234,7 @@ export function SignInUsername({
               </Checkbox>
             )}
 
-            {plugins.map((plugin) =>
-              plugin.captchaComponent ? (
-                <div
-                  key={`${plugin.id}-captcha`}
-                  className="flex justify-center"
-                >
-                  <plugin.captchaComponent view="signIn" />
-                </div>
-              ) : null
-            )}
+            {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
             <div className="flex flex-col gap-3">
               <Button

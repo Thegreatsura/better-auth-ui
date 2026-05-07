@@ -68,6 +68,10 @@ export function ForgotPassword({
     })
   }
 
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
+
   return (
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
@@ -99,13 +103,7 @@ export function ForgotPassword({
             <FieldError />
           </TextField>
 
-          {plugins.map((plugin) =>
-            plugin.captchaComponent ? (
-              <div key={`${plugin.id}-captcha`} className="flex justify-center">
-                <plugin.captchaComponent view="forgotPassword" />
-              </div>
-            ) : null
-          )}
+          {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
           <div className="flex flex-col gap-3">
             <Button type="submit" className="w-full" isPending={isPending}>
