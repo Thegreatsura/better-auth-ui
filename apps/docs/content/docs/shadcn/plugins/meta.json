@@ -2,6 +2,7 @@
   "icon": "Plug",
   "defaultOpen": true,
   "pages": [
+    "captcha",
     "delete-user",
     "magic-link",
     "multi-session",

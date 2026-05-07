@@ -4,7 +4,7 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
+import { useAuth, useFetchOptions, useSignUpEmail } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { Eye, EyeOff } from "lucide-react"
 import { type SyntheticEvent, useState } from "react"
@@ -70,6 +70,8 @@ export function SignUp({
     Link
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
@@ -80,6 +82,7 @@ export function SignUp({
         setPassword("")
         setConfirmPassword("")
         toast.error(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => {
         if (emailAndPassword?.requireEmailVerification) {
@@ -99,6 +102,10 @@ export function SignUp({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -153,7 +160,8 @@ export function SignUp({
       name,
       email,
       password,
-      ...additionalFieldValues
+      ...additionalFieldValues,
+      fetchOptions
     })
   }
 
@@ -399,6 +407,10 @@ export function SignUp({
                         isPending={isPending}
                       />
                     )
+                )}
+
+                {Captcha && (
+                  <div className="flex justify-center">{Captcha}</div>
                 )}
 
                 <div className="flex flex-col gap-3">

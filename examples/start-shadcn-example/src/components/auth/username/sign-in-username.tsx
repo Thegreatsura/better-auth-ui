@@ -5,6 +5,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
@@ -66,6 +67,8 @@ export function SignInUsername({
     Link
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
@@ -96,6 +99,8 @@ export function SignInUsername({
         } else {
           toast.error(error.error?.message || error.message)
         }
+
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })
@@ -105,6 +110,7 @@ export function SignInUsername({
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })
@@ -117,6 +123,10 @@ export function SignInUsername({
   })
   const isPending = signInMutating + signUpMutating > 0
   const isSignInPending = isSignInEmailPending || isSignInUsernamePending
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -134,13 +144,15 @@ export function SignInUsername({
       signInEmail({
         email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     } else {
       signInUsername({
         username: email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     }
   }
@@ -262,6 +274,10 @@ export function SignInUsername({
                       </Label>
                     </div>
                   </Field>
+                )}
+
+                {Captcha && (
+                  <div className="flex justify-center">{Captcha}</div>
                 )}
 
                 <div className="flex flex-col gap-3">

@@ -3,6 +3,7 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
   useAuth,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail
 } from "@better-auth-ui/react"
@@ -59,6 +60,8 @@ export function SignIn({
     Link
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail(
@@ -88,6 +91,8 @@ export function SignIn({
         } else {
           toast.error(error.error?.message || error.message)
         }
+
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     }
@@ -100,6 +105,10 @@ export function SignIn({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -116,7 +125,8 @@ export function SignIn({
     signInEmail({
       email,
       password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+      fetchOptions
     })
   }
 
@@ -235,6 +245,10 @@ export function SignIn({
                       </Label>
                     </div>
                   </Field>
+                )}
+
+                {Captcha && (
+                  <div className="flex justify-center">{Captcha}</div>
                 )}
 
                 <div className="flex flex-col gap-3">
