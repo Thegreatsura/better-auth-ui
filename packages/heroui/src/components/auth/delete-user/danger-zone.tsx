@@ -1,8 +1,11 @@
 import { useAuth } from "@better-auth-ui/react"
 import { type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
+
 import { DeleteUser } from "./delete-user"
-export type DangerZoneProps = Omit<ComponentProps<"div">, "children"> & {
+
+export type DangerZoneProps = {
+  className?: string
   variant?: CardProps["variant"]
 }
 
@@ -10,7 +13,11 @@ export type DangerZoneProps = Omit<ComponentProps<"div">, "children"> & {
  * Renders the danger zone heading and {@link DeleteUser}.
  * Registered as a `securityCard` by `deleteUserPlugin()`; gate by registering the plugin.
  */
-export function DangerZone({ className, variant, ...props }: DangerZoneProps) {
+export function DangerZone({
+  className,
+  variant,
+  ...props
+}: DangerZoneProps & ComponentProps<"div">) {
   const { localization } = useAuth()
 
   return (
