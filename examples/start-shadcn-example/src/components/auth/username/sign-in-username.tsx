@@ -77,29 +77,30 @@ export function SignInUsername({
     }
   )
 
-  const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error, { email }) => {
-      setPassword("")
+  const { mutate: signInEmail, isPending: isSignInEmailPending } =
+    useSignInEmail(authClient, {
+      onError: (error, { email }) => {
+        setPassword("")
 
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.error(error.error?.message || error.message, {
-          action: {
-            label: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
-        toast.error(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          toast.error(error.error?.message || error.message, {
+            action: {
+              label: localization.auth.resend,
+              onClick: () =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+            }
+          })
+        } else {
+          toast.error(error.error?.message || error.message)
+        }
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    })
 
-  const { mutate: signInUsername, isPending: isSignInPending } =
+  const { mutate: signInUsername, isPending: isSignInUsernamePending } =
     useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
@@ -115,6 +116,7 @@ export function SignInUsername({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+  const isSignInPending = isSignInEmailPending || isSignInUsernamePending
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
