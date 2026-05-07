@@ -5,6 +5,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
@@ -66,6 +67,8 @@ export function SignInUsername({
     Link
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
@@ -77,33 +80,37 @@ export function SignInUsername({
     }
   )
 
-  const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error, { email }) => {
-      setPassword("")
+  const { mutate: signInEmail, isPending: isSignInEmailPending } =
+    useSignInEmail(authClient, {
+      onError: (error, { email }) => {
+        setPassword("")
 
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.error(error.error?.message || error.message, {
-          action: {
-            label: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
-        toast.error(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          toast.error(error.error?.message || error.message, {
+            action: {
+              label: localization.auth.resend,
+              onClick: () =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+            }
+          })
+        } else {
+          toast.error(error.error?.message || error.message)
+        }
 
-  const { mutate: signInUsername, isPending: isSignInPending } =
+        resetFetchOptions()
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    })
+
+  const { mutate: signInUsername, isPending: isSignInUsernamePending } =
     useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.error(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })
@@ -115,6 +122,11 @@ export function SignInUsername({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+  const isSignInPending = isSignInEmailPending || isSignInUsernamePending
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string
@@ -132,13 +144,15 @@ export function SignInUsername({
       signInEmail({
         email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     } else {
       signInUsername({
         username: email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     }
   }
@@ -260,6 +274,10 @@ export function SignInUsername({
                       </Label>
                     </div>
                   </Field>
+                )}
+
+                {Captcha && (
+                  <div className="flex justify-center">{Captcha}</div>
                 )}
 
                 <div className="flex flex-col gap-3">

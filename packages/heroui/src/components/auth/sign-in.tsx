@@ -1,6 +1,7 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
   useAuth,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail
 } from "@better-auth-ui/react"
@@ -58,6 +59,8 @@ export function SignIn({
     navigate
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const [password, setPassword] = useState("")
 
   const { mutate: sendVerificationEmail } = useSendVerificationEmail(
@@ -87,6 +90,8 @@ export function SignIn({
         } else {
           toast.danger(error.error?.message || error.message)
         }
+
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     }
@@ -102,7 +107,8 @@ export function SignIn({
     signInEmail({
       email,
       password,
-      ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+      ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+      fetchOptions
     })
   }
 
@@ -113,6 +119,10 @@ export function SignIn({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
@@ -196,6 +206,8 @@ export function SignIn({
                 </Checkbox.Content>
               </Checkbox>
             )}
+
+            {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" isPending={isPending}>

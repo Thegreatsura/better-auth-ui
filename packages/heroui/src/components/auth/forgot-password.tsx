@@ -1,4 +1,8 @@
-import { useAuth, useRequestPasswordReset } from "@better-auth-ui/react"
+import {
+  useAuth,
+  useFetchOptions,
+  useRequestPasswordReset
+} from "@better-auth-ui/react"
 import {
   Button,
   Card,
@@ -35,11 +39,18 @@ export function ForgotPassword({
   variant,
   ...props
 }: ForgotPasswordProps & Omit<CardProps, "children">) {
-  const { authClient, basePaths, localization, viewPaths, navigate } = useAuth()
+  const { authClient, basePaths, localization, viewPaths, navigate, plugins } =
+    useAuth()
+
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
     {
+      onError: (error) => {
+        toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
+      },
       onSuccess: () => {
         toast.success(localization.auth.passwordResetEmailSent)
         navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
@@ -51,8 +62,15 @@ export function ForgotPassword({
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)
-    requestPasswordReset({ email: formData.get("email") as string })
+    requestPasswordReset({
+      email: formData.get("email") as string,
+      fetchOptions
+    })
   }
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   return (
     <Card
@@ -85,11 +103,15 @@ export function ForgotPassword({
             <FieldError />
           </TextField>
 
-          <Button type="submit" className="w-full" isPending={isPending}>
-            {isPending && <Spinner color="current" size="sm" />}
+          {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
-            {localization.auth.sendResetLink}
-          </Button>
+          <div className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" isPending={isPending}>
+              {isPending && <Spinner color="current" size="sm" />}
+
+              {localization.auth.sendResetLink}
+            </Button>
+          </div>
         </Form>
       </Card.Content>
 

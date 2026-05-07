@@ -1,7 +1,7 @@
 import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { multiSession, username } from "better-auth/plugins"
+import { captcha, multiSession, username } from "better-auth/plugins"
 import { db } from "./db"
 import * as schema from "./schema"
 
@@ -14,7 +14,21 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true
   },
-  plugins: [multiSession(), passkey(), username()],
+  plugins: [
+    multiSession(),
+    passkey(),
+    username(),
+    captcha({
+      provider: "cloudflare-turnstile",
+      secretKey: process.env.TURNSTILE_SECRET_KEY as string,
+      endpoints: [
+        "/sign-in/email",
+        "/sign-in/username",
+        "/sign-up/email",
+        "/forget-password"
+      ]
+    })
+  ],
   user: {
     deleteUser: {
       enabled: true

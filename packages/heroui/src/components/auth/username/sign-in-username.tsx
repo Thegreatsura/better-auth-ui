@@ -3,6 +3,7 @@ import {
   type UsernameAuthClient,
   useAuth,
   useAuthPlugin,
+  useFetchOptions,
   useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
@@ -61,6 +62,8 @@ export function SignInUsername({
     navigate
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const { localization: usernameLocalization } = useAuthPlugin(usernamePlugin)
 
   const [password, setPassword] = useState("")
@@ -76,33 +79,37 @@ export function SignInUsername({
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
   }
 
-  const { mutate: signInEmail } = useSignInEmail(authClient, {
-    onError: (error, { email }) => {
-      setPassword("")
+  const { mutate: signInEmail, isPending: isSignInEmailPending } =
+    useSignInEmail(authClient, {
+      onError: (error, { email }) => {
+        setPassword("")
 
-      if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-        toast.danger(error.error?.message || error.message, {
-          actionProps: {
-            children: localization.auth.resend,
-            onClick: () =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-          }
-        })
-      } else {
-        toast.danger(error.error?.message || error.message)
-      }
-    },
-    onSuccess: () => navigate({ to: redirectTo })
-  })
+        if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          toast.danger(error.error?.message || error.message, {
+            actionProps: {
+              children: localization.auth.resend,
+              onClick: () =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+            }
+          })
+        } else {
+          toast.danger(error.error?.message || error.message)
+        }
 
-  const { mutate: signInUsername, isPending: isSignInPending } =
+        resetFetchOptions()
+      },
+      onSuccess: () => navigate({ to: redirectTo })
+    })
+
+  const { mutate: signInUsername, isPending: isSignInUsernamePending } =
     useSignInUsername(authClient as UsernameAuthClient, {
       onError: (error) => {
         setPassword("")
         toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
     })
@@ -118,13 +125,15 @@ export function SignInUsername({
       signInEmail({
         email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     } else {
       signInUsername({
         username: email,
         password,
-        ...(emailAndPassword?.rememberMe ? { rememberMe } : {})
+        ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
+        fetchOptions
       })
     }
   }
@@ -136,6 +145,11 @@ export function SignInUsername({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+  const isSignInPending = isSignInEmailPending || isSignInUsernamePending
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const showSeparator = emailAndPassword?.enabled && !!socialProviders?.length
 
@@ -219,6 +233,8 @@ export function SignInUsername({
                 </Checkbox.Content>
               </Checkbox>
             )}
+
+            {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
             <div className="flex flex-col gap-3">
               <Button

@@ -2,7 +2,7 @@ import {
   authMutationKeys,
   parseAdditionalFieldValue
 } from "@better-auth-ui/core"
-import { useAuth, useSignUpEmail } from "@better-auth-ui/react"
+import { useAuth, useFetchOptions, useSignUpEmail } from "@better-auth-ui/react"
 import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
   Button,
@@ -63,6 +63,8 @@ export function SignUp({
     navigate
   } = useAuth()
 
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
@@ -73,6 +75,7 @@ export function SignUp({
         setPassword("")
         setConfirmPassword("")
         toast.danger(error.error?.message || error.message)
+        resetFetchOptions()
       },
       onSuccess: () => {
         if (emailAndPassword?.requireEmailVerification) {
@@ -96,6 +99,10 @@ export function SignUp({
     mutationKey: authMutationKeys.signUp.all
   })
   const isPending = signInMutating + signUpMutating > 0
+
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -139,7 +146,8 @@ export function SignUp({
       name,
       email,
       password,
-      ...additionalFieldValues
+      ...additionalFieldValues,
+      fetchOptions
     })
   }
 
@@ -322,6 +330,8 @@ export function SignUp({
                   />
                 )
             )}
+
+            {Captcha && <div className="flex justify-center">{Captcha}</div>}
 
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" isPending={isPending}>

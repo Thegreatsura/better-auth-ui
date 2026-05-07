@@ -84,7 +84,6 @@ export function UsernameField({
       minLength={minUsernameLength}
       maxLength={maxUsernameLength}
       isDisabled={isPending}
-      isRequired={field.required}
       isReadOnly={field.readOnly}
       value={value}
       onChange={handleChange}
@@ -92,7 +91,10 @@ export function UsernameField({
       <Label>{field.label}</Label>
 
       <InputGroup variant={variant === "transparent" ? "primary" : "secondary"}>
-        <InputGroup.Input placeholder={field.placeholder} />
+        <InputGroup.Input
+          placeholder={field.placeholder}
+          required={field.required}
+        />
 
         {isCheckingAvailability && (
           <InputGroup.Suffix
