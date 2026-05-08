@@ -1,29 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { source } from "@/lib/source"
+import { llms } from "fumadocs-core/source"
+import { slugsToMarkdownPath, source } from "@/lib/source"
 
 export const Route = createFileRoute("/llms.txt")({
   server: {
     handlers: {
-      GET: async () => {
-        const scanned: string[] = []
-        scanned.push("# Docs")
-        const map = new Map<string, string[]>()
-
+      GET: () => {
+        // `llms(source).index()` builds markdown links from each page's
+        // canonical URL (e.g. `/docs/foo/bar`). We rewrite every page link to
+        // point at its `.md` counterpart so that AI agents fetching `llms.txt`
+        // know to retrieve the raw markdown rather than the HTML page.
+        const markdownUrlByPageUrl = new Map<string, string>()
         for (const page of source.getPages()) {
-          const dir = page.slugs[0]
-          const list = map.get(dir) ?? []
-          list.push(
-            `- [${page.data.title}](${page.url}): ${page.data.description}`
+          markdownUrlByPageUrl.set(
+            page.url,
+            slugsToMarkdownPath(page.slugs).url
           )
-          map.set(dir, list)
         }
 
-        for (const [key, value] of map) {
-          scanned.push(`## ${key}`)
-          scanned.push(value.join("\n"))
-        }
+        const rewritten = llms(source)
+          .index()
+          .replace(/\]\(([^)]+)\)/g, (match, url) => {
+            const markdownUrl = markdownUrlByPageUrl.get(url)
+            return markdownUrl ? `](${markdownUrl})` : match
+          })
 
-        return new Response(scanned.join("\n\n"))
+        return new Response(rewritten)
       }
     }
   }
