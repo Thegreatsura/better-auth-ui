@@ -25,7 +25,11 @@ export const Route = createFileRoute("/llms.txt")({
             return markdownUrl ? `](${markdownUrl})` : match
           })
 
-        return new Response(rewritten)
+        return new Response(rewritten, {
+          headers: {
+            "content-type": "text/plain; charset=utf-8"
+          }
+        })
       }
     }
   }
