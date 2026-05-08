@@ -6,13 +6,18 @@ import type { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { DeleteUser } from "./delete-user"
 
-export type DangerZoneProps = Omit<ComponentProps<"div">, "children">
+export type DangerZoneProps = {
+  className?: string
+}
 
 /**
  * Renders the danger zone heading and {@link DeleteUser}.
  * Registered as a `securityCard` by `deleteUserPlugin()`; gate by registering the plugin.
  */
-export function DangerZone({ className, ...props }: DangerZoneProps) {
+export function DangerZone({
+  className,
+  ...props
+}: DangerZoneProps & Omit<ComponentProps<"div">, "children" | "className">) {
   const { localization } = useAuth()
 
   return (
