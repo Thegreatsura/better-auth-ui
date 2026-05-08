@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import { ArrowUpRight, ListTodo } from "lucide-react"
+import { ArrowUpRight, Book, ListTodo } from "lucide-react"
 import { Logo } from "@/components/icons/logo"
 
 export function baseOptions(): BaseLayoutProps {
@@ -27,6 +27,13 @@ export function baseOptions(): BaseLayoutProps {
         icon: <ListTodo />,
         text: "Roadmap",
         url: "https://betterauthui.featurebase.app/roadmap",
+        secondary: false
+      },
+      {
+        icon: <Book />,
+        text: "LLMs.txt",
+        url: "/llms.txt",
+        external: true,
         secondary: false
       }
     ]
