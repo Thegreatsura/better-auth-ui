@@ -11,12 +11,37 @@ import {
   type ButtonProps,
   cn,
   Dropdown,
+  type DropdownItemProps,
   type DropdownPopoverProps,
   Label
 } from "@heroui/react"
+import { isValidElement, type ReactElement, type ReactNode } from "react"
 
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
+
+/** Auth states a `UserButton` link can be visible in. */
+export type UserButtonLinkVisibility =
+  | "authenticated"
+  | "unauthenticated"
+  | "always"
+
+/** A simple link entry rendered as a `Dropdown.Item` in the `UserButton` menu. */
+export type UserButtonLink = {
+  /** Visible label. */
+  label: ReactNode
+  /** Destination URL. */
+  href: string
+  /** Optional leading icon. Sized/coloured to match built-in items. */
+  icon?: ReactNode
+  /** Forwarded to the underlying `Dropdown.Item`. */
+  variant?: DropdownItemProps["variant"]
+  /**
+   * When this link is visible based on auth state.
+   * @default "always"
+   */
+  visibility?: UserButtonLinkVisibility
+}
 
 export type UserButtonProps = {
   className?: string
@@ -27,6 +52,30 @@ export type UserButtonProps = {
    */
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
+  /** Additional menu entries rendered above the built-in items. */
+  links?: (UserButtonLink | ReactElement)[]
+  /** Hide the built-in "Settings" link. Useful when replacing it via `links`. */
+  hideSettings?: boolean
+}
+
+function renderUserLink(
+  link: UserButtonLink | ReactElement,
+  fallbackKey: string
+): ReactNode {
+  if (isValidElement(link)) return link
+
+  const { label, href, icon, variant } = link
+  return (
+    <Dropdown.Item
+      key={fallbackKey}
+      href={href}
+      variant={variant}
+      textValue={typeof label === "string" ? label : undefined}
+    >
+      {icon}
+      <Label>{label}</Label>
+    </Dropdown.Item>
+  )
 }
 
 /**
@@ -36,13 +85,17 @@ export type UserButtonProps = {
  * @param placement - Dropdown popover placement (e.g., "bottom", "top-start", "bottom-end")
  * @param size - "icon" renders an avatar-only trigger; "default" renders a button with label and chevron
  * @param variant - Button visual variant passed to the underlying Button component
+ * @param links - Additional menu entries rendered above the built-in items
+ * @param hideSettings - Hide the built-in "Settings" link
  * @returns The user button and its dropdown menu as a JSX element
  */
 export function UserButton({
   className,
   placement = "bottom",
   size = "default",
-  variant = "ghost"
+  variant = "ghost",
+  links,
+  hideSettings = false
 }: UserButtonProps) {
   const { authClient, basePaths, viewPaths, localization, plugins } = useAuth()
 
@@ -54,6 +107,16 @@ export function UserButton({
         <Item key={`${plugin.id}-${index.toString()}`} />
       )) ?? []
   )
+
+  const userLinks = links?.flatMap((link, index) => {
+    if (!isValidElement(link)) {
+      const visibility = link.visibility ?? "always"
+      if (visibility === "authenticated" && !session) return []
+      if (visibility === "unauthenticated" && session) return []
+    }
+    return [renderUserLink(link, `user-button-link-${index.toString()}`)]
+  })
+
   return (
     <Dropdown>
       {size === "icon" ? (
@@ -95,14 +158,18 @@ export function UserButton({
         <Dropdown.Menu>
           {session ? (
             <>
-              <Dropdown.Item
-                textValue={localization.settings.settings}
-                href={`${basePaths.settings}/${viewPaths.settings.account}`}
-              >
-                <Gear className="text-muted" />
+              {userLinks}
 
-                <Label>{localization.settings.settings}</Label>
-              </Dropdown.Item>
+              {!hideSettings && (
+                <Dropdown.Item
+                  textValue={localization.settings.settings}
+                  href={`${basePaths.settings}/${viewPaths.settings.account}`}
+                >
+                  <Gear className="text-muted" />
+
+                  <Label>{localization.settings.settings}</Label>
+                </Dropdown.Item>
+              )}
 
               {userMenuItems}
 
@@ -118,6 +185,8 @@ export function UserButton({
             </>
           ) : (
             <>
+              {userLinks}
+
               <Dropdown.Item
                 textValue={localization.auth.signIn}
                 href={`${basePaths.auth}/${viewPaths.auth.signIn}`}

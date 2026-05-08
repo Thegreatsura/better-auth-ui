@@ -31,6 +31,7 @@ import { ThemeToggleItemDemo as HeroUIThemeToggleItemDemo } from "./heroui/theme
 import { UserAvatarDemo as HeroUIUserAvatarDemo } from "./heroui/user/user-avatar"
 import { UserButtonDemo as HeroUIUserButtonDemo } from "./heroui/user/user-button"
 import { UserButtonIconDemo as HeroUIUserButtonIconDemo } from "./heroui/user/user-button-icon"
+import { UserButtonLinksDemo as HeroUIUserButtonLinksDemo } from "./heroui/user/user-button-links"
 import { UserViewDemo as HeroUIUserViewDemo } from "./heroui/user/user-view"
 import { SignInUsernameDemo as HeroUISignInUsernameDemo } from "./heroui/username/sign-in"
 import { SignUpUsernameDemo as HeroUISignUpUsernameDemo } from "./heroui/username/sign-up"
@@ -67,6 +68,7 @@ import { ThemeToggleItemDemo as ShadcnThemeToggleItemDemo } from "./shadcn/theme
 import { UserAvatarDemo as ShadcnUserAvatarDemo } from "./shadcn/user/user-avatar"
 import { UserButtonDemo as ShadcnUserButtonDemo } from "./shadcn/user/user-button"
 import { UserButtonIconDemo as ShadcnUserButtonIconDemo } from "./shadcn/user/user-button-icon"
+import { UserButtonLinksDemo as ShadcnUserButtonLinksDemo } from "./shadcn/user/user-button-links"
 import { UserViewDemo as ShadcnUserViewDemo } from "./shadcn/user/user-view"
 import { SignInUsernameDemo as ShadcnSignInUsernameDemo } from "./shadcn/username/sign-in"
 import { SignUpUsernameDemo as ShadcnSignUpUsernameDemo } from "./shadcn/username/sign-up"
@@ -107,6 +109,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-user-avatar": HeroUIUserAvatarDemo,
   "heroui-user-button": HeroUIUserButtonDemo,
   "heroui-user-button-icon": HeroUIUserButtonIconDemo,
+  "heroui-user-button-links": HeroUIUserButtonLinksDemo,
   "heroui-user-profile": HeroUIUserProfileDemo,
   "heroui-theme-toggle-item": HeroUIThemeToggleItemDemo,
   "heroui-user-view": HeroUIUserViewDemo,
@@ -143,6 +146,7 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-user-avatar": ShadcnUserAvatarDemo,
   "shadcn-user-button": ShadcnUserButtonDemo,
   "shadcn-user-button-icon": ShadcnUserButtonIconDemo,
+  "shadcn-user-button-links": ShadcnUserButtonLinksDemo,
   "shadcn-user-profile": ShadcnUserProfileDemo,
   "shadcn-user-view": ShadcnUserViewDemo,
   "shadcn-username-sign-in": ShadcnSignInUsernameDemo,
