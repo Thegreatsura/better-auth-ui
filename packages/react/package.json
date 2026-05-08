@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite build --watch",
+    "dev": "tsc --watch",
     "email": "email dev --dir src/components/auth/email -p 9000",
     "test": "vitest"
   },
