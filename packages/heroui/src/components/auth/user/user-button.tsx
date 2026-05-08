@@ -12,8 +12,7 @@ import {
   cn,
   Dropdown,
   type DropdownPopoverProps,
-  Label,
-  Separator
+  Label
 } from "@heroui/react"
 
 import { UserAvatar } from "./user-avatar"
@@ -107,13 +106,12 @@ export function UserButton({
 
               {userMenuItems}
 
-              <Separator />
-
               <Dropdown.Item
                 textValue={localization.auth.signOut}
                 href={`${basePaths.auth}/${viewPaths.auth.signOut}`}
+                variant="danger"
               >
-                <ArrowRightFromSquare className="text-muted" />
+                <ArrowRightFromSquare className="text-danger" />
 
                 <Label>{localization.auth.signOut}</Label>
               </Dropdown.Item>
