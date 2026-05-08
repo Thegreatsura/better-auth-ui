@@ -22,8 +22,8 @@ export function Providers({ children }: { children: ReactNode }) {
         navigate={navigate}
         plugins={[
           deleteUserPlugin(),
-          multiSessionPlugin(),
-          themePlugin({ useTheme })
+          themePlugin({ useTheme }),
+          multiSessionPlugin()
         ]}
       >
         {children}

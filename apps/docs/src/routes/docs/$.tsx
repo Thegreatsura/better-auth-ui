@@ -15,7 +15,7 @@ import { useEffect, useMemo } from "react"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
 import { baseOptions } from "@/lib/layout.shared"
 import { getMDXComponents } from "@/lib/mdx-components"
-import { source } from "@/lib/source"
+import { slugsToMarkdownPath, source } from "@/lib/source"
 
 const owner = "better-auth-ui"
 const repo = "better-auth-ui"
@@ -62,7 +62,8 @@ const loader = createServerFn({
     return {
       tree: source.pageTree as object,
       path: page.path,
-      url: page.url
+      url: page.url,
+      markdownUrl: slugsToMarkdownPath(page.slugs).url
     }
   })
 
@@ -84,10 +85,10 @@ const clientLoader = browserCollections.docs.createClientLoader({
         </DocsDescription>
 
         <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
-          <LLMCopyButton markdownUrl={`${data.url}.mdx`} />
+          <LLMCopyButton markdownUrl={data.markdownUrl} />
           <ViewOptions
-            markdownUrl={`${data.url}.mdx`}
-            githubUrl={`https://github.com/${owner}/${repo}/blob/dev/apps/docs/content/docs/${data.path}`}
+            markdownUrl={data.markdownUrl}
+            githubUrl={`https://github.com/${owner}/${repo}/blob/main/apps/docs/content/docs/${data.path}`}
           />
         </div>
 

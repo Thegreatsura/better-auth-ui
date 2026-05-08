@@ -11,7 +11,6 @@ import {
   Button,
   Card,
   type CardProps,
-  cn,
   FieldError,
   Form,
   Input,
@@ -91,11 +90,7 @@ export function DeleteUser({
   }
 
   return (
-    <Card
-      className={cn("border border-danger", className)}
-      variant={variant}
-      {...props}
-    >
+    <Card className={className} variant={variant} {...props}>
       <Card.Content className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium leading-tight">
@@ -111,7 +106,7 @@ export function DeleteUser({
           <Button
             isDisabled={!accounts}
             size="sm"
-            variant="danger"
+            variant="danger-soft"
             onPress={() => setConfirmOpen(true)}
           >
             {deleteUserLocalization.deleteUser}

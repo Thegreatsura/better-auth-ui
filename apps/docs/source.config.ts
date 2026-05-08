@@ -1,6 +1,7 @@
 import { defineConfig, defineDocs } from "fumadocs-mdx/config"
 import lastModified from "fumadocs-mdx/plugins/last-modified"
 import {
+  createFileSystemGeneratorCache,
   createGenerator,
   type DocEntry,
   remarkAutoTypeTable
@@ -42,7 +43,30 @@ function stripUndefinedUnionFromTypeString(s: string): string {
   return t
 }
 
-const generator = createGenerator()
+/**
+ * The fully-expanded `type` field can be enormous (e.g. `authClient` resolves
+ * to the entire Better Auth client surface, 50KB+ of TypeScript). Shiki then
+ * tokenises every character into HAST nodes that get serialised into the MDX
+ * bundle, bloating it by hundreds of KB and slowing the build.
+ *
+ * When the expansion is far longer than the alias-form `simplifiedType`, fall
+ * back to the alias — the table cell already shows it, and users wanting the
+ * full surface can click through to the source.
+ */
+const MAX_TYPE_DESCRIPTION_LENGTH = 400
+
+function collapseVerboseTypeExpansions(entry: DocEntry): void {
+  if (
+    entry.type.length > MAX_TYPE_DESCRIPTION_LENGTH &&
+    entry.type.length > entry.simplifiedType.length * 4
+  ) {
+    entry.type = entry.simplifiedType
+  }
+}
+
+const generator = createGenerator({
+  cache: createFileSystemGeneratorCache(".cache/fumadocs-typescript")
+})
 
 export const docs = defineDocs({
   dir: "content/docs",
@@ -66,6 +90,7 @@ export default defineConfig({
             transform(entry: DocEntry) {
               preferFullTypeForSimplifiedUnion(entry)
               stripRedundantUndefinedUnions(entry)
+              collapseVerboseTypeExpansions(entry)
             }
           }
           //  renderType: renderTypeToHastFast

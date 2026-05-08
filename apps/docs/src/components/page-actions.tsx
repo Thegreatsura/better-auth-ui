@@ -58,7 +58,7 @@ export function LLMCopyButton({
       onClick={onClick}
     >
       {checked ? <Check /> : <Copy />}
-      Copy Markdown
+      {checked ? "Copied!" : "Copy Markdown"}
     </button>
   )
 }
@@ -197,6 +197,40 @@ export function ViewOptions({
             <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
           </svg>
         )
+      },
+      {
+        title: "Open in Copilot",
+        href: `https://copilot.microsoft.com/?${new URLSearchParams({
+          q
+        })}`,
+        icon: (
+          <svg
+            fill="currentColor"
+            role="img"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <title>Microsoft Copilot</title>
+            <path d="M14.408 3.001c1.178 0 2.231.716 2.67 1.797l.064.174l.553 1.66a.88.88 0 0 0 .725.597l.112.007h.055c.812 0 1.58.205 2.175.738s.877 1.272.969 2.062c.175 1.524-.32 3.603-1.268 6.085c-.42 1.098-1.107 2.306-1.633 3.162c-.64 1.042-1.745 1.642-2.911 1.71l-.22.006H9.593a2.88 2.88 0 0 1-2.67-1.797l-.064-.174l-.553-1.66a.88.88 0 0 0-.725-.597l-.112-.007h-.055c-.812 0-1.58-.205-2.175-.739c-.594-.532-.877-1.27-.969-2.061c-.175-1.524.32-3.603 1.268-6.085c.42-1.098 1.107-2.306 1.633-3.162c.64-1.042 1.745-1.643 2.911-1.71l.22-.006zm-2.693 13.683q-.253.053-.516.071l-.264.01H8.212l.544 1.63a.88.88 0 0 0 .724.597l.112.007h.422c.552 0 1.043-.334 1.25-.835l.046-.13zm2.4-7.448h-1.05c-.805 0-1.515.528-1.746 1.299l-.95 3.17a4.3 4.3 0 0 1-.483 1.06h1.049c.805 0 1.515-.529 1.746-1.3l.95-3.17a4.3 4.3 0 0 1 .483-1.06M14.407 5h-.422c-.552 0-1.043.334-1.25.835l-.046.129l-.405 1.351q.253-.054.516-.071l.264-.01h2.723l-.543-1.63a.88.88 0 0 0-.725-.597z" />
+          </svg>
+        )
+      },
+      {
+        title: "Open in Cursor",
+        href: `https://cursor.com/link/prompt?${new URLSearchParams({
+          text: q
+        })}`,
+        icon: (
+          <svg
+            fill="currentColor"
+            role="img"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <title>Cursor</title>
+            <path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" />
+          </svg>
+        )
       }
       // {
       //   title: "Open in T3 Chat",
@@ -219,10 +253,11 @@ export function ViewOptions({
           })
         )}
       >
-        Open
+        Open in
         <ChevronDown className="size-3.5 text-fd-muted-foreground" />
       </PopoverTrigger>
       <PopoverContent className="flex flex-col">
+        <CopyMarkdownLinkButton markdownUrl={markdownUrl} />
         {items.map((item) => (
           <a
             key={item.href}
@@ -238,5 +273,22 @@ export function ViewOptions({
         ))}
       </PopoverContent>
     </Popover>
+  )
+}
+
+function CopyMarkdownLinkButton({ markdownUrl }: { markdownUrl: string }) {
+  const [checked, onClick] = useCopyButton(() => {
+    const absolute =
+      typeof window !== "undefined"
+        ? new URL(markdownUrl, window.location.origin).toString()
+        : markdownUrl
+    return navigator.clipboard.writeText(absolute)
+  })
+
+  return (
+    <button type="button" onClick={onClick} className={cn(optionVariants())}>
+      {checked ? <Check /> : <Copy />}
+      {checked ? "Copied!" : "Copy Markdown Link"}
+    </button>
   )
 }

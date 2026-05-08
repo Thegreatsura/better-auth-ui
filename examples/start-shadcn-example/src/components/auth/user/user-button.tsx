@@ -13,6 +13,12 @@ import {
   Settings,
   UserPlus2
 } from "lucide-react"
+import {
+  type ComponentType,
+  isValidElement,
+  type ReactElement,
+  type ReactNode
+} from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +33,29 @@ import { cn } from "@/lib/utils"
 import { UserAvatar } from "./user-avatar"
 import { UserView } from "./user-view"
 
+/** Auth states a `UserButton` link can be visible in. */
+export type UserButtonLinkVisibility =
+  | "authenticated"
+  | "unauthenticated"
+  | "always"
+
+/** A simple link entry rendered as a `DropdownMenuItem` in the `UserButton` menu. */
+export type UserButtonLink = {
+  /** Visible label. */
+  label: ReactNode
+  /** Destination URL. */
+  href: string
+  /** Optional leading icon. Sized/coloured to match built-in items. */
+  icon?: ReactNode
+  /** Forwarded to the underlying `DropdownMenuItem`. */
+  variant?: "default" | "destructive"
+  /**
+   * When this link is visible based on auth state.
+   * @default "always"
+   */
+  visibility?: UserButtonLinkVisibility
+}
+
 export type UserButtonProps = {
   className?: string
   align?: "center" | "end" | "start" | undefined
@@ -39,6 +68,28 @@ export type UserButtonProps = {
     | "link"
     | "outline"
     | "secondary"
+  /** Additional menu entries rendered above the built-in items. */
+  links?: (UserButtonLink | ReactElement)[]
+  /** Hide the built-in "Settings" link. Useful when replacing it via `links`. */
+  hideSettings?: boolean
+}
+
+function renderUserLink(
+  link: UserButtonLink | ReactElement,
+  Link: ComponentType<{ href: string; children?: ReactNode }>,
+  fallbackKey: string
+): ReactNode {
+  if (isValidElement(link)) return link
+
+  const { label, href, icon, variant } = link
+  return (
+    <DropdownMenuItem key={fallbackKey} variant={variant} asChild>
+      <Link href={href}>
+        {icon}
+        {label}
+      </Link>
+    </DropdownMenuItem>
+  )
 }
 
 /**
@@ -52,6 +103,8 @@ export type UserButtonProps = {
  * @param sideOffset - Offset between the trigger and the dropdown menu
  * @param size - "icon" renders only the avatar; "default" renders a full button with label and chevron
  * @param variant - Visual variant of the trigger button
+ * @param links - Additional menu entries rendered above the built-in items
+ * @param hideSettings - Hide the built-in "Settings" link
  * @returns The dropdown menu component with user actions
  */
 export function UserButton({
@@ -59,7 +112,9 @@ export function UserButton({
   align,
   sideOffset,
   size = "default",
-  variant = "ghost"
+  variant = "ghost",
+  links,
+  hideSettings = false
 }: UserButtonProps) {
   const { authClient, basePaths, viewPaths, localization, plugins, Link } =
     useAuth()
@@ -68,6 +123,15 @@ export function UserButton({
     authClient as MultiSessionAuthClient
   )
   const { data: session, isPending: sessionPending } = useSession(authClient)
+
+  const userLinks = links?.flatMap((link, index) => {
+    if (!isValidElement(link)) {
+      const visibility = link.visibility ?? "always"
+      if (visibility === "authenticated" && !session) return []
+      if (visibility === "unauthenticated" && session) return []
+    }
+    return [renderUserLink(link, Link, `user-button-link-${index.toString()}`)]
+  })
 
   return (
     <DropdownMenu>
@@ -121,15 +185,19 @@ export function UserButton({
 
         {session ? (
           <>
-            <DropdownMenuItem asChild>
-              <Link
-                href={`${basePaths.settings}/${viewPaths.settings.account}`}
-              >
-                <Settings className="text-muted-foreground" />
+            {userLinks}
 
-                {localization.settings.settings}
-              </Link>
-            </DropdownMenuItem>
+            {!hideSettings && (
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`${basePaths.settings}/${viewPaths.settings.account}`}
+                >
+                  <Settings className="text-muted-foreground" />
+
+                  {localization.settings.settings}
+                </Link>
+              </DropdownMenuItem>
+            )}
 
             {plugins.flatMap((plugin) =>
               plugin.userMenuItems?.map((Item, index) => (
@@ -149,6 +217,8 @@ export function UserButton({
           </>
         ) : (
           <>
+            {userLinks}
+
             <DropdownMenuItem asChild>
               <Link href={`${basePaths.auth}/${viewPaths.auth.signIn}`}>
                 <LogIn className="text-muted-foreground" />

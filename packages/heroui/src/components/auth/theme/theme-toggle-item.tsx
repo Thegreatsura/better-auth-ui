@@ -1,5 +1,5 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
-import { Display, Moon, Sun } from "@gravity-ui/icons"
+import { Display, Moon, Palette, Sun } from "@gravity-ui/icons"
 import { Dropdown, Label, Tabs } from "@heroui/react"
 
 import { themePlugin } from "../../../lib/auth/theme-plugin"
@@ -67,6 +67,7 @@ export function ThemeToggleItem() {
       // menu-item activation.
       shouldCloseOnSelect={false}
     >
+      <Palette className="text-muted" />
       <Label>{localization.theme}</Label>
 
       <Tabs

@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import { ArrowUpRight, ListTodo } from "lucide-react"
+import { ArrowUpRight, Book, ClockArrowDown, ListTodo } from "lucide-react"
 import { Logo } from "@/components/icons/logo"
 
 export function baseOptions(): BaseLayoutProps {
@@ -21,12 +21,28 @@ export function baseOptions(): BaseLayoutProps {
         icon: <ArrowUpRight />,
         text: "Demo",
         url: "https://demo.better-auth-ui.com",
+        external: true,
         secondary: false
       },
       {
         icon: <ListTodo />,
         text: "Roadmap",
         url: "https://betterauthui.featurebase.app/roadmap",
+        external: true,
+        secondary: false
+      },
+      {
+        icon: <ClockArrowDown />,
+        text: "Changelog",
+        url: "https://github.com/better-auth-ui/better-auth-ui/releases",
+        external: true,
+        secondary: false
+      },
+      {
+        icon: <Book />,
+        text: "LLMs.txt",
+        url: "/llms.txt",
+        external: true,
         secondary: false
       }
     ]

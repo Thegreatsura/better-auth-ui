@@ -38,7 +38,23 @@ export default defineConfig({
           !EXCLUDED_PRERENDER_PATHS.some((excludedPath) =>
             path.startsWith(excludedPath)
           )
-      }
+      },
+      pages: [
+        {
+          path: "/llms.txt",
+          prerender: {
+            enabled: true,
+            outputPath: "/llms.txt"
+          }
+        },
+        {
+          path: "/llms-full.txt",
+          prerender: {
+            enabled: true,
+            outputPath: "/llms-full.txt"
+          }
+        }
+      ]
     }),
     react()
   ]
