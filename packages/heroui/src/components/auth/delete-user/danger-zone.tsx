@@ -22,7 +22,7 @@ export function DangerZone({
 
   return (
     <div className={cn("flex w-full flex-col", className)} {...props}>
-      <h2 className={cn("text-sm font-semibold mb-3")}>
+      <h2 className={cn("text-sm font-semibold mb-3 text-danger")}>
         {localization.settings.dangerZone}
       </h2>
 
