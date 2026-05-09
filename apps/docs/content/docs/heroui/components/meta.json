@@ -23,7 +23,6 @@
     "settings/security/security-settings",
     "settings/security/change-password",
     "settings/security/linked-accounts",
-    "settings/security/passkeys",
     "settings/security/active-sessions",
     "---Email---",
     "email/email-verification-email",

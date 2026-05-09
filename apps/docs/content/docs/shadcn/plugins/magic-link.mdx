@@ -8,10 +8,6 @@ import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
 The magic-link plugin adds a passwordless email sign-in flow. The user enters their email, receives a one-time link, and is signed in when they click it.
 
-### `<MagicLink />`
-
-<ComponentPreview name="shadcn-magic-link" />
-
 It contributes:
 
 - A `<MagicLink />` view at `/auth/magic-link`
@@ -171,6 +167,26 @@ export default async function AuthPage({
 
 </Step>
 </Steps>
+
+## Components
+
+### `<MagicLink />`
+
+<ComponentPreview name="shadcn-magic-link" />
+
+The `<MagicLink />` view is rendered at `/auth/magic-link` when the plugin is registered and the route is wired up (see the setup step above).
+
+**Usage**
+
+```tsx
+import { MagicLink } from "@/components/auth/magic-link"
+
+<MagicLink />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/magic-link.tsx" name="MagicLinkProps" />
 
 ## Options
 
