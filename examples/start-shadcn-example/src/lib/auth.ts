@@ -1,7 +1,8 @@
+import { apiKey } from "@better-auth/api-key"
 import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { captcha, multiSession, username } from "better-auth/plugins"
+import { multiSession, username } from "better-auth/plugins"
 import { db } from "./db"
 import * as schema from "./schema"
 
@@ -14,21 +15,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true
   },
-  plugins: [
-    multiSession(),
-    passkey(),
-    username(),
-    captcha({
-      provider: "cloudflare-turnstile",
-      secretKey: process.env.TURNSTILE_SECRET_KEY as string,
-      endpoints: [
-        "/sign-in/email",
-        "/sign-in/username",
-        "/sign-up/email",
-        "/forget-password"
-      ]
-    })
-  ],
+  secret: process.env.BETTER_AUTH_SECRET as string,
+  plugins: [multiSession(), passkey(), username(), apiKey()],
+  session: {
+    cookieCache: {
+      enabled: false,
+      maxAge: 5 * 60 // Cache duration in seconds
+    }
+  },
   user: {
     deleteUser: {
       enabled: true
@@ -38,10 +32,6 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     }
   }
 })

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Geist } from "next/font/google"
 import type { ReactNode } from "react"
 
 import "@/styles/app.css"
@@ -9,7 +9,7 @@ import { Header } from "@/components/header"
 import { Providers } from "@/components/providers"
 import { cn } from "@/lib/utils"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("font-sans", inter.variable)}
+      className={cn("font-sans", geist.variable)}
     >
       <body className="antialiased min-h-svh flex flex-col">
         <ThemeProvider
