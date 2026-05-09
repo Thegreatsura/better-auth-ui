@@ -271,6 +271,69 @@
       ]
     },
     {
+      "name": "api-key",
+      "type": "registry:component",
+      "title": "API Key",
+      "description": "API Key plugin: list, create, copy, and revoke API keys. Registers an API Keys security card in account settings.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@better-auth/api-key",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "button",
+        "card",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "separator",
+        "skeleton",
+        "sonner",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/api-key-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/api-key/api-keys.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/api-key.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/api-keys-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/api-key-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/create-api-key-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/new-api-key-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/delete-api-key-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "multi-session",
       "type": "registry:component",
       "title": "Multi Session",

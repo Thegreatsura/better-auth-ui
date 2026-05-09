@@ -14,7 +14,9 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.4.14",
+    "@better-auth-ui/react": "workspace:*",
+    "@better-auth/api-key": "^1.6.10",
+    "@biomejs/biome": "2.4.15",
     "@nx/js": "22.7.1",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.33",

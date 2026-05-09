@@ -48,6 +48,12 @@ export const authQueryKeys = {
     query?: TQuery
   ) => [...authQueryKeys.user(userId), "listPasskeys", query ?? null] as const,
 
+  /** Key for the user's API keys list (`apiKey.list`). */
+  listApiKeys: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => [...authQueryKeys.user(userId), "listApiKeys", query ?? null] as const,
+
   /** Key for `accountInfo` for the given user. */
   accountInfo: <TQuery = undefined>(
     userId: string | undefined,

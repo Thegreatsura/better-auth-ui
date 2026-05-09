@@ -1,0 +1,96 @@
+---
+title: API Key
+description: Add programmatic API key management with create, copy, and revoke flows to your authentication settings.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The API key plugin adds programmatic API key management to your authentication UI. Users can create, copy, and revoke API keys from a security card in account settings.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the [`@better-auth/api-key`](https://www.better-auth.com/docs/plugins/api-key) package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { apiKey } from "@better-auth/api-key" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    apiKey() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `apiKeyClient()` to your auth client so `authClient.apiKey.*` methods are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { apiKeyClient } from "@better-auth/api-key/client" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [apiKeyClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `apiKeyPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { apiKeyPlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
+
+import { authClient } from "@/lib/auth-client"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    apiKeyPlugin() // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Components
+
+### `<ApiKeys />`
+
+<ComponentPreview name="heroui-api-keys" />
+
+The `<ApiKeys />` security card is automatically rendered in `<AccountSettings />` when the plugin is registered.
+
+**Usage**
+
+```tsx
+import { ApiKeys } from "@better-auth-ui/heroui/plugins"
+
+<ApiKeys />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/api-key/api-keys.tsx" name="ApiKeysProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/api-key/api-key-plugin.ts" name="ApiKeyPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/api-key/api-key-localization.ts" name="ApiKeyLocalization" />

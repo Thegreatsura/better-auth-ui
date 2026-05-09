@@ -12,6 +12,8 @@ import {
   PageLastUpdate
 } from "fumadocs-ui/layouts/docs/page"
 import { useEffect, useMemo } from "react"
+import { Providers as HeroUIProviders } from "@/components/demos/heroui/providers"
+import { Providers as ShadcnProviders } from "@/components/demos/shadcn/providers"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
 import { baseOptions } from "@/lib/layout.shared"
 import { getMDXComponents } from "@/lib/mdx-components"
@@ -20,6 +22,7 @@ import { slugsToMarkdownPath, source } from "@/lib/source"
 const owner = "better-auth-ui"
 const repo = "better-auth-ui"
 
+import appCss from "@/styles/app.css?url"
 import herouiCss from "@/styles/heroui.css?url"
 import shadcnCss from "@/styles/shadcn.css?url"
 
@@ -33,20 +36,25 @@ export const Route = createFileRoute("/docs/$")({
   },
   head: ({ params }) => {
     const slugs = params._splat?.split("/") ?? []
+    const links: Array<{ id?: string; rel: string; href: string }> = [
+      { rel: "stylesheet", href: appCss }
+    ]
 
     if (slugs.includes("heroui")) {
-      return {
-        links: [{ id: "heroui-stylesheet", rel: "stylesheet", href: herouiCss }]
-      }
+      links.push({
+        id: "heroui-stylesheet",
+        rel: "stylesheet",
+        href: herouiCss
+      })
+    } else if (slugs.includes("shadcn")) {
+      links.push({
+        id: "shadcn-stylesheet",
+        rel: "stylesheet",
+        href: shadcnCss
+      })
     }
 
-    if (slugs.includes("shadcn")) {
-      return {
-        links: [{ id: "shadcn-stylesheet", rel: "stylesheet", href: shadcnCss }]
-      }
-    }
-
-    return {}
+    return { links }
   }
 })
 
@@ -115,28 +123,33 @@ function Page() {
   )
 
   const slugs = data.path.split("/")
+  const isHeroUI = slugs.includes("heroui")
+  const isShadcn = slugs.includes("shadcn")
 
   useEffect(() => {
-    if (slugs.includes("heroui")) {
-      // add heroui stylesheet
+    if (isHeroUI) {
       document
         .getElementById("heroui-stylesheet")
         ?.setAttribute("href", herouiCss)
       document.getElementById("shadcn-stylesheet")?.setAttribute("href", "")
     }
 
-    if (slugs.includes("shadcn")) {
+    if (isShadcn) {
       document
         .getElementById("shadcn-stylesheet")
         ?.setAttribute("href", shadcnCss)
       document.getElementById("heroui-stylesheet")?.setAttribute("href", "")
     }
-  }, [slugs])
+  }, [isHeroUI, isShadcn])
+
+  const Providers = isHeroUI ? HeroUIProviders : ShadcnProviders
 
   return (
-    <DocsLayout {...baseOptions()} tree={tree}>
-      <Content />
-    </DocsLayout>
+    <Providers>
+      <DocsLayout {...baseOptions()} tree={tree}>
+        <Content />
+      </DocsLayout>
+    </Providers>
   )
 }
 

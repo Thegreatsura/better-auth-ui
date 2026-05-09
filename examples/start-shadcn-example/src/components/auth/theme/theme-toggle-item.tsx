@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuthPlugin } from "@better-auth-ui/react"
-import { Monitor, Moon, Sun } from "lucide-react"
+import { Monitor, Moon, PaletteIcon, Sun } from "lucide-react"
 import { useRef } from "react"
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
@@ -64,12 +64,14 @@ export function ThemeToggleItem() {
         // events fired by the inner TabsTrigger.
         if (e.target === e.currentTarget) focusActiveTab()
       }}
-      className="justify-between"
     >
       <div>
+        <PaletteIcon className="text-muted-foreground" />
+
         <span>{localization.theme}</span>
 
         <Tabs
+          className="ml-auto"
           value={theme}
           onValueChange={setTheme}
           onKeyDown={handleTabsKeyDown}

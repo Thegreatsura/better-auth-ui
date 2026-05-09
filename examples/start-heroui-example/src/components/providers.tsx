@@ -1,8 +1,11 @@
 import { AuthProvider } from "@better-auth-ui/heroui"
 import {
+  apiKeyPlugin,
   deleteUserPlugin,
   multiSessionPlugin,
-  themePlugin
+  passkeyPlugin,
+  themePlugin,
+  usernamePlugin
 } from "@better-auth-ui/heroui/plugins"
 import { Toast } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
@@ -21,6 +24,9 @@ export function Providers({ children }: { children: ReactNode }) {
         socialProviders={["github"]}
         navigate={navigate}
         plugins={[
+          apiKeyPlugin(),
+          passkeyPlugin(),
+          usernamePlugin(),
           deleteUserPlugin(),
           themePlugin({ useTheme }),
           multiSessionPlugin()
