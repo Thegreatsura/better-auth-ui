@@ -9,6 +9,7 @@ import {
 } from "@better-auth-ui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { Fingerprint } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
@@ -53,7 +54,7 @@ export function PasskeyButton({ view }: PasskeyButtonProps) {
       type="button"
       variant="outline"
       disabled={isPending}
-      className={cn("w-full", isPending && "opacity-50 pointer-events-none")}
+      className={cn("w-full", isPending && "pointer-events-none opacity-50")}
       onClick={() => signInPasskey()}
     >
       {passkeyPending ? <Spinner /> : <Fingerprint />}

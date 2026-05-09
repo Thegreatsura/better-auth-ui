@@ -8,14 +8,6 @@ import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
 The passkey plugin adds passwordless authentication using WebAuthn. Users can sign in with their device authenticator (Touch ID, Face ID, Windows Hello) and manage registered passkeys from their security settings.
 
-### `<SignIn />`
-
-<ComponentPreview name="shadcn-passkey-sign-in" />
-
-### `<Passkeys />`
-
-<ComponentPreview name="shadcn-passkeys" />
-
 It contributes:
 
 - A "Continue with Passkey" button rendered on the sign-in and magic-link views (hidden on sign-up)
@@ -71,9 +63,13 @@ This drops the following into your codebase:
 
 - `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
 - `src/lib/auth/passkey-plugin.ts` — `passkeyPlugin()` factory
-- `src/components/auth/passkey-button.tsx` — the "Continue with Passkey" sign-in button
-- `src/components/settings/security/passkeys.tsx` — the passkey management card
-- `src/components/settings/security/passkey.tsx` — individual passkey row with delete control
+- `src/components/auth/passkey/passkey-button.tsx` — the "Continue with Passkey" sign-in button
+- `src/components/auth/passkey/passkeys.tsx` — the passkey management card
+- `src/components/auth/passkey/passkey.tsx` — individual passkey row
+- `src/components/auth/passkey/passkey-skeleton.tsx` — skeleton shown while passkeys load
+- `src/components/auth/passkey/passkeys-empty.tsx` — empty state shown when no passkeys exist
+- `src/components/auth/passkey/add-passkey-dialog.tsx` — dialog for registering a new passkey
+- `src/components/auth/passkey/delete-passkey-dialog.tsx` — confirmation dialog for revoking a passkey
 
 </Step>
 <Step>
@@ -97,6 +93,44 @@ import { AuthProvider } from "@/components/auth/auth-provider"
 </Step>
 </Steps>
 
+## Components
+
+### `<SignIn />`
+
+<ComponentPreview name="shadcn-passkey-sign-in" />
+
+A "Continue with Passkey" button is automatically rendered on the `<SignIn />` and `<MagicLink />` views when the plugin is registered (hidden on sign-up).
+
+**Usage**
+
+```tsx
+import { PasskeyButton } from "@/components/auth/passkey/passkey-button"
+
+<PasskeyButton />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/passkey/passkey-button.tsx" name="PasskeyButtonProps" />
+
+### `<Passkeys />`
+
+<ComponentPreview name="shadcn-passkeys" />
+
+The `<Passkeys />` security card is rendered on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`.
+
+**Usage**
+
+```tsx
+import { Passkeys } from "@/components/auth/passkey/passkeys"
+
+<Passkeys />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/passkey/passkeys.tsx" name="PasskeysProps" />
+
 ## Options
 
 ```ts
@@ -113,17 +147,3 @@ passkeyPlugin({
 ## Localization
 
 <auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-localization.ts" name="PasskeyLocalization" />
-
-Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot components.
-
-## Passkey management
-
-The `<Passkeys />` security card is included on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`. It can also be used standalone:
-
-```tsx
-import { Passkeys } from "@/components/auth/settings/security/passkeys"
-
-<Passkeys />
-```
-
-See the [`<Passkeys />`](/docs/shadcn/components/settings/security/passkeys) component docs for props and customization.

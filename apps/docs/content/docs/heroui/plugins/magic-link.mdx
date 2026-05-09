@@ -8,10 +8,6 @@ import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
 The magic-link plugin adds a passwordless email sign-in flow. The user enters their email, receives a one-time link, and is signed in when they click it.
 
-### `<MagicLink />`
-
-<ComponentPreview name="heroui-magic-link" />
-
 It contributes:
 
 - A `<MagicLink />` view at `/auth/magic-link`
@@ -151,6 +147,26 @@ export default async function AuthPage({
 
 </Step>
 </Steps>
+
+## Components
+
+### `<MagicLink />`
+
+<ComponentPreview name="heroui-magic-link" />
+
+The `<MagicLink />` view is automatically rendered at `/auth/magic-link` when the plugin is registered.
+
+**Usage**
+
+```tsx
+import { MagicLink } from "@better-auth-ui/heroui/plugins"
+
+<MagicLink />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/magic-link/magic-link.tsx" name="MagicLinkProps" />
 
 ## Options
 

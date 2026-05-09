@@ -1,13 +1,12 @@
 "use client"
 
 import {
-  type ApiKeyAuthClient,
-  type ListedApiKey,
+  type PasskeyAuthClient,
   useAuth,
   useAuthPlugin,
-  useDeleteApiKey
+  useDeletePasskey
 } from "@better-auth-ui/react"
-import { Key } from "lucide-react"
+import { Fingerprint } from "lucide-react"
 
 import {
   AlertDialog,
@@ -24,25 +23,33 @@ import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
-import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 
-export type DeleteApiKeyDialogProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  apiKey: ListedApiKey
+export type ListedPasskey = {
+  id: string
+  name?: string | null
+  createdAt: Date
 }
 
-export function DeleteApiKeyDialog({
+export type DeletePasskeyDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  passkey: ListedPasskey
+}
+
+export function DeletePasskeyDialog({
   open,
   onOpenChange,
-  apiKey
-}: DeleteApiKeyDialogProps) {
+  passkey
+}: DeletePasskeyDialogProps) {
   const { authClient, localization } = useAuth()
-  const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
-  const preview = `${apiKey.start}${"*".repeat(16)}`
-  const previewId = `delete-api-key-preview-${apiKey.id}`
-  const { mutate: deleteApiKey, isPending: isDeleting } = useDeleteApiKey(
-    authClient as ApiKeyAuthClient,
+  const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
+
+  const passkeyName = passkey.name || passkeyLocalization.passkey
+  const previewId = `delete-passkey-preview-${passkey.id}`
+
+  const { mutate: deletePasskey, isPending: isDeleting } = useDeletePasskey(
+    authClient as PasskeyAuthClient,
     {
       onSuccess: () => onOpenChange(false)
     }
@@ -53,28 +60,24 @@ export function DeleteApiKeyDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogMedia>
-            <Key />
+            <Fingerprint />
           </AlertDialogMedia>
 
-          <AlertDialogTitle>{apiKeyLocalization.deleteApiKey}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {passkeyLocalization.deletePasskeyTitle}
+          </AlertDialogTitle>
 
           <AlertDialogDescription>
-            {apiKeyLocalization.deleteApiKeyWarning}
+            {passkeyLocalization.deletePasskeyWarning}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <Field>
           <Label htmlFor={previewId}>
-            {apiKey.name || apiKeyLocalization.apiKey}
+            {passkey.name || passkeyLocalization.passkey}
           </Label>
 
-          <Input
-            id={previewId}
-            value={preview}
-            readOnly
-            className="font-mono text-xs"
-            disabled
-          />
+          <Input id={previewId} value={passkeyName} readOnly disabled />
         </Field>
 
         <AlertDialogFooter>
@@ -86,11 +89,11 @@ export function DeleteApiKeyDialog({
             type="button"
             variant="destructive"
             disabled={isDeleting}
-            onClick={() => deleteApiKey({ keyId: apiKey.id })}
+            onClick={() => deletePasskey({ id: passkey.id })}
           >
             {isDeleting && <Spinner />}
 
-            {apiKeyLocalization.deleteApiKey}
+            {passkeyLocalization.deletePasskeyTitle}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
