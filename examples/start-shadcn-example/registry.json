@@ -257,15 +257,31 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/components/auth/passkey-button.tsx",
+          "path": "src/components/auth/passkey/passkey-button.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/settings/security/passkeys.tsx",
+          "path": "src/components/auth/passkey/add-passkey-dialog.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/settings/security/passkey.tsx",
+          "path": "src/components/auth/passkey/delete-passkey-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey/passkeys-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey/passkey-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey/passkeys.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/passkey/passkey.tsx",
           "type": "registry:component"
         }
       ]

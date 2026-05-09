@@ -71,9 +71,13 @@ This drops the following into your codebase:
 
 - `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
 - `src/lib/auth/passkey-plugin.ts` — `passkeyPlugin()` factory
-- `src/components/auth/passkey-button.tsx` — the "Continue with Passkey" sign-in button
-- `src/components/settings/security/passkeys.tsx` — the passkey management card
-- `src/components/settings/security/passkey.tsx` — individual passkey row with delete control
+- `src/components/auth/passkey/passkey-button.tsx` — the "Continue with Passkey" sign-in button
+- `src/components/auth/passkey/passkeys.tsx` — the passkey management card
+- `src/components/auth/passkey/passkey.tsx` — individual passkey row
+- `src/components/auth/passkey/passkeys-empty.tsx` — empty state when the user has no passkeys
+- `src/components/auth/passkey/passkey-skeleton.tsx` — loading skeleton for the list
+- `src/components/auth/passkey/add-passkey-dialog.tsx` — add passkey dialog
+- `src/components/auth/passkey/delete-passkey-dialog.tsx` — confirm delete passkey dialog
 
 </Step>
 <Step>
@@ -121,9 +125,9 @@ Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot c
 The `<Passkeys />` security card is included on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`. It can also be used standalone:
 
 ```tsx
-import { Passkeys } from "@/components/auth/settings/security/passkeys"
+import { Passkeys } from "@/components/auth/passkey/passkeys"
 
 <Passkeys />
 ```
 
-See the [`<Passkeys />`](/docs/shadcn/components/settings/security/passkeys) component docs for props and customization.
+See the [`<Passkeys />`](/docs/shadcn/components/passkey/passkeys) component docs for props and customization.

@@ -1,13 +1,19 @@
+"use client"
+
 import {
   type PasskeyAuthClient,
   useAuth,
   useAuthPlugin,
   useListPasskeys
 } from "@better-auth-ui/react"
-import { Button, Card, type CardProps, cn } from "@heroui/react"
 import { useState } from "react"
 
-import { passkeyPlugin } from "../../../lib/auth/passkey-plugin"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
+import { cn } from "@/lib/utils"
+
 import { AddPasskeyDialog } from "./add-passkey-dialog"
 import { Passkey } from "./passkey"
 import { PasskeySkeleton } from "./passkey-skeleton"
@@ -15,14 +21,9 @@ import { PasskeysEmpty } from "./passkeys-empty"
 
 export type PasskeysProps = {
   className?: string
-  variant?: CardProps["variant"]
 }
 
-export function Passkeys({
-  className,
-  variant,
-  ...props
-}: PasskeysProps & Omit<CardProps, "children">) {
+export function Passkeys({ className }: PasskeysProps) {
   const { authClient } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
 
@@ -35,22 +36,22 @@ export function Passkeys({
   return (
     <div className={cn("flex flex-col gap-3", className)}>
       <div className="flex items-end justify-between gap-3">
-        <h2 className="text-sm font-semibold truncate">
+        <h2 className="truncate text-sm font-semibold">
           {passkeyLocalization.passkeys}
         </h2>
 
         <Button
           className="shrink-0"
           size="sm"
-          isDisabled={isPending}
-          onPress={() => setAddOpen(true)}
+          disabled={isPending}
+          onClick={() => setAddOpen(true)}
         >
           {passkeyLocalization.addPasskey}
         </Button>
       </div>
 
-      <Card variant={variant} {...props}>
-        <Card.Content>
+      <Card className="p-0">
+        <CardContent className="p-0">
           {isPending ? (
             <PasskeySkeleton />
           ) : !passkeys?.length ? (
@@ -58,18 +59,16 @@ export function Passkeys({
           ) : (
             passkeys.map((passkey, index) => (
               <div key={passkey.id}>
-                {index > 0 && (
-                  <div className="border-b border-dashed -mx-4 my-4" />
-                )}
+                {index > 0 && <Separator />}
 
                 <Passkey passkey={passkey} />
               </div>
             ))
           )}
-        </Card.Content>
+        </CardContent>
       </Card>
 
-      <AddPasskeyDialog isOpen={addOpen} onOpenChange={setAddOpen} />
+      <AddPasskeyDialog open={addOpen} onOpenChange={setAddOpen} />
     </div>
   )
 }
