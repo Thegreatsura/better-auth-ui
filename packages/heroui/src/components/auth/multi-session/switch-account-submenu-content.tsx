@@ -6,7 +6,7 @@ import {
   useSession
 } from "@better-auth-ui/react"
 import { Check, CirclePlus } from "@gravity-ui/icons"
-import { Dropdown, Label, Separator } from "@heroui/react"
+import { Dropdown, Label } from "@heroui/react"
 
 import { multiSessionPlugin } from "../../../lib/auth/multi-session-plugin"
 import { UserView } from "../user/user-view"
@@ -49,8 +49,6 @@ export function SwitchAccountSubmenuContent() {
               deviceSession={deviceSession}
             />
           ))}
-
-        <Separator />
 
         <Dropdown.Item
           textValue={multiSessionLocalization.addAccount}

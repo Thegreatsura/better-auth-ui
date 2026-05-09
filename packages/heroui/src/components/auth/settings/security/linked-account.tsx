@@ -60,11 +60,9 @@ export function LinkedAccount({ account, provider }: LinkedAccountProps) {
         )}
       >
         {ProviderIcon ? (
-          <ProviderIcon className={cn("size-4.5", !account && "opacity-50")} />
+          <ProviderIcon className="size-4.5" />
         ) : (
-          <PlugConnection
-            className={cn("size-4.5", !account && "opacity-50")}
-          />
+          <PlugConnection className="size-4.5" />
         )}
       </div>
 

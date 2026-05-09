@@ -1,6 +1,8 @@
+import { apiKey } from "@better-auth/api-key"
+import { passkey } from "@better-auth/passkey"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { multiSession } from "better-auth/plugins"
+import { multiSession, username } from "better-auth/plugins"
 
 import { db } from "./db"
 import * as schema from "./schema"
@@ -15,7 +17,7 @@ export const auth = betterAuth({
     enabled: true
   },
   secret: process.env.BETTER_AUTH_SECRET as string,
-  plugins: [multiSession()],
+  plugins: [multiSession(), passkey(), username(), apiKey()],
   session: {
     cookieCache: {
       enabled: false,

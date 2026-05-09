@@ -1,3 +1,4 @@
+import type { apiKeyClient } from "@better-auth/api-key/client"
 import type { passkeyClient } from "@better-auth/passkey/client"
 import type {
   magicLinkClient,
@@ -24,6 +25,10 @@ export type MultiSessionAuthClient = ReturnType<
 
 export type PasskeyAuthClient = ReturnType<
   typeof createAuthClient<{ plugins: [ReturnType<typeof passkeyClient>] }>
+>
+
+export type ApiKeyAuthClient = ReturnType<
+  typeof createAuthClient<{ plugins: [ReturnType<typeof apiKeyClient>] }>
 >
 
 export type UsernameAuthClient = ReturnType<

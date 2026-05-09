@@ -26,6 +26,7 @@
     "@better-auth-ui/core": "*",
     "@better-auth-ui/heroui": "*",
     "@better-auth-ui/react": "*",
+    "@better-auth/api-key": "^1.6.9",
     "@better-auth/passkey": "^1.6.9",
     "@heroui/react": "^3.0.4",
     "@heroui/styles": "^3.0.4",

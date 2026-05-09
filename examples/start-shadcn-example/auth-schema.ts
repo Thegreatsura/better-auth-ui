@@ -21,7 +21,6 @@ export const users = pgTable("users", {
     .notNull(),
   username: text("username").unique(),
   displayUsername: text("display_username"),
-  premium: boolean("premium"),
 });
 
 export const sessions = pgTable(

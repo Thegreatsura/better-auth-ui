@@ -1,5 +1,6 @@
 "use client"
 
+export * from "./components/auth/api-key/api-keys"
 export * from "./components/auth/delete-user/danger-zone"
 export * from "./components/auth/delete-user/delete-user"
 // Plugin-contributed components that may be used standalone
@@ -14,6 +15,7 @@ export * from "./components/auth/theme/appearance"
 export * from "./components/auth/theme/theme-toggle-item"
 export * from "./components/auth/username/sign-in-username"
 export * from "./components/auth/username/username-field"
+export * from "./lib/auth/api-key-plugin"
 export * from "./lib/auth/auth-plugin"
 export * from "./lib/auth/delete-user-plugin"
 export * from "./lib/auth/magic-link-plugin"
