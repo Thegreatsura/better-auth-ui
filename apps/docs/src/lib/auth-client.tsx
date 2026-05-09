@@ -139,6 +139,92 @@ const customFetchImpl: typeof fetch = async (input, _init) => {
     )
   }
 
+  if (endpoint === "/api/auth/api-key/list") {
+    const now = Date.now()
+    return new Response(
+      JSON.stringify({
+        apiKeys: [
+          {
+            id: "ak_demo_1",
+            name: "Production",
+            start: "k4f9x2",
+            prefix: null,
+            userId: "123",
+            enabled: true,
+            rateLimitEnabled: false,
+            rateLimitTimeWindow: null,
+            rateLimitMax: null,
+            requestCount: 0,
+            remaining: null,
+            lastRequest: null,
+            expiresAt: null,
+            createdAt: new Date(now - 86_400_000 * 7).toISOString(),
+            updatedAt: new Date(now - 86_400_000 * 7).toISOString(),
+            permissions: null,
+            metadata: null
+          },
+          {
+            id: "ak_demo_2",
+            name: "Staging",
+            start: "p8c3m1",
+            prefix: null,
+            userId: "123",
+            enabled: true,
+            rateLimitEnabled: false,
+            rateLimitTimeWindow: null,
+            rateLimitMax: null,
+            requestCount: 0,
+            remaining: null,
+            lastRequest: null,
+            expiresAt: null,
+            createdAt: new Date(now - 86_400_000 * 2).toISOString(),
+            updatedAt: new Date(now - 86_400_000 * 2).toISOString(),
+            permissions: null,
+            metadata: null
+          }
+        ],
+        total: 2,
+        limit: undefined,
+        offset: undefined
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
+  if (endpoint === "/api/auth/api-key/create") {
+    const now = new Date().toISOString()
+    return new Response(
+      JSON.stringify({
+        id: "ak_demo_new",
+        name: "Demo",
+        start: "z7t2qa",
+        prefix: null,
+        key: "z7t2qa9HxV4mD8nLp1RsW6Jk3BcF5UyEgPzAhNoMtKlIvCdOe",
+        userId: "123",
+        enabled: true,
+        rateLimitEnabled: false,
+        rateLimitTimeWindow: null,
+        rateLimitMax: null,
+        requestCount: 0,
+        remaining: null,
+        lastRequest: null,
+        expiresAt: null,
+        createdAt: now,
+        updatedAt: now,
+        permissions: null,
+        metadata: null
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
+  if (endpoint === "/api/auth/api-key/delete") {
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
   if (endpoint === "/api/auth/multi-session/list-device-sessions") {
     return new Response(
       JSON.stringify([

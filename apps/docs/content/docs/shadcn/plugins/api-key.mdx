@@ -1,0 +1,118 @@
+---
+title: API Key
+description: Add programmatic API key management with create, copy, and revoke flows to your authentication settings.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The API key plugin adds programmatic API key management to your authentication UI. Users can create, copy, and revoke API keys from a security card in account settings.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the [`@better-auth/api-key`](https://www.better-auth.com/docs/plugins/api-key) package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { apiKey } from "@better-auth/api-key" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    apiKey() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `apiKeyClient()` to your auth client so `authClient.apiKey.*` methods are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { apiKeyClient } from "@better-auth/api-key/client" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [apiKeyClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Install the UI plugin
+
+Run the shadcn CLI to install the API key components and the `apiKeyPlugin()` factory into your project:
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/api-key.json
+```
+
+This drops the following into your codebase:
+
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/api-key-plugin.ts` — `apiKeyPlugin()` factory
+- `src/components/auth/api-key/api-keys.tsx` — the API keys security card
+- `src/components/auth/api-key/api-key.tsx` — individual API key row with delete control
+- `src/components/auth/api-key/api-keys-empty.tsx` — empty state shown when no keys exist
+- `src/components/auth/api-key/api-key-skeleton.tsx` — skeleton shown while keys are loading
+- `src/components/auth/api-key/create-api-key-dialog.tsx` — dialog for creating a new key
+- `src/components/auth/api-key/new-api-key-dialog.tsx` — dialog showing the newly created key with copy button
+- `src/components/auth/api-key/delete-api-key-dialog.tsx` — confirmation dialog for revoking a key
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `apiKeyPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { apiKeyPlugin } from "@/lib/auth/api-key-plugin" // [!code highlight]
+
+import { authClient } from "@/lib/auth-client"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    apiKeyPlugin() // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Components
+
+### `<ApiKeys />`
+
+<ComponentPreview name="shadcn-api-keys" />
+
+The `<ApiKeys />` security card is rendered on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `apiKeyPlugin()` is in `plugins`.
+
+**Usage**
+
+```tsx
+import { ApiKeys } from "@/components/auth/api-key/api-keys"
+
+<ApiKeys />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/api-key/api-keys.tsx" name="ApiKeysProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/api-key/api-key-plugin.ts" name="ApiKeyPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/api-key/api-key-localization.ts" name="ApiKeyLocalization" />

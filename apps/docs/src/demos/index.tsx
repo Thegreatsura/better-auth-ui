@@ -1,4 +1,5 @@
 import type { ComponentType } from "react"
+import { ApiKeysDemo as HeroUIApiKeysDemo } from "./heroui/api-key/api-keys"
 import { AuthDemo as HeroUIAuthDemo } from "./heroui/auth/auth"
 import { ForgotPasswordDemo as HeroUIForgotPasswordDemo } from "./heroui/auth/forgot-password"
 import { ResetPasswordDemo as HeroUIResetPasswordDemo } from "./heroui/auth/reset-password"
@@ -36,6 +37,7 @@ import { UserViewDemo as HeroUIUserViewDemo } from "./heroui/user/user-view"
 import { SignInUsernameDemo as HeroUISignInUsernameDemo } from "./heroui/username/sign-in"
 import { SignUpUsernameDemo as HeroUISignUpUsernameDemo } from "./heroui/username/sign-up"
 import { UserProfileUsernameDemo as HeroUIUserProfileUsernameDemo } from "./heroui/username/user-profile"
+import { ApiKeysDemo as ShadcnApiKeysDemo } from "./shadcn/api-key/api-keys"
 import { AuthDemo as ShadcnAuthDemo } from "./shadcn/auth/auth"
 import { ForgotPasswordDemo as ShadcnForgotPasswordDemo } from "./shadcn/auth/forgot-password"
 import { ResetPasswordDemo as ShadcnResetPasswordDemo } from "./shadcn/auth/reset-password"
@@ -81,6 +83,7 @@ export interface DemoItem {
 export const demos: Record<string, ComponentType> = {
   "heroui-account-settings": HeroUIAccountSettingsDemo,
   "heroui-active-sessions": HeroUIActiveSessionsDemo,
+  "heroui-api-keys": HeroUIApiKeysDemo,
   "heroui-theme-appearance": HeroUIAppearanceDemo,
   "heroui-auth": HeroUIAuthDemo,
   "heroui-change-email": HeroUIChangeEmailDemo,
@@ -118,6 +121,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-username-user-profile": HeroUIUserProfileUsernameDemo,
   "shadcn-account-settings": ShadcnAccountSettingsDemo,
   "shadcn-active-sessions": ShadcnActiveSessionsDemo,
+  "shadcn-api-keys": ShadcnApiKeysDemo,
   "shadcn-theme-appearance": ShadcnAppearanceDemo,
   "shadcn-auth": ShadcnAuthDemo,
   "shadcn-change-email": ShadcnChangeEmailDemo,

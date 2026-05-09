@@ -2,6 +2,7 @@
   "icon": "Plug",
   "defaultOpen": true,
   "pages": [
+    "api-key",
     "captcha",
     "delete-user",
     "magic-link",
