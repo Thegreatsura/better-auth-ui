@@ -54,9 +54,9 @@ export function CreateApiKeyDialog({
     e.preventDefault()
 
     const formData = new FormData(e.target as HTMLFormElement)
-    const name = formData.get("name") as string
+    const name = (formData.get("name") as string)?.trim()
 
-    createApiKey(name ? { name: name.trim() } : undefined, {
+    createApiKey(name ? { name } : undefined, {
       onSuccess: (result) => {
         handleOpenChange(false)
         setKeyName(name)
