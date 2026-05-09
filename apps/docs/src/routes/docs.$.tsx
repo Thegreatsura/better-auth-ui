@@ -11,7 +11,7 @@ import {
   DocsTitle,
   PageLastUpdate
 } from "fumadocs-ui/layouts/docs/page"
-import { useEffect, useMemo } from "react"
+import { Fragment, useEffect, useMemo } from "react"
 import { Providers as HeroUIProviders } from "@/components/demos/heroui/providers"
 import { Providers as ShadcnProviders } from "@/components/demos/shadcn/providers"
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions"
@@ -142,7 +142,11 @@ function Page() {
     }
   }, [isHeroUI, isShadcn])
 
-  const Providers = isHeroUI ? HeroUIProviders : ShadcnProviders
+  const Providers = isHeroUI
+    ? HeroUIProviders
+    : isShadcn
+      ? ShadcnProviders
+      : Fragment
 
   return (
     <Providers>
