@@ -153,14 +153,13 @@ function renderPasskeys(authClient = createPasskeysAuthClient()) {
 }
 
 describe("<Passkeys />", () => {
-  it("renders the section heading and empty state copy", async () => {
+  it("renders the section heading and description", async () => {
     renderPasskeys()
 
     await waitFor(() => {
       expect(screen.getByText(/^passkeys$/i)).toBeInTheDocument()
-      expect(screen.getByText(/^no passkeys$/i)).toBeInTheDocument()
       expect(
-        screen.getByText(/securely access your account without a password/i)
+        screen.getByText(/manage your passkeys for secure access/i)
       ).toBeInTheDocument()
     })
   })
@@ -213,12 +212,9 @@ describe("<Passkeys />", () => {
 
     expect(authClient.passkey.addPasskey).toHaveBeenCalledWith(
       expect.objectContaining({
+        name: undefined,
         fetchOptions: expect.objectContaining({ throw: true })
       })
-    )
-
-    expect(authClient.passkey.addPasskey.mock.calls[0][0]).not.toHaveProperty(
-      "name"
     )
   })
 
@@ -237,7 +233,7 @@ describe("<Passkeys />", () => {
     const dialog = await screen.findByRole("alertdialog")
 
     await user.type(
-      within(dialog).getByRole("textbox", { name: /^name$/i }),
+      within(dialog).getByRole("textbox", { name: /passkey/i }),
       "  My MacBook  "
     )
 
@@ -284,12 +280,6 @@ describe("<Passkeys />", () => {
 
     await user.click(
       screen.getByRole("button", { name: /delete passkey my macbook/i })
-    )
-
-    const dialog = await screen.findByRole("alertdialog")
-
-    await user.click(
-      within(dialog).getByRole("button", { name: /^delete passkey$/i })
     )
 
     await waitFor(() => {

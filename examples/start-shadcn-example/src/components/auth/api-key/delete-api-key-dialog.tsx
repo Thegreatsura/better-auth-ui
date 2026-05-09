@@ -40,7 +40,6 @@ export function DeleteApiKeyDialog({
   const { authClient, localization } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
   const preview = `${apiKey.start}${"*".repeat(16)}`
-  const previewId = `delete-api-key-preview-${apiKey.id}`
   const { mutate: deleteApiKey, isPending: isDeleting } = useDeleteApiKey(
     authClient as ApiKeyAuthClient,
     {
@@ -64,12 +63,12 @@ export function DeleteApiKeyDialog({
         </AlertDialogHeader>
 
         <Field>
-          <Label htmlFor={previewId}>
+          <Label htmlFor="delete-api-key-preview">
             {apiKey.name || apiKeyLocalization.apiKey}
           </Label>
 
           <Input
-            id={previewId}
+            id="delete-api-key-preview"
             value={preview}
             readOnly
             className="font-mono text-xs"

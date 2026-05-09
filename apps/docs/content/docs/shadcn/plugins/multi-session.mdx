@@ -7,6 +7,14 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 The multi-session plugin enables users to maintain multiple active sessions simultaneously. Users can switch between accounts without signing out, manage all their device sessions, and quickly add new accounts from the user menu.
 
+### `<UserButton />`
+
+<ComponentPreview name="shadcn-switch-account-submenu" />
+
+### `<ManageAccounts />`
+
+<ComponentPreview name="shadcn-manage-accounts" />
+
 It contributes:
 
 - A "Switch Account" submenu in the user button dropdown showing all active device sessions
@@ -90,44 +98,6 @@ import { AuthProvider } from "@/components/auth/auth-provider"
 </Step>
 </Steps>
 
-## Components
-
-### `<UserButton />`
-
-<ComponentPreview name="shadcn-switch-account-submenu" />
-
-The "Switch Account" submenu is automatically added to the `<UserButton />` dropdown when the plugin is registered. It shows all active device sessions and lets users switch between them with one click, add a new account, and see which account is currently active.
-
-**Usage**
-
-```tsx
-import { SwitchAccountSubmenu } from "@/components/auth/multi-session/switch-account-submenu"
-
-<SwitchAccountSubmenu />
-```
-
-**Props**
-
-<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/multi-session/switch-account-submenu.tsx" name="SwitchAccountSubmenuProps" />
-
-### `<ManageAccounts />`
-
-<ComponentPreview name="shadcn-manage-accounts" />
-
-The `<ManageAccounts />` card is rendered in account settings when your layout renders plugin-contributed `accountCards` and `multiSessionPlugin()` is in `plugins`.
-
-**Usage**
-
-```tsx
-import { ManageAccounts } from "@/components/auth/multi-session/manage-accounts"
-
-<ManageAccounts />
-```
-
-**Props**
-
-<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/multi-session/manage-accounts.tsx" name="ManageAccountsProps" />
-
 ## Options
 
 ```ts
@@ -147,6 +117,26 @@ multiSessionPlugin({
 
 <auto-type-table path="../../../../../../packages/core/src/plugins/multi-session/multi-session-localization.ts" name="MultiSessionLocalization" />
 
+Read these from `useAuthPlugin(multiSessionPlugin).localization` inside custom slot components.
+
+## Account management
+
+The `<ManageAccounts />` card is rendered in account settings when your layout renders plugin-contributed `accountCards` and `multiSessionPlugin()` is in `plugins`. It can also be used standalone:
+
+```tsx
+import { ManageAccounts } from "@/components/auth/multi-session/manage-accounts"
+
+<ManageAccounts />
+```
+
+## User menu integration
+
+The "Switch Account" submenu is automatically rendered in the `<UserButton />` dropdown when the plugin is registered. The submenu shows all active device sessions and allows users to:
+
+- Switch between sessions with one click
+- Add a new account
+- See which account is currently active
+
 ## Session management
 
 The plugin provides hooks for managing multiple sessions:
@@ -154,3 +144,5 @@ The plugin provides hooks for managing multiple sessions:
 - `useListDeviceSessions` - List all device sessions for the current user
 - `useSetActiveSession` - Switch to a different session
 - `useRevokeMultiSession` - Sign out from a specific session
+
+See the `<ManageAccounts />` component in `src/components/multi-session/manage-accounts.tsx` for props and customization.

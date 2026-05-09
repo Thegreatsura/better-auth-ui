@@ -1,42 +1,48 @@
 "use client"
 
-import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useAuthPlugin,
+  useDeletePasskey
+} from "@better-auth-ui/react"
 import { Fingerprint, X } from "lucide-react"
-import { useState } from "react"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Spinner } from "@/components/ui/spinner"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 
-import {
-  DeletePasskeyDialog,
-  type ListedPasskey
-} from "./delete-passkey-dialog"
-
 export type PasskeyProps = {
-  passkey: ListedPasskey
+  passkey: {
+    id: string
+    name?: string | null
+    createdAt: Date
+  }
 }
 
 export function Passkey({ passkey }: PasskeyProps) {
-  const { localization } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
-  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  const { mutate: deletePasskey, isPending } = useDeletePasskey(
+    authClient as PasskeyAuthClient
+  )
 
   const passkeyName = passkey.name || passkeyLocalization.passkey
 
   return (
     <Card className="bg-transparent border-0 ring-0 shadow-none">
-      <CardContent className="flex items-center gap-3">
+      <CardContent className="flex items-center justify-between gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
           <Fingerprint className="size-4.5" />
         </div>
 
-        <div className="flex min-w-0 flex-col">
-          <span className="truncate text-sm font-medium leading-tight">
+        <div className="flex flex-col min-w-0">
+          <span className="text-sm font-medium leading-tight">
             {passkeyName}
           </span>
 
-          <span className="text-muted-foreground text-xs">
+          <span className="text-xs text-muted-foreground">
             {new Date(passkey.createdAt).toLocaleString(undefined, {
               dateStyle: "medium",
               timeStyle: "short"
@@ -48,22 +54,16 @@ export function Passkey({ passkey }: PasskeyProps) {
           className="ml-auto shrink-0"
           variant="outline"
           size="sm"
-          onClick={() => setDeleteOpen(true)}
+          disabled={isPending}
+          onClick={() => deletePasskey({ id: passkey.id })}
           aria-label={passkeyLocalization.deletePasskey.replace(
             "{{name}}",
             passkeyName
           )}
         >
-          <X />
-
+          {isPending ? <Spinner /> : <X />}
           {localization.settings.delete}
         </Button>
-
-        <DeletePasskeyDialog
-          open={deleteOpen}
-          onOpenChange={setDeleteOpen}
-          passkey={passkey}
-        />
       </CardContent>
     </Card>
   )

@@ -7,6 +7,14 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 The passkey plugin adds passwordless authentication using WebAuthn. Users can sign in with their device authenticator (Touch ID, Face ID, Windows Hello) and manage registered passkeys from their security settings.
 
+### `<SignIn />`
+
+<ComponentPreview name="heroui-passkey-sign-in" />
+
+### `<Passkeys />`
+
+<ComponentPreview name="heroui-passkeys" />
+
 It contributes:
 
 - A "Continue with Passkey" button rendered on the sign-in and magic-link views (hidden on sign-up)
@@ -70,44 +78,6 @@ import { passkeyPlugin } from "@better-auth-ui/heroui/plugins" // [!code highlig
 </Step>
 </Steps>
 
-## Components
-
-### `<SignIn />`
-
-<ComponentPreview name="heroui-passkey-sign-in" />
-
-A "Continue with Passkey" button is automatically rendered on the `<SignIn />` and `<MagicLink />` views when the plugin is registered (hidden on sign-up).
-
-**Usage**
-
-```tsx
-import { PasskeyButton } from "@better-auth-ui/heroui/plugins"
-
-<PasskeyButton />
-```
-
-**Props**
-
-<auto-type-table path="../../../../../../packages/heroui/src/components/auth/passkey/passkey-button.tsx" name="PasskeyButtonProps" />
-
-### `<Passkeys />`
-
-<ComponentPreview name="heroui-passkeys" />
-
-The `<Passkeys />` security card is automatically rendered on the security settings page when the plugin is registered.
-
-**Usage**
-
-```tsx
-import { Passkeys } from "@better-auth-ui/heroui/plugins"
-
-<Passkeys />
-```
-
-**Props**
-
-<auto-type-table path="../../../../../../packages/heroui/src/components/auth/passkey/passkeys.tsx" name="PasskeysProps" />
-
 ## Options
 
 ```ts
@@ -124,3 +94,17 @@ passkeyPlugin({
 ## Localization
 
 <auto-type-table path="../../../../../../packages/core/src/plugins/passkey/passkey-localization.ts" name="PasskeyLocalization" />
+
+Read these from `useAuthPlugin(passkeyPlugin).localization` inside custom slot components.
+
+## Passkey management
+
+The `<Passkeys />` security card is automatically rendered on the security settings page when the plugin is registered. It can also be used standalone:
+
+```tsx
+import { Passkeys } from "@better-auth-ui/heroui/plugins"
+
+<Passkeys />
+```
+
+See the [`<Passkeys />`](/docs/heroui/components/settings/security/passkeys) component docs for props and customization.

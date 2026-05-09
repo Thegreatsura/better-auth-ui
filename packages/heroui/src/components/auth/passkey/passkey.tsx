@@ -1,10 +1,13 @@
-import { useAuth, useAuthPlugin } from "@better-auth-ui/react"
+import {
+  type PasskeyAuthClient,
+  useAuth,
+  useAuthPlugin,
+  useDeletePasskey
+} from "@better-auth-ui/react"
 import { Fingerprint, Xmark } from "@gravity-ui/icons"
-import { Button } from "@heroui/react"
-import { useState } from "react"
+import { Button, Spinner } from "@heroui/react"
 
 import { passkeyPlugin } from "../../../lib/auth/passkey-plugin"
-import { DeletePasskeyDialog } from "./delete-passkey-dialog"
 
 export type PasskeyProps = {
   passkey: {
@@ -15,9 +18,12 @@ export type PasskeyProps = {
 }
 
 export function Passkey({ passkey }: PasskeyProps) {
-  const { localization } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: passkeyLocalization } = useAuthPlugin(passkeyPlugin)
-  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  const { mutate: deletePasskey, isPending } = useDeletePasskey(
+    authClient as PasskeyAuthClient
+  )
 
   const passkeyName = passkey.name || passkeyLocalization.passkey
 
@@ -28,9 +34,7 @@ export function Passkey({ passkey }: PasskeyProps) {
       </div>
 
       <div className="flex flex-col min-w-0">
-        <span className="text-sm font-medium leading-tight truncate">
-          {passkeyName}
-        </span>
+        <span className="text-sm font-medium leading-tight">{passkeyName}</span>
 
         <span className="text-xs text-muted">
           {new Date(passkey.createdAt).toLocaleString(undefined, {
@@ -44,22 +48,16 @@ export function Passkey({ passkey }: PasskeyProps) {
         className="ml-auto shrink-0"
         variant="outline"
         size="sm"
-        onPress={() => setDeleteOpen(true)}
+        isPending={isPending}
+        onPress={() => deletePasskey({ id: passkey.id })}
         aria-label={passkeyLocalization.deletePasskey.replace(
           "{{name}}",
           passkeyName
         )}
       >
-        <Xmark />
-
+        {isPending ? <Spinner color="current" size="sm" /> : <Xmark />}
         {localization.settings.delete}
       </Button>
-
-      <DeletePasskeyDialog
-        isOpen={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        passkey={passkey}
-      />
     </div>
   )
 }
