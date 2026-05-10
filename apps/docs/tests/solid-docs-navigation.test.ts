@@ -70,6 +70,9 @@ describe("Solid docs navigation", () => {
     expect(registry).toContain(
       "https://better-auth-ui.com/r/solid/reset-password.json"
     )
+    expect(registry).toContain(
+      "https://better-auth-ui.com/r/solid/sign-up.json"
+    )
     expect(registry).toContain("apps/docs/public/r/solid")
   })
 

@@ -68,6 +68,28 @@
       ]
     },
     {
+      "name": "sign-up",
+      "type": "registry:component",
+      "title": "Solid Sign Up",
+      "description": "Minimal Solid sign-up component using the Solid email sign-up mutation options.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/solid-query",
+        "better-auth",
+        "solid-js"
+      ],
+      "registryDependencies": [
+        "solid/auth-provider"
+      ],
+      "files": [
+        {
+          "path": "src/components/auth/sign-up.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "sign-in",
       "type": "registry:component",
       "title": "Solid Sign In",

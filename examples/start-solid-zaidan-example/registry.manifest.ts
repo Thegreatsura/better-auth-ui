@@ -79,6 +79,21 @@ export const solidRegistryManifest = {
       ]
     },
     {
+      name: "sign-up",
+      type: "registry:component",
+      title: "Solid Sign Up",
+      description:
+        "Minimal Solid sign-up component using the Solid email sign-up mutation options.",
+      dependencies: solidDependencies,
+      registryDependencies: ["solid/auth-provider"],
+      files: [
+        {
+          path: "src/components/auth/sign-up.tsx",
+          type: "registry:component"
+        }
+      ]
+    },
+    {
       name: "sign-in",
       type: "registry:component",
       title: "Solid Sign In",

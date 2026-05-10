@@ -1,0 +1,23 @@
+{
+  "name": "sign-up",
+  "type": "registry:component",
+  "title": "Solid Sign Up",
+  "description": "Minimal Solid sign-up component using the Solid email sign-up mutation options.",
+  "dependencies": [
+    "@better-auth-ui/solid@latest",
+    "@better-auth-ui/core@latest",
+    "@tanstack/solid-query",
+    "better-auth",
+    "solid-js"
+  ],
+  "registryDependencies": [
+    "solid/auth-provider"
+  ],
+  "files": [
+    {
+      "path": "src/components/auth/sign-up.tsx",
+      "type": "registry:component",
+      "content": "import { signUpEmailOptions, useAuth } from \"@better-auth-ui/solid\"\nimport { createMutation } from \"@tanstack/solid-query\"\nimport { createSignal, Show } from \"solid-js\"\n\nexport type SignUpProps = {\n  callbackURL?: string\n}\n\nexport function SignUp(props: SignUpProps) {\n  const auth = useAuth()\n  const [email, setEmail] = createSignal(\"\")\n  const [name, setName] = createSignal(\"\")\n  const [password, setPassword] = createSignal(\"\")\n  const signUp = createMutation(() => signUpEmailOptions(auth.authClient))\n\n  const submitSignUp = (event: SubmitEvent) => {\n    event.preventDefault()\n\n    signUp.mutate({\n      callbackURL: props.callbackURL,\n      email: email(),\n      name: name(),\n      password: password()\n    })\n  }\n\n  return (\n    <form aria-label=\"Sign up\" onSubmit={submitSignUp}>\n      <h1>Sign up</h1>\n      <p>Create an account with email and password.</p>\n      <Show when={auth.emailAndPassword.name}>\n        <label for=\"sign-up-name\">Name</label>\n        <input\n          autocomplete=\"name\"\n          id=\"sign-up-name\"\n          name=\"name\"\n          onInput={(event) => setName(event.currentTarget.value)}\n          required={auth.emailAndPassword.name}\n          type=\"text\"\n          value={name()}\n        />\n      </Show>\n      <label for=\"sign-up-email\">Email</label>\n      <input\n        autocomplete=\"email\"\n        id=\"sign-up-email\"\n        name=\"email\"\n        onInput={(event) => setEmail(event.currentTarget.value)}\n        required\n        type=\"email\"\n        value={email()}\n      />\n      <label for=\"sign-up-password\">Password</label>\n      <input\n        autocomplete=\"new-password\"\n        id=\"sign-up-password\"\n        maxLength={auth.emailAndPassword.maxPasswordLength}\n        minLength={auth.emailAndPassword.minPasswordLength}\n        name=\"password\"\n        onInput={(event) => setPassword(event.currentTarget.value)}\n        required\n        type=\"password\"\n        value={password()}\n      />\n      <button disabled={signUp.isPending} type=\"submit\">\n        {signUp.isPending ? \"Creating account…\" : \"Create account\"}\n      </button>\n      <Show when={signUp.isSuccess}>\n        <p role=\"status\">\n          Account created. Check your email if verification is required.\n        </p>\n      </Show>\n      <Show when={signUp.isError}>\n        <p role=\"alert\">Unable to create an account. Try again.</p>\n      </Show>\n    </form>\n  )\n}\n"
+    }
+  ]
+}
