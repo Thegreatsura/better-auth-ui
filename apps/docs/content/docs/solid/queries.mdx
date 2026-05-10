@@ -1,0 +1,31 @@
+---
+title: Queries
+description: Solid Query factories and auth read helpers.
+---
+
+Solid queries mirror the framework-neutral React behavior where Solid equivalents exist. Factories use `@tanstack/solid-query` and shared `@better-auth-ui/core` keys so cache invalidation stays consistent across packages.
+
+## Available areas
+
+| Area | Examples |
+|------|----------|
+| Auth | `sessionOptions`, `authenticateOptions`, `userOptions` |
+| Settings | account info, linked accounts, active sessions |
+| Passkey | list passkeys |
+| Multi-session | list device sessions |
+| API key | list API keys |
+
+## Cache keys
+
+Use shared core keys instead of inlining tuples.
+
+```ts
+import { authQueryKeys } from "@better-auth-ui/core"
+
+queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+queryClient.invalidateQueries({ queryKey: authQueryKeys.user(userId) })
+```
+
+## Gap rule
+
+Only port behavior that has a Solid-supported primitive. React render-hook internals are not copied into Solid docs or tests.

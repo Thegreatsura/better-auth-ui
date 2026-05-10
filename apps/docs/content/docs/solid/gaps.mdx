@@ -1,0 +1,16 @@
+---
+title: Gaps
+description: Explicit non-goals and unsupported React-only parity areas.
+---
+
+Solid support is additive. It should not silently pretend React-only APIs exist.
+
+| Area | Status | Guidance |
+|------|--------|----------|
+| `react-email` templates | No Solid equivalent selected yet | Keep email templates in the React packages or provide app-owned Solid-compatible email rendering. |
+| `sonner` toasts | No Solid equivalent selected yet | Handle mutation errors in your Solid app and connect your preferred Solid toast library. |
+| HeroUI components | React-only | Use the React/HeroUI docs for HeroUI, or install Solid/Zaidan registry components from `/r/solid`. |
+| React render-hook internals | Not ported | Solid tests cover equivalent provider/config/query/mutation behavior instead of React hook mechanics. |
+| Docs runtime execution | Not supported | `apps/docs/public/r/solid` is static asset hosting only; Solid source executes in `examples/start-solid-zaidan-example`. |
+
+If you need one of these areas, treat it as a new design task. Do not add compatibility shims without deciding the owning package, runtime dependency, and test strategy first.

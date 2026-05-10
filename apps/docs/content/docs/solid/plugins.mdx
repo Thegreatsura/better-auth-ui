@@ -1,0 +1,21 @@
+---
+title: Plugins
+description: Plugin registration notes for the Solid package.
+---
+
+Solid plugin support follows the shared `@better-auth-ui/core` plugin contracts. Use `@better-auth-ui/solid/plugins` for Solid package helpers and keep Better Auth server plugin registration in your app's auth config.
+
+## Supported parity
+
+| Area | Solid status | Notes |
+|------|--------------|-------|
+| Captcha | Supported through shared config | Use the same core captcha options as React-compatible flows. |
+| Passkey | Supported | Query and mutation factories are available for list/add/delete/sign-in flows. |
+| Multi-session | Supported | Query and mutation keys align with the core namespace. |
+| API key | Supported | API-key query/mutation factories use the shared plugin key contracts. |
+| Magic link | Supported | Mutation factories preserve Better Auth fetch error behavior. |
+| Username | Supported | Username sign-in and availability flows use shared mutation keys. |
+
+## Non-goals
+
+`react-email`, `sonner`, and HeroUI React component integrations are not Solid plugin exports. Track these in [Gaps](/docs/solid/gaps) instead of assuming silent parity.

@@ -1,0 +1,45 @@
+---
+title: Solid Start
+description: Integrate the Solid package with TanStack Start.
+icon: TanStackStart
+---
+
+The Solid reference app lives at `examples/start-solid-zaidan-example`. It is the source of truth for Solid Start wiring and the Zaidan registry source files.
+
+## Install the Solid runtime packages
+
+```package-install
+@better-auth-ui/solid @tanstack/solid-query @tanstack/solid-router @tanstack/solid-start better-auth solid-js
+```
+
+## Provider boundary
+
+Wrap your Solid app with a Solid Query client and the Solid auth provider from `@better-auth-ui/solid`.
+
+```tsx
+import { AuthProvider } from "@better-auth-ui/solid"
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
+
+const queryClient = new QueryClient()
+
+export function Providers(props: { children: Element }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>{props.children}</AuthProvider>
+    </QueryClientProvider>
+  )
+}
+```
+
+## Start routes
+
+Use the example as the reviewable baseline for file-based routes, auth server wiring, and registry-owned components:
+
+- `examples/start-solid-zaidan-example/src/lib/auth.ts`
+- `examples/start-solid-zaidan-example/src/routes/api/auth/$.ts`
+- `examples/start-solid-zaidan-example/src/routes/auth/$path.tsx`
+- `examples/start-solid-zaidan-example/src/components/auth/sign-in.tsx`
+
+## Boundary
+
+The existing docs app remains a React/Fumadocs runtime. Solid documentation is content-only here; Solid components execute in the Solid Start example, not inside the docs app.

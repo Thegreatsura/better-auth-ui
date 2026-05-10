@@ -1,0 +1,31 @@
+---
+title: Mutations
+description: Solid mutation factories for Better Auth write endpoints.
+---
+
+Solid mutations expose options factories built on `@tanstack/solid-query`. They preserve shared auth mutation keys and Better Auth `throw: true` fetch behavior so callers get standard mutation errors.
+
+## Available areas
+
+| Area | Examples |
+|------|----------|
+| Auth | email sign-in/sign-up, social sign-in, sign-out, password reset |
+| Settings | update user, change email/password, delete user |
+| Passkey | add, delete, sign in |
+| Sessions | revoke session, set active multi-session account |
+| API key | create, delete |
+| Plugins | username and magic-link mutations |
+
+## Mutation keys
+
+Use `authMutationKeys` from `@better-auth-ui/core` for global pending indicators, analytics, and cache side effects.
+
+```ts
+import { authMutationKeys } from "@better-auth-ui/core"
+
+queryClient.isMutating({ mutationKey: authMutationKeys.signIn.all })
+```
+
+## UI boundary
+
+Toast rendering is app-owned for Solid. The React package's `sonner` integration is not re-exported here.

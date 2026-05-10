@@ -1,0 +1,42 @@
+---
+title: Overview
+description: Solid package setup, TanStack Start integration, and Zaidan registry entry points.
+icon: Solid
+---
+
+`@better-auth-ui/solid` is the SolidJS track for Better Auth UI. It keeps the same core keys, auth configuration defaults, and plugin contracts as the React package where Solid supports equivalent behavior.
+
+## Install
+
+```package-install
+@better-auth-ui/solid @tanstack/solid-query better-auth solid-js
+```
+
+The package exports only the Solid-supported surface:
+
+- `@better-auth-ui/solid` — provider, hooks/composables, query factories, mutation factories.
+- `@better-auth-ui/solid/server` — server-side session helpers.
+- `@better-auth-ui/solid/plugins` — plugin config helpers aligned with shared core contracts.
+
+React-only email templates and toast UI are intentionally not exported from the Solid package.
+
+## Quick path
+
+1. Install `@better-auth-ui/solid` with `@tanstack/solid-query`.
+2. Use the Solid Start reference app at `examples/start-solid-zaidan-example` for route and provider wiring.
+3. Install Zaidan registry components from the `/r/solid` namespace when component payloads are needed.
+4. Check [Gaps](/docs/solid/gaps) before assuming React package parity.
+
+## Next
+
+<Cards>
+  <Card icon={<TanStackStart />} title="Solid Start" href="/docs/solid/integrations">
+    Wire Better Auth UI into TanStack Start with Solid Router and Solid Query.
+  </Card>
+  <Card title="Zaidan registry" href="/docs/solid/registry">
+    Install Solid-owned component payloads from the isolated registry namespace.
+  </Card>
+  <Card title="Parity gaps" href="/docs/solid/gaps">
+    See the React-only features that are explicit non-goals for this slice.
+  </Card>
+</Cards>

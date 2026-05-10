@@ -1,0 +1,15 @@
+{
+  "title": "Solid",
+  "icon": "Solid",
+  "description": "Solid package and Zaidan registry",
+  "root": true,
+  "pages": [
+    "index",
+    "integrations",
+    "plugins",
+    "registry",
+    "queries",
+    "mutations",
+    "gaps"
+  ]
+}
