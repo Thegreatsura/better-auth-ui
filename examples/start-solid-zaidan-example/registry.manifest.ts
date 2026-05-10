@@ -49,6 +49,21 @@ export const solidRegistryManifest = {
       ]
     },
     {
+      name: "forgot-password",
+      type: "registry:component",
+      title: "Solid Forgot Password",
+      description:
+        "Minimal Solid forgot-password component using the Solid password reset mutation options.",
+      dependencies: solidDependencies,
+      registryDependencies: ["solid/auth-provider"],
+      files: [
+        {
+          path: "src/components/auth/forgot-password.tsx",
+          type: "registry:component"
+        }
+      ]
+    },
+    {
       name: "sign-in",
       type: "registry:component",
       title: "Solid Sign In",

@@ -64,6 +64,9 @@ describe("Solid docs navigation", () => {
     expect(registry).toContain(
       "https://better-auth-ui.com/r/solid/registry.json"
     )
+    expect(registry).toContain(
+      "https://better-auth-ui.com/r/solid/forgot-password.json"
+    )
     expect(registry).toContain("apps/docs/public/r/solid")
   })
 
