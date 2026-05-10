@@ -10,7 +10,10 @@ import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
 import { solidRegistryManifest } from "../registry.manifest"
-import { buildSolidRegistry } from "../scripts/build-registry"
+import {
+  buildSolidRegistry,
+  verifySolidRegistryCoherence
+} from "../scripts/build-registry"
 
 const tempRoots: string[] = []
 
@@ -29,6 +32,13 @@ const collectFiles = (root: string): string[] =>
     const path = join(root, entry.name)
 
     return entry.isDirectory() ? collectFiles(path) : [path]
+  })
+
+const verifyLocalRegistryCoherence = () =>
+  verifySolidRegistryCoherence({
+    exampleRoot: resolve(__dirname, ".."),
+    manifest: solidRegistryManifest,
+    repoRoot: resolve(__dirname, "../../..")
   })
 
 describe("Solid registry isolation", () => {
@@ -199,5 +209,24 @@ describe("Solid registry isolation", () => {
       })
     ).toThrow("outside the Solid example src directory")
     expect(existsSync(join(outputRoot, "solid/auth-provider.json"))).toBe(false)
+  })
+
+  it("keeps the package, example, static registry, and docs links coherent", () => {
+    const report = verifyLocalRegistryCoherence()
+
+    expect(report.packageName).toBe("@better-auth-ui/solid")
+    expect(report.packageExports).toEqual([".", "./server", "./plugins"])
+    expect(report.exampleSolidDependency).toBe("*")
+    expect(report.staticItemNames).toEqual(["auth-provider", "sign-in"])
+    expect(report.missingStaticFiles).toEqual([])
+    expect(report.missingDocsLinks).toEqual([])
+  })
+
+  it("keeps the existing shadcn registry uncoupled from Solid registry payloads", () => {
+    const report = verifyLocalRegistryCoherence()
+
+    expect(report.shadcnRegistryName).toBe("better-auth-ui")
+    expect(report.shadcnCouplingFindings).toEqual([])
+    expect(report.staticItemNames).toHaveLength(2)
   })
 })

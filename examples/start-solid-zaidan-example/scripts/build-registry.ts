@@ -1,4 +1,10 @@
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} from "node:fs"
 import { dirname, relative, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import {
@@ -23,6 +29,38 @@ type RegistryItemSnapshot = Omit<SolidRegistryItem, "files"> & {
 }
 
 type RegistryIndex = SolidRegistryManifest
+
+type PackageJson = {
+  name?: string
+  dependencies?: Record<string, string>
+  exports?: Record<string, unknown>
+}
+
+type ShadcnRegistryJson = {
+  name?: string
+  namespace?: string
+  items?: Array<{
+    dependencies?: string[]
+    registryDependencies?: string[]
+  }>
+}
+
+type VerifySolidRegistryCoherenceOptions = {
+  exampleRoot: string
+  manifest: SolidRegistryManifest
+  repoRoot: string
+}
+
+export type SolidRegistryCoherenceReport = {
+  exampleSolidDependency?: string
+  missingDocsLinks: string[]
+  missingStaticFiles: string[]
+  packageExports: string[]
+  packageName?: string
+  shadcnCouplingFindings: string[]
+  shadcnRegistryName?: string
+  staticItemNames: string[]
+}
 
 export type BuildSolidRegistryResult = {
   files: string[]
@@ -74,6 +112,84 @@ const readRegistryItem = (
 const writeJson = (path: string, value: unknown) => {
   mkdirSync(dirname(path), { recursive: true })
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`)
+}
+
+const readJson = <T>(path: string) =>
+  JSON.parse(readFileSync(path, "utf8")) as T
+
+const registryUrlsForManifest = (manifest: SolidRegistryManifest) => [
+  `${manifest.homepage}/r/${manifest.namespace}/registry.json`,
+  ...manifest.items.map(
+    (item) => `${manifest.homepage}/r/${manifest.namespace}/${item.name}.json`
+  )
+]
+
+export const verifySolidRegistryCoherence = ({
+  exampleRoot,
+  manifest,
+  repoRoot
+}: VerifySolidRegistryCoherenceOptions): SolidRegistryCoherenceReport => {
+  const packageJson = readJson<PackageJson>(
+    resolve(repoRoot, "packages/solid/package.json")
+  )
+  const examplePackageJson = readJson<PackageJson>(
+    resolve(exampleRoot, "package.json")
+  )
+  const docsRegistryPage = readFileSync(
+    resolve(repoRoot, "apps/docs/content/docs/solid/registry.mdx"),
+    "utf8"
+  )
+  const publicSolidRegistryRoot = resolve(repoRoot, "apps/docs/public/r/solid")
+  const publicSolidRegistry = readJson<SolidRegistryManifest>(
+    resolve(publicSolidRegistryRoot, "registry.json")
+  )
+  const shadcnRegistry = readJson<ShadcnRegistryJson>(
+    resolve(repoRoot, "apps/docs/public/r/registry.json")
+  )
+
+  const expectedStaticFiles = [
+    "README.md",
+    "registry.json",
+    ...manifest.items.map((item) => `${item.name}.json`)
+  ]
+  const missingStaticFiles = expectedStaticFiles.filter(
+    (file) => !existsSync(resolve(publicSolidRegistryRoot, file))
+  )
+  const missingDocsLinks = registryUrlsForManifest(manifest).filter(
+    (url) => !docsRegistryPage.includes(url)
+  )
+  const shadcnCouplingFindings = [
+    shadcnRegistry.namespace === manifest.namespace
+      ? "root registry uses the Solid namespace"
+      : undefined,
+    ...(shadcnRegistry.items ?? []).flatMap((item, index) => {
+      const dependencies = item.dependencies ?? []
+      const registryDependencies = item.registryDependencies ?? []
+
+      return [
+        dependencies.some((dependency) => dependency.includes("solid"))
+          ? `root registry item ${index} depends on Solid packages`
+          : undefined,
+        registryDependencies.some((dependency) =>
+          dependency.startsWith(`${manifest.namespace}/`)
+        )
+          ? `root registry item ${index} depends on Solid registry payloads`
+          : undefined
+      ]
+    })
+  ].filter((finding): finding is string => Boolean(finding))
+
+  return {
+    exampleSolidDependency:
+      examplePackageJson.dependencies?.["@better-auth-ui/solid"],
+    missingDocsLinks,
+    missingStaticFiles,
+    packageExports: Object.keys(packageJson.exports ?? {}),
+    packageName: packageJson.name,
+    shadcnCouplingFindings,
+    shadcnRegistryName: shadcnRegistry.name,
+    staticItemNames: publicSolidRegistry.items.map((item) => item.name)
+  }
 }
 
 export const buildSolidRegistry = ({
