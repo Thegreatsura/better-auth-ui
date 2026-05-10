@@ -127,6 +127,7 @@ describe("Solid registry isolation", () => {
     const expectedFiles = [
       "src/lib/auth.ts",
       "src/components/auth/forgot-password.tsx",
+      "src/components/auth/reset-password.tsx",
       "src/components/auth/sign-out.tsx",
       "src/routes/__root.tsx",
       "src/routes/index.tsx",
@@ -148,6 +149,10 @@ describe("Solid registry isolation", () => {
     )
     const forgotPassword = readFileSync(
       resolve(__dirname, "../src/components/auth/forgot-password.tsx"),
+      "utf8"
+    )
+    const resetPassword = readFileSync(
+      resolve(__dirname, "../src/components/auth/reset-password.tsx"),
       "utf8"
     )
     const authProvider = readFileSync(
@@ -184,6 +189,12 @@ describe("Solid registry isolation", () => {
     expect(forgotPassword).toContain("requestPasswordResetOptions")
     expect(forgotPassword).toContain("createMutation")
     expect(forgotPassword).toContain('type="email"')
+    expect(resetPassword).toContain('from "@better-auth-ui/solid"')
+    expect(resetPassword).toContain('from "solid-js"')
+    expect(resetPassword).toContain("resetPasswordOptions")
+    expect(resetPassword).toContain("createMutation")
+    expect(resetPassword).toContain('type="password"')
+    expect(resetPassword).toContain("tokenFromLocation")
   })
 
   it("writes registry index and item snapshots only inside the solid namespace", () => {
@@ -202,6 +213,7 @@ describe("Solid registry isolation", () => {
       join(outputRoot, "solid/auth-provider.json"),
       join(outputRoot, "solid/forgot-password.json"),
       join(outputRoot, "solid/registry.json"),
+      join(outputRoot, "solid/reset-password.json"),
       join(outputRoot, "solid/sign-in.json"),
       join(outputRoot, "solid/sign-out.json")
     ])
@@ -220,6 +232,7 @@ describe("Solid registry isolation", () => {
       items: [
         { name: "auth-provider" },
         { name: "forgot-password" },
+        { name: "reset-password" },
         { name: "sign-in" },
         { name: "sign-out" }
       ]
@@ -280,6 +293,31 @@ describe("Solid registry isolation", () => {
     expect(forgotPassword.files[0]?.content).toContain(
       "Unable to send a reset link. Try again."
     )
+
+    const resetPassword = readJson<{
+      dependencies: string[]
+      files: Array<{ content: string; path: string }>
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/reset-password.json"))
+    expect(resetPassword.name).toBe("reset-password")
+    expect(resetPassword.dependencies).toContain("@better-auth-ui/solid@latest")
+    expect(resetPassword.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(resetPassword.files).toEqual([
+      expect.objectContaining({
+        content: expect.stringContaining("export function ResetPassword"),
+        path: "src/components/auth/reset-password.tsx"
+      })
+    ])
+    expect(resetPassword.files[0]?.content).toContain("resetPasswordOptions")
+    expect(resetPassword.files[0]?.content).toContain(
+      "Password reset successfully. You can sign in with your new password."
+    )
+    expect(resetPassword.files[0]?.content).toContain(
+      "Reset token is required. Open the link from your email."
+    )
+    expect(resetPassword.files[0]?.content).toContain("Passwords do not match.")
+    expect(resetPassword.files[0]?.content).toContain("tokenFromLocation")
   })
 
   it("rejects manifest files that escape the Solid example source tree", () => {
@@ -318,6 +356,7 @@ describe("Solid registry isolation", () => {
     expect(report.staticItemNames).toEqual([
       "auth-provider",
       "forgot-password",
+      "reset-password",
       "sign-in",
       "sign-out"
     ])
@@ -330,6 +369,6 @@ describe("Solid registry isolation", () => {
 
     expect(report.shadcnRegistryName).toBe("better-auth-ui")
     expect(report.shadcnCouplingFindings).toEqual([])
-    expect(report.staticItemNames).toHaveLength(4)
+    expect(report.staticItemNames).toHaveLength(5)
   })
 })
