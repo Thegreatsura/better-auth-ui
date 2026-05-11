@@ -15,6 +15,10 @@ export type ListOrganizationsData<
   TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = InferData<TAuthClient["organization"]["list"]>
 
+export type ListOrganization<
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
+> = NonNullable<ListOrganizationsData<TAuthClient>>[number]
+
 export type ListOrganizationsParams<
   TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["list"]>[0]

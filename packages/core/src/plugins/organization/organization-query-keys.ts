@@ -26,19 +26,24 @@ export const organizationQueryKeys = {
       query ?? null
     ] as const,
 
-  /**
-   * Key for the active organization query (`organization.getFullOrganization`
-   * on the client).
-   */
-  activeOrganization: <TQuery = undefined>(
+  /** Key for `organization.getFullOrganization` for the given user. */
+  fullOrganization: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
   ) =>
     [
       ...organizationQueryKeys.user(userId),
-      "getActiveOrganization",
+      "getFullOrganization",
       query ?? null
     ] as const,
+
+  /**
+   * Key for the active organization query — i.e. `getFullOrganization` with
+   * no `query` argument. Shares a cache entry with
+   * `fullOrganization(userId)`.
+   */
+  activeOrganization: (userId: string | undefined) =>
+    organizationQueryKeys.fullOrganization(userId),
 
   /** Key for `organization.listMembers`. The `organizationId` is part of `query`. */
   listMembers: <TQuery = undefined>(
