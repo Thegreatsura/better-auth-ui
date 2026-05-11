@@ -1,4 +1,3 @@
-import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import {
   type OrganizationAuthClient,
   useAcceptInvitation,
@@ -21,7 +20,7 @@ export type UserInvitationRowProps = {
  */
 export function UserInvitationRow({ invitation }: UserInvitationRowProps) {
   const { authClient } = useAuth()
-  const { localization: organizationLocalization } =
+  const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
   const { mutate: acceptInvitation, isPending: isAccepting } =
@@ -42,13 +41,7 @@ export function UserInvitationRow({ invitation }: UserInvitationRowProps) {
             {invitation.organizationName}
           </span>
 
-          <Chip size="sm">
-            {organizationLocalization[
-              invitation.role as keyof OrganizationLocalization
-            ] ||
-              invitation.role.charAt(0).toUpperCase() +
-                invitation.role.slice(1)}
-          </Chip>
+          <Chip size="sm">{roles?.[invitation.role] ?? invitation.role}</Chip>
         </div>
 
         <span className="truncate text-muted text-xs">

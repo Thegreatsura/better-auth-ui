@@ -5,7 +5,6 @@ import type { ComponentProps } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationLogo } from "./organization-logo"
-import { localizedOrganizationRole } from "./organization-role-label"
 
 export type OrganizationViewProps = {
   className?: string
@@ -29,8 +28,7 @@ export function OrganizationView({
   organization,
   ...props
 }: OrganizationViewProps & ComponentProps<"div">) {
-  const { localization: organizationLocalization } =
-    useAuthPlugin(organizationPlugin)
+  const { roles } = useAuthPlugin(organizationPlugin)
 
   if (isPending && !organization) {
     return (
@@ -66,10 +64,7 @@ export function OrganizationView({
 
           {organization?.role ? (
             <Chip className="shrink-0" size="sm">
-              {localizedOrganizationRole(
-                organization.role,
-                organizationLocalization
-              )}
+              {roles?.[organization.role] ?? organization.role}
             </Chip>
           ) : null}
         </div>

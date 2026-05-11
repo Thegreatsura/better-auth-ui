@@ -1,4 +1,3 @@
-import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import {
   type OrganizationAuthClient,
   useAuth,
@@ -14,7 +13,6 @@ import { type ComponentProps, useState } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { OrganizationInvitationsEmpty } from "./organization-invitations-empty"
-import { localizedOrganizationRole } from "./organization-role-label"
 
 /** Props for the {@link OrganizationInvitations} component. */
 export type OrganizationInvitationsProps = {
@@ -151,7 +149,6 @@ export function OrganizationInvitations({
                   <InvitationTableRow
                     key={invitation.id}
                     invitation={invitation}
-                    organizationLocalization={organizationLocalization}
                     userHasPermissionToCancelInvitation={
                       userHasPermissionToCancelInvitation
                     }
@@ -196,23 +193,20 @@ function OrganizationInvitationsTableSkeletonRow() {
 
 function InvitationTableRow({
   invitation,
-  organizationLocalization,
   userHasPermissionToCancelInvitation
 }: {
   invitation: OrganizationInvitationRow
-  organizationLocalization: OrganizationLocalization
   userHasPermissionToCancelInvitation: boolean
 }) {
   const { authClient } = useAuth()
+  const { localization: organizationLocalization, roles } =
+    useAuthPlugin(organizationPlugin)
 
   const { mutate, isPending } = useRemoveInvitation(
     authClient as OrganizationAuthClient
   )
 
-  const roleLabel = localizedOrganizationRole(
-    invitation.role,
-    organizationLocalization
-  )
+  const roleLabel = roles?.[invitation.role] ?? invitation.role
 
   const status = invitation.status
 

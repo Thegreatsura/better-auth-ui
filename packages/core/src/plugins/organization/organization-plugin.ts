@@ -21,6 +21,17 @@ function resolveLogoConfig(partial?: Partial<AvatarConfig>): AvatarConfig {
   }
 }
 
+/** Built-in role keys whose default labels come from {@link OrganizationLocalization}. */
+const defaultLocalizedRoleKeys = ["owner", "admin", "member"] as const
+
+function defaultOrganizationRolesFromLocalization(
+  localization: OrganizationLocalization
+): Record<string, string> {
+  return Object.fromEntries(
+    defaultLocalizedRoleKeys.map((key) => [key, localization[key]])
+  )
+}
+
 declare module "../../lib/view-paths" {
   /** Widens `SettingsViewPaths` by adding the `"organizations"` path when this plugin is imported. */
   interface SettingsViewPaths {
@@ -64,22 +75,48 @@ export type OrganizationPluginOptions = {
    * @default { enabled: true, resize: resizeAvatar, size: 256, extension: "png" }
    */
   logo?: Partial<AvatarConfig>
+  /**
+   * Map of role keys to display labels. When omitted, defaults to localized
+   * labels for `owner`, `admin`, and `member` (from `localization.owner`
+   * etc.) plus {@link OrganizationPluginOptions.additionalRoles}. When set,
+   * replaces that default map entirely; use {@link OrganizationPluginOptions.additionalRoles}
+   * to add more labels on top. Looked up at render time via `roles?.[role]`.
+   * @remarks `Record<string, string>`
+   */
+  roles?: Record<string, string>
+  /**
+   * Extra role labels merged after the effective role map (either
+   * {@link OrganizationPluginOptions.roles} when provided, or the localized
+   * defaults). Use this for custom server roles without redefining built-in
+   * labels.
+   * @remarks `Record<string, string>`
+   */
+  additionalRoles?: Record<string, string>
 }
 
 export const organizationPlugin = createAuthPlugin(
   "organization",
-  (options: OrganizationPluginOptions = {}) => ({
-    localization: {
+  (options: OrganizationPluginOptions = {}) => {
+    const localization = {
       ...organizationLocalization,
       ...options.localization
-    },
-    logo: resolveLogoConfig(options.logo),
-    viewPaths: {
-      settings: { organizations: options.path ?? "organizations" },
-      organization: {
-        settings: options.organizationSettingsPath ?? "settings",
-        members: options.organizationMembersPath ?? "members"
+    }
+    const defaultRoles = defaultOrganizationRolesFromLocalization(localization)
+    const baseRoles = options.roles !== undefined ? options.roles : defaultRoles
+    return {
+      localization,
+      logo: resolveLogoConfig(options.logo),
+      roles: {
+        ...baseRoles,
+        ...options.additionalRoles
+      },
+      viewPaths: {
+        settings: { organizations: options.path ?? "organizations" },
+        organization: {
+          settings: options.organizationSettingsPath ?? "settings",
+          members: options.organizationMembersPath ?? "members"
+        }
       }
     }
-  })
+  }
 )

@@ -21,7 +21,6 @@ import { type ComponentProps, useState } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView, type UserViewProps } from "../user/user-view"
 import { InviteMemberDialog } from "./invite-member-dialog"
-import { localizedOrganizationRole } from "./organization-role-label"
 
 /** Props for the {@link Members} component. */
 export type MembersProps = {
@@ -165,7 +164,7 @@ type MemberRowProps = {
 
 function MemberTableRow({ member, isOwner }: MemberRowProps) {
   const { authClient } = useAuth()
-  const { localization: organizationLocalization } =
+  const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
   const [confirmRemove, setConfirmRemove] = useState(false)
@@ -178,14 +177,15 @@ function MemberTableRow({ member, isOwner }: MemberRowProps) {
     authClient as OrganizationAuthClient
   )
 
-  const roleLabel = localizedOrganizationRole(
-    member.role,
-    organizationLocalization
+  const roleLabel = roles?.[member.role] ?? member.role
+
+  const assignableRoles = Object.entries(roles ?? {}).filter(
+    ([key]) => key !== "owner"
   )
 
-  const setRole = (role: "admin" | "member") => {
+  const setRole = (role: string) => {
     updateMemberRole(
-      { memberId: member.id, role },
+      { memberId: member.id, role: role as "admin" | "member" },
       {
         onSuccess: () =>
           toast.success(organizationLocalization.memberRoleUpdated),
@@ -249,21 +249,16 @@ function MemberTableRow({ member, isOwner }: MemberRowProps) {
 
                 <Dropdown.Popover className="min-w-fit">
                   <Dropdown.Menu>
-                    <Dropdown.Item
-                      textValue={organizationLocalization.admin}
-                      isDisabled={member.role === "admin"}
-                      onAction={() => setRole("admin")}
-                    >
-                      <Label>{organizationLocalization.admin}</Label>
-                    </Dropdown.Item>
-
-                    <Dropdown.Item
-                      textValue={organizationLocalization.member}
-                      isDisabled={member.role === "member"}
-                      onAction={() => setRole("member")}
-                    >
-                      <Label>{organizationLocalization.member}</Label>
-                    </Dropdown.Item>
+                    {assignableRoles.map(([key, label]) => (
+                      <Dropdown.Item
+                        key={key}
+                        textValue={label}
+                        isDisabled={member.role === key}
+                        onAction={() => setRole(key)}
+                      >
+                        <Label>{label}</Label>
+                      </Dropdown.Item>
+                    ))}
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>

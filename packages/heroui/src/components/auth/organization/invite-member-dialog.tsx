@@ -39,8 +39,10 @@ export function InviteMemberDialog({
   onOpenChange
 }: InviteMemberDialogProps) {
   const { authClient } = useAuth()
-  const { localization: organizationLocalization } =
+  const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
+
+  const roleEntries = Object.entries(roles ?? {})
 
   const [formInstance, setFormInstance] = useState(0)
 
@@ -62,14 +64,11 @@ export function InviteMemberDialog({
 
     const formData = new FormData(e.target as HTMLFormElement)
     const email = (formData.get("email") as string)?.trim()
-    const role = ((formData.get("role") as string)?.trim() || "member") as
-      | "owner"
-      | "admin"
-      | "member"
+    const role = (formData.get("role") as string)?.trim() || "member"
 
     if (!email) return
 
-    inviteMember({ email, role })
+    inviteMember({ email, role: role as "owner" | "admin" | "member" })
   }
 
   return (
@@ -129,32 +128,13 @@ export function InviteMemberDialog({
 
                 <Select.Popover>
                   <ListBox>
-                    <ListBox.Item
-                      id="member"
-                      textValue={organizationLocalization.member}
-                    >
-                      {organizationLocalization.member}
+                    {roleEntries.map(([key, label]) => (
+                      <ListBox.Item key={key} id={key} textValue={label}>
+                        {label}
 
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-
-                    <ListBox.Item
-                      id="admin"
-                      textValue={organizationLocalization.admin}
-                    >
-                      {organizationLocalization.admin}
-
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
-
-                    <ListBox.Item
-                      id="owner"
-                      textValue={organizationLocalization.owner}
-                    >
-                      {organizationLocalization.owner}
-
-                      <ListBox.ItemIndicator />
-                    </ListBox.Item>
+                        <ListBox.ItemIndicator />
+                      </ListBox.Item>
+                    ))}
                   </ListBox>
                 </Select.Popover>
 
