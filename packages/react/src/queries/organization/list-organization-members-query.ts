@@ -33,7 +33,7 @@ export function listOrganizationMembersOptions<
   params?: ListOrganizationMembersParams<TAuthClient>
 ) {
   type TData = ListOrganizationMembersData<TAuthClient>
-  const queryKey = organizationQueryKeys.members(userId, params?.query)
+  const queryKey = organizationQueryKeys.listMembers(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

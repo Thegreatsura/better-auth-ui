@@ -34,7 +34,10 @@ export function getActiveOrganizationOptions<
   params?: GetActiveOrganizationParams<TAuthClient>
 ) {
   type TData = GetActiveOrganizationData<TAuthClient>
-  const queryKey = organizationQueryKeys.getActive(userId, params?.query)
+  const queryKey = organizationQueryKeys.getActiveOrganization(
+    userId,
+    params?.query
+  )
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

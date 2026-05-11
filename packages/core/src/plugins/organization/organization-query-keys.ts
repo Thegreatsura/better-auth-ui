@@ -15,16 +15,22 @@ export const organizationQueryKeys = {
   user: (userId: string | undefined) =>
     [...authQueryKeys.user(userId), "organization"] as const,
 
-  /** Key for `organization.list` for the given user. */
-  list: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+  /** Key for `organization.listOrganizations` for the given user. */
+  listOrganizations: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) =>
     [
       ...organizationQueryKeys.user(userId),
       "listOrganizations",
       query ?? null
     ] as const,
 
-  /** Key for `organization.getActive` for the given user. */
-  getActive: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+  /** Key for `organization.getActiveOrganization` for the given user. */
+  getActiveOrganization: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) =>
     [
       ...organizationQueryKeys.user(userId),
       "getActiveOrganization",
@@ -32,7 +38,10 @@ export const organizationQueryKeys = {
     ] as const,
 
   /** Key for `organization.listMembers`. The `organizationId` is part of `query`. */
-  members: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+  listMembers: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) =>
     [
       ...organizationQueryKeys.user(userId),
       "listMembers",
@@ -40,7 +49,7 @@ export const organizationQueryKeys = {
     ] as const,
 
   /** Key for `organization.listInvitations`. The `organizationId` is part of `query`. */
-  invitations: <TQuery = undefined>(
+  listInvitations: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
   ) =>
@@ -51,7 +60,7 @@ export const organizationQueryKeys = {
     ] as const,
 
   /** Key for `organization.listUserInvitations` (invitations for the current user). */
-  userInvitations: <TQuery = undefined>(
+  listUserInvitations: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
   ) =>
