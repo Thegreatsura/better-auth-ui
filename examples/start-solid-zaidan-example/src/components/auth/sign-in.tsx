@@ -1,3 +1,4 @@
+import { authQueryKeys } from "@better-auth-ui/core"
 import {
   type UsernameLocalization,
   usernameLocalization
@@ -8,30 +9,38 @@ import {
   type UsernameAuthClient,
   useAuth
 } from "@better-auth-ui/solid"
-import { createMutation } from "@tanstack/solid-query"
+import { createMutation, useQueryClient } from "@tanstack/solid-query"
 import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { resolveSignInPath } from "./sign-in-path"
 
 const authHref = (basePath: string, viewPath: string) =>
   `${basePath}/${viewPath}`
 
-const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-
 export function SignIn() {
   const auth = useAuth()
+  const queryClient = useQueryClient()
   const [identifier, setIdentifier] = createSignal("")
   const [identifierError, setIdentifierError] = createSignal<string>()
   const [password, setPassword] = createSignal("")
   const [passwordError, setPasswordError] = createSignal<string>()
   const [isPasswordVisible, setIsPasswordVisible] = createSignal(false)
-  const signIn = createMutation(() => signInEmailOptions(auth.authClient))
-  const signInUsername = createMutation(() =>
-    signInUsernameOptions(auth.authClient as UsernameAuthClient)
-  )
+  const onSignInSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+    auth.navigate({ to: auth.redirectTo })
+  }
+  const signIn = createMutation(() => ({
+    ...signInEmailOptions(auth.authClient),
+    onSuccess: onSignInSuccess
+  }))
+  const signInUsername = createMutation(() => ({
+    ...signInUsernameOptions(auth.authClient as UsernameAuthClient),
+    onSuccess: onSignInSuccess
+  }))
   const usernamePlugin = auth.plugins.find((plugin) => plugin.id === "username")
   const usernameAuth = Boolean(usernamePlugin)
   const usernameLabels: UsernameLocalization = {
@@ -44,16 +53,21 @@ export function SignIn() {
   const submitSignIn = (event: SubmitEvent) => {
     event.preventDefault()
 
-    if (usernameAuth && !isEmail(identifier())) {
+    const signInPath = resolveSignInPath({
+      identifier: identifier(),
+      usernameAuth
+    })
+
+    if (signInPath.kind === "username") {
       signInUsername.mutate({
         password: password(),
-        username: identifier()
+        username: signInPath.username
       })
       return
     }
 
     signIn.mutate({
-      email: identifier(),
+      email: signInPath.email,
       password: password()
     })
   }

@@ -873,14 +873,23 @@ describe("Solid registry isolation", () => {
     )
 
     expect(authConfig).toContain('from "better-auth/plugins"')
-    expect(authConfig).toContain("plugins: [username()]")
+    expect(authConfig).toContain(
+      "plugins: [multiSession(), passkey(), username(), apiKey()]"
+    )
 
+    expect(authProvider).toContain('from "@better-auth/api-key/client"')
+    expect(authProvider).toContain('from "@better-auth/passkey/client"')
     expect(authProvider).toContain('from "better-auth/client/plugins"')
+    expect(authProvider).toContain("multiSessionClient()")
+    expect(authProvider).toContain("apiKeyClient()")
+    expect(authProvider).toContain("passkeyClient()")
     expect(authProvider).toContain("usernameClient()")
 
     expect(signIn).toContain("signInUsernameOptions")
     expect(signIn).toContain("usernameOrEmailPlaceholder")
-    expect(signIn).toContain("username: identifier()")
+    expect(signIn).toContain("resolveSignInPath")
+    expect(signIn).toContain("username: signInPath.username")
+    expect(signIn).toContain("email: signInPath.email")
     expect(signIn).toContain(
       'autocomplete={usernameAuth ? "username" : "email"}'
     )

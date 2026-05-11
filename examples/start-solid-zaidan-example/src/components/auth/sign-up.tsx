@@ -1,9 +1,10 @@
+import { authQueryKeys } from "@better-auth-ui/core"
 import {
   type UsernameLocalization,
   usernameLocalization
 } from "@better-auth-ui/core/plugins"
 import { signUpEmailOptions, useAuth } from "@better-auth-ui/solid"
-import { createMutation } from "@tanstack/solid-query"
+import { createMutation, useQueryClient } from "@tanstack/solid-query"
 import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
@@ -11,12 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export type SignUpProps = {
-  callbackURL?: string
-}
-
-export function SignUp(props: SignUpProps) {
+export function SignUp() {
   const auth = useAuth()
+  const queryClient = useQueryClient()
   const [email, setEmail] = createSignal("")
   const [emailError, setEmailError] = createSignal<string>()
   const [name, setName] = createSignal("")
@@ -30,7 +28,20 @@ export function SignUp(props: SignUpProps) {
   const [isPasswordVisible, setIsPasswordVisible] = createSignal(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     createSignal(false)
-  const signUp = createMutation(() => signUpEmailOptions(auth.authClient))
+  const signUp = createMutation(() => ({
+    ...signUpEmailOptions(auth.authClient),
+    onSuccess: () => {
+      if (auth.emailAndPassword.requireEmailVerification) {
+        auth.navigate({
+          to: `${auth.basePaths.auth}/${auth.viewPaths.auth.signIn}`
+        })
+        return
+      }
+
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+      auth.navigate({ to: auth.redirectTo })
+    }
+  }))
   const usernamePlugin = auth.plugins.find((plugin) => plugin.id === "username")
   const usernameAuth = Boolean(usernamePlugin)
   const usernameLabels: UsernameLocalization = {
@@ -54,7 +65,6 @@ export function SignUp(props: SignUpProps) {
     }
 
     signUp.mutate({
-      callbackURL: props.callbackURL,
       email: email(),
       name: name(),
       password: password(),

@@ -1,9 +1,17 @@
-import { usernamePlugin } from "@better-auth-ui/core/plugins"
+import { apiKeyClient } from "@better-auth/api-key/client"
+import { passkeyClient } from "@better-auth/passkey/client"
+import {
+  apiKeyPlugin,
+  multiSessionPlugin,
+  passkeyPlugin,
+  usernamePlugin
+} from "@better-auth-ui/core/plugins"
 import {
   createAuthClient,
   AuthProvider as SolidAuthProvider
 } from "@better-auth-ui/solid"
-import { usernameClient } from "better-auth/client/plugins"
+import { useNavigate } from "@tanstack/solid-router"
+import { multiSessionClient, usernameClient } from "better-auth/client/plugins"
 import type { JSX } from "solid-js"
 
 import { ErrorToaster } from "./error-toaster"
@@ -19,7 +27,12 @@ const resolveAuthBaseURL = () => {
 const authBaseURL = resolveAuthBaseURL()
 const authClient = createAuthClient({
   baseURL: authBaseURL,
-  plugins: [usernameClient()]
+  plugins: [
+    multiSessionClient(),
+    apiKeyClient(),
+    passkeyClient(),
+    usernameClient()
+  ]
 })
 
 export type AuthProviderProps = {
@@ -27,8 +40,20 @@ export type AuthProviderProps = {
 }
 
 export function AuthProvider(props: AuthProviderProps) {
+  const navigate = useNavigate()
+
   return (
-    <SolidAuthProvider authClient={authClient} plugins={[usernamePlugin()]}>
+    <SolidAuthProvider
+      authClient={authClient}
+      redirectTo="/settings/account"
+      navigate={navigate}
+      plugins={[
+        multiSessionPlugin(),
+        apiKeyPlugin(),
+        passkeyPlugin(),
+        usernamePlugin()
+      ]}
+    >
       {() => (
         <>
           {props.children}
