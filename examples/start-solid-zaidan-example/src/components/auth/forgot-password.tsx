@@ -13,6 +13,7 @@ export type ForgotPasswordProps = {
 export function ForgotPassword(props: ForgotPasswordProps) {
   const auth = useAuth()
   const [email, setEmail] = createSignal("")
+  const [emailError, setEmailError] = createSignal<string>()
   const requestReset = createMutation(() =>
     requestPasswordResetOptions(auth.authClient)
   )
@@ -42,14 +43,30 @@ export function ForgotPassword(props: ForgotPasswordProps) {
                 {auth.localization.auth.email}
               </Label>
               <Input
+                aria-invalid={Boolean(emailError())}
                 id="forgot-password-email"
                 name="email"
-                onInput={(event) => setEmail(event.currentTarget.value)}
+                onInput={(event) => {
+                  setEmail(event.currentTarget.value)
+                  setEmailError(undefined)
+                }}
+                onInvalid={(event) => {
+                  event.preventDefault()
+                  setEmailError(event.currentTarget.validationMessage)
+                }}
                 placeholder={auth.localization.auth.emailPlaceholder}
                 required
                 type="email"
                 value={email()}
               />
+
+              <Show when={emailError()}>
+                {(message) => (
+                  <p class="text-sm text-destructive" role="alert">
+                    {message()}
+                  </p>
+                )}
+              </Show>
             </div>
             <Button disabled={requestReset.isPending} type="submit">
               {requestReset.isPending

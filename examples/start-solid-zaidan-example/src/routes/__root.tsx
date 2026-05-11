@@ -5,7 +5,9 @@ import {
   Scripts
 } from "@tanstack/solid-router"
 import type { JSX } from "solid-js"
+import { HydrationScript } from "solid-js/web"
 
+import { AuthProvider } from "@/components/auth/auth-provider"
 import { Header } from "@/components/header"
 
 import "../styles/globals.css"
@@ -33,11 +35,18 @@ function RootDocument(props: { children: JSX.Element }) {
   return (
     <html lang="en">
       <head>
+        <HydrationScript />
         <HeadContent />
       </head>
       <body class="antialiased min-h-svh flex flex-col">
-        <Header />
-        <main class="grow flex flex-col">{props.children}</main>
+        <AuthProvider>
+          {() => (
+            <>
+              <Header />
+              <main class="grow flex flex-col">{props.children}</main>
+            </>
+          )}
+        </AuthProvider>
         <Scripts />
       </body>
     </html>

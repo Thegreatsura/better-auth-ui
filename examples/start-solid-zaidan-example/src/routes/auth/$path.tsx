@@ -1,6 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/solid-router"
 
-import { AuthProvider } from "@/components/auth/auth-provider"
 import { resolveAuthRoute } from "@/routes/auth/-route-components"
 
 export const Route = createFileRoute("/auth/$path")({
@@ -21,7 +20,7 @@ function AuthPage() {
 
   return (
     <div class="flex justify-center my-auto p-4 md:p-6">
-      <AuthProvider>{() => <Component />}</AuthProvider>
+      <Component />
     </div>
   )
 }

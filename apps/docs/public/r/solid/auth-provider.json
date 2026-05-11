@@ -19,7 +19,7 @@
     {
       "path": "src/components/auth/auth-provider.tsx",
       "type": "registry:component",
-      "content": "import {\n  createAuthClient,\n  AuthProvider as SolidAuthProvider\n} from \"@better-auth-ui/solid\"\nimport type { JSX } from \"solid-js\"\n\nconst authBaseURL =\n  import.meta.env.VITE_AUTH_URL ??\n  (import.meta.env.SSR ? \"http://localhost:5173/api/auth\" : \"/api/auth\")\nconst authClient = createAuthClient({\n  baseURL: authBaseURL\n})\n\nexport type AuthProviderProps = {\n  children?: JSX.Element | (() => JSX.Element)\n}\n\nexport function AuthProvider(props: AuthProviderProps) {\n  return (\n    <SolidAuthProvider authClient={authClient}>\n      {props.children}\n    </SolidAuthProvider>\n  )\n}\n"
+      "content": "import { usernamePlugin } from \"@better-auth-ui/core/plugins\"\nimport {\n  createAuthClient,\n  AuthProvider as SolidAuthProvider\n} from \"@better-auth-ui/solid\"\nimport { usernameClient } from \"better-auth/client/plugins\"\nimport type { JSX } from \"solid-js\"\n\nconst resolveAuthBaseURL = () => {\n  if (import.meta.env.VITE_AUTH_URL) return import.meta.env.VITE_AUTH_URL\n\n  if (import.meta.env.SSR) return \"http://localhost:5173/api/auth\"\n\n  return `${window.location.origin}/api/auth`\n}\n\nconst authBaseURL = resolveAuthBaseURL()\nconst authClient = createAuthClient({\n  baseURL: authBaseURL,\n  plugins: [usernameClient()]\n})\n\nexport type AuthProviderProps = {\n  children?: JSX.Element | (() => JSX.Element)\n}\n\nexport function AuthProvider(props: AuthProviderProps) {\n  return (\n    <SolidAuthProvider authClient={authClient} plugins={[usernamePlugin()]}>\n      {props.children}\n    </SolidAuthProvider>\n  )\n}\n"
     }
   ]
 }

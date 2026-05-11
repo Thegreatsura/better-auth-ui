@@ -1,14 +1,23 @@
+import { usernamePlugin } from "@better-auth-ui/core/plugins"
 import {
   createAuthClient,
   AuthProvider as SolidAuthProvider
 } from "@better-auth-ui/solid"
+import { usernameClient } from "better-auth/client/plugins"
 import type { JSX } from "solid-js"
 
-const authBaseURL =
-  import.meta.env.VITE_AUTH_URL ??
-  (import.meta.env.SSR ? "http://localhost:5173/api/auth" : "/api/auth")
+const resolveAuthBaseURL = () => {
+  if (import.meta.env.VITE_AUTH_URL) return import.meta.env.VITE_AUTH_URL
+
+  if (import.meta.env.SSR) return "http://localhost:5173/api/auth"
+
+  return `${window.location.origin}/api/auth`
+}
+
+const authBaseURL = resolveAuthBaseURL()
 const authClient = createAuthClient({
-  baseURL: authBaseURL
+  baseURL: authBaseURL,
+  plugins: [usernameClient()]
 })
 
 export type AuthProviderProps = {
@@ -17,7 +26,7 @@ export type AuthProviderProps = {
 
 export function AuthProvider(props: AuthProviderProps) {
   return (
-    <SolidAuthProvider authClient={authClient}>
+    <SolidAuthProvider authClient={authClient} plugins={[usernamePlugin()]}>
       {props.children}
     </SolidAuthProvider>
   )
