@@ -3,7 +3,7 @@ import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
-import { useGetActiveOrganization } from "../../queries/organization/get-active-organization-query"
+import { useActiveOrganization } from "../../queries/organization/active-organization-query"
 
 export type SetActiveOrganizationParams<
   TAuthClient extends OrganizationAuthClient
@@ -43,7 +43,7 @@ export function useSetActiveOrganization<
   authClient: TAuthClient,
   options?: SetActiveOrganizationOptions<TAuthClient>
 ) {
-  const { refetch } = useGetActiveOrganization(authClient, {
+  const { refetch } = useActiveOrganization(authClient, {
     refetchOnMount: false
   })
 

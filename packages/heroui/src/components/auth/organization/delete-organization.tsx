@@ -1,9 +1,9 @@
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthPlugin,
-  useDeleteOrganization,
-  useGetActiveOrganization
+  useDeleteOrganization
 } from "@better-auth-ui/react"
 import { TriangleExclamation } from "@gravity-ui/icons"
 import {
@@ -24,11 +24,6 @@ export type DeleteOrganizationProps = {
   variant?: CardProps["variant"]
 }
 
-type ActiveOrganization = {
-  id: string
-  name: string
-}
-
 /**
  * Danger-zone control to delete the active organization (owner permission on
  * the server).
@@ -45,14 +40,9 @@ export function DeleteOrganization({
   const { viewPaths: organizationPluginViewPaths } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: activeOrganizationData } = useGetActiveOrganization(
+  const { data: activeOrganization } = useActiveOrganization(
     authClient as OrganizationAuthClient
   )
-
-  const activeOrganization = activeOrganizationData as
-    | ActiveOrganization
-    | null
-    | undefined
 
   const [confirmOpen, setConfirmOpen] = useState(false)
 

@@ -1,8 +1,8 @@
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthPlugin,
-  useGetActiveOrganization,
   useListOrganizations,
   useSession,
   useSetActiveOrganization
@@ -63,7 +63,7 @@ export function OrganizationSwitcher({
   } = useAuthPlugin(organizationPlugin)
 
   const { data: activeOrganization, isPending: activeOrganizationPending } =
-    useGetActiveOrganization(authClient as OrganizationAuthClient)
+    useActiveOrganization(authClient as OrganizationAuthClient)
 
   const { data: organizations, isPending: organizationsPending } =
     useListOrganizations(authClient as OrganizationAuthClient)

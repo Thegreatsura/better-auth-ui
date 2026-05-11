@@ -1,4 +1,4 @@
-export * from "./get-active-organization-query"
+export * from "./active-organization-query"
 export * from "./has-permission-query"
 export * from "./list-organization-invitations-query"
 export * from "./list-organization-members-query"

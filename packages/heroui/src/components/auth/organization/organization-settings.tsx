@@ -1,8 +1,8 @@
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
-  useAuthPlugin,
-  useGetActiveOrganization
+  useAuthPlugin
 } from "@better-auth-ui/react"
 import { cn } from "@heroui/react"
 import type { ComponentProps } from "react"
@@ -12,13 +12,6 @@ import { OrganizationMembers } from "./organization-members"
 
 export type OrganizationSettingsProps = {
   className?: string
-}
-
-type ActiveOrganization = {
-  id: string
-  name: string
-  slug?: string | null
-  logo?: string | null
 }
 
 /**
@@ -38,14 +31,9 @@ export function OrganizationSettings({
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: activeOrganizationData } = useGetActiveOrganization(
+  const { data: activeOrganization } = useActiveOrganization(
     authClient as OrganizationAuthClient
   )
-
-  const activeOrganization = activeOrganizationData as
-    | ActiveOrganization
-    | null
-    | undefined
 
   return (
     <div

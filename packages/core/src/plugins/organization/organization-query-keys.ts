@@ -26,8 +26,11 @@ export const organizationQueryKeys = {
       query ?? null
     ] as const,
 
-  /** Key for `organization.getActiveOrganization` for the given user. */
-  getActiveOrganization: <TQuery = undefined>(
+  /**
+   * Key for the active organization query (`organization.getFullOrganization`
+   * on the client).
+   */
+  activeOrganization: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
   ) =>

@@ -1,10 +1,10 @@
 import type { OrganizationView } from "@better-auth-ui/core/plugins"
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthenticate,
-  useAuthPlugin,
-  useGetActiveOrganization
+  useAuthPlugin
 } from "@better-auth-ui/react"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useEffect, useMemo } from "react"
@@ -44,15 +44,15 @@ export function Organization({
     viewPaths: organizationPluginViewPaths
   } = useAuthPlugin(organizationPlugin)
 
-  const { data: activeOrganizationData, isFetched } = useGetActiveOrganization(
+  const { data: activeOrganization, isFetched } = useActiveOrganization(
     authClient as OrganizationAuthClient
   )
 
   const hasActiveOrganization = Boolean(
-    activeOrganizationData &&
-      typeof activeOrganizationData === "object" &&
-      "id" in activeOrganizationData &&
-      (activeOrganizationData as { id: string }).id
+    activeOrganization &&
+      typeof activeOrganization === "object" &&
+      "id" in activeOrganization &&
+      (activeOrganization as { id: string }).id
   )
 
   const organizationsSettingsSegment = useMemo(

@@ -11,30 +11,29 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-export type GetActiveOrganizationData<
-  TAuthClient extends OrganizationAuthClient
-> = InferData<TAuthClient["organization"]["getFullOrganization"]>
+export type ActiveOrganizationData<TAuthClient extends OrganizationAuthClient> =
+  InferData<TAuthClient["organization"]["getFullOrganization"]>
 
-export type GetActiveOrganizationParams<
+export type ActiveOrganizationParams<
   TAuthClient extends OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["getFullOrganization"]>[0]
 
-export type GetActiveOrganizationOptions<
+export type ActiveOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
-  ReturnType<typeof getActiveOrganizationOptions<TAuthClient>>,
+  ReturnType<typeof activeOrganizationOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >
 
-export function getActiveOrganizationOptions<
+export function activeOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
   userId: string | undefined,
-  params?: GetActiveOrganizationParams<TAuthClient>
+  params?: ActiveOrganizationParams<TAuthClient>
 ) {
-  type TData = GetActiveOrganizationData<TAuthClient>
-  const queryKey = organizationQueryKeys.getActiveOrganization(
+  type TData = ActiveOrganizationData<TAuthClient>
+  const queryKey = organizationQueryKeys.activeOrganization(
     userId,
     params?.query
   )
@@ -55,52 +54,50 @@ export function getActiveOrganizationOptions<
   }
 }
 
-export const ensureGetActiveOrganization = <
+export const ensureActiveOrganization = <
   TAuthClient extends OrganizationAuthClient
 >(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string | undefined,
-  params?: GetActiveOrganizationParams<TAuthClient>
+  params?: ActiveOrganizationParams<TAuthClient>
 ) =>
   queryClient.ensureQueryData(
-    getActiveOrganizationOptions(authClient, userId, params)
+    activeOrganizationOptions(authClient, userId, params)
   )
 
-export const prefetchGetActiveOrganization = <
+export const prefetchActiveOrganization = <
   TAuthClient extends OrganizationAuthClient
 >(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string | undefined,
-  params?: GetActiveOrganizationParams<TAuthClient>
+  params?: ActiveOrganizationParams<TAuthClient>
 ) =>
   queryClient.prefetchQuery(
-    getActiveOrganizationOptions(authClient, userId, params)
+    activeOrganizationOptions(authClient, userId, params)
   )
 
-export const fetchGetActiveOrganization = <
+export const fetchActiveOrganization = <
   TAuthClient extends OrganizationAuthClient
 >(
   queryClient: QueryClient,
   authClient: TAuthClient,
   userId: string | undefined,
-  params?: GetActiveOrganizationParams<TAuthClient>
+  params?: ActiveOrganizationParams<TAuthClient>
 ) =>
-  queryClient.fetchQuery(
-    getActiveOrganizationOptions(authClient, userId, params)
-  )
+  queryClient.fetchQuery(activeOrganizationOptions(authClient, userId, params))
 
-export type UseGetActiveOrganizationOptions<
+export type UseActiveOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
-> = GetActiveOrganizationOptions<TAuthClient> &
-  GetActiveOrganizationParams<TAuthClient>
+> = ActiveOrganizationOptions<TAuthClient> &
+  ActiveOrganizationParams<TAuthClient>
 
-export function useGetActiveOrganization<
+export function useActiveOrganization<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
-  options: UseGetActiveOrganizationOptions<TAuthClient> = {} as UseGetActiveOrganizationOptions<TAuthClient>,
+  options: UseActiveOrganizationOptions<TAuthClient> = {} as UseActiveOrganizationOptions<TAuthClient>,
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
@@ -108,10 +105,10 @@ export function useGetActiveOrganization<
 
   const { query, fetchOptions, ...queryOptionsRest } = options
 
-  const baseOptions = getActiveOrganizationOptions(authClient, userId, {
+  const baseOptions = activeOrganizationOptions(authClient, userId, {
     query,
     fetchOptions
-  } as GetActiveOrganizationParams<TAuthClient>)
+  } as ActiveOrganizationParams<TAuthClient>)
 
   return useQuery(
     {

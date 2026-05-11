@@ -1,8 +1,8 @@
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthPlugin,
-  useGetActiveOrganization,
   useUpdateOrganization
 } from "@better-auth-ui/react"
 import {
@@ -29,13 +29,6 @@ export type OrganizationProfileProps = {
   variant?: CardProps["variant"]
 }
 
-type ActiveOrganization = {
-  id: string
-  name: string
-  slug?: string | null
-  logo?: string | null
-}
-
 /**
  * Profile card for the active organization: logo (when enabled), display name, and slug.
  */
@@ -48,15 +41,8 @@ export function OrganizationProfile({
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const {
-    data: activeOrganizationData,
-    isPending: isActiveOrganizationPending
-  } = useGetActiveOrganization(authClient as OrganizationAuthClient)
-
-  const activeOrganization = activeOrganizationData as
-    | ActiveOrganization
-    | null
-    | undefined
+  const { data: activeOrganization, isPending: isActiveOrganizationPending } =
+    useActiveOrganization(authClient as OrganizationAuthClient)
 
   const { mutate: commitOrganizationUpdate, isPending } = useUpdateOrganization(
     authClient as OrganizationAuthClient,
