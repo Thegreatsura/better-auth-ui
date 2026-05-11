@@ -37,6 +37,8 @@ export type OrganizationSwitcherProps = {
   variant?: ButtonProps["variant"]
   hideCreate?: boolean
   hidePersonal?: boolean
+  /** When true, hides the manage organization / account settings link in the popover header. */
+  hideSettings?: boolean
 }
 
 /**
@@ -48,6 +50,7 @@ export function OrganizationSwitcher({
   className,
   hideCreate,
   hidePersonal,
+  hideSettings,
   placement = "bottom",
   variant = "ghost",
   ...props
@@ -113,38 +116,42 @@ export function OrganizationSwitcher({
 
         <Dropdown.Popover placement={placement} className="max-w-svw">
           {activeOrganization ? (
-            <div className="flex justify-between items-center px-4 pt-3 gap-4">
+            <div className="flex items-center justify-between gap-4 px-4 pt-3">
               <OrganizationView hideSlug organization={activeOrganization} />
 
-              <Link
-                href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "sm" }),
-                  "shrink-0 gap-2"
-                )}
-                onPress={() => setDropdownOpen(false)}
-              >
-                <Gear className="text-muted" />
+              {!hideSettings && (
+                <Link
+                  href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "shrink-0 gap-2"
+                  )}
+                  onPress={() => setDropdownOpen(false)}
+                >
+                  <Gear className="text-muted" />
 
-                {organizationLocalization.manageOrganization}
-              </Link>
+                  {organizationLocalization.manageOrganization}
+                </Link>
+              )}
             </div>
           ) : !isPending && session?.user && !hidePersonal ? (
-            <div className="flex justify-between items-center px-4 pt-3 gap-4">
+            <div className="flex items-center justify-between gap-4 px-4 pt-3">
               <UserView hideSubtitle />
 
-              <Link
-                href={`${basePaths.settings}/${viewPaths.settings.account}`}
-                className={cn(
-                  buttonVariants({ variant: "outline", size: "sm" }),
-                  "shrink-0 gap-2"
-                )}
-                onPress={() => setDropdownOpen(false)}
-              >
-                <Gear className="text-muted" />
+              {!hideSettings && (
+                <Link
+                  href={`${basePaths.settings}/${viewPaths.settings.account}`}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "shrink-0 gap-2"
+                  )}
+                  onPress={() => setDropdownOpen(false)}
+                >
+                  <Gear className="text-muted" />
 
-                {localization.settings.settings}
-              </Link>
+                  {localization.settings.settings}
+                </Link>
+              )}
             </div>
           ) : null}
 
