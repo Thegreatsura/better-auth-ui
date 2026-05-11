@@ -9,9 +9,11 @@ import {
 } from "@better-auth-ui/react"
 import { Xmark } from "@gravity-ui/icons"
 import { Button, Chip, cn, Skeleton, Spinner, Table } from "@heroui/react"
-import type { ComponentProps } from "react"
+import { type ComponentProps, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
+import { InviteMemberDialog } from "./invite-member-dialog"
+import { OrganizationInvitationsEmpty } from "./organization-invitations-empty"
 import { localizedOrganizationRole } from "./organization-role-label"
 
 /** Props for the {@link OrganizationInvitations} component. */
@@ -87,6 +89,8 @@ export function OrganizationInvitations({
 
   const invitationList = invitationsListFromResponse(invitationsPayload)
 
+  const [inviteOpen, setInviteOpen] = useState(false)
+
   const tableHeader = (
     <Table.Header>
       <Table.Column isRowHeader>{organizationLocalization.email}</Table.Column>
@@ -133,9 +137,9 @@ export function OrganizationInvitations({
           </Table.ScrollContainer>
         </Table>
       ) : !invitationList.length ? (
-        <p className="py-8 text-center text-muted text-sm">
-          {organizationLocalization.noOrganizationInvitations}
-        </p>
+        <OrganizationInvitationsEmpty
+          onInvitePress={() => setInviteOpen(true)}
+        />
       ) : (
         <Table>
           <Table.ScrollContainer>
@@ -158,6 +162,8 @@ export function OrganizationInvitations({
           </Table.ScrollContainer>
         </Table>
       )}
+
+      <InviteMemberDialog isOpen={inviteOpen} onOpenChange={setInviteOpen} />
     </div>
   )
 }

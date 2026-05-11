@@ -59,7 +59,7 @@ export function UserInvitationRow({ invitation }: UserInvitationRowProps) {
         </span>
       </div>
 
-      <div className="ml-auto flex shrink-0 items-center gap-1">
+      <div className="ml-auto flex shrink-0 items-center gap-2">
         <Button
           variant="outline"
           size="sm"

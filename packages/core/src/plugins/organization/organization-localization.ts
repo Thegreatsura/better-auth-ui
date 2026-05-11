@@ -77,9 +77,9 @@ export const organizationLocalization = {
   invitations: "Invitations",
   /** @remarks `"No invitations"` */
   noInvitations: "No invitations",
-  /** @remarks `"When an organization invites you by email, it will appear here."` */
+  /** @remarks `"Invitations to join an organization will show up here."` */
   userInvitationsEmptyDescription:
-    "When an organization invites you by email, it will appear here.",
+    "Invitations to join an organization will show up here.",
   /** @remarks `"Pending invitations"` */
   pendingInvitations: "Pending invitations",
   /** @remarks `"Remove invitation"` */
@@ -106,6 +106,9 @@ export const organizationLocalization = {
   noActiveOrganization: "You haven't created any organizations yet.",
   /** @remarks `"No invitations yet"` */
   noOrganizationInvitations: "No invitations yet",
+  /** @remarks `"Invite a teammate to collaborate in this organization."` */
+  organizationInvitationsEmptyDescription:
+    "Invite a teammate to collaborate in this organization.",
   /** @remarks `"Member removed"` */
   memberRemoved: "Member removed",
   /** @remarks `"Member role updated"` */
