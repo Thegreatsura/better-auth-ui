@@ -7,22 +7,16 @@ import {
 } from "@better-auth-ui/react"
 import { CloudArrowUpIn, TrashBin } from "@gravity-ui/icons"
 import { Button, cn, Dropdown, Label, Spinner, toast } from "@heroui/react"
+import type { Organization } from "better-auth/client"
 import { type ChangeEvent, useRef, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationLogo } from "./organization-logo"
 
-type ActiveOrganization = {
-  id: string
-  name: string
-  slug?: string | null
-  logo?: string | null
-}
-
 export type ChangeOrganizationLogoProps = {
   className?: string
   isOrganizationLoading?: boolean
-  organization: ActiveOrganization | null | undefined
+  organization?: Organization | null
 }
 
 export function ChangeOrganizationLogo({
