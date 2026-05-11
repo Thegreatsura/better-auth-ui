@@ -1,7 +1,12 @@
-import type { SettingsView } from "@better-auth-ui/core"
+import type { SettingsTab, SettingsView } from "@better-auth-ui/core"
 import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import { type CardProps, cn, Tabs } from "@heroui/react"
-import { type ComponentProps, useMemo } from "react"
+import {
+  type ComponentProps,
+  type ComponentType,
+  createElement,
+  useMemo
+} from "react"
 
 import { AccountSettings } from "./account/account-settings"
 import { SecuritySettings } from "./security/security-settings"
@@ -35,22 +40,41 @@ export function Settings({
   view,
   ...props
 }: SettingsProps & ComponentProps<"div">) {
-  const { authClient, basePaths, localization, viewPaths } = useAuth()
+  const { authClient, basePaths, localization, viewPaths, plugins } = useAuth()
   useAuthenticate(authClient)
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
   }
 
-  const settingsPathViews = useMemo(
-    () =>
-      Object.fromEntries(
-        Object.entries(viewPaths.settings).map(([k, v]) => [v, k])
-      ) as Record<string, SettingsView>,
-    [viewPaths.settings]
-  )
+  // Built-ins first, then plugin segments (same idea as `<Auth>` resolving
+  // `magicLink` from `plugin.viewPaths.auth` — not merged on `AuthProvider`).
+  const settingsPathViews = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const [viewKey, segment] of Object.entries(viewPaths.settings)) {
+      map[segment] = viewKey
+    }
+    for (const plugin of plugins) {
+      const contributed = plugin.viewPaths?.settings
+      if (!contributed) continue
+      for (const [viewKey, segment] of Object.entries(contributed)) {
+        map[segment] = viewKey
+      }
+    }
+    return map as Record<string, SettingsView>
+  }, [viewPaths.settings, plugins])
 
   const currentView = view || (path ? settingsPathViews[path] : undefined)
+
+  const settingsTabs = useMemo((): SettingsTab[] => {
+    const tabs: SettingsTab[] = []
+    for (const plugin of plugins) {
+      if (plugin.settingsTabs) {
+        tabs.push(...plugin.settingsTabs)
+      }
+    }
+    return tabs
+  }, [plugins])
 
   return (
     <Tabs
@@ -81,6 +105,25 @@ export function Settings({
 
             <Tabs.Indicator />
           </Tabs.Tab>
+
+          {settingsTabs.map((tab) => {
+            const segment =
+              plugins.find((p) =>
+                p.settingsTabs?.some((t) => t.key === tab.key)
+              )?.viewPaths?.settings?.[tab.key] ?? tab.key
+
+            return (
+              <Tabs.Tab
+                key={tab.key}
+                id={tab.key}
+                href={`${basePaths.settings}/${segment}`}
+              >
+                {tab.label}
+
+                <Tabs.Indicator />
+              </Tabs.Tab>
+            )
+          })}
         </Tabs.List>
       </Tabs.ListContainer>
 
@@ -91,6 +134,19 @@ export function Settings({
       <Tabs.Panel id="security" className="px-0">
         <SecuritySettings variant={variant} />
       </Tabs.Panel>
+
+      {settingsTabs.map((tab) => (
+        <Tabs.Panel key={tab.key} id={tab.key} className="px-0">
+          {tab.component && typeof tab.component === "function"
+            ? createElement(
+                tab.component as ComponentType<{
+                  variant?: CardProps["variant"]
+                }>,
+                { variant }
+              )
+            : null}
+        </Tabs.Panel>
+      ))}
     </Tabs>
   )
 }

@@ -1,0 +1,158 @@
+---
+title: Organization
+description: Add multi-tenant organization management with members, invitations, and roles to your authentication UI.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The organization plugin adds multi-tenant organization management to your authentication UI. Users can create, switch between, and manage organizations with members, invitations, and roles.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the [`@better-auth/api-key`](https://www.better-auth.com/docs/plugins/organization) package and add it to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { organization } from "better-auth/plugins" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    organization() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `organizationClient()` to your auth client so `authClient.organization.*` methods are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { organizationClient } from "better-auth/client/plugins" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [organizationClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `organizationPlugin()` to `<AuthProvider>`:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { organizationPlugin } from "@better-auth-ui/heroui/plugins" // [!code highlight]
+
+import { authClient } from "@/lib/auth-client"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    organizationPlugin() // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+</Steps>
+
+## Components
+
+### `<OrganizationSwitcher />`
+
+Render `<OrganizationSwitcher />` in your layout or header (for example next to `UserButton`) so users can change the active organization. It is not part of the `UserButton` menu.
+
+**Usage**
+
+```tsx
+import { OrganizationSwitcher } from "@better-auth-ui/heroui/plugins"
+
+<OrganizationSwitcher placement="bottom end" />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-switcher.tsx" name="OrganizationSwitcherProps" />
+
+### `<OrganizationSettings />`
+
+Use `<OrganizationSettings />` when you want the active organization header plus members **and** pending invitations (via `<OrganizationMembers />`, which embeds `<OrganizationInvitations />`) on a custom route or page. It is **not** injected into `/settings/account`; register a dedicated route (for example `/organization/$path`) if you use the organization shell pattern.
+
+**Usage**
+
+```tsx
+import { OrganizationSettings } from "@better-auth-ui/heroui/plugins"
+
+<OrganizationSettings />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-settings.tsx" name="OrganizationSettingsProps" />
+
+### `<CreateOrganizationDialog />`
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/create-organization-dialog.tsx" name="CreateOrganizationDialogProps" />
+
+### `<InviteMemberDialog />`
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/invite-member-dialog.tsx" name="InviteMemberDialogProps" />
+
+### `<OrganizationMembers />`
+
+Renders the members table, invite control, and (below) `<OrganizationInvitations />`.
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-members.tsx" name="OrganizationMembersProps" />
+
+### `<OrganizationInvitations />`
+
+Pending invitations for the **active** organization, as a table aligned with `<OrganizationMembers />`. `InvitationList` is an alias for backward compatibility.
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-invitations.tsx" name="OrganizationInvitationsProps" />
+
+## React Hooks
+
+### Queries
+
+- `useGetActiveOrganization()` — Get the currently active organization
+- `useListOrganizations()` — List all organizations the user belongs to
+- `useListOrganizationMembers()` — List members of the active organization
+- `useListOrganizationInvitations()` — List pending invitations
+
+### Mutations
+
+- `useCreateOrganization()` — Create a new organization
+- `useDeleteOrganization()` — Delete an organization
+- `useSetActiveOrganization()` — Switch the active organization
+- `useInviteMember()` — Invite a member by email
+- `useRemoveMember()` — Remove a member
+- `useUpdateMemberRole()` — Update a member's role
+- `useRemoveInvitation()` — Remove a pending invitation
+- `useAcceptInvitation()` — Accept an invitation
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/organization/organization-plugin.ts" name="OrganizationPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/organization/organization-localization.ts" name="OrganizationLocalization" />

@@ -1,4 +1,5 @@
 import { UserButton } from "@better-auth-ui/heroui"
+import { OrganizationSwitcher } from "@better-auth-ui/heroui/plugins"
 import { Link } from "@heroui/react"
 
 import { Logo } from "./logo"
@@ -13,7 +14,11 @@ export function Header() {
           <h1 className="text-base">BETTER-AUTH. UI</h1>
         </Link>
 
-        <UserButton size="icon" />
+        <div className="flex items-center gap-2">
+          <OrganizationSwitcher placement="bottom end" />
+
+          <UserButton size="icon" placement="bottom end" />
+        </div>
       </div>
     </header>
   )

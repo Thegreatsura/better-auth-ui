@@ -12,15 +12,24 @@ export type UserViewProps = {
   className?: string
   isPending?: boolean
   size?: AvatarProps["size"]
+  /**
+   * When false, the subtitle line (email when name/username is shown) is hidden.
+   * @default true
+   */
+  showSubtitle?: boolean
   /** @remarks `User` */
-  user?: User & { username?: string | null; displayUsername?: string | null }
+  user?: Partial<User> & {
+    username?: string | null
+    displayUsername?: string | null
+  }
 }
 
 /**
- * Render a compact user item with an avatar, a primary label (display username, name, or email), and an optional secondary email line.
+ * Render a compact user item with an avatar, a primary label (display username, name, or email), and an optional subtitle (email).
  *
  * @param isPending - If true and no `user` prop is provided, renders a loading skeleton instead of user details
  * @param size - Avatar size variant; defaults to `"sm"`
+ * @param showSubtitle - When false, omits the muted subtitle row under the primary label
  * @param user - Optional user to display; when omitted the current session user is used if available
  * @returns A React element containing the user's avatar and text labels
  */
@@ -28,6 +37,7 @@ export function UserView({
   className,
   isPending,
   size = "sm",
+  showSubtitle = true,
   user,
   ...props
 }: UserViewProps & ComponentProps<"div">) {
@@ -51,7 +61,8 @@ export function UserView({
 
         <div className="flex flex-col gap-1 min-w-0">
           <Skeleton className="h-3.5 w-24 rounded-lg" />
-          <Skeleton className="h-3 w-32 rounded-lg" />
+
+          {showSubtitle ? <Skeleton className="h-3 w-32 rounded-lg" /> : null}
         </div>
       </div>
     )
@@ -64,18 +75,19 @@ export function UserView({
     >
       <UserAvatar user={resolvedUser} size={size} />
 
-      <div className="min-w-0">
-        <p className="text-sm font-medium truncate leading-tight">
+      <div className="flex flex-col min-w-0">
+        <p className="text-foreground text-sm font-medium leading-tight truncate">
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}
         </p>
 
-        {(resolvedUser?.displayUsername || resolvedUser?.name) && (
-          <p className="text-muted text-xs mb-0.5 truncate overflow-x-hidden">
+        {showSubtitle &&
+        (resolvedUser?.displayUsername || resolvedUser?.name) ? (
+          <p className="text-muted text-xs leading-tight truncate overflow-x-hidden">
             {resolvedUser?.email}
           </p>
-        )}
+        ) : null}
       </div>
     </div>
   )

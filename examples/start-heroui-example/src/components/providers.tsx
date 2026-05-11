@@ -2,7 +2,9 @@ import { AuthProvider } from "@better-auth-ui/heroui"
 import {
   apiKeyPlugin,
   deleteUserPlugin,
+  magicLinkPlugin,
   multiSessionPlugin,
+  organizationPlugin,
   passkeyPlugin,
   themePlugin,
   usernamePlugin
@@ -27,9 +29,11 @@ export function Providers({ children }: { children: ReactNode }) {
           apiKeyPlugin(),
           passkeyPlugin(),
           usernamePlugin(),
+          magicLinkPlugin(),
           deleteUserPlugin(),
           themePlugin({ useTheme }),
-          multiSessionPlugin()
+          multiSessionPlugin(),
+          organizationPlugin()
         ]}
       >
         {children}

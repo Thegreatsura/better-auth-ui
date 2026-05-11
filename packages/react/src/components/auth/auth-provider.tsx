@@ -70,19 +70,7 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const mergedConfig = deepmerge(defaultAuthConfig, {
-    ...config,
-    viewPaths: {
-      auth: {
-        ...defaultAuthConfig.viewPaths.auth,
-        ...config.viewPaths?.auth
-      },
-      settings: {
-        ...defaultAuthConfig.viewPaths.settings,
-        ...config.viewPaths?.settings
-      }
-    }
-  } as AuthConfig)
+  const mergedConfig = deepmerge(defaultAuthConfig, config) as AuthConfig
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&

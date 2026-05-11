@@ -3,6 +3,7 @@ import type { passkeyClient } from "@better-auth/passkey/client"
 import type {
   magicLinkClient,
   multiSessionClient,
+  organizationClient,
   usernameClient
 } from "better-auth/client/plugins"
 import type { createAuthClient } from "better-auth/react"
@@ -33,6 +34,15 @@ export type ApiKeyAuthClient = ReturnType<
 
 export type UsernameAuthClient = ReturnType<
   typeof createAuthClient<{ plugins: [ReturnType<typeof usernameClient>] }>
+>
+
+/** Matches `organization()` / `organizationClient()` without the teams feature. */
+export type OrganizationAuthClient = ReturnType<
+  typeof createAuthClient<{
+    plugins: [
+      ReturnType<typeof organizationClient<{ teams: { enabled: false } }>>
+    ]
+  }>
 >
 
 /**

@@ -39,8 +39,15 @@ export function ForgotPassword({
   variant,
   ...props
 }: ForgotPasswordProps & Omit<CardProps, "children">) {
-  const { authClient, basePaths, localization, viewPaths, navigate, plugins } =
-    useAuth()
+  const {
+    authClient,
+    baseURL,
+    basePaths,
+    localization,
+    viewPaths,
+    navigate,
+    plugins
+  } = useAuth()
 
   const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
@@ -64,6 +71,7 @@ export function ForgotPassword({
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({
       email: formData.get("email") as string,
+      redirectTo: `${baseURL}${basePaths.auth}/${viewPaths.auth.resetPassword}`,
       fetchOptions
     })
   }

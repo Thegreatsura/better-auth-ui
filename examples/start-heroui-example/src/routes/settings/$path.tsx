@@ -1,5 +1,6 @@
 import { viewPaths } from "@better-auth-ui/core"
 import { Settings } from "@better-auth-ui/heroui"
+import { organizationPlugin } from "@better-auth-ui/heroui/plugins"
 import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
 import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
@@ -9,9 +10,15 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 import { auth } from "@/lib/auth"
 import { authClient } from "@/lib/auth-client"
 
+/** Same pattern as magic-link: spread plugin `viewPaths.settings` into the allowed segment set. */
+const validSettingsPaths = [
+  ...Object.values(viewPaths.settings),
+  ...Object.values(organizationPlugin().viewPaths.settings)
+]
+
 export const Route = createFileRoute("/settings/$path")({
   async beforeLoad({ params: { path }, context: { queryClient }, location }) {
-    if (!Object.values(viewPaths.settings).includes(path)) {
+    if (!validSettingsPaths.includes(path)) {
       throw notFound()
     }
 

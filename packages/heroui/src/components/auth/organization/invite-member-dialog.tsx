@@ -1,0 +1,181 @@
+import {
+  type OrganizationAuthClient,
+  useAuth,
+  useAuthPlugin,
+  useInviteMember
+} from "@better-auth-ui/react"
+import { PersonPlus } from "@gravity-ui/icons"
+import {
+  AlertDialog,
+  Button,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  ListBox,
+  Select,
+  Spinner,
+  TextField
+} from "@heroui/react"
+import { type SyntheticEvent, useEffect, useState } from "react"
+
+import { organizationPlugin } from "../../../lib/auth/organization-plugin"
+
+/** Props for the {@link InviteMemberDialog} component. */
+export type InviteMemberDialogProps = {
+  isOpen: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+/**
+ * Render a dialog for inviting a member to the organization.
+ *
+ * @param isOpen - Whether the dialog is open
+ * @param onOpenChange - Callback for when the dialog open state changes
+ * @returns The invite member dialog as a JSX element
+ */
+export function InviteMemberDialog({
+  isOpen,
+  onOpenChange
+}: InviteMemberDialogProps) {
+  const { authClient } = useAuth()
+  const { localization: organizationLocalization } =
+    useAuthPlugin(organizationPlugin)
+
+  const [formInstance, setFormInstance] = useState(0)
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormInstance((n) => n + 1)
+    }
+  }, [isOpen])
+
+  const { mutate: inviteMember, isPending: isInviting } = useInviteMember(
+    authClient as OrganizationAuthClient,
+    {
+      onSuccess: () => onOpenChange(false)
+    }
+  )
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.target as HTMLFormElement)
+    const email = (formData.get("email") as string)?.trim()
+    const role = ((formData.get("role") as string)?.trim() || "member") as
+      | "owner"
+      | "admin"
+      | "member"
+
+    if (!email) return
+
+    inviteMember({ email, role })
+  }
+
+  return (
+    <AlertDialog.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
+      <AlertDialog.Container>
+        <AlertDialog.Dialog>
+          <Form key={formInstance} onSubmit={handleSubmit}>
+            <AlertDialog.CloseTrigger />
+
+            <AlertDialog.Header>
+              <AlertDialog.Icon status="default">
+                <PersonPlus />
+              </AlertDialog.Icon>
+
+              <AlertDialog.Heading>
+                {organizationLocalization.inviteMember}
+              </AlertDialog.Heading>
+            </AlertDialog.Header>
+
+            <AlertDialog.Body className="flex flex-col gap-4 overflow-visible">
+              <p className="text-muted text-sm">
+                {organizationLocalization.inviteMemberDescription}
+              </p>
+
+              <TextField
+                id="email"
+                name="email"
+                type="email"
+                isRequired
+                isDisabled={isInviting}
+              >
+                <Label>{organizationLocalization.email}</Label>
+
+                <Input
+                  autoFocus
+                  placeholder={organizationLocalization.inviteEmail}
+                  variant="secondary"
+                />
+
+                <FieldError />
+              </TextField>
+
+              <Select
+                name="role"
+                defaultValue="member"
+                isDisabled={isInviting}
+                variant="secondary"
+                fullWidth
+              >
+                <Label>{organizationLocalization.role}</Label>
+
+                <Select.Trigger>
+                  <Select.Value />
+
+                  <Select.Indicator />
+                </Select.Trigger>
+
+                <Select.Popover>
+                  <ListBox>
+                    <ListBox.Item
+                      id="member"
+                      textValue={organizationLocalization.member}
+                    >
+                      {organizationLocalization.member}
+
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+
+                    <ListBox.Item
+                      id="admin"
+                      textValue={organizationLocalization.admin}
+                    >
+                      {organizationLocalization.admin}
+
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+
+                    <ListBox.Item
+                      id="owner"
+                      textValue={organizationLocalization.owner}
+                    >
+                      {organizationLocalization.owner}
+
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  </ListBox>
+                </Select.Popover>
+
+                <FieldError />
+              </Select>
+            </AlertDialog.Body>
+
+            <AlertDialog.Footer>
+              <Button slot="close" variant="tertiary" isDisabled={isInviting}>
+                {organizationLocalization.cancel}
+              </Button>
+
+              <Button type="submit" isPending={isInviting}>
+                {isInviting && <Spinner color="current" size="sm" />}
+
+                {organizationLocalization.invite}
+              </Button>
+            </AlertDialog.Footer>
+          </Form>
+        </AlertDialog.Dialog>
+      </AlertDialog.Container>
+    </AlertDialog.Backdrop>
+  )
+}
