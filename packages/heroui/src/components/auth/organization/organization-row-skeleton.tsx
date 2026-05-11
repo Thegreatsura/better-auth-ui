@@ -15,8 +15,6 @@ export function OrganizationRowSkeleton() {
           <Skeleton className="h-3 w-36 rounded-lg" />
         </div>
       </div>
-
-      <Skeleton className="h-8 w-24 shrink-0 rounded-lg" />
     </div>
   )
 }

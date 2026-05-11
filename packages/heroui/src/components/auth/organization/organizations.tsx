@@ -8,14 +8,10 @@ import { Button, Card, type CardProps } from "@heroui/react"
 import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationRow } from "./organization-row"
+import { OrganizationRowSkeleton } from "./organization-row-skeleton"
 import { OrganizationsEmpty } from "./organizations-empty"
-import type { OrganizationsListItem } from "./organizations-list-item"
-import { OrganizationsSkeleton } from "./organizations-skeleton"
-
-export type { OrganizationsListItem } from "./organizations-list-item"
 
 export type OrganizationsProps = {
   variant?: CardProps["variant"]
@@ -27,17 +23,14 @@ export type OrganizationsProps = {
  * Owns {@link CreateOrganizationDialog} open state and the create actions.
  */
 export function Organizations({ variant }: OrganizationsProps) {
-  const [createOpen, setCreateOpen] = useState(false)
   const { authClient } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: organizationsData, isPending: isLoadingOrganizations } =
+  const [createOpen, setCreateOpen] = useState(false)
+
+  const { data: organizations, isPending: organizationsPending } =
     useListOrganizations(authClient as OrganizationAuthClient)
-
-  const organizations = (organizationsData ?? []) as OrganizationsListItem[]
-
-  const openCreate = () => setCreateOpen(true)
 
   return (
     <>
@@ -50,31 +43,26 @@ export function Organizations({ variant }: OrganizationsProps) {
           <Button
             className="shrink-0"
             size="sm"
-            isDisabled={isLoadingOrganizations}
-            onPress={openCreate}
+            isDisabled={organizationsPending}
+            onPress={() => setCreateOpen(true)}
           >
             {organizationLocalization.createOrganization}
           </Button>
         </div>
 
         <Card variant={variant}>
-          <Card.Content
-            className={
-              !isLoadingOrganizations && organizations.length > 0
-                ? "gap-0"
-                : undefined
-            }
-          >
-            {isLoadingOrganizations ? (
-              <OrganizationsSkeleton />
-            ) : !organizations.length ? (
-              <OrganizationsEmpty onCreatePress={openCreate} />
+          <Card.Content className="gap-0">
+            {organizationsPending ? (
+              <OrganizationRowSkeleton />
+            ) : !organizations?.length ? (
+              <OrganizationsEmpty onCreatePress={() => setCreateOpen(true)} />
             ) : (
               organizations.map((organization, index) => (
                 <div key={organization.id}>
                   {index > 0 && (
                     <div className="-mx-4 my-4 border-b border-dashed" />
                   )}
+
                   <OrganizationRow organization={organization} />
                 </div>
               ))

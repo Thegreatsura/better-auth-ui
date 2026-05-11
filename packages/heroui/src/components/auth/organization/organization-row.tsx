@@ -6,13 +6,13 @@ import {
 } from "@better-auth-ui/react"
 import { Gear } from "@gravity-ui/icons"
 import { Button, Spinner } from "@heroui/react"
+import type { Organization } from "better-auth/client"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationView } from "./organization-view"
-import type { OrganizationsListItem } from "./organizations-list-item"
 
 export type OrganizationRowProps = {
-  organization: OrganizationsListItem
+  organization: Organization
 }
 
 /**
@@ -25,39 +25,30 @@ export function OrganizationRow({ organization }: OrganizationRowProps) {
     viewPaths: organizationViewPaths
   } = useAuthPlugin(organizationPlugin)
 
-  const { mutateAsync: setActiveOrganization, isPending: isOpeningSettings } =
-    useSetActiveOrganization(authClient as OrganizationAuthClient)
-
-  const openOrganizationSettings = async () => {
-    try {
-      await setActiveOrganization({ organizationId: organization.id })
-      const organizationSegments = organizationViewPaths.organization
-      navigate({
-        to: `${basePaths.organization}/${organizationSegments?.settings ?? "settings"}`
-      })
-    } catch {
-      // Errors are surfaced by the global error handler.
-    }
-  }
+  const { mutate: setActiveOrganization, isPending: setActivePending } =
+    useSetActiveOrganization(authClient as OrganizationAuthClient, {
+      onSuccess: () => {
+        navigate({
+          to: `${basePaths.organization}/${organizationViewPaths.organization.settings}`
+        })
+      }
+    })
 
   return (
     <div className="flex items-center gap-3">
-      <OrganizationView
-        className="min-w-0 flex-1"
-        organization={organization}
-      />
+      <OrganizationView organization={organization} />
 
       <Button
         className="ml-auto shrink-0"
         variant="outline"
         size="sm"
-        isPending={isOpeningSettings}
-        onPress={() => {
-          void openOrganizationSettings()
-        }}
+        isPending={setActivePending}
+        onPress={() =>
+          setActiveOrganization({ organizationId: organization.id })
+        }
         aria-label={organizationLocalization.manageOrganization}
       >
-        {isOpeningSettings ? <Spinner color="current" size="sm" /> : <Gear />}
+        {setActivePending ? <Spinner color="current" size="sm" /> : <Gear />}
 
         {organizationLocalization.manageOrganization}
       </Button>
