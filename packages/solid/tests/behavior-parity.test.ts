@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import {
   authMutationKeys,
   authQueryKeys,
@@ -42,6 +44,7 @@ import {
   unlinkAccountOptions,
   updateUserOptions
 } from "../src"
+import { getSessionUserId } from "../src/queries/create-user-scoped-query"
 
 const signal = new AbortController().signal
 
@@ -114,6 +117,24 @@ describe("Solid auth behavior parity", () => {
       query: { accountId: "acct-1" },
       fetchOptions: { credentials: "include", signal, throw: true }
     })
+  })
+
+  it("derives user-scoped query IDs from one existing session query result", () => {
+    expect(
+      getSessionUserId({ data: { user: { id: "user-1" } } } as never)
+    ).toBe("user-1")
+    expect(getSessionUserId({ data: null } as never)).toBeUndefined()
+
+    const listAccountsQuery = readFileSync(
+      resolve(__dirname, "../src/queries/settings/list-accounts-query.ts"),
+      "utf8"
+    )
+
+    expect(listAccountsQuery).toContain(
+      "const session = useSession(authClient)"
+    )
+    expect(listAccountsQuery).toContain("getSessionUserId(session)")
+    expect(listAccountsQuery).not.toContain("getUserId(authClient)")
   })
 
   it("creates auth mutation options with shared mutation keys and throwing fetch options", async () => {

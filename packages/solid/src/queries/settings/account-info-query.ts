@@ -1,12 +1,13 @@
 import { authQueryKeys } from "@better-auth-ui/core"
 import type { QueryClient } from "@tanstack/solid-query"
 import type { AuthClient, InferData } from "../../lib/auth-client"
+import { useSession } from "../auth/session-query"
 import {
   createUserScopedOptions,
   createUserScopedQuery,
   ensureUserScopedQuery,
   fetchUserScopedQuery,
-  getUserId,
+  getSessionUserId,
   prefetchUserScopedQuery
 } from "../create-user-scoped-query"
 
@@ -79,7 +80,8 @@ export function useAccountInfo<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options: UseAccountInfoOptions<TAuthClient> = {}
 ) {
-  const userId = () => getUserId(authClient)
+  const session = useSession(authClient)
+  const userId = () => getSessionUserId(session)
   const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createUserScopedQuery(

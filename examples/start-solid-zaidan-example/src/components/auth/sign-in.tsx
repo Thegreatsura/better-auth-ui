@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { resolveSignInPath } from "./sign-in-path"
+import { resolveSubmittedSignIn } from "./sign-in-path"
 
 const authHref = (basePath: string, viewPath: string) =>
   `${basePath}/${viewPath}`
@@ -50,17 +50,24 @@ export function SignIn() {
       | undefined)
   }
 
-  const submitSignIn = (event: SubmitEvent) => {
+  const submitSignIn = (
+    event: SubmitEvent & { currentTarget: HTMLFormElement }
+  ) => {
     event.preventDefault()
 
-    const signInPath = resolveSignInPath({
-      identifier: identifier(),
+    const { password: submittedPassword, signInPath } = resolveSubmittedSignIn({
+      formData: new FormData(event.currentTarget),
       usernameAuth
     })
 
+    setIdentifier(
+      signInPath.kind === "username" ? signInPath.username : signInPath.email
+    )
+    setPassword(submittedPassword)
+
     if (signInPath.kind === "username") {
       signInUsername.mutate({
-        password: password(),
+        password: submittedPassword,
         username: signInPath.username
       })
       return
@@ -68,7 +75,7 @@ export function SignIn() {
 
     signIn.mutate({
       email: signInPath.email,
-      password: password()
+      password: submittedPassword
     })
   }
 

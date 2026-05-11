@@ -1,5 +1,6 @@
+import type { QueryClient } from "@tanstack/solid-query"
 import {
-  createRootRoute,
+  createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts
@@ -15,7 +16,9 @@ import { syncDocumentThemePreference, themeScript } from "@/lib/theme"
 
 import "../styles/globals.css"
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+}>()({
   component: RootComponent,
   head: () => ({
     meta: [
@@ -32,6 +35,8 @@ function RootComponent() {
 }
 
 function RootDocument(props: { children: JSX.Element }) {
+  const routeContext = Route.useRouteContext()
+
   onMount(() => {
     const cleanup = syncDocumentThemePreference()
 
@@ -46,7 +51,7 @@ function RootDocument(props: { children: JSX.Element }) {
       </head>
       <body class="antialiased min-h-svh flex flex-col bg-background text-foreground">
         <HeadContent />
-        <AuthProvider>
+        <AuthProvider queryClient={routeContext().queryClient}>
           {() => (
             <>
               <Header />

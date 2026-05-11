@@ -603,7 +603,9 @@ describe("Solid registry isolation", () => {
     expect(authRoute).not.toContain('from "@/components/auth/auth-provider"')
     expect(authRoute).not.toContain("<AuthProvider>")
     expect(rootRoute).toContain('from "@/components/auth/auth-provider"')
-    expect(rootRoute).toContain("<AuthProvider>")
+    expect(rootRoute).toContain(
+      "<AuthProvider queryClient={routeContext().queryClient}>"
+    )
     expect(rootRoute).toContain("</AuthProvider>")
     expect(signOut).toContain('from "@better-auth-ui/solid"')
     expect(signOut).toContain('from "solid-js"')
@@ -887,7 +889,8 @@ describe("Solid registry isolation", () => {
 
     expect(signIn).toContain("signInUsernameOptions")
     expect(signIn).toContain("usernameOrEmailPlaceholder")
-    expect(signIn).toContain("resolveSignInPath")
+    expect(signIn).toContain("resolveSubmittedSignIn")
+    expect(signIn).toContain("new FormData(event.currentTarget)")
     expect(signIn).toContain("username: signInPath.username")
     expect(signIn).toContain("email: signInPath.email")
     expect(signIn).toContain(
@@ -1027,6 +1030,8 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain("setIsUserButtonHydrated(true)")
     expect(userButton).toContain("when={isUserButtonHydrated()}")
     expect(userButton).toContain("<UserButtonPendingView")
+    expect(userButton).toContain("useSession(auth.authClient, {")
+    expect(userButton).toContain("enabled: !import.meta.env.SSR")
     expect(userButton).toContain("<Skeleton")
     expect(userButton).toContain('class="size-8 rounded-full"')
     expect(userButton).toContain('class="h-4 w-24"')
@@ -1042,6 +1047,11 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain('"max-width": "48svw"')
     expect(userButton).toContain('width: "max-content"')
     expect(userButton).toContain("<Show when={session.data}>")
+    expect(userButton).toContain("when={!session.isPending}")
+    expect(userButton).toContain("href={settingsHref}")
+    expect(userButton).not.toContain(
+      "disabled\n            >\n              <Settings"
+    )
     expect(userButton.indexOf("{auth.localization.auth.signUp}")).toBeLessThan(
       userButton.indexOf("<ThemeToggleItem />")
     )
@@ -1122,6 +1132,12 @@ describe("Solid registry isolation", () => {
         expect.objectContaining({
           content: expect.stringContaining("export function SignIn"),
           path: "src/components/auth/sign-in.tsx"
+        }),
+        expect.objectContaining({
+          content: expect.stringContaining(
+            "export function resolveSubmittedSignIn"
+          ),
+          path: "src/components/auth/sign-in-path.ts"
         })
       ])
     )

@@ -5,7 +5,10 @@ import { describe, expect, it } from "vitest"
 import { ForgotPassword } from "../src/components/auth/forgot-password"
 import { ResetPassword } from "../src/components/auth/reset-password"
 import { SignIn } from "../src/components/auth/sign-in"
-import { resolveSignInPath } from "../src/components/auth/sign-in-path"
+import {
+  resolveSignInPath,
+  resolveSubmittedSignIn
+} from "../src/components/auth/sign-in-path"
 import { SignOut } from "../src/components/auth/sign-out"
 import { SignUp } from "../src/components/auth/sign-up"
 import { resolveAuthRoute } from "../src/routes/auth/-route-components"
@@ -52,6 +55,32 @@ describe("Solid auth route component selection", () => {
     expect(authProvider).toContain("navigate={navigate}")
   })
 
+  it("shares the router QueryClient with Solid auth queries across navigation", () => {
+    const rootRoute = readFileSync(
+      resolve(__dirname, "../src/routes/__root.tsx"),
+      "utf8"
+    )
+    const authProvider = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+      "utf8"
+    )
+
+    expect(rootRoute).toContain(
+      'import type { QueryClient } from "@tanstack/solid-query"'
+    )
+    expect(rootRoute).toContain("createRootRouteWithContext<{")
+    expect(rootRoute).toContain("queryClient: QueryClient")
+    expect(rootRoute).toContain("const routeContext = Route.useRouteContext()")
+    expect(rootRoute).toContain(
+      "<AuthProvider queryClient={routeContext().queryClient}>"
+    )
+    expect(authProvider).toContain(
+      'import type { QueryClient } from "@tanstack/solid-query"'
+    )
+    expect(authProvider).toContain("queryClient?: QueryClient")
+    expect(authProvider).toContain("queryClient={props.queryClient}")
+  })
+
   it("redirects Solid sign-in success like shadcn and refreshes the session query", () => {
     const signIn = readFileSync(
       resolve(__dirname, "../src/components/auth/sign-in.tsx"),
@@ -80,6 +109,28 @@ describe("Solid auth route component selection", () => {
     expect(
       resolveSignInPath({ identifier: "andres@test.com", usernameAuth: false })
     ).toEqual({ kind: "email", email: "andres@test.com" })
+  })
+
+  it("resolves submitted sign-in from current form values instead of stale Solid signals", () => {
+    const formData = new FormData()
+    formData.set("username", " andres@test.com ")
+    formData.set("password", "current-password")
+
+    expect(resolveSubmittedSignIn({ formData, usernameAuth: true })).toEqual({
+      password: "current-password",
+      signInPath: { email: "andres@test.com", kind: "email" }
+    })
+  })
+
+  it("resolves submitted username sign-in from the current username form value", () => {
+    const formData = new FormData()
+    formData.set("username", " andres ")
+    formData.set("password", "username-password")
+
+    expect(resolveSubmittedSignIn({ formData, usernameAuth: true })).toEqual({
+      password: "username-password",
+      signInPath: { kind: "username", username: "andres" }
+    })
   })
 
   it("redirects Solid sign-up success with the same verification branch as shadcn", () => {

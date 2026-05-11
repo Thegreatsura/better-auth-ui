@@ -180,7 +180,9 @@ export function UserButton(rawProps: UserButtonProps = {}) {
     rawProps
   )
   const auth = useAuth()
-  const session = useSession(auth.authClient)
+  const session = useSession(auth.authClient, {
+    enabled: !import.meta.env.SSR
+  })
   const [isUserButtonHydrated, setIsUserButtonHydrated] = createSignal(false)
   const settingsLabel = () => auth.localization.settings.settings
   const size = () => props.size
@@ -206,6 +208,10 @@ export function UserButton(rawProps: UserButtonProps = {}) {
   const signInHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signIn)
   const signUpHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signUp)
   const signOutHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signOut)
+  const settingsHref = authHref(
+    auth.basePaths.settings,
+    auth.viewPaths.settings.account
+  )
 
   const userLabel = () =>
     resolveUserLabel(
@@ -355,51 +361,61 @@ export function UserButton(rawProps: UserButtonProps = {}) {
           </Show>
 
           <Show
-            when={session.data}
+            when={!session.isPending}
             fallback={
-              <>
-                <DropdownMenuItem
-                  as="a"
-                  class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                  href={signInHref}
-                >
-                  <LogIn class="size-4 text-muted-foreground" />
-                  {auth.localization.auth.signIn}
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  as="a"
-                  class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                  href={signUpHref}
-                >
-                  <UserPlus2 class="size-4 text-muted-foreground" />
-                  {auth.localization.auth.signUp}
-                </DropdownMenuItem>
-
-                <ThemeToggleItem />
-              </>
+              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm">
+                <UserButtonPendingView />
+              </DropdownMenuItem>
             }
           >
-            <DropdownMenuItem
-              class="gap-1.5 rounded-md px-1.5 py-1 text-sm text-muted-foreground"
-              disabled
+            <Show
+              when={session.data}
+              fallback={
+                <>
+                  <DropdownMenuItem
+                    as="a"
+                    class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+                    href={signInHref}
+                  >
+                    <LogIn class="size-4 text-muted-foreground" />
+                    {auth.localization.auth.signIn}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    as="a"
+                    class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+                    href={signUpHref}
+                  >
+                    <UserPlus2 class="size-4 text-muted-foreground" />
+                    {auth.localization.auth.signUp}
+                  </DropdownMenuItem>
+
+                  <ThemeToggleItem />
+                </>
+              }
             >
-              <Settings class="size-4 text-muted-foreground" />
-              {settingsLabel()}
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                as="a"
+                class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+                href={settingsHref}
+              >
+                <Settings class="size-4 text-muted-foreground" />
+                {settingsLabel()}
+              </DropdownMenuItem>
 
-            <ThemeToggleItem />
+              <ThemeToggleItem />
 
-            <DropdownMenuSeparator class="my-1 bg-border" />
+              <DropdownMenuSeparator class="my-1 bg-border" />
 
-            <DropdownMenuItem
-              as="a"
-              class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-              href={signOutHref}
-            >
-              <LogOut class="size-4 text-muted-foreground" />
-              {auth.localization.auth.signOut}
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                as="a"
+                class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+                href={signOutHref}
+              >
+                <LogOut class="size-4 text-muted-foreground" />
+                {auth.localization.auth.signOut}
+              </DropdownMenuItem>
+            </Show>
           </Show>
         </DropdownMenuContent>
       </DropdownMenu>

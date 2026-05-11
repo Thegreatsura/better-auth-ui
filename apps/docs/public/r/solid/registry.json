@@ -212,6 +212,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/sign-in-path.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/ui/button.tsx",
           "type": "registry:ui"
         },

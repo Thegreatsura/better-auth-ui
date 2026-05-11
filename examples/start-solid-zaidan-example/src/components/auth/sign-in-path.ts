@@ -9,6 +9,22 @@ export type SignInPath =
   | { kind: "email"; email: string }
   | { kind: "username"; username: string }
 
+export type SubmittedSignInInput = {
+  formData: FormData
+  usernameAuth: boolean
+}
+
+export type SubmittedSignIn = {
+  password: string
+  signInPath: SignInPath
+}
+
+const getFormValue = (formData: FormData, name: string) => {
+  const value = formData.get(name)
+
+  return typeof value === "string" ? value : ""
+}
+
 export function resolveSignInPath({
   identifier,
   usernameAuth
@@ -20,4 +36,18 @@ export function resolveSignInPath({
   }
 
   return { kind: "email", email: normalizedIdentifier }
+}
+
+export function resolveSubmittedSignIn({
+  formData,
+  usernameAuth
+}: SubmittedSignInInput): SubmittedSignIn {
+  const identifier = usernameAuth
+    ? getFormValue(formData, "username")
+    : getFormValue(formData, "email")
+
+  return {
+    password: getFormValue(formData, "password"),
+    signInPath: resolveSignInPath({ identifier, usernameAuth })
+  }
 }

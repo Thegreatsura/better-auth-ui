@@ -7,8 +7,6 @@ import {
   skipToken
 } from "@tanstack/solid-query"
 import type { BetterFetchError } from "better-auth/client"
-import type { AuthClient } from "../lib/auth-client"
-import { useSession } from "./auth/session-query"
 
 // biome-ignore lint/suspicious/noExplicitAny: Better Auth client methods have intentionally variable generated params.
 export type QueryMethod<TData = unknown> = (params?: any) => Promise<TData>
@@ -103,5 +101,7 @@ export function createUserScopedQuery<
   })
 }
 
-export const getUserId = (authClient: AuthClient) =>
-  useSession(authClient).data?.user.id
+export const getSessionUserId = (session: { data?: SessionLike }) =>
+  session.data?.user?.id
+
+type SessionLike = { user?: { id?: string } } | null | undefined

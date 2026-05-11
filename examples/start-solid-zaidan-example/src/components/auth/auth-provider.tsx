@@ -10,6 +10,7 @@ import {
   createAuthClient,
   AuthProvider as SolidAuthProvider
 } from "@better-auth-ui/solid"
+import type { QueryClient } from "@tanstack/solid-query"
 import { useNavigate } from "@tanstack/solid-router"
 import { multiSessionClient, usernameClient } from "better-auth/client/plugins"
 import type { JSX } from "solid-js"
@@ -37,6 +38,7 @@ const authClient = createAuthClient({
 
 export type AuthProviderProps = {
   children?: JSX.Element | (() => JSX.Element)
+  queryClient?: QueryClient
 }
 
 export function AuthProvider(props: AuthProviderProps) {
@@ -47,6 +49,7 @@ export function AuthProvider(props: AuthProviderProps) {
       authClient={authClient}
       redirectTo="/settings/account"
       navigate={navigate}
+      queryClient={props.queryClient}
       plugins={[
         multiSessionPlugin(),
         apiKeyPlugin(),

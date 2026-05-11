@@ -158,6 +158,10 @@ export const solidRegistryManifest = {
           path: "src/components/auth/sign-in.tsx",
           type: "registry:component"
         },
+        {
+          path: "src/components/auth/sign-in-path.ts",
+          type: "registry:component"
+        },
         ...zaidanUiFiles
       ]
     },
