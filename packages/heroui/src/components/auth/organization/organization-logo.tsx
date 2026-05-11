@@ -1,18 +1,13 @@
 import { Briefcase } from "@gravity-ui/icons"
 import { Avatar, type AvatarProps, cn, Skeleton } from "@heroui/react"
+import type { Organization } from "better-auth/client"
 import type { ReactNode } from "react"
 
 export type OrganizationLogoProps = {
   className?: string
   fallback?: ReactNode
-  /**
-   * When true and `organization` is still `undefined` (initial query), show a skeleton.
-   */
-  isOrganizationLoading?: boolean
-  organization?: {
-    name?: string | null
-    logo?: string | null
-  } | null
+  isPending?: boolean
+  organization?: Organization
   size?: AvatarProps["size"]
 }
 
@@ -23,13 +18,13 @@ export type OrganizationLogoProps = {
 export function OrganizationLogo({
   className,
   fallback,
-  isOrganizationLoading,
+  isPending,
   organization,
   size = "sm",
   style,
   ...props
 }: OrganizationLogoProps & AvatarProps) {
-  if (isOrganizationLoading && organization === undefined) {
+  if (isPending && !organization) {
     return (
       <Skeleton
         className={cn(

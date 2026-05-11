@@ -98,10 +98,6 @@ export function Members({
             </Table.Content>
           </Table.ScrollContainer>
         </Table>
-      ) : !memberList?.length ? (
-        <p className="py-8 text-center text-muted text-sm">
-          {organizationLocalization.noMembers}
-        </p>
       ) : (
         <Table>
           <Table.ScrollContainer>
@@ -112,7 +108,7 @@ export function Members({
               {tableHeader}
 
               <Table.Body>
-                {memberList.map((member) => (
+                {(memberList ?? []).map((member) => (
                   <MemberTableRow
                     key={member.id}
                     member={member}

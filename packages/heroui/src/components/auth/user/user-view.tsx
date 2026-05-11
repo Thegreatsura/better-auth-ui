@@ -13,10 +13,10 @@ export type UserViewProps = {
   isPending?: boolean
   size?: AvatarProps["size"]
   /**
-   * When false, the subtitle line (email when name/username is shown) is hidden.
-   * @default true
+   * When true, the subtitle line (email when name/username is shown) is hidden.
+   * @default false
    */
-  showSubtitle?: boolean
+  hideSubtitle?: boolean
   /** @remarks `User` */
   user?: Partial<User> & {
     username?: string | null
@@ -29,7 +29,7 @@ export type UserViewProps = {
  *
  * @param isPending - If true and no `user` prop is provided, renders a loading skeleton instead of user details
  * @param size - Avatar size variant; defaults to `"sm"`
- * @param showSubtitle - When false, omits the muted subtitle row under the primary label
+ * @param hideSubtitle - When true, omits the muted subtitle row under the primary label
  * @param user - Optional user to display; when omitted the current session user is used if available
  * @returns A React element containing the user's avatar and text labels
  */
@@ -37,7 +37,7 @@ export function UserView({
   className,
   isPending,
   size = "sm",
-  showSubtitle = true,
+  hideSubtitle = false,
   user,
   ...props
 }: UserViewProps & ComponentProps<"div">) {
@@ -62,7 +62,7 @@ export function UserView({
         <div className="flex flex-col gap-1 min-w-0">
           <Skeleton className="h-3.5 w-24 rounded-lg" />
 
-          {showSubtitle ? <Skeleton className="h-3 w-32 rounded-lg" /> : null}
+          {!hideSubtitle ? <Skeleton className="h-3 w-32 rounded-lg" /> : null}
         </div>
       </div>
     )
@@ -82,7 +82,7 @@ export function UserView({
             resolvedUser?.email}
         </p>
 
-        {showSubtitle &&
+        {!hideSubtitle &&
         (resolvedUser?.displayUsername || resolvedUser?.name) ? (
           <p className="text-muted text-xs leading-tight truncate overflow-x-hidden">
             {resolvedUser?.email}

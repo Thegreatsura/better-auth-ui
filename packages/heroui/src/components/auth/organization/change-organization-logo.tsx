@@ -127,7 +127,7 @@ export function ChangeOrganizationLogo({
         >
           <OrganizationLogo
             size="lg"
-            isOrganizationLoading={isOrganizationLoading}
+            isPending={isOrganizationLoading}
             organization={organization}
           />
         </Button>

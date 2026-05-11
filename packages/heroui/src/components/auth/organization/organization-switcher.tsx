@@ -7,12 +7,7 @@ import {
   useSession,
   useSetActiveOrganization
 } from "@better-auth-ui/react"
-import {
-  Briefcase,
-  ChevronsExpandVertical,
-  CirclePlus,
-  Gear
-} from "@gravity-ui/icons"
+import { ChevronsExpandVertical, CirclePlus, Gear } from "@gravity-ui/icons"
 import {
   Button,
   type ButtonProps,
@@ -26,9 +21,9 @@ import { buttonVariants } from "@heroui/styles"
 import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { UserAvatar } from "../user/user-avatar"
 import { UserView } from "../user/user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
+import { OrganizationLogo } from "./organization-logo"
 import { OrganizationView } from "./organization-view"
 
 /** Props for the {@link OrganizationSwitcher} component. */
@@ -40,6 +35,8 @@ export type OrganizationSwitcherProps = {
    */
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
+  hideCreate?: boolean
+  hidePersonal?: boolean
 }
 
 /**
@@ -49,9 +46,12 @@ export type OrganizationSwitcherProps = {
  */
 export function OrganizationSwitcher({
   className,
+  hideCreate,
+  hidePersonal,
   placement = "bottom",
-  variant = "ghost"
-}: OrganizationSwitcherProps) {
+  variant = "ghost",
+  ...props
+}: OrganizationSwitcherProps & ButtonProps) {
   const { authClient, basePaths, localization, viewPaths } = useAuth()
   const { data: session, isPending: sessionPending } = useSession(authClient)
   const {
@@ -90,19 +90,17 @@ export function OrganizationSwitcher({
             className
           )}
           isDisabled={!session && !sessionPending}
+          {...props}
         >
           {isPending ? (
-            <OrganizationView isPending showSlug={false} />
+            <OrganizationView isPending hideSlug />
           ) : activeOrganization ? (
-            <OrganizationView
-              showSlug={false}
-              organization={activeOrganization}
-            />
-          ) : session ? (
-            <UserView showSubtitle={false} />
+            <OrganizationView hideSlug organization={activeOrganization} />
+          ) : session && !hidePersonal ? (
+            <UserView hideSubtitle />
           ) : (
             <>
-              <UserAvatar fallback={<Briefcase />} />
+              <OrganizationLogo />
 
               <p className="text-sm font-medium">
                 {organizationLocalization.organization}
@@ -113,14 +111,10 @@ export function OrganizationSwitcher({
           <ChevronsExpandVertical className="ml-auto size-3.5 shrink-0" />
         </Button>
 
-        <Dropdown.Popover placement={placement}>
-          {!isPending && activeOrganization ? (
-            <div className="flex items-center px-4 py-3 gap-4">
-              <OrganizationView
-                showSlug={false}
-                className="min-w-0 flex-1"
-                organization={activeOrganization}
-              />
+        <Dropdown.Popover placement={placement} className="max-w-svw">
+          {activeOrganization ? (
+            <div className="flex justify-between items-center px-4 pt-3 gap-4">
+              <OrganizationView hideSlug organization={activeOrganization} />
 
               <Link
                 href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
@@ -135,13 +129,9 @@ export function OrganizationSwitcher({
                 {organizationLocalization.manageOrganization}
               </Link>
             </div>
-          ) : !isPending && session?.user && !activeOrganization ? (
-            <div className="flex items-center px-4 py-3 gap-4">
-              <UserView
-                className="min-w-0 flex-1"
-                showSubtitle={false}
-                size="sm"
-              />
+          ) : !isPending && session?.user && !hidePersonal ? (
+            <div className="flex justify-between items-center px-4 pt-3 gap-4">
+              <UserView hideSubtitle />
 
               <Link
                 href={`${basePaths.settings}/${viewPaths.settings.account}`}
@@ -159,14 +149,14 @@ export function OrganizationSwitcher({
           ) : null}
 
           <Dropdown.Menu>
-            {activeOrganization ? (
+            {!!activeOrganization && !hidePersonal && (
               <Dropdown.Item
                 textValue={organizationLocalization.personalAccount}
                 onPress={() => setActiveOrganization({ organizationId: null })}
               >
-                <UserView showSubtitle={false} />
+                <UserView hideSubtitle />
               </Dropdown.Item>
-            ) : null}
+            )}
 
             {otherOrganizations?.map((organization) => (
               <Dropdown.Item
@@ -176,23 +166,20 @@ export function OrganizationSwitcher({
                   setActiveOrganization({ organizationId: organization.id })
                 }
               >
-                <OrganizationView
-                  showSlug={false}
-                  className="min-w-0 w-full"
-                  organization={organization}
-                  size="sm"
-                />
+                <OrganizationView hideSlug organization={organization} />
               </Dropdown.Item>
             ))}
 
-            <Dropdown.Item
-              textValue={organizationLocalization.createOrganization}
-              onPress={() => setCreateOpen(true)}
-            >
-              <CirclePlus className="text-muted" />
+            {!hideCreate && (
+              <Dropdown.Item
+                textValue={organizationLocalization.createOrganization}
+                onPress={() => setCreateOpen(true)}
+              >
+                <CirclePlus className="text-muted" />
 
-              <Label>{organizationLocalization.createOrganization}</Label>
-            </Dropdown.Item>
+                <Label>{organizationLocalization.createOrganization}</Label>
+              </Dropdown.Item>
+            )}
           </Dropdown.Menu>
         </Dropdown.Popover>
       </Dropdown>

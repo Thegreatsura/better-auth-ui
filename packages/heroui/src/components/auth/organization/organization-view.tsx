@@ -1,26 +1,21 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { type AvatarProps, Chip, cn, Skeleton } from "@heroui/react"
+import type { Organization } from "better-auth/client"
 import type { ComponentProps } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationLogo } from "./organization-logo"
 import { localizedOrganizationRole } from "./organization-role-label"
-import type { OrganizationsListItem } from "./organizations-list-item"
 
 export type OrganizationViewProps = {
   className?: string
   isPending?: boolean
   size?: AvatarProps["size"]
   /**
-   * When false, the slug line is omitted (e.g. organization switcher).
-   * @default true
+   * When true, the slug line is omitted.
    */
-  showSlug?: boolean
-  /** When omitted while loading (`isPending`), a skeleton is shown. */
-  organization?: Pick<
-    OrganizationsListItem,
-    "name" | "slug" | "logo" | "role"
-  > | null
+  hideSlug?: boolean
+  organization?: Organization & { role?: string }
 }
 
 /**
@@ -30,25 +25,25 @@ export function OrganizationView({
   className,
   isPending,
   size = "sm",
-  showSlug = true,
+  hideSlug,
   organization,
   ...props
 }: OrganizationViewProps & ComponentProps<"div">) {
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  if (isPending && organization === undefined) {
+  if (isPending && !organization) {
     return (
       <div
         className={cn("flex min-w-0 items-center gap-2", className)}
         {...props}
       >
-        <OrganizationLogo isOrganizationLoading size={size} />
+        <OrganizationLogo isPending size={size} />
 
         <div className="flex min-w-0 flex-col gap-1">
-          <Skeleton className="h-3.5 w-28 rounded-lg" />
+          <Skeleton className="h-3.5 w-24 rounded-lg" />
 
-          {showSlug ? <Skeleton className="h-3 w-36 rounded-lg" /> : null}
+          {!hideSlug && <Skeleton className="h-3 w-32 rounded-lg" />}
         </div>
       </div>
     )
@@ -79,11 +74,11 @@ export function OrganizationView({
           ) : null}
         </div>
 
-        {showSlug ? (
+        {!hideSlug && (
           <p className="text-muted text-xs leading-tight truncate overflow-x-hidden font-mono">
             {slugDisplay}
           </p>
-        ) : null}
+        )}
       </div>
     </div>
   )

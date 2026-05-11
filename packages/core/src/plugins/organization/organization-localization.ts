@@ -104,8 +104,6 @@ export const organizationLocalization = {
     "Create an organization to collaborate with others and manage shared access.",
   /** @remarks `"You haven't created any organizations yet."` */
   noActiveOrganization: "You haven't created any organizations yet.",
-  /** @remarks `"No members yet"` */
-  noMembers: "No members yet",
   /** @remarks `"No invitations yet"` */
   noOrganizationInvitations: "No invitations yet",
   /** @remarks `"Member removed"` */
