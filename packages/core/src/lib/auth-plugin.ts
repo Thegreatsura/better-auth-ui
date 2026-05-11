@@ -1,4 +1,5 @@
 import type { AdditionalFields } from "../config/additional-fields-config"
+import type { SettingsTab } from "./view-paths"
 
 /**
  * View-path contributions kept on the plugin object.
@@ -6,8 +7,11 @@ import type { AdditionalFields } from "../config/additional-fields-config"
  * Plugins that add routable sub-pages (e.g. `magicLinkPlugin` adds
  * `/auth/magic-link`) declare the URL segment under the matching section.
  * Read at runtime via `useAuthPlugin(plugin).viewPaths.*`.
+ *
+ * Plugin-specific namespaces (e.g. organization route segments) are merged
+ * via module augmentation from that plugin’s module — not declared here.
  */
-export type AuthPluginViewPaths = {
+export interface AuthPluginViewPaths {
   auth?: Record<string, string>
   settings?: Record<string, string>
 }
@@ -34,6 +38,12 @@ export interface AuthPluginBase {
    * user-defined additionalFields in the auth config.
    */
   additionalFields?: AdditionalFields
+  /**
+   * Tabs the plugin contributes to the settings page. Each tab has a key,
+   * label, and a component to render. Read at runtime via
+   * `useAuthPlugin(plugin).settingsTabs`.
+   */
+  settingsTabs?: SettingsTab[]
   /**
    * Additional properties contributed by the plugin.
    */

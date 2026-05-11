@@ -35,6 +35,10 @@ export interface AuthViewPaths {
 
 /**
  * View path segments for settings routes.
+ *
+ * Plugins augment this interface (via `declare module` in their own package)
+ * when they add settings tabs. Read segments from
+ * `useAuthPlugin(plugin).viewPaths.settings.*`.
  */
 export interface SettingsViewPaths {
   /**
@@ -47,6 +51,21 @@ export interface SettingsViewPaths {
    * @default "security"
    */
   security: string
+}
+
+/**
+ * Tab contributions for the settings page.
+ *
+ * Plugins declare `settingsTabs` on their object to add extra tabs.
+ * Read at runtime via `useAuthPlugin(plugin).settingsTabs`.
+ */
+export interface SettingsTab {
+  /** Unique key for the tab */
+  key: string
+  /** Display label */
+  label: string
+  /** Component rendered in the tab panel */
+  component: unknown
 }
 
 /**

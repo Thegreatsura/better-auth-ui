@@ -8,6 +8,7 @@ import {
   type OrganizationLocalization,
   organizationLocalization
 } from "./organization-localization"
+import type { OrganizationViewPaths } from "./organization-view-paths"
 
 function resolveLogoConfig(partial?: Partial<AvatarConfig>): AvatarConfig {
   return {
@@ -25,6 +26,12 @@ declare module "../../lib/view-paths" {
   interface SettingsViewPaths {
     /** @default "organizations" */
     organizations?: string
+  }
+}
+
+declare module "../../lib/auth-plugin" {
+  interface AuthPluginViewPaths {
+    organization?: Partial<OrganizationViewPaths>
   }
 }
 
