@@ -8,7 +8,7 @@ Solid support is additive. It should not silently pretend React-only APIs exist.
 | Area | Status | Guidance |
 |------|--------|----------|
 | `react-email` templates | No Solid equivalent selected yet | Keep email templates in the React packages or provide app-owned Solid-compatible email rendering. |
-| `sonner` toasts | No Solid equivalent selected yet | Handle mutation errors in your Solid app and connect your preferred Solid toast library. |
+| `sonner` toasts | Example parity via `solid-sonner` | The Solid/Zaidan Start example mounts a Zaidan Sonner `Toaster` and surfaces query/mutation failures with `solid-sonner`; the Solid package still does not re-export a toast UI. |
 | HeroUI components | React-only | Use the React/HeroUI docs for HeroUI, or install Solid/Zaidan registry components from `/r/solid`. |
 | React render-hook internals | Not ported | Solid tests cover equivalent provider/config/query/mutation behavior instead of React hook mechanics. |
 | Docs runtime execution | Not supported | `apps/docs/public/r/solid` is static asset hosting only; Solid source executes in `examples/start-solid-zaidan-example`. |

@@ -6,6 +6,8 @@ import {
 import { usernameClient } from "better-auth/client/plugins"
 import type { JSX } from "solid-js"
 
+import { ErrorToaster } from "./error-toaster"
+
 const resolveAuthBaseURL = () => {
   if (import.meta.env.VITE_AUTH_URL) return import.meta.env.VITE_AUTH_URL
 
@@ -27,7 +29,12 @@ export type AuthProviderProps = {
 export function AuthProvider(props: AuthProviderProps) {
   return (
     <SolidAuthProvider authClient={authClient} plugins={[usernamePlugin()]}>
-      {props.children}
+      {() => (
+        <>
+          {props.children}
+          <ErrorToaster />
+        </>
+      )}
     </SolidAuthProvider>
   )
 }

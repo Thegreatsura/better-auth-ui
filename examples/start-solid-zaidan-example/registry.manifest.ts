@@ -25,6 +25,8 @@ const solidDependencies = [
   "@better-auth-ui/core@latest",
   "@tanstack/solid-query",
   "better-auth",
+  "lucide-solid",
+  "solid-sonner",
   "solid-js"
 ]
 
@@ -80,6 +82,18 @@ export const solidRegistryManifest = {
         {
           path: "src/components/auth/auth-provider.tsx",
           type: "registry:component"
+        },
+        {
+          path: "src/components/auth/error-toaster.tsx",
+          type: "registry:component"
+        },
+        {
+          path: "src/components/ui/sonner.tsx",
+          type: "registry:ui"
+        },
+        {
+          path: "src/lib/theme.ts",
+          type: "registry:lib"
         }
       ]
     },

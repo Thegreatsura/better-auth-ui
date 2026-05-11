@@ -4,6 +4,7 @@ import {
 } from "@better-auth-ui/core/plugins"
 import { signUpEmailOptions, useAuth } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
+import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -208,9 +209,11 @@ export function SignUp(props: SignUpProps) {
                   type="button"
                   variant="ghost"
                 >
-                  <span class="text-xs">
-                    {isPasswordVisible() ? "Hide" : "Show"}
-                  </span>
+                  {isPasswordVisible() ? (
+                    <EyeOff aria-hidden class="size-4" />
+                  ) : (
+                    <Eye aria-hidden class="size-4" />
+                  )}
                 </Button>
               </div>
 
@@ -273,9 +276,11 @@ export function SignUp(props: SignUpProps) {
                     type="button"
                     variant="ghost"
                   >
-                    <span class="text-xs">
-                      {isConfirmPasswordVisible() ? "Hide" : "Show"}
-                    </span>
+                    {isConfirmPasswordVisible() ? (
+                      <EyeOff aria-hidden class="size-4" />
+                    ) : (
+                      <Eye aria-hidden class="size-4" />
+                    )}
                   </Button>
                 </div>
 

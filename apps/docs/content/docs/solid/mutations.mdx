@@ -28,4 +28,4 @@ queryClient.isMutating({ mutationKey: authMutationKeys.signIn.all })
 
 ## UI boundary
 
-Toast rendering is app-owned for Solid. The React package's `sonner` integration is not re-exported here.
+Toast rendering is app-owned for Solid. The Solid/Zaidan Start example uses Zaidan Sonner with `solid-sonner` for query and mutation failures, but `@better-auth-ui/solid` does not re-export a toast UI.

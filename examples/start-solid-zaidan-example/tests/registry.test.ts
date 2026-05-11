@@ -81,7 +81,9 @@ describe("Solid registry isolation", () => {
     expect(dependencies).toContain("@better-auth-ui/solid@latest")
     expect(dependencies).toContain("solid-js")
     expect(dependencies).toContain("@tanstack/solid-query")
+    expect(dependencies).toContain("lucide-solid")
     expect(dependencies).not.toContain("@better-auth-ui/react@latest")
+    expect(dependencies).toContain("solid-sonner")
     expect(dependencies).not.toContain("sonner")
     expect(
       dependencies.every((dependency) => !dependency.includes("react"))
@@ -201,6 +203,63 @@ describe("Solid registry isolation", () => {
     expect(viteConfig).toContain("tailwindcss()")
     expect(rootRoute).toContain('import "../styles/globals.css"')
     expect(globals).toContain('@import "tailwindcss"')
+  })
+
+  it("sets up Zaidan Sonner as the Solid toast surface", () => {
+    const packageJson = readJson<{
+      dependencies: Record<string, string>
+    }>(resolve(__dirname, "../package.json"))
+    const manifestDependencies = solidRegistryManifest.items.flatMap(
+      (item) => item.dependencies
+    )
+    const toaster = readFileSync(
+      resolve(__dirname, "../src/components/ui/sonner.tsx"),
+      "utf8"
+    )
+    const rootRoute = readFileSync(
+      resolve(__dirname, "../src/routes/__root.tsx"),
+      "utf8"
+    )
+    const authProvider = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+      "utf8"
+    )
+    const errorToaster = readFileSync(
+      resolve(__dirname, "../src/components/auth/error-toaster.tsx"),
+      "utf8"
+    )
+
+    expect(packageJson.dependencies).toHaveProperty("solid-sonner")
+    expect(manifestDependencies).toContain("solid-sonner")
+    expect(manifestDependencies).toContain("lucide-solid")
+    expect(toaster).toContain('from "solid-sonner"')
+    expect(toaster).toContain('position="top-center"')
+    expect(toaster).toContain('class="toaster group"')
+    expect(toaster).toContain('"--normal-bg": "var(--popover)"')
+    expect(toaster).toContain("CircleCheck")
+    expect(toaster).toContain("LoaderCircle")
+    expect(rootRoute).toContain('from "@/components/ui/sonner"')
+    expect(rootRoute).toContain("<Toaster />")
+    expect(authProvider).toContain('from "./error-toaster"')
+    expect(authProvider).toContain("<ErrorToaster />")
+    expect(errorToaster).toContain('import { toast } from "solid-sonner"')
+    expect(errorToaster).toContain("useQueryClient")
+    expect(errorToaster).toContain("toast.error")
+  })
+
+  it("keeps auth children evaluation inside the Solid auth provider context", () => {
+    const authProvider = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+      "utf8"
+    )
+
+    expect(authProvider).not.toContain("const resolveProviderChildren")
+    expect(authProvider).not.toContain(
+      "resolveProviderChildren(props.children)"
+    )
+    expect(authProvider).toContain("{() => (")
+    expect(authProvider).toContain("{props.children}")
+    expect(authProvider).toContain("<ErrorToaster />")
   })
 
   it("shares the shadcn token and global CSS contract", () => {
@@ -733,9 +792,22 @@ describe("Solid registry isolation", () => {
 
     expect(signIn).toContain("validationMessage")
     expect(signIn).toContain("aria-invalid")
+    expect(signIn).toContain("auth.localization.auth.showPassword")
+    expect(signIn).toContain("auth.localization.auth.hidePassword")
+    expect(signIn).toContain('import { Eye, EyeOff } from "lucide-solid"')
+    expect(signIn).toContain('type={isPasswordVisible() ? "text" : "password"}')
+    expect(signIn).toContain('type="button"')
+    expect(signIn).toContain(
+      "onClick={() => setIsPasswordVisible((visible) => !visible)}"
+    )
+    expect(signIn).toContain("<EyeOff aria-hidden")
+    expect(signIn).toContain("<Eye aria-hidden")
+    expect(signIn).not.toContain('isPasswordVisible() ? "Hide" : "Show"')
 
     expect(signUp).toContain("auth.localization.auth.showPassword")
     expect(signUp).toContain("auth.localization.auth.hidePassword")
+    expect(signUp).toContain('import { Eye, EyeOff } from "lucide-solid"')
+    expect(signUp).toContain('type={isPasswordVisible() ? "text" : "password"}')
     expect(signUp).toContain('type="button"')
     expect(signUp).toContain(
       "onClick={() => setIsPasswordVisible((visible) => !visible)}"
@@ -746,12 +818,22 @@ describe("Solid registry isolation", () => {
     expect(signUp).toContain("auth.localization.auth.passwordsDoNotMatch")
     expect(signUp).toContain("validationMessage")
     expect(signUp).toContain("aria-invalid")
+    expect(signUp).toContain("<EyeOff aria-hidden")
+    expect(signUp).toContain("<Eye aria-hidden")
+    expect(signUp).not.toContain('isPasswordVisible() ? "Hide" : "Show"')
+    expect(signUp).not.toContain('isConfirmPasswordVisible() ? "Hide" : "Show"')
 
     expect(forgotPassword).toContain("validationMessage")
     expect(forgotPassword).toContain("aria-invalid")
 
     expect(resetPassword).toContain("auth.localization.auth.showPassword")
     expect(resetPassword).toContain("auth.localization.auth.hidePassword")
+    expect(resetPassword).toContain(
+      'import { Eye, EyeOff } from "lucide-solid"'
+    )
+    expect(resetPassword).toContain(
+      'type={isPasswordVisible() ? "text" : "password"}'
+    )
     expect(resetPassword).toContain('type="button"')
     expect(resetPassword).toContain(
       "onClick={() => setIsPasswordVisible((visible) => !visible)}"
@@ -764,6 +846,12 @@ describe("Solid registry isolation", () => {
     )
     expect(resetPassword).toContain("validationMessage")
     expect(resetPassword).toContain("aria-invalid")
+    expect(resetPassword).toContain("<EyeOff aria-hidden")
+    expect(resetPassword).toContain("<Eye aria-hidden")
+    expect(resetPassword).not.toContain('isPasswordVisible() ? "Hide" : "Show"')
+    expect(resetPassword).not.toContain(
+      'isConfirmPasswordVisible() ? "Hide" : "Show"'
+    )
   })
 
   it("adds username auth parity to the Solid sign-in surface", () => {
@@ -1018,6 +1106,8 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/sign-in.json"))
     expect(signIn.name).toBe("sign-in")
     expect(signIn.dependencies).toContain("@better-auth-ui/solid@latest")
+    expect(signIn.dependencies).toContain("lucide-solid")
+    expect(signIn.dependencies).toContain("solid-sonner")
     expect(signIn.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -1042,6 +1132,34 @@ describe("Solid registry isolation", () => {
         path: "src/components/auth/sign-out.tsx"
       })
     ])
+
+    const authProvider = readJson<{
+      dependencies: string[]
+      files: Array<{ content: string; path: string }>
+      name: string
+    }>(join(outputRoot, "solid/auth-provider.json"))
+    expect(authProvider.dependencies).toContain("solid-sonner")
+    expect(authProvider.dependencies).toContain("lucide-solid")
+    expect(authProvider.files).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          content: expect.stringContaining("<ErrorToaster />"),
+          path: "src/components/auth/auth-provider.tsx"
+        }),
+        expect.objectContaining({
+          content: expect.stringContaining('from "solid-sonner"'),
+          path: "src/components/auth/error-toaster.tsx"
+        }),
+        expect.objectContaining({
+          content: expect.stringContaining("Toaster as Sonner"),
+          path: "src/components/ui/sonner.tsx"
+        }),
+        expect.objectContaining({
+          content: expect.stringContaining("themeScript"),
+          path: "src/lib/theme.ts"
+        })
+      ])
+    )
 
     const forgotPassword = readJson<{
       dependencies: string[]

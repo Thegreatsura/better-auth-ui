@@ -9,6 +9,7 @@ import {
   useAuth
 } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
+import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,6 +27,7 @@ export function SignIn() {
   const [identifierError, setIdentifierError] = createSignal<string>()
   const [password, setPassword] = createSignal("")
   const [passwordError, setPasswordError] = createSignal<string>()
+  const [isPasswordVisible, setIsPasswordVisible] = createSignal(false)
   const signIn = createMutation(() => signInEmailOptions(auth.authClient))
   const signInUsername = createMutation(() =>
     signInUsernameOptions(auth.authClient as UsernameAuthClient)
@@ -109,26 +111,53 @@ export function SignIn() {
               <Label for="sign-in-password">
                 {auth.localization.auth.password}
               </Label>
-              <Input
-                aria-invalid={Boolean(passwordError())}
-                autocomplete="current-password"
-                id="sign-in-password"
-                maxLength={auth.emailAndPassword.maxPasswordLength}
-                minLength={auth.emailAndPassword.minPasswordLength}
-                name="password"
-                onInput={(event) => {
-                  setPassword(event.currentTarget.value)
-                  setPasswordError(undefined)
-                }}
-                onInvalid={(event) => {
-                  event.preventDefault()
-                  setPasswordError(event.currentTarget.validationMessage)
-                }}
-                placeholder={auth.localization.auth.passwordPlaceholder}
-                required
-                type="password"
-                value={password()}
-              />
+              <div class="relative">
+                <Input
+                  aria-invalid={Boolean(passwordError())}
+                  autocomplete="current-password"
+                  class="pr-12"
+                  id="sign-in-password"
+                  maxLength={auth.emailAndPassword.maxPasswordLength}
+                  minLength={auth.emailAndPassword.minPasswordLength}
+                  name="password"
+                  onInput={(event) => {
+                    setPassword(event.currentTarget.value)
+                    setPasswordError(undefined)
+                  }}
+                  onInvalid={(event) => {
+                    event.preventDefault()
+                    setPasswordError(event.currentTarget.validationMessage)
+                  }}
+                  placeholder={auth.localization.auth.passwordPlaceholder}
+                  required
+                  type={isPasswordVisible() ? "text" : "password"}
+                  value={password()}
+                />
+
+                <Button
+                  aria-label={
+                    isPasswordVisible()
+                      ? auth.localization.auth.hidePassword
+                      : auth.localization.auth.showPassword
+                  }
+                  class="absolute right-1 top-1/2 -translate-y-1/2"
+                  onClick={() => setIsPasswordVisible((visible) => !visible)}
+                  size="icon-sm"
+                  title={
+                    isPasswordVisible()
+                      ? auth.localization.auth.hidePassword
+                      : auth.localization.auth.showPassword
+                  }
+                  type="button"
+                  variant="ghost"
+                >
+                  {isPasswordVisible() ? (
+                    <EyeOff aria-hidden class="size-4" />
+                  ) : (
+                    <Eye aria-hidden class="size-4" />
+                  )}
+                </Button>
+              </div>
 
               <Show when={passwordError()}>
                 {(message) => (

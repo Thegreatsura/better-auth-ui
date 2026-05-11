@@ -78,10 +78,14 @@ describe("Solid docs navigation", () => {
 
   it("surfaces explicit non-goals without coupling Solid docs to React runtime execution", () => {
     const gaps = readDocsFile("solid", "gaps.mdx")
+    const mutations = readDocsFile("solid", "mutations.mdx")
     const source = readFileSync(sourceFile, "utf8")
 
     expect(gaps).toContain("react-email")
     expect(gaps).toContain("sonner")
+    expect(gaps).toContain("solid-sonner")
+    expect(mutations).toContain("Zaidan Sonner")
+    expect(mutations).toContain("@better-auth-ui/solid` does not re-export")
     expect(gaps).toContain("HeroUI")
     expect(source).toContain("Solid")
     expect(source).not.toContain("/r/solid")

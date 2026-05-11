@@ -10,6 +10,7 @@ import { HydrationScript } from "solid-js/web"
 
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { Header } from "@/components/header"
+import { Toaster } from "@/components/ui/sonner"
 import { syncDocumentThemePreference, themeScript } from "@/lib/theme"
 
 import "../styles/globals.css"
@@ -50,6 +51,7 @@ function RootDocument(props: { children: JSX.Element }) {
             <>
               <Header />
               <main class="grow flex flex-col">{props.children}</main>
+              <Toaster />
             </>
           )}
         </AuthProvider>
