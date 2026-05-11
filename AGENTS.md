@@ -10,9 +10,8 @@ When using third party libraries, use MCP to look up the docs.
 
 Before completing any task, ensure all of the following pass:
 
-1. **Biome** — No linting or formatting errors in modified files
-2. **TypeCheck** — No TypeScript errors in the project (`nx typecheck`)
-3. **Build** - Make sure the package you modified builds correctly
+1. **Biome** — No formatting errors in modified files
+2. **Linter** — No lint errors in the project
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
