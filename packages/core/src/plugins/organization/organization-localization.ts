@@ -3,18 +3,18 @@ export const organizationLocalization = {
   organization: "Organization",
   /** @remarks `"Organizations"` */
   organizations: "Organizations",
-  /** @remarks `"Personal account"` — context with no active organization */
+  /** @remarks `"Personal account"` */
   personalAccount: "Personal account",
   /** @remarks `"Create organization"` */
   createOrganization: "Create organization",
   /** @remarks `"Name"` */
   name: "Name",
-  /** @remarks `"Name placeholder"` */
-  namePlaceholder: "Acme Inc",
+  /** @remarks `"Enter the organization name"` */
+  namePlaceholder: "Enter the organization name",
   /** @remarks `"Slug"` */
   slug: "Slug",
-  /** @remarks `"Slug placeholder"` */
-  slugPlaceholder: "my-org",
+  /** @remarks `"organization-slug"` */
+  slugPlaceholder: "organization-slug",
   /** @remarks `"Create"` */
   create: "Create",
   /** @remarks `"Cancel"` */
@@ -25,29 +25,31 @@ export const organizationLocalization = {
   delete: "Delete",
   /** @remarks `"Delete organization"` */
   deleteOrganization: "Delete organization",
-  /** @remarks Warning shown before permanently deleting an organization */
+  /** @remarks `"Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone."` */
   deleteOrganizationWarning:
     "Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.",
   /** @remarks `"Leave"` */
   leave: "Leave",
   /** @remarks `"Leave organization"` */
   leaveOrganization: "Leave organization",
-  /** @remarks `"Are you sure you want to leave"` */
+  /** @remarks `"Are you sure you want to leave this organization?"` */
   leaveConfirmation: "Are you sure you want to leave this organization?",
   /** @remarks `"Members"` */
   members: "Members",
   /** @remarks `"Invite member"` */
   inviteMember: "Invite member",
-  /** @remarks Short helper under the invite dialog title */
+  /** @remarks `"We'll email them a link to join this organization. Choose the role they'll have once they accept."` */
   inviteMemberDescription:
     "We'll email them a link to join this organization. Choose the role they'll have once they accept.",
-  /** @remarks `"Invite member placeholder"` */
+  /** @remarks `"Enter email address"` */
   inviteEmail: "Enter email address",
   /** @remarks `"Email"` */
   email: "Email",
+  /** @remarks `"Invited"` */
+  invitedAt: "Invited",
   /** @remarks `"Role"` */
   role: "Role",
-  /** @remarks `"Status"` — invitation lifecycle in org invitation table */
+  /** @remarks `"Status"` */
   invitationStatusColumn: "Status",
   /** @remarks `"Pending"` */
   invitationStatusPending: "Pending",
@@ -57,11 +59,11 @@ export const organizationLocalization = {
   invitationStatusRejected: "Rejected",
   /** @remarks `"Canceled"` */
   invitationStatusCanceled: "Canceled",
-  /** @remarks `"Unknown"` — unrecognized invitation status */
+  /** @remarks `"Unknown"` */
   invitationStatusUnknown: "Unknown",
-  /** @remarks `"Actions"` — table column for row controls */
+  /** @remarks `"Actions"` */
   actions: "Actions",
-  /** @remarks `"Change role"` — control to edit a member’s organization role */
+  /** @remarks `"Change role"` */
   changeMemberRole: "Change role",
   /** @remarks `"Owner"` */
   owner: "Owner",
@@ -73,34 +75,39 @@ export const organizationLocalization = {
   invite: "Invite",
   /** @remarks `"Invitations"` */
   invitations: "Invitations",
+  /** @remarks `"No invitations"` */
+  noInvitations: "No invitations",
+  /** @remarks `"When an organization invites you by email, it will appear here."` */
+  userInvitationsEmptyDescription:
+    "When an organization invites you by email, it will appear here.",
   /** @remarks `"Pending invitations"` */
   pendingInvitations: "Pending invitations",
   /** @remarks `"Remove invitation"` */
   removeInvitation: "Remove invitation",
-  /** @remarks `"Are you sure you want to remove this invitation"` */
+  /** @remarks `"Are you sure you want to remove this invitation?"` */
   removeInvitationConfirmation:
     "Are you sure you want to remove this invitation?",
   /** @remarks `"Organization settings"` */
   organizationSettings: "Organization settings",
-  /** @remarks `"Profile"` — heading above the org name / slug form */
+  /** @remarks `"Profile"` */
   organizationProfile: "Profile",
-  /** @remarks Toast after saving organization name or slug */
+  /** @remarks `"Organization updated successfully"` */
   organizationUpdatedSuccess: "Organization updated successfully",
-  /** @remarks `"Manage"` — primary action on an organization list row */
+  /** @remarks `"Manage"` */
   manageOrganization: "Manage",
   /** @remarks `"Switch organization"` */
   switchOrganization: "Switch organization",
   /** @remarks `"No organizations"` */
   noOrganizations: "No organizations",
-  /** @remarks Empty-state helper under the organizations list title */
+  /** @remarks `"Create an organization to collaborate with others and manage shared access."` */
   organizationsDescription:
     "Create an organization to collaborate with others and manage shared access.",
-  /** @remarks Shown in organization settings when there is no active organization */
+  /** @remarks `"You haven't created any organizations yet."` */
   noActiveOrganization: "You haven't created any organizations yet.",
   /** @remarks `"No members yet"` */
   noMembers: "No members yet",
   /** @remarks `"No invitations yet"` */
-  noInvitations: "No invitations yet",
+  noOrganizationInvitations: "No invitations yet",
   /** @remarks `"Member removed"` */
   memberRemoved: "Member removed",
   /** @remarks `"Member role updated"` */
@@ -117,15 +124,15 @@ export const organizationLocalization = {
   organizationLeft: "You left the organization",
   /** @remarks `"Remove member"` */
   removeMember: "Remove member",
-  /** @remarks `"Accept invitation"` */
+  /** @remarks `"Accept"` */
   acceptInvitation: "Accept",
-  /** @remarks `"Reject invitation"` — invitee declines (not org cancel) */
+  /** @remarks `"Reject invitation"` */
   rejectInvitation: "Reject invitation",
   /** @remarks `"Logo"` */
   logo: "Logo",
-  /** @remarks Toast after changing organization logo */
+  /** @remarks `"Logo updated successfully"` */
   logoChangedSuccess: "Logo updated successfully",
-  /** @remarks Toast after removing organization logo */
+  /** @remarks `"Logo removed successfully"` */
   logoDeletedSuccess: "Logo removed successfully",
   /** @remarks `"Change logo"` */
   changeLogo: "Change logo",

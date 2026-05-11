@@ -12,7 +12,8 @@ export type OrganizationsSettingsProps = {
  * Renders the organizations settings panel.
  *
  * Displays all organizations the user belongs to with an empty state and
- * create button, followed by a card listing pending invitations.
+ * create button, followed by a card for invitations to the user (including an
+ * empty state when there are none).
  *
  * @param className - Optional additional CSS class names for the outer container.
  * @param variant - Card variant forwarded to each card.

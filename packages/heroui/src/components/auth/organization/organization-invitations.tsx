@@ -24,6 +24,17 @@ type OrganizationInvitationRow = {
   email: string
   role: string
   status?: string
+  createdAt?: string | Date
+}
+
+function formatInvitationCreatedAt(value: unknown): string {
+  if (value == null) return "—"
+  const date = value instanceof Date ? value : new Date(String(value))
+  if (Number.isNaN(date.getTime())) return "—"
+  return date.toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  })
 }
 
 /**
@@ -80,9 +91,13 @@ export function OrganizationInvitations({
     <Table.Header>
       <Table.Column isRowHeader>{organizationLocalization.email}</Table.Column>
 
+      <Table.Column className="whitespace-nowrap">
+        {organizationLocalization.invitedAt}
+      </Table.Column>
+
       <Table.Column>{organizationLocalization.role}</Table.Column>
 
-      <Table.Column className="w-32">
+      <Table.Column>
         {organizationLocalization.invitationStatusColumn}
       </Table.Column>
 
@@ -104,7 +119,6 @@ export function OrganizationInvitations({
             <Table.Content
               aria-label={organizationLocalization.invitations}
               aria-busy="true"
-              className="min-w-[42rem]"
             >
               {tableHeader}
 
@@ -120,15 +134,12 @@ export function OrganizationInvitations({
         </Table>
       ) : !invitationList.length ? (
         <p className="py-8 text-center text-muted text-sm">
-          {organizationLocalization.noInvitations}
+          {organizationLocalization.noOrganizationInvitations}
         </p>
       ) : (
         <Table>
           <Table.ScrollContainer>
-            <Table.Content
-              aria-label={organizationLocalization.invitations}
-              className="min-w-[42rem]"
-            >
+            <Table.Content aria-label={organizationLocalization.invitations}>
               {tableHeader}
 
               <Table.Body>
@@ -156,6 +167,10 @@ function OrganizationInvitationsTableSkeletonRow() {
     <Table.Row>
       <Table.Cell>
         <Skeleton className="h-4 w-48 rounded-lg" />
+      </Table.Cell>
+
+      <Table.Cell>
+        <Skeleton className="h-4 w-36 rounded-lg" />
       </Table.Cell>
 
       <Table.Cell>
@@ -229,7 +244,11 @@ function InvitationTableRow({
         {invitation.email}
       </Table.Cell>
 
-      <Table.Cell className="min-w-52 text-sm">{roleLabel}</Table.Cell>
+      <Table.Cell className="text-muted text-xs tabular-nums">
+        {formatInvitationCreatedAt(invitation.createdAt)}
+      </Table.Cell>
+
+      <Table.Cell className="text-sm">{roleLabel}</Table.Cell>
 
       <Table.Cell className="text-sm">
         <Chip className="shrink-0" color={statusColor} size="sm" variant="soft">

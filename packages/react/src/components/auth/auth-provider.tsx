@@ -12,16 +12,10 @@ import {
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import {
-  createContext,
-  type PropsWithChildren,
-  type ReactNode,
-  useContext
-} from "react"
+import { type PropsWithChildren, type ReactNode, useContext } from "react"
 import type { AuthClient } from "../../lib/auth-client"
+import { AuthContext } from "./auth-context"
 import { FetchOptionsProvider } from "./fetch-options-provider"
-
-const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {

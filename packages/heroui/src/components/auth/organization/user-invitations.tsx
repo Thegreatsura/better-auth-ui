@@ -8,10 +8,18 @@ import {
   useRejectInvitation
 } from "@better-auth-ui/react"
 import { Check, Clock, Xmark } from "@gravity-ui/icons"
-import { Button, Card, type CardProps, Chip, Spinner } from "@heroui/react"
+import {
+  Button,
+  Card,
+  type CardProps,
+  Chip,
+  Skeleton,
+  Spinner
+} from "@heroui/react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { localizedOrganizationRole } from "./organization-role-label"
+import { UserInvitationsEmpty } from "./user-invitations-empty"
 
 export type UserInvitationItem = NonNullable<
   ListUserInvitationsData<OrganizationAuthClient>
@@ -23,23 +31,20 @@ export type UserInvitationsProps = {
 
 /**
  * Organization invitations for the signed-in user (from
- * {@link useListUserInvitations}).
+ * {@link useListUserInvitations}). Always renders the section card; uses
+ * {@link UserInvitationsEmpty} when there are no pending invitations.
  */
 export function UserInvitations({ variant }: UserInvitationsProps) {
   const { authClient } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: invitationsData, isPending: isLoading } =
-    useListUserInvitations(authClient as OrganizationAuthClient)
+  const { data: invitationsData, isPending } = useListUserInvitations(
+    authClient as OrganizationAuthClient
+  )
 
-  if (isLoading) {
-    return null
-  }
-
-  if (!invitationsData?.length) {
-    return null
-  }
+  const invitationList = invitationsData ?? []
+  const hasInvitations = invitationList.length > 0
 
   return (
     <div className="flex flex-col gap-3">
@@ -49,16 +54,42 @@ export function UserInvitations({ variant }: UserInvitationsProps) {
 
       <Card variant={variant}>
         <Card.Content>
-          {invitationsData.map((invitation, index) => (
-            <div key={invitation.id}>
-              {index > 0 && (
-                <div className="border-b border-dashed -mx-4 my-4" />
-              )}
-              <UserInvitationRow invitation={invitation} />
-            </div>
-          ))}
+          {isPending ? (
+            <UserInvitationsLoading />
+          ) : !hasInvitations ? (
+            <UserInvitationsEmpty />
+          ) : (
+            invitationList.map((invitation, index) => (
+              <div key={invitation.id}>
+                {index > 0 && (
+                  <div className="border-b border-dashed -mx-4 my-4" />
+                )}
+                <UserInvitationRow invitation={invitation} />
+              </div>
+            ))
+          )}
         </Card.Content>
       </Card>
+    </div>
+  )
+}
+
+function UserInvitationsLoading() {
+  return (
+    <div className="flex items-center gap-3">
+      <Skeleton className="size-10 shrink-0 rounded-xl" />
+
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <Skeleton className="h-4 w-40 rounded-lg" />
+
+        <Skeleton className="h-3 w-28 rounded-lg" />
+      </div>
+
+      <div className="ml-auto flex shrink-0 gap-2">
+        <Skeleton className="h-8 w-20 rounded-lg" />
+
+        <Skeleton className="size-8 rounded-lg" />
+      </div>
     </div>
   )
 }
