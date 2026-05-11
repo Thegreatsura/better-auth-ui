@@ -11,15 +11,16 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-export type ActiveOrganizationData<TAuthClient extends OrganizationAuthClient> =
-  InferData<TAuthClient["organization"]["getFullOrganization"]>
+export type ActiveOrganizationData<
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
+> = InferData<TAuthClient["organization"]["getFullOrganization"]>
 
 export type ActiveOrganizationParams<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["getFullOrganization"]>[0]
 
 export type ActiveOrganizationOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Omit<
   ReturnType<typeof activeOrganizationOptions<TAuthClient>>,
   "queryKey" | "queryFn"
@@ -97,22 +98,22 @@ export function useActiveOrganization<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
-  options: UseActiveOrganizationOptions<TAuthClient> = {} as UseActiveOrganizationOptions<TAuthClient>,
+  options: UseActiveOrganizationOptions<TAuthClient> = {},
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  const { query, fetchOptions, ...queryOptionsRest } = options
+  const { query, fetchOptions, ...queryOptions } = options
 
   const baseOptions = activeOrganizationOptions(authClient, userId, {
     query,
     fetchOptions
-  } as ActiveOrganizationParams<TAuthClient>)
+  })
 
   return useQuery(
     {
-      ...queryOptionsRest,
+      ...queryOptions,
       ...baseOptions,
       queryFn: userId ? baseOptions.queryFn : skipToken
     },

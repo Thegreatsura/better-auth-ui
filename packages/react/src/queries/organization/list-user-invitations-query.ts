@@ -12,15 +12,15 @@ import type { InferData, OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
 export type ListUserInvitationsData<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = InferData<TAuthClient["organization"]["listUserInvitations"]>
 
 export type ListUserInvitationsParams<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["listUserInvitations"]>[0]
 
 export type ListUserInvitationsOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Omit<
   ReturnType<typeof listUserInvitationsOptions<TAuthClient>>,
   "queryKey" | "queryFn"
@@ -46,7 +46,7 @@ export function listUserInvitationsOptions<
         authClient.organization.listUserInvitations({
           ...params,
           fetchOptions: { ...params?.fetchOptions, signal, throw: true }
-        } as ListUserInvitationsParams<TAuthClient>) as Promise<TData>
+        }) as Promise<TData>
     }
   )
 
@@ -90,7 +90,7 @@ export const fetchListUserInvitations = <
   queryClient.fetchQuery(listUserInvitationsOptions(authClient, userId, params))
 
 export type UseListUserInvitationsOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = ListUserInvitationsOptions<TAuthClient> &
   ListUserInvitationsParams<TAuthClient>
 
@@ -98,22 +98,22 @@ export function useListUserInvitations<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
-  options: UseListUserInvitationsOptions<TAuthClient> = {} as UseListUserInvitationsOptions<TAuthClient>,
+  options: UseListUserInvitationsOptions<TAuthClient> = {},
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  const { query, fetchOptions, ...queryOptionsRest } = options
+  const { query, fetchOptions, ...queryOptions } = options
 
   const baseOptions = listUserInvitationsOptions(authClient, userId, {
     query,
     fetchOptions
-  } as ListUserInvitationsParams<TAuthClient>)
+  })
 
   return useQuery(
     {
-      ...queryOptionsRest,
+      ...queryOptions,
       ...baseOptions,
       queryFn: userId ? baseOptions.queryFn : skipToken
     },

@@ -75,12 +75,17 @@ export const organizationQueryKeys = {
 
   /**
    * Key for `organization.hasPermission` (server evaluates the member's role,
-   * including dynamic access control when enabled).
+   * including dynamic access control when enabled). `hasPermission` is the
+   * only org client method without a nested `query` field — its params are
+   * flat — so `query` here is the params object minus `fetchOptions`.
    */
-  hasPermission: <TKey = undefined>(userId: string | undefined, key?: TKey) =>
+  hasPermission: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) =>
     [
       ...organizationQueryKeys.user(userId),
       "hasPermission",
-      key ?? null
+      query ?? null
     ] as const
 } as const

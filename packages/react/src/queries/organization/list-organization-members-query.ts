@@ -3,23 +3,25 @@ import {
   type DataTag,
   type QueryClient,
   queryOptions,
+  skipToken,
   useQuery
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { InferData, OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
+import { useActiveOrganization } from "./active-organization-query"
 
 export type ListOrganizationMembersData<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = InferData<TAuthClient["organization"]["listMembers"]>
 
 export type ListOrganizationMembersParams<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["listMembers"]>[0]
 
 export type ListOrganizationMembersOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Omit<
   ReturnType<typeof listOrganizationMembersOptions<TAuthClient>>,
   "queryKey" | "queryFn"
@@ -88,7 +90,7 @@ export const fetchListOrganizationMembers = <
   )
 
 export type UseListOrganizationMembersOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = ListOrganizationMembersOptions<TAuthClient> &
   ListOrganizationMembersParams<TAuthClient>
 
@@ -96,24 +98,35 @@ export function useListOrganizationMembers<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
-  options: UseListOrganizationMembersOptions<TAuthClient> = {} as UseListOrganizationMembersOptions<TAuthClient>,
+  options: UseListOrganizationMembersOptions<TAuthClient> = {},
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  const { query, fetchOptions, ...queryOptionsRest } = options
+  const { query, fetchOptions, ...queryOptions } = options
+
+  const { data: activeOrganization } = useActiveOrganization(
+    authClient,
+    { enabled: !query?.organizationId },
+    queryClient
+  )
+
+  const organizationId = query?.organizationId || activeOrganization?.id
 
   const baseOptions = listOrganizationMembersOptions(authClient, userId, {
-    query,
+    query: {
+      ...query,
+      organizationId
+    },
     fetchOptions
-  } as ListOrganizationMembersParams<TAuthClient>)
+  })
 
   return useQuery(
     {
-      ...queryOptionsRest,
+      ...queryOptions,
       ...baseOptions,
-      queryFn: userId ? baseOptions.queryFn : undefined
+      queryFn: userId && organizationId ? baseOptions.queryFn : skipToken
     },
     queryClient
   )

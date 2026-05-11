@@ -11,15 +11,16 @@ import type { BetterFetchError } from "better-auth/react"
 import type { InferData, OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-export type ListOrganizationsData<TAuthClient extends OrganizationAuthClient> =
-  InferData<TAuthClient["organization"]["list"]>
+export type ListOrganizationsData<
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
+> = InferData<TAuthClient["organization"]["list"]>
 
 export type ListOrganizationsParams<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Parameters<TAuthClient["organization"]["list"]>[0]
 
 export type ListOrganizationsOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = Omit<
   ReturnType<typeof listOrganizationsOptions<TAuthClient>>,
   "queryKey" | "queryFn"
@@ -89,7 +90,7 @@ export const fetchListOrganizations = <
   queryClient.fetchQuery(listOrganizationsOptions(authClient, userId, params))
 
 export type UseListOrganizationsOptions<
-  TAuthClient extends OrganizationAuthClient
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = ListOrganizationsOptions<TAuthClient> & ListOrganizationsParams<TAuthClient>
 
 export function useListOrganizations<
