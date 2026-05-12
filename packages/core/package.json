@@ -19,7 +19,7 @@
       "import": "./dist/index.js"
     },
     "./plugins": {
-      "types": "./dist/plugins/index.d.ts",
+      "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }
   },

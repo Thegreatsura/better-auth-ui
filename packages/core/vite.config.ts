@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [dts({ tsconfigPath: "./tsconfig.json" })],
   build: {
     lib: {
-      entry: { index: "src/index.ts", plugins: "src/plugins/index.ts" },
+      entry: { index: "src/index.ts", plugins: "src/plugins.ts" },
       formats: ["es"]
     },
     rolldownOptions: {
