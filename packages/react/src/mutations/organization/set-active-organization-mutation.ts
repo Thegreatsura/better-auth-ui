@@ -66,6 +66,15 @@ export function useSetActiveOrganization<
       )
 
       // Optimistically update to the new value
+      if (variables?.organizationId === null) {
+        context.client.setQueryData(
+          organizationQueryKeys.activeOrganization(session?.user.id),
+          null
+        )
+
+        return { previousOrganization }
+      }
+
       const newOrganization = organizations?.find(
         (organization) => organization.id === variables?.organizationId
       )
