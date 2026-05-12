@@ -1,6 +1,7 @@
 export * from "./plugins/api-key/api-key-localization"
 export * from "./plugins/api-key/api-key-mutation-keys"
 export * from "./plugins/api-key/api-key-plugin"
+export * from "./plugins/api-key/api-key-query-keys"
 export * from "./plugins/delete-user/delete-user-localization"
 export * from "./plugins/delete-user/delete-user-plugin"
 export * from "./plugins/magic-link/magic-link-localization"

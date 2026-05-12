@@ -3,7 +3,7 @@
  */
 export const apiKeyMutationKeys = {
   /** Key for `apiKey.create`. */
-  createApiKey: ["auth", "apiKey", "create"] as const,
+  create: ["auth", "apiKey", "create"] as const,
   /** Key for `apiKey.delete`. */
-  deleteApiKey: ["auth", "apiKey", "delete"] as const
+  delete: ["auth", "apiKey", "delete"] as const
 } as const

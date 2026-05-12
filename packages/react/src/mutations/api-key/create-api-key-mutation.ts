@@ -1,16 +1,26 @@
-import { apiKeyMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  apiKeyMutationKeys,
+  apiKeyQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { ApiKeyAuthClient } from "../../lib/auth-client"
-import { useListApiKeys } from "../../queries/api-key/list-api-keys-query"
+import { useSession } from "../../queries/auth/session-query"
 
-export type CreateApiKeyParams<TAuthClient extends ApiKeyAuthClient> =
-  Parameters<TAuthClient["apiKey"]["create"]>[0]
+export type CreateApiKeyParams<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Parameters<TAuthClient["apiKey"]["create"]>[0]
 
-export type CreateApiKeyOptions<TAuthClient extends ApiKeyAuthClient> = Omit<
+export type CreateApiKeyOptions<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Omit<
   ReturnType<typeof createApiKeyOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -21,7 +31,7 @@ export type CreateApiKeyOptions<TAuthClient extends ApiKeyAuthClient> = Omit<
 export function createApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = apiKeyMutationKeys.createApiKey
+  const mutationKey = apiKeyMutationKeys.create
 
   const mutationFn = (params: CreateApiKeyParams<TAuthClient>) =>
     authClient.apiKey.create({
@@ -42,23 +52,28 @@ export function createApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
 /**
  * Create a mutation for creating an API key.
  *
- * Refetches the user's API key list on success unless disabled via options.
+ * On success, `MutationInvalidator` awaits invalidation of the user's API key
+ * list queries (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client with the API key plugin.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useCreateApiKey<TAuthClient extends ApiKeyAuthClient>(
   authClient: TAuthClient,
-  options?: CreateApiKeyOptions<TAuthClient>
+  options?: CreateApiKeyOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListApiKeys(authClient, { refetchOnMount: false })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...createApiKeyOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...createApiKeyOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [apiKeyQueryKeys.lists(userId)]
+      }
+    },
+    queryClient
+  )
 }

@@ -1,16 +1,26 @@
-import { apiKeyMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  apiKeyMutationKeys,
+  apiKeyQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { ApiKeyAuthClient } from "../../lib/auth-client"
-import { useListApiKeys } from "../../queries/api-key/list-api-keys-query"
+import { useSession } from "../../queries/auth/session-query"
 
-export type DeleteApiKeyParams<TAuthClient extends ApiKeyAuthClient> =
-  Parameters<TAuthClient["apiKey"]["delete"]>[0]
+export type DeleteApiKeyParams<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Parameters<TAuthClient["apiKey"]["delete"]>[0]
 
-export type DeleteApiKeyOptions<TAuthClient extends ApiKeyAuthClient> = Omit<
+export type DeleteApiKeyOptions<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Omit<
   ReturnType<typeof deleteApiKeyOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -21,7 +31,7 @@ export type DeleteApiKeyOptions<TAuthClient extends ApiKeyAuthClient> = Omit<
 export function deleteApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = apiKeyMutationKeys.deleteApiKey
+  const mutationKey = apiKeyMutationKeys.delete
 
   const mutationFn = (params: DeleteApiKeyParams<TAuthClient>) =>
     authClient.apiKey.delete({
@@ -42,21 +52,28 @@ export function deleteApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
 /**
  * Create a mutation for deleting an API key.
  *
+ * On success, `MutationInvalidator` awaits invalidation of the user's API key
+ * list queries (see `meta.awaits`).
+ *
  * @param authClient - The Better Auth client with the API key plugin.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useDeleteApiKey<TAuthClient extends ApiKeyAuthClient>(
   authClient: TAuthClient,
-  options?: DeleteApiKeyOptions<TAuthClient>
+  options?: DeleteApiKeyOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListApiKeys(authClient, { refetchOnMount: false })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...deleteApiKeyOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...deleteApiKeyOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [apiKeyQueryKeys.lists(userId)]
+      }
+    },
+    queryClient
+  )
 }

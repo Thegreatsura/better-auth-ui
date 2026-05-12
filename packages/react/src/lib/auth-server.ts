@@ -1,3 +1,4 @@
+import type { apiKey } from "@better-auth/api-key"
 import type { passkey } from "@better-auth/passkey"
 import type { Auth } from "better-auth"
 import type {
@@ -26,6 +27,11 @@ export type MultiSessionAuthServer = Pick<
 
 export type PasskeyAuthServer = Pick<
   Auth<{ plugins: [ReturnType<typeof passkey>] }>,
+  "api"
+>
+
+export type ApiKeyAuthServer = Pick<
+  Auth<{ plugins: [ReturnType<typeof apiKey>] }>,
   "api"
 >
 

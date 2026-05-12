@@ -1,4 +1,5 @@
 export type * from "./lib/auth-server"
+export * from "./server/queries/api-key/list-api-keys-query"
 export * from "./server/queries/auth/session-query"
 export * from "./server/queries/multi-session/list-device-sessions-query"
 export * from "./server/queries/organization/active-organization-query"
