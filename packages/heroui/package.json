@@ -3,8 +3,9 @@
   "version": "1.6.8",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "tsc --watch",
+    "build": "tsc && bun run styles",
+    "dev": "bun run styles && tsc --watch",
+    "styles": "mkdir -p dist && cp src/styles.css dist/styles.css",
     "test": "vitest"
   },
   "files": [
