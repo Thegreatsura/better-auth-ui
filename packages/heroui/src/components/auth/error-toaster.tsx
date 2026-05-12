@@ -1,5 +1,10 @@
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
 import { toast } from "@heroui/react"
-import { useQueryClient } from "@tanstack/react-query"
+import {
+  matchMutation,
+  matchQuery,
+  useQueryClient
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 import { useEffect } from "react"
 
@@ -7,22 +12,48 @@ export function ErrorToaster() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    queryClient.setQueryDefaults(["auth"], {
-      throwOnError: (error) => {
-        const err = error as BetterFetchError
-        if (err?.error) toast.danger(err.error.message)
+    const queryCache = queryClient.getQueryCache()
+    const previousQueryOnError = queryCache.config.onError
 
-        return false
-      }
-    })
+    queryCache.config.onError = (error, query) => {
+      previousQueryOnError?.(error, query)
 
-    queryClient.setMutationDefaults(["auth"], {
-      onError: (error) => {
-        toast.danger(
-          (error as BetterFetchError)?.error?.message || error.message
-        )
+      if (!matchQuery({ queryKey: authQueryKeys.all }, query)) return
+
+      const err = error as BetterFetchError
+      if (err?.error) toast.danger(err.error.message)
+    }
+
+    const mutationCache = queryClient.getMutationCache()
+    const previousMutationOnError = mutationCache.config.onError
+
+    mutationCache.config.onError = (
+      error,
+      variables,
+      onMutateResult,
+      mutation,
+      context
+    ) => {
+      previousMutationOnError?.(
+        error,
+        variables,
+        onMutateResult,
+        mutation,
+        context
+      )
+
+      if (!matchMutation({ mutationKey: authMutationKeys.all }, mutation)) {
+        return
       }
-    })
+
+      const err = error as BetterFetchError
+      toast.danger(err.error?.message || err.message)
+    }
+
+    return () => {
+      queryCache.config.onError = previousQueryOnError
+      mutationCache.config.onError = previousMutationOnError
+    }
   }, [queryClient])
 
   return null

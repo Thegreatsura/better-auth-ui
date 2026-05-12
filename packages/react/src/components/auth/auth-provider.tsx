@@ -14,6 +14,7 @@ import {
 } from "@tanstack/react-query"
 import { type PropsWithChildren, type ReactNode, useContext } from "react"
 import type { AuthClient } from "../../lib/auth-client"
+import { MutationInvalidator } from "../mutation-invalidator"
 import { AuthContext } from "./auth-context"
 import { FetchOptionsProvider } from "./fetch-options-provider"
 
@@ -87,18 +88,16 @@ export function AuthProvider({
 
   const contextQueryClient = useContext(QueryClientContext)
 
-  if (contextQueryClient) {
-    return (
-      <AuthContext.Provider value={mergedConfig}>
-        <FetchOptionsProvider>{children}</FetchOptionsProvider>
-      </AuthContext.Provider>
-    )
-  }
-
   return (
-    <QueryClientProvider client={queryClient || fallbackQueryClient}>
+    <QueryClientProvider
+      client={queryClient || contextQueryClient || fallbackQueryClient}
+    >
       <AuthContext.Provider value={mergedConfig}>
-        <FetchOptionsProvider>{children}</FetchOptionsProvider>
+        <FetchOptionsProvider>
+          <MutationInvalidator />
+
+          {children}
+        </FetchOptionsProvider>
       </AuthContext.Provider>
     </QueryClientProvider>
   )
