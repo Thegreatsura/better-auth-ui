@@ -10,6 +10,7 @@ import {
   useAuth
 } from "@better-auth-ui/solid"
 import { createMutation, useQueryClient } from "@tanstack/solid-query"
+import { Link } from "@tanstack/solid-router"
 import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
@@ -17,9 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { resolveSubmittedSignIn } from "./sign-in-path"
-
-const authHref = (basePath: string, viewPath: string) =>
-  `${basePath}/${viewPath}`
 
 export function SignIn() {
   const auth = useAuth()
@@ -206,25 +204,24 @@ export function SignIn() {
 
         <div class="mt-4 flex w-full flex-col items-center gap-3">
           <Show when={auth.emailAndPassword.forgotPassword}>
-            <a
+            <Link
               class="text-sm underline-offset-4 hover:underline"
-              href={authHref(
-                auth.basePaths.auth,
-                auth.viewPaths.auth.forgotPassword
-              )}
+              params={{ path: auth.viewPaths.auth.forgotPassword }}
+              to="/auth/$path"
             >
               {auth.localization.auth.forgotPasswordLink}
-            </a>
+            </Link>
           </Show>
 
           <p class="text-center text-sm text-muted-foreground">
             {auth.localization.auth.needToCreateAnAccount}{" "}
-            <a
+            <Link
               class="underline underline-offset-4"
-              href={authHref(auth.basePaths.auth, auth.viewPaths.auth.signUp)}
+              params={{ path: auth.viewPaths.auth.signUp }}
+              to="/auth/$path"
             >
               {auth.localization.auth.signUp}
-            </a>
+            </Link>
           </p>
         </div>
       </CardContent>

@@ -6,6 +6,7 @@ import {
   passkeyPlugin,
   usernamePlugin
 } from "@better-auth-ui/core/plugins"
+import type { AuthClient } from "@better-auth-ui/solid"
 import {
   createAuthClient,
   AuthProvider as SolidAuthProvider
@@ -26,7 +27,7 @@ const resolveAuthBaseURL = () => {
 }
 
 const authBaseURL = resolveAuthBaseURL()
-const authClient = createAuthClient({
+export const authClient: AuthClient = createAuthClient({
   baseURL: authBaseURL,
   plugins: [
     multiSessionClient(),

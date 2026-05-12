@@ -12,6 +12,12 @@ import {
 import { SignOut } from "../src/components/auth/sign-out"
 import { SignUp } from "../src/components/auth/sign-up"
 import { resolveAuthRoute } from "../src/routes/auth/-route-components"
+import {
+  AccountSettings,
+  resolveSettingsRoute,
+  SecuritySettings,
+  shouldLoadLinkedAccounts
+} from "../src/routes/settings/-route-components"
 
 describe("Solid auth route component selection", () => {
   it("maps supported auth paths to their existing Solid components", () => {
@@ -170,5 +176,149 @@ describe("Solid auth route component selection", () => {
       "viewPaths.settings"
     )
     expect(routeTree).toContain("/settings/$path")
+  })
+
+  it("maps supported settings paths to real Solid settings panels", () => {
+    expect(resolveSettingsRoute(viewPaths.settings.account)).toEqual({
+      component: AccountSettings,
+      title: "Account"
+    })
+    expect(resolveSettingsRoute(viewPaths.settings.security)).toEqual({
+      component: SecuritySettings,
+      title: "Security"
+    })
+  })
+
+  it("loads linked accounts only after a client session user is known", () => {
+    expect(shouldLoadLinkedAccounts({ isSsr: true, userId: "user-1" })).toBe(
+      false
+    )
+    expect(shouldLoadLinkedAccounts({ isSsr: false })).toBe(false)
+    expect(shouldLoadLinkedAccounts({ isSsr: false, userId: "user-1" })).toBe(
+      true
+    )
+  })
+
+  it("keeps Solid settings route validation route-level and shares the auth client", () => {
+    const settingsRoute = readFileSync(
+      resolve(__dirname, "../src/routes/settings/$path.tsx"),
+      "utf8"
+    )
+    const authProvider = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+      "utf8"
+    )
+
+    expect(settingsRoute).toContain("viewPaths.settings")
+    expect(settingsRoute).toContain("throw notFound()")
+    expect(settingsRoute).not.toContain("minimal {path()} settings route")
+    expect(authProvider).toContain("export const authClient")
+  })
+
+  it("keeps Solid settings navigation lightweight and non-blocking", () => {
+    const settingsRoute = readFileSync(
+      resolve(__dirname, "../src/routes/settings/$path.tsx"),
+      "utf8"
+    )
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsRoute).not.toContain("ensureSession")
+    expect(settingsRoute).not.toContain("redirect")
+    expect(settingsRoute).not.toContain("async beforeLoad")
+    expect(settingsComponents).not.toContain("useAuthenticate")
+    expect(settingsComponents).not.toContain("useListAccounts")
+    expect(settingsComponents).toContain("createEffect")
+    expect(settingsComponents).toContain("auth.navigate")
+    expect(settingsComponents).toContain("shouldLoadLinkedAccounts")
+    expect(settingsComponents).toContain("listAccountsOptions")
+  })
+
+  it("uses TanStack Link for internal settings nav instead of document anchors", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain(
+      'import { Link } from "@tanstack/solid-router"'
+    )
+    expect(settingsComponents).toContain("<Link")
+    expect(settingsComponents).toContain('to="/settings/$path"')
+    expect(settingsComponents).toContain(
+      "params={{ path: auth.viewPaths.settings.account }}"
+    )
+    expect(settingsComponents).toContain(
+      "params={{ path: auth.viewPaths.settings.security }}"
+    )
+    expect(settingsComponents).not.toMatch(/<a\s/)
+    expect(settingsComponents).not.toMatch(
+      /href=\{`\$\{auth\.basePaths\.settings\}/
+    )
+  })
+
+  it("uses TanStack Link for UserButton auth/settings menu navigation", () => {
+    const userButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/user-button.tsx"),
+      "utf8"
+    )
+
+    expect(userButton).toContain(
+      'import { Link } from "@tanstack/solid-router"'
+    )
+    expect(userButton).toContain('to="/auth/$path"')
+    expect(userButton).toContain('to="/settings/$path"')
+    expect(userButton).toContain("params={{ path: signInPath }}")
+    expect(userButton).toContain("params={{ path: signUpPath }}")
+    expect(userButton).toContain("params={{ path: settingsPath }}")
+    expect(userButton).toContain("params={{ path: signOutPath }}")
+    expect(userButton).not.toContain('as="a"')
+    expect(userButton).not.toMatch(
+      /href=\{(?:signInHref|signUpHref|settingsHref|signOutHref)\}/
+    )
+  })
+
+  it("uses TanStack Link for auth form helper navigation", () => {
+    const helperLinkFiles = [
+      "sign-in.tsx",
+      "sign-up.tsx",
+      "forgot-password.tsx",
+      "reset-password.tsx"
+    ]
+
+    for (const file of helperLinkFiles) {
+      const source = readFileSync(
+        resolve(__dirname, `../src/components/auth/${file}`),
+        "utf8"
+      )
+
+      expect(source, file).toContain(
+        'import { Link } from "@tanstack/solid-router"'
+      )
+      expect(source, file).toContain("<Link")
+      expect(source, file).toContain('to="/auth/$path"')
+      expect(source, file).toContain("params={{ path: auth.viewPaths.auth.")
+      expect(source, file).not.toMatch(/<a\s/)
+      expect(source, file).not.toMatch(/href=\{?`?\$?\{?auth\.basePaths\.auth/)
+    }
+  })
+
+  it("renders bounded account and security settings surfaces from auth/session state", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain("useAuth")
+    expect(settingsComponents).toContain("useSession")
+    expect(settingsComponents).toContain("session.data?.user.name")
+    expect(settingsComponents).toContain("session.data?.user.email")
+    expect(settingsComponents).toContain("Account information")
+    expect(settingsComponents).toContain("Email and password")
+    expect(settingsComponents).toContain("Social accounts")
+    expect(settingsComponents).toContain("Active sessions")
+    expect(settingsComponents).toContain("not available in this Solid slice")
   })
 })

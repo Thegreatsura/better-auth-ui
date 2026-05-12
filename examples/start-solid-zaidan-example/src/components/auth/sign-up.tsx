@@ -5,6 +5,7 @@ import {
 } from "@better-auth-ui/core/plugins"
 import { signUpEmailOptions, useAuth } from "@better-auth-ui/solid"
 import { createMutation, useQueryClient } from "@tanstack/solid-query"
+import { Link } from "@tanstack/solid-router"
 import { Eye, EyeOff } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
@@ -322,12 +323,13 @@ export function SignUp() {
         <div class="mt-4 flex w-full flex-col items-center gap-3">
           <p class="text-center text-sm text-muted-foreground">
             {auth.localization.auth.alreadyHaveAnAccount}{" "}
-            <a
+            <Link
               class="underline underline-offset-4"
-              href={`${auth.basePaths.auth}/${auth.viewPaths.auth.signIn}`}
+              params={{ path: auth.viewPaths.auth.signIn }}
+              to="/auth/$path"
             >
               {auth.localization.auth.signIn}
-            </a>
+            </Link>
           </p>
         </div>
       </CardContent>

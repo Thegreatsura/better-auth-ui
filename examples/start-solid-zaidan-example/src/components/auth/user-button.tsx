@@ -1,4 +1,5 @@
 import { useAuth, useSession } from "@better-auth-ui/solid"
+import { Link } from "@tanstack/solid-router"
 import {
   ChevronsUpDown,
   LogIn,
@@ -34,8 +35,7 @@ import {
 } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
-const authHref = (basePath: string, viewPath: string) =>
-  `${basePath}/${viewPath}`
+const menuLinkClass = "flex w-full items-center gap-1.5"
 
 const resolveUserLabel = (
   username?: string | null,
@@ -205,13 +205,10 @@ export function UserButton(rawProps: UserButtonProps = {}) {
 
   onMount(() => setIsUserButtonHydrated(true))
 
-  const signInHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signIn)
-  const signUpHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signUp)
-  const signOutHref = authHref(auth.basePaths.auth, auth.viewPaths.auth.signOut)
-  const settingsHref = authHref(
-    auth.basePaths.settings,
-    auth.viewPaths.settings.account
-  )
+  const signInPath = auth.viewPaths.auth.signIn
+  const signUpPath = auth.viewPaths.auth.signUp
+  const signOutPath = auth.viewPaths.auth.signOut
+  const settingsPath = auth.viewPaths.settings.account
 
   const userLabel = () =>
     resolveUserLabel(
@@ -372,48 +369,56 @@ export function UserButton(rawProps: UserButtonProps = {}) {
               when={session.data}
               fallback={
                 <>
-                  <DropdownMenuItem
-                    as="a"
-                    class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                    href={signInHref}
-                  >
-                    <LogIn class="size-4 text-muted-foreground" />
-                    {auth.localization.auth.signIn}
+                  <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                    <Link
+                      class={menuLinkClass}
+                      params={{ path: signInPath }}
+                      to="/auth/$path"
+                    >
+                      <LogIn class="size-4 text-muted-foreground" />
+                      {auth.localization.auth.signIn}
+                    </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    as="a"
-                    class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                    href={signUpHref}
-                  >
-                    <UserPlus2 class="size-4 text-muted-foreground" />
-                    {auth.localization.auth.signUp}
+                  <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                    <Link
+                      class={menuLinkClass}
+                      params={{ path: signUpPath }}
+                      to="/auth/$path"
+                    >
+                      <UserPlus2 class="size-4 text-muted-foreground" />
+                      {auth.localization.auth.signUp}
+                    </Link>
                   </DropdownMenuItem>
 
                   <ThemeToggleItem />
                 </>
               }
             >
-              <DropdownMenuItem
-                as="a"
-                class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                href={settingsHref}
-              >
-                <Settings class="size-4 text-muted-foreground" />
-                {settingsLabel()}
+              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                <Link
+                  class={menuLinkClass}
+                  params={{ path: settingsPath }}
+                  to="/settings/$path"
+                >
+                  <Settings class="size-4 text-muted-foreground" />
+                  {settingsLabel()}
+                </Link>
               </DropdownMenuItem>
 
               <ThemeToggleItem />
 
               <DropdownMenuSeparator class="my-1 bg-border" />
 
-              <DropdownMenuItem
-                as="a"
-                class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
-                href={signOutHref}
-              >
-                <LogOut class="size-4 text-muted-foreground" />
-                {auth.localization.auth.signOut}
+              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                <Link
+                  class={menuLinkClass}
+                  params={{ path: signOutPath }}
+                  to="/auth/$path"
+                >
+                  <LogOut class="size-4 text-muted-foreground" />
+                  {auth.localization.auth.signOut}
+                </Link>
               </DropdownMenuItem>
             </Show>
           </Show>
