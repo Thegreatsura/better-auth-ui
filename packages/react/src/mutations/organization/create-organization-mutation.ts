@@ -26,7 +26,7 @@ export type CreateOrganizationOptions<
 export function createOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = organizationMutationKeys.createOrganization
+  const mutationKey = organizationMutationKeys.create
 
   const mutationFn = (params: CreateOrganizationParams<TAuthClient>) =>
     authClient.organization.create({

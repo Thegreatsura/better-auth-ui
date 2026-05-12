@@ -27,7 +27,7 @@ export type SetActiveOrganizationOptions<
 export function setActiveOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = organizationMutationKeys.setActiveOrganization
+  const mutationKey = organizationMutationKeys.setActive
 
   const mutationFn = (params: SetActiveOrganizationParams<TAuthClient>) =>
     authClient.organization.setActive({

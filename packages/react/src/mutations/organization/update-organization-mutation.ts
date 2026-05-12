@@ -26,7 +26,7 @@ export type UpdateOrganizationOptions<
 export function updateOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = organizationMutationKeys.updateOrganization
+  const mutationKey = organizationMutationKeys.update
 
   const mutationFn = (params: UpdateOrganizationParams<TAuthClient>) =>
     authClient.organization.update({

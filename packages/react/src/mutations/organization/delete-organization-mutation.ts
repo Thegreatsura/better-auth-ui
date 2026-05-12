@@ -26,7 +26,7 @@ export type DeleteOrganizationOptions<
 export function deleteOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = organizationMutationKeys.deleteOrganization
+  const mutationKey = organizationMutationKeys.delete
 
   const mutationFn = (params: DeleteOrganizationParams<TAuthClient>) =>
     authClient.organization.delete({

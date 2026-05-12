@@ -15,16 +15,16 @@ export const organizationMutationKeys = {
   all: ["auth", "organization"] as const,
 
   /** Key for `organization.create`. */
-  createOrganization: ["auth", "organization", "create"] as const,
+  create: ["auth", "organization", "create"] as const,
 
   /** Key for `organization.delete`. */
-  deleteOrganization: ["auth", "organization", "delete"] as const,
+  delete: ["auth", "organization", "delete"] as const,
 
   /** Key for `organization.update`. */
-  updateOrganization: ["auth", "organization", "update"] as const,
+  update: ["auth", "organization", "update"] as const,
 
   /** Key for `organization.setActive`. */
-  setActiveOrganization: ["auth", "organization", "setActive"] as const,
+  setActive: ["auth", "organization", "setActive"] as const,
 
   /** Key for `organization.inviteMember`. */
   inviteMember: ["auth", "organization", "inviteMember"] as const,
