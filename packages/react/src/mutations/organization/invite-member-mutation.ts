@@ -1,9 +1,17 @@
 import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
-import { useListOrganizationInvitations } from "../../queries/organization/list-organization-invitations-query"
+import { useSession } from "../../queries/auth/session-query"
+import {
+  listOrganizationInvitationsOptions,
+  useActiveOrganization
+} from "../../queries/organization"
 
 export type InviteMemberParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["inviteMember"]>[0]
@@ -35,20 +43,39 @@ export function inviteMemberOptions<TAuthClient extends OrganizationAuthClient>(
   })
 }
 
-export function useInviteMember<TAuthClient extends OrganizationAuthClient>(
+export function useInviteMember<
+  TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
+>(
   authClient: TAuthClient,
-  options?: InviteMemberOptions<TAuthClient>
+  options?: InviteMemberOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListOrganizationInvitations(authClient, {
-    refetchOnMount: false
-  })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...inviteMemberOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  const { data: activeOrganization } = useActiveOrganization(
+    authClient,
+    undefined,
+    queryClient
+  )
+
+  return useMutation(
+    {
+      ...inviteMemberOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        const organizationId =
+          variables.organizationId || activeOrganization?.id
+
+        await context.client.invalidateQueries({
+          queryKey: listOrganizationInvitationsOptions(authClient, userId, {
+            query: { organizationId }
+          }).queryKey
+        })
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      }
+    },
+    queryClient
+  )
 }

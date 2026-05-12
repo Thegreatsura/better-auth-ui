@@ -1,9 +1,14 @@
 import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
-import { useListOrganizationMembers } from "../../queries/organization/list-organization-members-query"
+import { useSession } from "../../queries/auth/session-query"
+import { listOrganizationMembersOptions } from "../../queries/organization/list-organization-members-query"
 
 export type UpdateMemberRoleParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["updateMemberRole"]>[0]
@@ -38,18 +43,26 @@ export function updateMemberRoleOptions<
 
 export function useUpdateMemberRole<TAuthClient extends OrganizationAuthClient>(
   authClient: TAuthClient,
-  options?: UpdateMemberRoleOptions<TAuthClient>
+  options?: UpdateMemberRoleOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListOrganizationMembers(authClient, {
-    refetchOnMount: false
-  })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...updateMemberRoleOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...updateMemberRoleOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await context.client.invalidateQueries({
+          queryKey: listOrganizationMembersOptions(authClient, userId, {
+            query: { organizationId: data.organizationId }
+          }).queryKey
+        })
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      }
+    },
+    queryClient
+  )
 }

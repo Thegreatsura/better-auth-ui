@@ -1,16 +1,14 @@
-import {
-  organizationMutationKeys,
-  organizationQueryKeys
-} from "@better-auth-ui/core/plugins"
+import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
+import { listOrganizationInvitationsOptions } from "../../queries/organization"
 
 export type RemoveInvitationParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["cancelInvitation"]>[0]
@@ -45,26 +43,23 @@ export function removeInvitationOptions<
 
 export function useRemoveInvitation<TAuthClient extends OrganizationAuthClient>(
   authClient: TAuthClient,
-  options?: RemoveInvitationOptions<TAuthClient>
+  options?: RemoveInvitationOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const queryClient = useQueryClient()
-  const { data: session } = useSession(authClient)
+  const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
   return useMutation({
     ...removeInvitationOptions(authClient),
     ...options,
-    onSuccess: async (...args) => {
-      if (userId) {
-        const prefix = organizationQueryKeys.user(userId)
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listInvitations"]
-        })
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listUserInvitations"]
-        })
-      }
-      await options?.onSuccess?.(...args)
+    onSuccess: async (data, variables, onMutateResult, context) => {
+      await context.client.invalidateQueries({
+        queryKey: listOrganizationInvitationsOptions(authClient, userId, {
+          query: { organizationId: data.organizationId }
+        }).queryKey
+      })
+
+      return options?.onSuccess?.(data, variables, onMutateResult, context)
     }
   })
 }

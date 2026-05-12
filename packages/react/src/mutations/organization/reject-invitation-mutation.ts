@@ -1,16 +1,14 @@
-import {
-  organizationMutationKeys,
-  organizationQueryKeys
-} from "@better-auth-ui/core/plugins"
+import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
+import { listUserInvitationsOptions } from "../../queries/organization"
 
 export type RejectInvitationParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["rejectInvitation"]>[0]
@@ -45,26 +43,24 @@ export function rejectInvitationOptions<
 
 export function useRejectInvitation<TAuthClient extends OrganizationAuthClient>(
   authClient: TAuthClient,
-  options?: RejectInvitationOptions<TAuthClient>
+  options?: RejectInvitationOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const queryClient = useQueryClient()
-  const { data: session } = useSession(authClient)
+  const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  return useMutation({
-    ...rejectInvitationOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      if (userId) {
-        const prefix = organizationQueryKeys.user(userId)
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listInvitations"]
+  return useMutation(
+    {
+      ...rejectInvitationOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await context.client.invalidateQueries({
+          queryKey: listUserInvitationsOptions(authClient, userId).queryKey
         })
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listUserInvitations"]
-        })
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
       }
-      await options?.onSuccess?.(...args)
-    }
-  })
+    },
+    queryClient
+  )
 }

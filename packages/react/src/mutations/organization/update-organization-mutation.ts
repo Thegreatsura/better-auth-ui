@@ -1,16 +1,18 @@
-import {
-  organizationMutationKeys,
-  organizationQueryKeys
-} from "@better-auth-ui/core/plugins"
+import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
+import {
+  activeOrganizationOptions,
+  fullOrganizationOptions,
+  listOrganizationsOptions
+} from "../../queries/organization"
 
 export type UpdateOrganizationParams<
   TAuthClient extends OrganizationAuthClient
@@ -46,22 +48,36 @@ export function updateOrganizationOptions<
 
 export function useUpdateOrganization<
   TAuthClient extends OrganizationAuthClient
->(authClient: TAuthClient, options?: UpdateOrganizationOptions<TAuthClient>) {
-  const { data: session } = useSession(authClient, { refetchOnMount: false })
+>(
+  authClient: TAuthClient,
+  options?: UpdateOrganizationOptions<TAuthClient>,
+  queryClient?: QueryClient
+) {
+  const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
-  const queryClient = useQueryClient()
 
-  return useMutation({
-    ...updateOrganizationOptions(authClient),
-    ...options,
-    onSuccess: async (data, variables, ...rest) => {
-      if (userId) {
-        await queryClient.invalidateQueries({
-          queryKey: [...organizationQueryKeys.user(userId)]
-        })
+  return useMutation(
+    {
+      ...updateOrganizationOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await Promise.all([
+          context.client.invalidateQueries({
+            queryKey: listOrganizationsOptions(authClient, userId).queryKey
+          }),
+          context.client.invalidateQueries({
+            queryKey: activeOrganizationOptions(authClient, userId).queryKey
+          }),
+          context.client.invalidateQueries({
+            queryKey: fullOrganizationOptions(authClient, userId, {
+              query: { organizationId: data.id }
+            }).queryKey
+          })
+        ])
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
       }
-
-      await options?.onSuccess?.(data, variables, ...rest)
-    }
-  })
+    },
+    queryClient
+  )
 }

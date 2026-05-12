@@ -1,9 +1,16 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
-import { useListOrganizations } from "../../queries/organization/list-organizations-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type DeleteOrganizationParams<
   TAuthClient extends OrganizationAuthClient
@@ -39,17 +46,31 @@ export function deleteOrganizationOptions<
 
 export function useDeleteOrganization<
   TAuthClient extends OrganizationAuthClient
->(authClient: TAuthClient, options?: DeleteOrganizationOptions<TAuthClient>) {
-  const { refetch } = useListOrganizations(authClient, {
-    refetchOnMount: false
-  })
+>(
+  authClient: TAuthClient,
+  options?: DeleteOrganizationOptions<TAuthClient>,
+  queryClient?: QueryClient
+) {
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...deleteOrganizationOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...deleteOrganizationOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await Promise.all([
+          context.client.invalidateQueries({
+            queryKey: organizationQueryKeys.listOrganizations(userId)
+          }),
+          context.client.invalidateQueries({
+            queryKey: organizationQueryKeys.activeOrganization(userId)
+          })
+        ])
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      }
+    },
+    queryClient
+  )
 }

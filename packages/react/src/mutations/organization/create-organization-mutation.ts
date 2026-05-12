@@ -1,9 +1,16 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
-import { useListOrganizations } from "../../queries/organization/list-organizations-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type CreateOrganizationParams<
   TAuthClient extends OrganizationAuthClient
@@ -39,17 +46,26 @@ export function createOrganizationOptions<
 
 export function useCreateOrganization<
   TAuthClient extends OrganizationAuthClient
->(authClient: TAuthClient, options?: CreateOrganizationOptions<TAuthClient>) {
-  const { refetch } = useListOrganizations(authClient, {
-    refetchOnMount: false
-  })
+>(
+  authClient: TAuthClient,
+  options?: CreateOrganizationOptions<TAuthClient>,
+  queryClient?: QueryClient
+) {
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...createOrganizationOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...createOrganizationOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await context.client.invalidateQueries({
+          queryKey: organizationQueryKeys.listOrganizations(userId)
+        })
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      }
+    },
+    queryClient
+  )
 }

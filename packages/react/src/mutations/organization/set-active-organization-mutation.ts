@@ -2,7 +2,11 @@ import {
   organizationMutationKeys,
   organizationQueryKeys
 } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
@@ -45,77 +49,86 @@ export function useSetActiveOrganization<
   TAuthClient extends OrganizationAuthClient
 >(
   authClient: TAuthClient,
-  options?: SetActiveOrganizationOptions<TAuthClient>
+  options?: SetActiveOrganizationOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { data: session } = useSession(authClient)
-  const { data: organizations } = useListOrganizations(authClient)
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
+  const { data: organizations } = useListOrganizations(
+    authClient,
+    undefined,
+    queryClient
+  )
 
-  return useMutation({
-    ...setActiveOrganizationOptions(authClient),
-    ...options,
-    onMutate: async (variables, context) => {
-      // Cancel any outgoing refetches
-      // (so they don't overwrite our optimistic update)
-      await context.client.cancelQueries({
-        queryKey: organizationQueryKeys.activeOrganization(session?.user.id)
-      })
+  return useMutation(
+    {
+      ...setActiveOrganizationOptions(authClient),
+      ...options,
+      onMutate: async (variables, context) => {
+        // Cancel any outgoing refetches
+        // (so they don't overwrite our optimistic update)
+        await context.client.cancelQueries({
+          queryKey: organizationQueryKeys.activeOrganization(userId)
+        })
 
-      // Snapshot the previous value
-      const previousOrganization = context.client.getQueryData(
-        organizationQueryKeys.activeOrganization(session?.user.id)
-      )
-
-      // Optimistically update to the new value
-      if (variables?.organizationId === null) {
-        context.client.setQueryData(
-          organizationQueryKeys.activeOrganization(session?.user.id),
-          null
+        // Snapshot the previous value
+        const previousOrganization = context.client.getQueryData(
+          organizationQueryKeys.activeOrganization(userId)
         )
 
+        // Optimistically update to the new value
+        if (variables?.organizationId === null) {
+          context.client.setQueryData(
+            organizationQueryKeys.activeOrganization(userId),
+            null
+          )
+
+          return { previousOrganization }
+        }
+
+        const newOrganization = organizations?.find(
+          (organization) => organization.id === variables?.organizationId
+        )
+
+        if (newOrganization) {
+          context.client.setQueryData(
+            organizationQueryKeys.activeOrganization(userId),
+            newOrganization
+          )
+        }
+
+        // Return a result with the snapshotted value
         return { previousOrganization }
-      }
+      },
+      // If the mutation fails,
+      // use the result returned from onMutate to roll back
+      onError: (error, variables, onMutateResult, context) => {
+        const previousOrganization = onMutateResult?.previousOrganization
 
-      const newOrganization = organizations?.find(
-        (organization) => organization.id === variables?.organizationId
-      )
+        if (previousOrganization) {
+          context.client.setQueryData(
+            organizationQueryKeys.activeOrganization(userId),
+            previousOrganization
+          )
+        }
 
-      if (newOrganization) {
-        context.client.setQueryData(
-          organizationQueryKeys.activeOrganization(session?.user.id),
-          newOrganization
+        return options?.onError?.(error, variables, onMutateResult, context)
+      },
+      // Always refetch after error or success:
+      onSettled: async (data, error, variables, onMutateResult, context) => {
+        await context.client.invalidateQueries({
+          queryKey: organizationQueryKeys.activeOrganization(userId)
+        })
+
+        return options?.onSettled?.(
+          data,
+          error,
+          variables,
+          onMutateResult,
+          context
         )
       }
-
-      // Return a result with the snapshotted value
-      return { previousOrganization }
     },
-    // If the mutation fails,
-    // use the result returned from onMutate to roll back
-    onError: (error, variables, onMutateResult, context) => {
-      const previousOrganization = onMutateResult?.previousOrganization
-
-      if (previousOrganization) {
-        context.client.setQueryData(
-          organizationQueryKeys.activeOrganization(session?.user.id),
-          previousOrganization
-        )
-      }
-
-      return options?.onError?.(error, variables, onMutateResult, context)
-    },
-    // Always refetch after error or success:
-    onSettled: async (data, error, variables, onMutateResult, context) => {
-      await context.client.invalidateQueries({
-        queryKey: organizationQueryKeys.activeOrganization(session?.user.id)
-      })
-
-      return options?.onSettled?.(
-        data,
-        error,
-        variables,
-        onMutateResult,
-        context
-      )
-    }
-  })
+    queryClient
+  )
 }

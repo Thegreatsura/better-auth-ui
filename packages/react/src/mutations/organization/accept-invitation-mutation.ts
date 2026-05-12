@@ -4,11 +4,10 @@ import {
 } from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
-
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
 
@@ -45,29 +44,29 @@ export function acceptInvitationOptions<
 
 export function useAcceptInvitation<TAuthClient extends OrganizationAuthClient>(
   authClient: TAuthClient,
-  options?: AcceptInvitationOptions<TAuthClient>
+  options?: AcceptInvitationOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const queryClient = useQueryClient()
-  const { data: session } = useSession(authClient)
+  const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  return useMutation({
-    ...acceptInvitationOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      if (userId) {
-        const prefix = organizationQueryKeys.user(userId)
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listInvitations"]
-        })
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listUserInvitations"]
-        })
-        await queryClient.invalidateQueries({
-          queryKey: [...prefix, "listOrganizations"]
-        })
+  return useMutation(
+    {
+      ...acceptInvitationOptions(authClient),
+      ...options,
+      onSuccess: async (data, variables, onMutateResult, context) => {
+        await Promise.all([
+          context.client.invalidateQueries({
+            queryKey: organizationQueryKeys.listUserInvitations(userId)
+          }),
+          context.client.invalidateQueries({
+            queryKey: organizationQueryKeys.listOrganizations(userId)
+          })
+        ])
+
+        return options?.onSuccess?.(data, variables, onMutateResult, context)
       }
-      await options?.onSuccess?.(...args)
-    }
-  })
+    },
+    queryClient
+  )
 }
