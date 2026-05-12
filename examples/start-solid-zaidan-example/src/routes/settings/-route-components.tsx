@@ -3,13 +3,19 @@ import {
   getProviderName,
   type SettingsView
 } from "@better-auth-ui/core"
-import { multiSessionLocalization } from "@better-auth-ui/core/plugins"
+import {
+  apiKeyLocalization,
+  multiSessionLocalization
+} from "@better-auth-ui/core/plugins"
 import {
   type AccountInfoParams,
   type ApiKeyAuthClient,
   accountInfoOptions,
   changeEmailOptions,
   changePasswordOptions,
+  createApiKeyOptions,
+  deleteApiKeyOptions,
+  type ListApiKeysData,
   type ListDeviceSessionsData,
   type ListSession,
   linkSocialOptions,
@@ -33,8 +39,11 @@ import { createMutation, createQuery } from "@tanstack/solid-query"
 import Bowser from "bowser"
 import {
   ArrowLeftRight,
+  Check,
+  Copy,
   Eye,
   EyeOff,
+  Key,
   KeyRound,
   Link2,
   Link2Off,
@@ -64,6 +73,16 @@ import { toast } from "solid-sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -121,6 +140,10 @@ type LinkedProvider = Parameters<typeof getProviderName>[0]
 type DeviceSession = NonNullable<
   ListDeviceSessionsData<MultiSessionAuthClient>
 >[number]
+
+type ListedApiKey = NonNullable<
+  ListApiKeysData<ApiKeyAuthClient>
+>["apiKeys"][number]
 
 type AccountInfoResponse = {
   data?: {
@@ -1660,6 +1683,7 @@ function ActiveSessionRowSkeleton() {
 function ApiKeysSettings(props: { session: SettingsSession }) {
   const auth = useAuth()
   const userId = () => props.session.data?.user.id
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = createSignal(false)
   const apiKeys = createQuery(() => ({
     ...listApiKeysOptions(auth.authClient as ApiKeyAuthClient, userId()),
     enabled: shouldLoadDeviceSessions({
@@ -1672,55 +1696,44 @@ function ApiKeysSettings(props: { session: SettingsSession }) {
   return (
     <div class="flex flex-col gap-3">
       <div class="flex items-end justify-between gap-3">
-        <h2 class="truncate text-sm font-semibold">API keys</h2>
-        <Button class="shrink-0" disabled size="sm" type="button">
-          Create API key
-        </Button>
+        <h2 class="truncate text-sm font-semibold">
+          {apiKeyLocalization.apiKeys}
+        </h2>
+        <Dialog
+          open={isCreateDialogOpen()}
+          onOpenChange={setIsCreateDialogOpen}
+        >
+          <DialogTrigger
+            as={Button}
+            class="shrink-0"
+            disabled={apiKeys.isPending}
+            size="sm"
+          >
+            {apiKeyLocalization.createApiKey}
+          </DialogTrigger>
+          <CreateApiKeyDialog onOpenChange={setIsCreateDialogOpen} />
+        </Dialog>
       </div>
 
       <Card class="p-0">
         <CardContent class="p-0">
-          <Show
-            when={!apiKeys.isPending}
-            fallback={
-              <div class="flex items-center gap-3 p-4 text-sm text-muted-foreground">
-                Loading API keys…
-              </div>
-            }
-          >
+          <Show when={!apiKeys.isPending} fallback={<ApiKeySkeleton />}>
             <Show
               when={keys().length > 0}
               fallback={
-                <div class="flex flex-col items-center justify-center gap-3 p-6 text-center text-sm">
-                  <KeyRound class="size-6 text-muted-foreground" />
-                  <div>
-                    <p class="font-medium">No API keys</p>
-                    <p class="text-muted-foreground">
-                      Create an API key for programmatic access to your account.
-                    </p>
-                  </div>
-                  <Button disabled size="sm" type="button" variant="secondary">
-                    Create API key
-                  </Button>
-                </div>
+                <ApiKeysEmpty
+                  onCreatePress={() => setIsCreateDialogOpen(true)}
+                />
               }
             >
               <For each={keys()}>
                 {(apiKey, index) => (
-                  <div
-                    class={cn(
-                      "flex items-center justify-between gap-3 p-4 text-sm",
-                      index() > 0 && "border-t"
-                    )}
-                  >
-                    <div>
-                      <p class="font-medium">{apiKey.name ?? "API key"}</p>
-                      <p class="text-muted-foreground text-xs">API key</p>
-                    </div>
-                    <Button disabled size="sm" type="button" variant="outline">
-                      Revoke
-                    </Button>
-                  </div>
+                  <>
+                    <Show when={index() > 0}>
+                      <ItemSeparator />
+                    </Show>
+                    <ApiKeyRow apiKey={apiKey as ListedApiKey} />
+                  </>
                 )}
               </For>
             </Show>
@@ -1728,6 +1741,296 @@ function ApiKeysSettings(props: { session: SettingsSession }) {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+function ApiKeySkeleton() {
+  return (
+    <div class="flex items-center gap-3 p-4">
+      <Skeleton class="size-10 rounded-md" />
+      <div class="flex flex-col gap-1">
+        <Skeleton class="h-4 w-28" />
+        <Skeleton class="h-3 w-36" />
+        <Skeleton class="h-3 w-32" />
+      </div>
+    </div>
+  )
+}
+
+function ApiKeysEmpty(props: { onCreatePress: () => void }) {
+  return (
+    <div class="flex flex-col items-center justify-center gap-4 p-6 text-center">
+      <div class="flex size-10 items-center justify-center rounded-md bg-muted">
+        <Key class="size-4.5" />
+      </div>
+
+      <div class="flex flex-col items-center justify-center gap-1">
+        <p class="font-semibold text-sm">{apiKeyLocalization.noApiKeys}</p>
+        <p class="text-muted-foreground text-xs">
+          {apiKeyLocalization.apiKeysDescription}
+        </p>
+      </div>
+
+      <Button onClick={props.onCreatePress} size="sm" type="button">
+        {apiKeyLocalization.createApiKey}
+      </Button>
+    </div>
+  )
+}
+
+function ApiKeyRow(props: { apiKey: ListedApiKey }) {
+  const auth = useAuth()
+  const [deleteOpen, setDeleteOpen] = createSignal(false)
+  const preview = () => `${props.apiKey.start}${"*".repeat(16)}`
+
+  return (
+    <div class="flex items-center gap-3 p-0">
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
+        <Key class="size-4.5" />
+      </div>
+
+      <div class="flex min-w-0 flex-col">
+        <span class="truncate font-medium text-sm leading-tight">
+          {props.apiKey.name || apiKeyLocalization.apiKey}
+        </span>
+        <span class="truncate font-mono text-muted-foreground text-xs">
+          {preview()}
+        </span>
+        <span class="text-muted-foreground text-xs">
+          {new Date(props.apiKey.createdAt).toLocaleString(undefined, {
+            dateStyle: "medium",
+            timeStyle: "short"
+          })}
+        </span>
+      </div>
+
+      <Dialog open={deleteOpen()} onOpenChange={setDeleteOpen}>
+        <DialogTrigger
+          as={Button}
+          aria-label={apiKeyLocalization.deleteApiKey}
+          class="ml-auto shrink-0"
+          size="sm"
+          variant="outline"
+        >
+          <X />
+          {auth.localization.settings.delete}
+        </DialogTrigger>
+        <DeleteApiKeyDialog
+          apiKey={props.apiKey}
+          onOpenChange={setDeleteOpen}
+        />
+      </Dialog>
+    </div>
+  )
+}
+
+function CreateApiKeyDialog(props: { onOpenChange: (open: boolean) => void }) {
+  const auth = useAuth()
+  const [isNewKeyDialogOpen, setIsNewKeyDialogOpen] = createSignal(false)
+  const [newApiKeyName, setNewApiKeyName] = createSignal<string | null>(null)
+  const [newApiKeySecret, setNewApiKeySecret] = createSignal<string | null>(
+    null
+  )
+  const createApiKey = createMutation(() => ({
+    ...createApiKeyOptions(auth.authClient as ApiKeyAuthClient),
+    onSuccess: (result) => {
+      props.onOpenChange(false)
+      setNewApiKeyName(result.name ?? null)
+      setNewApiKeySecret(result.key)
+      setIsNewKeyDialogOpen(true)
+    }
+  }))
+
+  const submitCreateApiKey = (event: SubmitEvent) => {
+    event.preventDefault()
+
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    const name = String(formData.get("name") ?? "").trim()
+
+    createApiKey.mutate(
+      (name ? { name } : undefined) as Parameters<typeof createApiKey.mutate>[0]
+    )
+  }
+
+  return (
+    <>
+      <DialogContent>
+        <form class="flex flex-col gap-6" onSubmit={submitCreateApiKey}>
+          <DialogHeader>
+            <div class="flex size-10 items-center justify-center rounded-md bg-muted">
+              <Key class="size-4.5" />
+            </div>
+            <DialogTitle>{apiKeyLocalization.createApiKey}</DialogTitle>
+            <DialogDescription>
+              {apiKeyLocalization.apiKeysDescription}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div class="grid gap-2">
+            <Label for="api-key-name">{apiKeyLocalization.name}</Label>
+            <Input
+              autofocus
+              disabled={createApiKey.isPending}
+              id="api-key-name"
+              name="name"
+              placeholder={auth.localization.settings.optional}
+            />
+          </div>
+
+          <DialogFooter>
+            <DialogClose
+              as={Button}
+              disabled={createApiKey.isPending}
+              type="button"
+              variant="outline"
+            >
+              {auth.localization.settings.cancel}
+            </DialogClose>
+            <Button disabled={createApiKey.isPending} type="submit">
+              {createApiKey.isPending
+                ? `${apiKeyLocalization.createApiKey}…`
+                : apiKeyLocalization.createApiKey}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+
+      <Dialog open={isNewKeyDialogOpen()} onOpenChange={setIsNewKeyDialogOpen}>
+        <NewApiKeyDialog name={newApiKeyName()} secretKey={newApiKeySecret()} />
+      </Dialog>
+    </>
+  )
+}
+
+function NewApiKeyDialog(props: {
+  name: string | null
+  secretKey: string | null
+}) {
+  const auth = useAuth()
+  const [isCopied, setIsCopied] = createSignal(false)
+
+  const copySecretKey = async () => {
+    if (!props.secretKey) return
+
+    try {
+      await navigator.clipboard.writeText(props.secretKey)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 1500)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error))
+    }
+  }
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <div class="flex size-10 items-center justify-center rounded-md bg-muted">
+          <Key class="size-4.5" />
+        </div>
+        <DialogTitle>{apiKeyLocalization.newApiKey}</DialogTitle>
+        <DialogDescription>
+          {apiKeyLocalization.newApiKeyWarning}
+        </DialogDescription>
+      </DialogHeader>
+
+      <div class="flex flex-col gap-2">
+        <Label for="new-api-key-secret">
+          {props.name || apiKeyLocalization.apiKey}
+        </Label>
+        <div class="flex rounded-md border bg-background">
+          <Input
+            class="rounded-r-none border-0 font-mono text-xs"
+            id="new-api-key-secret"
+            readonly
+            value={props.secretKey ?? ""}
+          />
+          <Button
+            aria-label={auth.localization.settings.copyToClipboard}
+            onClick={copySecretKey}
+            size="icon-xs"
+            type="button"
+            variant="ghost"
+          >
+            <Show fallback={<Copy />} when={isCopied()}>
+              <Check />
+            </Show>
+          </Button>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <DialogClose as={Button}>
+          {apiKeyLocalization.dismissNewKey}
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
+  )
+}
+
+function DeleteApiKeyDialog(props: {
+  apiKey: ListedApiKey
+  onOpenChange: (open: boolean) => void
+}) {
+  const auth = useAuth()
+  const preview = () => `${props.apiKey.start}${"*".repeat(16)}`
+  const previewId = () => `delete-api-key-preview-${props.apiKey.id}`
+  const deleteApiKey = createMutation(() => ({
+    ...deleteApiKeyOptions(auth.authClient as ApiKeyAuthClient),
+    onSuccess: () => props.onOpenChange(false)
+  }))
+
+  const deleteKey = () => {
+    deleteApiKey.mutate({
+      keyId: props.apiKey.id
+    } as Parameters<typeof deleteApiKey.mutate>[0])
+  }
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <div class="flex size-10 items-center justify-center rounded-md bg-muted">
+          <Key class="size-4.5" />
+        </div>
+        <DialogTitle>{apiKeyLocalization.deleteApiKey}</DialogTitle>
+        <DialogDescription>
+          {apiKeyLocalization.deleteApiKeyWarning}
+        </DialogDescription>
+      </DialogHeader>
+
+      <div class="grid gap-2">
+        <Label for={previewId()}>
+          {props.apiKey.name || apiKeyLocalization.apiKey}
+        </Label>
+        <Input
+          class="font-mono text-xs"
+          disabled
+          id={previewId()}
+          readonly
+          value={preview()}
+        />
+      </div>
+
+      <DialogFooter>
+        <DialogClose
+          as={Button}
+          disabled={deleteApiKey.isPending}
+          type="button"
+          variant="outline"
+        >
+          {auth.localization.settings.cancel}
+        </DialogClose>
+        <Button
+          disabled={deleteApiKey.isPending}
+          onClick={deleteKey}
+          type="button"
+          variant="destructive"
+        >
+          {deleteApiKey.isPending
+            ? `${apiKeyLocalization.deleteApiKey}…`
+            : apiKeyLocalization.deleteApiKey}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
   )
 }
 

@@ -348,7 +348,9 @@ describe("Solid auth route component selection", () => {
     expect(settingsComponents).toContain("<ItemDescription")
     expect(settingsComponents).toContain("<ItemActions")
     expect(settingsComponents).toContain("<ItemSeparator")
-    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.currentSession"
+    )
     expect(settingsComponents).toContain(
       "multiSessionLocalization.switchAccount"
     )
@@ -559,7 +561,9 @@ describe("Solid auth route component selection", () => {
     expect(settingsComponents).toContain("<ItemDescription")
     expect(settingsComponents).toContain("<ItemActions")
     expect(settingsComponents).toContain("<ItemSeparator")
-    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.currentSession"
+    )
     expect(settingsComponents).toContain("auth.localization.auth.signOut")
     expect(settingsComponents).toContain("auth.plugins.flatMap")
     expect(settingsComponents).toContain("plugin.securityCards")
@@ -678,7 +682,9 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.currentSession"
+    )
     expect(settingsComponents).not.toContain("Other active sessions")
     expect(settingsComponents).not.toContain(
       "Additional sessions will appear here."
@@ -803,15 +809,90 @@ describe("Solid auth route component selection", () => {
       'hasAuthPlugin(auth.plugins, "deleteUser")'
     )
     expect(settingsComponents).toContain("listApiKeysOptions")
+    expect(settingsComponents).toContain("createApiKeyOptions")
+    expect(settingsComponents).toContain("deleteApiKeyOptions")
+    expect(settingsComponents).toContain("apiKeyLocalization.apiKeys")
     expect(settingsComponents).toContain("listPasskeysOptions")
-    expect(settingsComponents).toContain("API keys")
-    expect(settingsComponents).toContain("Create API key")
-    expect(settingsComponents).toContain("No API keys")
+    expect(settingsComponents).toContain("<CreateApiKeyDialog")
+    expect(settingsComponents).toContain("<NewApiKeyDialog")
+    expect(settingsComponents).toContain("<DeleteApiKeyDialog")
+    expect(settingsComponents).toContain("apiKeyLocalization.createApiKey")
+    expect(settingsComponents).toContain("apiKeyLocalization.noApiKeys")
     expect(settingsComponents).toContain("Passkeys")
     expect(settingsComponents).toContain("Add passkey")
     expect(settingsComponents).toContain("No passkeys")
     expect(settingsComponents).toContain("Danger zone")
     expect(settingsComponents).toContain("Delete user")
     expect(settingsComponents).toContain("text-destructive")
+    expect(settingsComponents).not.toMatch(
+      /<Button class="shrink-0" disabled size="sm" type="button">\s*Create API key/
+    )
+    expect(settingsComponents).not.toMatch(
+      /<Button disabled size="sm" type="button" variant="secondary">\s*Create API key/
+    )
+    expect(settingsComponents).not.toContain(
+      '<p class="text-muted-foreground text-xs">API key</p>'
+    )
+  })
+
+  it("provides the local Solid Zaidan Dialog primitive for API key dialogs", () => {
+    const dialogPath = resolve(__dirname, "../src/components/ui/dialog.tsx")
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(existsSync(dialogPath)).toBe(true)
+
+    const dialog = readFileSync(dialogPath, "utf8")
+
+    expect(dialog).toContain('from "@kobalte/core/dialog"')
+    expect(dialog).toContain("DialogPrimitive.Root")
+    expect(dialog).toContain("DialogPrimitive.Trigger")
+    expect(dialog).toContain("DialogPrimitive.Content")
+    expect(dialog).toContain("DialogPrimitive.Title")
+    expect(dialog).toContain("DialogPrimitive.Description")
+    expect(dialog).toContain("DialogPrimitive.CloseButton")
+    expect(dialog).toContain('data-slot="dialog-content"')
+    expect(dialog).toContain("showCloseButton")
+    expect(dialog).toMatch(
+      /export \{[\s\S]*Dialog[\s\S]*DialogClose[\s\S]*DialogContent[\s\S]*DialogDescription[\s\S]*DialogFooter[\s\S]*DialogHeader[\s\S]*DialogTitle[\s\S]*DialogTrigger/
+    )
+    expect(settingsComponents).toContain('from "@/components/ui/dialog"')
+  })
+
+  it("wires API key create, new-key reveal, copy, and delete dialogs to Solid mutations", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain("const createApiKey = createMutation")
+    expect(settingsComponents).toContain(
+      "...createApiKeyOptions(auth.authClient as ApiKeyAuthClient)"
+    )
+    expect(settingsComponents).toContain("createApiKey.mutate(")
+    expect(settingsComponents).toContain("setNewApiKeySecret(result.key)")
+    expect(settingsComponents).toContain("setIsNewKeyDialogOpen(true)")
+    expect(settingsComponents).toContain("navigator.clipboard.writeText")
+    expect(settingsComponents).toContain("setIsCopied(true)")
+    expect(settingsComponents).toContain("setTimeout(() => setIsCopied(false)")
+    expect(settingsComponents).toContain("const deleteApiKey = createMutation")
+    expect(settingsComponents).toContain(
+      "...deleteApiKeyOptions(auth.authClient as ApiKeyAuthClient)"
+    )
+    expect(settingsComponents).toContain("deleteApiKey.mutate({")
+    expect(settingsComponents).toContain("keyId: props.apiKey.id")
+    expect(settingsComponents).toContain("onOpenChange(false)")
+    expect(settingsComponents).toContain("apiKey.start")
+    expect(settingsComponents).toContain('"*".repeat(16)')
+    expect(settingsComponents).toContain(
+      "apiKeyLocalization.deleteApiKeyWarning"
+    )
+    expect(settingsComponents).toContain("apiKeyLocalization.newApiKeyWarning")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.copyToClipboard"
+    )
+    expect(settingsComponents).toContain("apiKeyLocalization.dismissNewKey")
   })
 })
