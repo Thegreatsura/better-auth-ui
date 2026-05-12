@@ -19,7 +19,7 @@ export const organizationPlugin = createAuthPlugin(
 
     const settingsTabs: SettingsTab[] = [
       {
-        key: "organizations",
+        view: "organizations",
         label: mergedOrganizationLocalization.organizations,
         component: OrganizationsSettings
       }

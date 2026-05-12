@@ -109,13 +109,13 @@ export function Settings({
           {settingsTabs.map((tab) => {
             const segment =
               plugins.find((p) =>
-                p.settingsTabs?.some((t) => t.key === tab.key)
-              )?.viewPaths?.settings?.[tab.key] ?? tab.key
+                p.settingsTabs?.some((t) => t.view === tab.view)
+              )?.viewPaths?.settings?.[tab.view] ?? tab.view
 
             return (
               <Tabs.Tab
-                key={tab.key}
-                id={tab.key}
+                key={tab.view}
+                id={tab.view}
                 href={`${basePaths.settings}/${segment}`}
               >
                 {tab.label}
@@ -136,7 +136,7 @@ export function Settings({
       </Tabs.Panel>
 
       {settingsTabs.map((tab) => (
-        <Tabs.Panel key={tab.key} id={tab.key} className="px-0">
+        <Tabs.Panel key={tab.view} id={tab.view} className="px-0">
           {tab.component && typeof tab.component === "function"
             ? createElement(
                 tab.component as ComponentType<{

@@ -39,8 +39,8 @@ export interface AuthPluginBase {
    */
   additionalFields?: AdditionalFields
   /**
-   * Tabs the plugin contributes to the settings page. Each tab has a key,
-   * label, and a component to render. Read at runtime via
+   * Tabs the plugin contributes to the settings page. Each entry is a
+   * {@link SettingsTab} (`view`, `label`, `component`). Read at runtime via
    * `useAuthPlugin(plugin).settingsTabs`.
    */
   settingsTabs?: SettingsTab[]
