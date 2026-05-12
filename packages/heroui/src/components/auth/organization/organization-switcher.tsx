@@ -68,13 +68,13 @@ export function OrganizationSwitcher({
   const { data: organizations, isPending: organizationsPending } =
     useListOrganizations(authClient as OrganizationAuthClient)
 
-  const { mutate: setActiveOrganization, isPending: setActivePending } =
-    useSetActiveOrganization(authClient as OrganizationAuthClient)
+  const { mutate: setActiveOrganization } = useSetActiveOrganization(
+    authClient as OrganizationAuthClient
+  )
 
   const isPending =
     sessionPending ||
-    (session &&
-      (organizationsPending || activeOrganizationPending || setActivePending))
+    (session && (organizationsPending || activeOrganizationPending))
 
   const otherOrganizations = organizations?.filter(
     (organization) => organization.id !== activeOrganization?.id
