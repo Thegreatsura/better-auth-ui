@@ -233,26 +233,35 @@ describe("Solid auth route component selection", () => {
     expect(settingsComponents).toContain("createEffect")
     expect(settingsComponents).toContain("auth.navigate")
     expect(settingsComponents).toContain("shouldLoadLinkedAccounts")
-    expect(settingsComponents).toContain("listAccountsOptions")
+    expect(settingsComponents).toContain("shouldLoadDeviceSessions")
+    expect(settingsComponents).toContain("listDeviceSessionsOptions")
   })
 
-  it("uses TanStack Link for internal settings nav instead of document anchors", () => {
+  it("uses Zaidan Tabs for settings navigation without document anchors", () => {
     const settingsComponents = readFileSync(
       resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
       "utf8"
     )
 
     expect(settingsComponents).toContain(
-      'import { Link } from "@tanstack/solid-router"'
+      'import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"'
     )
-    expect(settingsComponents).toContain("<Link")
-    expect(settingsComponents).toContain('to="/settings/$path"')
+    expect(settingsComponents).toContain("<Tabs")
+    expect(settingsComponents).toContain("<TabsList")
+    expect(settingsComponents).toContain("<TabsTrigger")
+    expect(settingsComponents).toContain("<TabsContent")
+    expect(settingsComponents).toContain("value={currentView()}")
+    expect(settingsComponents).toContain("onChange={handleSettingsTabChange}")
+    expect(settingsComponents).toContain("auth.navigate({")
     expect(settingsComponents).toContain(
-      "params={{ path: auth.viewPaths.settings.account }}"
+      'class={cn("w-full gap-4 md:gap-6", props.class)}'
     )
-    expect(settingsComponents).toContain(
-      "params={{ path: auth.viewPaths.settings.security }}"
+    expect(settingsComponents).toContain("<div>")
+    expect(settingsComponents).not.toContain("<nav")
+    expect(settingsComponents).not.toContain(
+      "Manage account and security settings"
     )
+    expect(settingsComponents).not.toMatch(/<h1[^>]*>/)
     expect(settingsComponents).not.toMatch(/<a\s/)
     expect(settingsComponents).not.toMatch(
       /href=\{`\$\{auth\.basePaths\.settings\}/
@@ -305,7 +314,7 @@ describe("Solid auth route component selection", () => {
     }
   })
 
-  it("renders bounded account and security settings surfaces from auth/session state", () => {
+  it("renders the account tab like the shadcn settings baseline", () => {
     const settingsComponents = readFileSync(
       resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
       "utf8"
@@ -315,10 +324,192 @@ describe("Solid auth route component selection", () => {
     expect(settingsComponents).toContain("useSession")
     expect(settingsComponents).toContain("session.data?.user.name")
     expect(settingsComponents).toContain("session.data?.user.email")
-    expect(settingsComponents).toContain("Account information")
-    expect(settingsComponents).toContain("Email and password")
-    expect(settingsComponents).toContain("Social accounts")
-    expect(settingsComponents).toContain("Active sessions")
-    expect(settingsComponents).toContain("not available in this Solid slice")
+    expect(settingsComponents).toContain("username?: string | null")
+    expect(settingsComponents).toContain("getUsername(props.session)")
+    expect(settingsComponents).toContain("Profile")
+    expect(settingsComponents).toContain("<h2")
+    expect(settingsComponents).toContain("Change email")
+    expect(settingsComponents).toContain("Update email")
+    expect(settingsComponents).toContain("Appearance")
+    expect(settingsComponents).toContain("System")
+    expect(settingsComponents).toContain("Light")
+    expect(settingsComponents).toContain("Dark")
+    expect(settingsComponents).toContain("Manage accounts")
+    expect(settingsComponents).toContain("<ItemGroup")
+    expect(settingsComponents).toContain("<ItemMedia")
+    expect(settingsComponents).toContain("<ItemContent")
+    expect(settingsComponents).toContain("<ItemTitle")
+    expect(settingsComponents).toContain("<ItemDescription")
+    expect(settingsComponents).toContain("<ItemActions")
+    expect(settingsComponents).toContain("<ItemSeparator")
+    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).toContain("Switch account")
+    expect(settingsComponents).toContain("Sign out")
+    expect(settingsComponents).toContain("Save changes")
+    expect(settingsComponents).toContain("disabled")
+    expect(settingsComponents).not.toContain("Plugin account cards")
+    expect(settingsComponents).not.toContain("Social accounts")
+    expect(settingsComponents).not.toContain("listAccountsOptions")
+    expect(settingsComponents).not.toMatch(
+      /<CardTitle[^>]*class="flex items-center gap-2"/
+    )
+    expect(settingsComponents).not.toMatch(
+      /<User class=|<Mail class=|<Palette class=|<LinkIcon class=/
+    )
+  })
+
+  it("uses the exact shadcn theme preview SVG shapes for the Solid appearance cards", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain("ThemePreviewSystem")
+    expect(settingsComponents).toContain("ThemePreviewLight")
+    expect(settingsComponents).toContain("ThemePreviewDark")
+    expect(settingsComponents).toContain('viewBox="0 0 240 117"')
+    expect(settingsComponents).toContain("systemDiagonalLight")
+    expect(settingsComponents).toContain("systemDiagonalDark")
+    expect(settingsComponents).toContain(
+      'd="M12 0.5H228C234.351 0.5 239.5 5.64873 239.5 12V105C239.5 111.351 234.351 116.5 228 116.5H12C5.64873 116.5 0.5 111.351 0.5 105V12C0.5 5.64873 5.64873 0.5 12 0.5Z"'
+    )
+    expect(settingsComponents).toContain(
+      'd="M88 51C88 46.5817 91.5817 43 96 43H221C225.418 43 229 46.5817 229 51V85C229 89.4183 225.418 93 221 93H96C91.5817 93 88 89.4183 88 85V51Z"'
+    )
+    expect(settingsComponents).toContain(
+      '<circle cx="22.5" cy="25.5" fill="#E4E4E7" r="5.5" />'
+    )
+    expect(settingsComponents).toContain(
+      '<circle cx="22.5" cy="25.5" fill="#3F3F46" r="5.5" />'
+    )
+    expect(settingsComponents).not.toContain(
+      "bg-gradient-to-r from-background to-slate-950"
+    )
+  })
+
+  it("renders the security tab like the shadcn settings baseline", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain("auth.emailAndPassword?.enabled")
+    expect(settingsComponents).toContain("<ChangePasswordSettings")
+    expect(settingsComponents).toContain(
+      "auth.emailAndPassword.confirmPassword"
+    )
+    expect(settingsComponents).toContain("Current password")
+    expect(settingsComponents).toContain("New password")
+    expect(settingsComponents).toContain("Confirm password")
+    expect(settingsComponents).toContain("Update password")
+    expect(settingsComponents).toContain("!!auth.socialProviders?.length")
+    expect(settingsComponents).toContain("<LinkedAccountsSettings")
+    expect(settingsComponents).toContain("<ActiveSessionsSettings")
+    expect(settingsComponents).toContain("<ItemGroup")
+    expect(settingsComponents).toContain("<Item")
+    expect(settingsComponents).toContain("<ItemMedia")
+    expect(settingsComponents).toContain("<ItemContent")
+    expect(settingsComponents).toContain("<ItemTitle")
+    expect(settingsComponents).toContain("<ItemDescription")
+    expect(settingsComponents).toContain("<ItemActions")
+    expect(settingsComponents).toContain("<ItemSeparator")
+    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).toContain("Sign out")
+    expect(settingsComponents).toContain("auth.plugins.flatMap")
+    expect(settingsComponents).toContain("plugin.securityCards")
+    expect(settingsComponents).not.toContain("Plugin security cards")
+    expect(settingsComponents).not.toContain("API keys are not available")
+    expect(settingsComponents).not.toContain("Passkeys are not available")
+    expect(settingsComponents).not.toContain(
+      "Danger zone actions are not available"
+    )
+  })
+
+  it("provides the local Solid Zaidan Item primitive used by settings rows", () => {
+    const itemPath = resolve(__dirname, "../src/components/ui/item.tsx")
+    const item = readFileSync(itemPath, "utf8")
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(existsSync(itemPath)).toBe(true)
+    expect(item).toContain(
+      'import { Separator } from "@/components/ui/separator"'
+    )
+    expect(item).toContain('import { cn } from "@/lib/utils"')
+    expect(item).toContain('type ItemVariant = "default" | "outline" | "muted"')
+    expect(item).toContain('type ItemSize = "default" | "sm" | "xs"')
+    expect(item).toContain(
+      'type ItemMediaVariant = "default" | "icon" | "image"'
+    )
+    expect(item).toContain("const itemVariants =")
+    expect(item).toContain("const itemMediaVariants =")
+    expect(item).toContain('{ as: "div", size: "default", variant: "default" }')
+    expect(item).toContain('type ItemGroupProps = ComponentProps<"div">')
+    expect(item).toContain("<div")
+    expect(item).not.toContain("<ul")
+    expect(item).toContain('type ItemDescriptionProps = ComponentProps<"p">')
+    expect(item).toContain("<p")
+    expect(item).toContain('data-slot="item"')
+    expect(item).toContain('data-slot="item-group"')
+    expect(item).toContain('data-slot="item-media"')
+    expect(item).toContain("data-variant={local.variant}")
+    expect(item).toContain('data-slot="item-content"')
+    expect(item).toContain('data-slot="item-title"')
+    expect(item).toContain('data-slot="item-description"')
+    expect(item).toContain('data-slot="item-actions"')
+    expect(item).toContain('data-slot="item-separator"')
+    expect(item).toContain('role="list"')
+    expect(item).toMatch(
+      /export \{[\s\S]*ItemFooter[\s\S]*ItemHeader[\s\S]*itemMediaVariants[\s\S]*itemVariants/
+    )
+    expect(settingsComponents).toContain('from "@/components/ui/item"')
+  })
+
+  it("does not invent placeholder active-session rows when only the current session is known", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(settingsComponents).toContain("Current session")
+    expect(settingsComponents).not.toContain("Other active sessions")
+    expect(settingsComponents).not.toContain(
+      "Additional sessions will appear here."
+    )
+  })
+
+  it("renders registered security plugin sections with shadcn-like API keys, passkeys, and danger-zone structure", () => {
+    const authProvider = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+      "utf8"
+    )
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+
+    expect(authProvider).toContain("deleteUserPlugin")
+    expect(settingsComponents).toContain(
+      'hasAuthPlugin(auth.plugins, "apiKey")'
+    )
+    expect(settingsComponents).toContain(
+      'hasAuthPlugin(auth.plugins, "passkey")'
+    )
+    expect(settingsComponents).toContain(
+      'hasAuthPlugin(auth.plugins, "deleteUser")'
+    )
+    expect(settingsComponents).toContain("listApiKeysOptions")
+    expect(settingsComponents).toContain("listPasskeysOptions")
+    expect(settingsComponents).toContain("API keys")
+    expect(settingsComponents).toContain("Create API key")
+    expect(settingsComponents).toContain("No API keys")
+    expect(settingsComponents).toContain("Passkeys")
+    expect(settingsComponents).toContain("Add passkey")
+    expect(settingsComponents).toContain("No passkeys")
+    expect(settingsComponents).toContain("Danger zone")
+    expect(settingsComponents).toContain("Delete user")
+    expect(settingsComponents).toContain("text-destructive")
   })
 })
