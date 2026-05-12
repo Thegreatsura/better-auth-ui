@@ -67,7 +67,7 @@ export function OrganizationInvitations({
   className,
   ...props
 }: OrganizationInvitationsProps & ComponentProps<"div">) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
@@ -91,17 +91,15 @@ export function OrganizationInvitations({
 
   const tableHeader = (
     <Table.Header>
-      <Table.Column isRowHeader>{organizationLocalization.email}</Table.Column>
+      <Table.Column isRowHeader>{localization.auth.email}</Table.Column>
 
       <Table.Column className="whitespace-nowrap">
-        {organizationLocalization.invitedAt}
+        {organizationLocalization.invited}
       </Table.Column>
 
       <Table.Column>{organizationLocalization.role}</Table.Column>
 
-      <Table.Column>
-        {organizationLocalization.invitationStatusColumn}
-      </Table.Column>
+      <Table.Column>{organizationLocalization.status}</Table.Column>
 
       <Table.Column className="w-px text-end">
         {organizationLocalization.actions}
@@ -212,16 +210,14 @@ function InvitationTableRow({
 
   const statusLabel =
     status === "pending"
-      ? organizationLocalization.invitationStatusPending
+      ? organizationLocalization.pending
       : status === "accepted"
-        ? organizationLocalization.invitationStatusAccepted
+        ? organizationLocalization.accepted
         : status === "rejected"
-          ? organizationLocalization.invitationStatusRejected
+          ? organizationLocalization.rejected
           : status === "canceled"
-            ? organizationLocalization.invitationStatusCanceled
+            ? organizationLocalization.canceled
             : status
-              ? status.charAt(0).toUpperCase() + status.slice(1)
-              : organizationLocalization.invitationStatusUnknown
 
   const statusColor =
     status === "pending"
@@ -266,13 +262,11 @@ function InvitationTableRow({
             onPress={() => mutate({ invitationId: invitation.id })}
             aria-label={organizationLocalization.removeInvitation}
           >
-            {({ isPending: cancelPending }) =>
-              cancelPending ? (
-                <Spinner color="current" size="sm" />
-              ) : (
-                <Xmark className="size-4" />
-              )
-            }
+            {isPending ? (
+              <Spinner color="current" size="sm" />
+            ) : (
+              <Xmark className="size-4" />
+            )}
           </Button>
         ) : null}
       </Table.Cell>

@@ -115,7 +115,7 @@ export function Organization({
       {!hideNav && (
         <Tabs.ListContainer>
           <Tabs.List
-            aria-label={organizationLocalization.organizationSettings}
+            aria-label={localization.settings.settings}
             className="w-fit overflow-auto"
           >
             <Tabs.Tab

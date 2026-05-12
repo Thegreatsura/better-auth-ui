@@ -38,7 +38,7 @@ export function InviteMemberDialog({
   isOpen,
   onOpenChange
 }: InviteMemberDialogProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
@@ -100,7 +100,7 @@ export function InviteMemberDialog({
                 isRequired
                 isDisabled={isInviting}
               >
-                <Label>{organizationLocalization.email}</Label>
+                <Label>{localization.auth.email}</Label>
 
                 <Input
                   autoFocus
@@ -144,7 +144,7 @@ export function InviteMemberDialog({
 
             <AlertDialog.Footer>
               <Button slot="close" variant="tertiary" isDisabled={isInviting}>
-                {organizationLocalization.cancel}
+                {localization.settings.cancel}
               </Button>
 
               <Button type="submit" isPending={isInviting}>

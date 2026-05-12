@@ -26,7 +26,7 @@ export function OrganizationInvitationsEmpty({
 
       <div className="flex flex-col items-center justify-center gap-1 text-center">
         <p className="text-sm font-semibold">
-          {organizationLocalization.noOrganizationInvitations}
+          {organizationLocalization.noInvitations}
         </p>
 
         <p className="text-muted text-xs">

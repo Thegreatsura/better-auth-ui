@@ -36,7 +36,7 @@ export function CreateOrganizationDialog({
   isOpen,
   onOpenChange
 }: CreateOrganizationDialogProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
@@ -137,7 +137,7 @@ export function CreateOrganizationDialog({
 
             <AlertDialog.Footer>
               <Button slot="close" variant="tertiary" isDisabled={isCreating}>
-                {organizationLocalization.cancel}
+                {localization.settings.cancel}
               </Button>
 
               <Button type="submit" isPending={isCreating}>

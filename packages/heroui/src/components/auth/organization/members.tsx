@@ -163,7 +163,7 @@ type MemberRowProps = {
 }
 
 function MemberTableRow({ member, isOwner }: MemberRowProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization } = useAuth()
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
@@ -219,7 +219,7 @@ function MemberTableRow({ member, isOwner }: MemberRowProps) {
                 onPress={() => setConfirmRemove(false)}
                 isDisabled={removing}
               >
-                {organizationLocalization.cancel}
+                {localization.settings.cancel}
               </Button>
 
               <Button

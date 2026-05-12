@@ -46,11 +46,11 @@ export function OrganizationRow({ organization }: OrganizationRowProps) {
         onPress={() =>
           setActiveOrganization({ organizationId: organization.id })
         }
-        aria-label={organizationLocalization.manageOrganization}
+        aria-label={organizationLocalization.manage}
       >
         {setActivePending ? <Spinner color="current" size="sm" /> : <Gear />}
 
-        {organizationLocalization.manageOrganization}
+        {organizationLocalization.manage}
       </Button>
     </div>
   )

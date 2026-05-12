@@ -66,7 +66,7 @@ export function UserInvitationRow({ invitation }: UserInvitationRowProps) {
         >
           {isAccepting ? <Spinner color="current" size="sm" /> : <Check />}
 
-          {organizationLocalization.acceptInvitation}
+          {organizationLocalization.accept}
         </Button>
 
         <Button

@@ -130,7 +130,7 @@ export function OrganizationSwitcher({
                 >
                   <Gear className="text-muted" />
 
-                  {organizationLocalization.manageOrganization}
+                  {organizationLocalization.manage}
                 </Link>
               )}
             </div>
