@@ -36,12 +36,9 @@ export type UsernameAuthClient = ReturnType<
   typeof createAuthClient<{ plugins: [ReturnType<typeof usernameClient>] }>
 >
 
-/** Matches `organization()` / `organizationClient()` without the teams feature. */
 export type OrganizationAuthClient = ReturnType<
   typeof createAuthClient<{
-    plugins: [
-      ReturnType<typeof organizationClient<{ teams: { enabled: false } }>>
-    ]
+    plugins: [ReturnType<typeof organizationClient<object>>]
   }>
 >
 

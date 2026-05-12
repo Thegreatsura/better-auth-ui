@@ -1,6 +1,11 @@
 import type { passkey } from "@better-auth/passkey"
 import type { Auth } from "better-auth"
-import type { magicLink, multiSession, username } from "better-auth/plugins"
+import type {
+  magicLink,
+  multiSession,
+  organization,
+  username
+} from "better-auth/plugins"
 
 export type AuthServer = Pick<Auth, "api">
 
@@ -26,5 +31,10 @@ export type PasskeyAuthServer = Pick<
 
 export type UsernameAuthServer = Pick<
   Auth<{ plugins: [ReturnType<typeof username>] }>,
+  "api"
+>
+
+export type OrganizationAuthServer = Pick<
+  Auth<{ plugins: [ReturnType<typeof organization>] }>,
   "api"
 >
