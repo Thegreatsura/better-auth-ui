@@ -35,11 +35,11 @@ export const organizationMutationKeys = {
   /** Key for `organization.updateMemberRole`. */
   updateMemberRole: ["auth", "organization", "updateMemberRole"] as const,
 
-  /** Key for `organization.removeInvitation`. */
-  removeInvitation: ["auth", "organization", "removeInvitation"] as const,
-
   /** Key for `organization.acceptInvitation`. */
   acceptInvitation: ["auth", "organization", "acceptInvitation"] as const,
+
+  /** Key for `organization.cancelInvitation`. */
+  cancelInvitation: ["auth", "organization", "cancelInvitation"] as const,
 
   /** Key for `organization.rejectInvitation` (invitee declines). */
   rejectInvitation: ["auth", "organization", "rejectInvitation"] as const

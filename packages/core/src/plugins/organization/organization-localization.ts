@@ -9,6 +9,8 @@ export const organizationLocalization = {
   admin: "Admin",
   /** @remarks `"Canceled"` */
   canceled: "Canceled",
+  /** @remarks `"Cancel invitation"` */
+  cancelInvitation: "Cancel invitation",
   /** @remarks `"Change logo"` */
   changeLogo: "Change logo",
   /** @remarks `"Change role"` */
@@ -91,8 +93,6 @@ export const organizationLocalization = {
   rejected: "Rejected",
   /** @remarks `"Reject invitation"` */
   rejectInvitation: "Reject invitation",
-  /** @remarks `"Remove invitation"` */
-  removeInvitation: "Remove invitation",
   /** @remarks `"Remove member"` */
   removeMember: "Remove member",
   /** @remarks `"Role"` */

@@ -12,22 +12,22 @@ import type { BetterFetchError } from "better-auth/react"
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
 
-export type RemoveInvitationParams<TAuthClient extends OrganizationAuthClient> =
+export type CancelInvitationParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["cancelInvitation"]>[0]
 
-export type RemoveInvitationOptions<
+export type CancelInvitationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
-  ReturnType<typeof removeInvitationOptions<TAuthClient>>,
+  ReturnType<typeof cancelInvitationOptions<TAuthClient>>,
   "mutationKey" | "mutationFn" | "meta"
 >
 
-export function removeInvitationOptions<
+export function cancelInvitationOptions<
   TAuthClient extends OrganizationAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = organizationMutationKeys.removeInvitation
+  const mutationKey = organizationMutationKeys.cancelInvitation
 
-  const mutationFn = (params: RemoveInvitationParams<TAuthClient>) =>
+  const mutationFn = (params: CancelInvitationParams<TAuthClient>) =>
     authClient.organization.cancelInvitation({
       ...params,
       fetchOptions: { ...params?.fetchOptions, throw: true }
@@ -43,9 +43,9 @@ export function removeInvitationOptions<
   })
 }
 
-export function useRemoveInvitation<TAuthClient extends OrganizationAuthClient>(
+export function useCancelInvitation<TAuthClient extends OrganizationAuthClient>(
   authClient: TAuthClient,
-  options?: RemoveInvitationOptions<TAuthClient>,
+  options?: CancelInvitationOptions<TAuthClient>,
   queryClient?: QueryClient
 ) {
   const { data: session } = useSession(authClient, undefined, queryClient)
@@ -53,7 +53,7 @@ export function useRemoveInvitation<TAuthClient extends OrganizationAuthClient>(
 
   return useMutation(
     {
-      ...removeInvitationOptions(authClient),
+      ...cancelInvitationOptions(authClient),
       ...options,
       meta: {
         awaits: [

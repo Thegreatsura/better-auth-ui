@@ -2,9 +2,9 @@ import {
   type OrganizationAuthClient,
   useAuth,
   useAuthPlugin,
+  useCancelInvitation,
   useHasPermission,
-  useListOrganizationInvitations,
-  useRemoveInvitation
+  useListOrganizationInvitations
 } from "@better-auth-ui/react"
 import { Xmark } from "@gravity-ui/icons"
 import { Button, Chip, cn, Skeleton, Spinner, Table } from "@heroui/react"
@@ -200,7 +200,7 @@ function InvitationTableRow({
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
-  const { mutate, isPending } = useRemoveInvitation(
+  const { mutate, isPending } = useCancelInvitation(
     authClient as OrganizationAuthClient
   )
 
@@ -260,7 +260,7 @@ function InvitationTableRow({
             variant="danger-soft"
             isPending={isPending}
             onPress={() => mutate({ invitationId: invitation.id })}
-            aria-label={organizationLocalization.removeInvitation}
+            aria-label={organizationLocalization.cancelInvitation}
           >
             {isPending ? (
               <Spinner color="current" size="sm" />
