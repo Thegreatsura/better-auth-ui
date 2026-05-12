@@ -34,7 +34,7 @@ export function fullOrganizationOptions<
   params?: FullOrganizationParams<TAuthClient>
 ) {
   type TData = FullOrganizationData<TAuthClient>
-  const queryKey = organizationQueryKeys.fullOrganization(userId, params?.query)
+  const queryKey = organizationQueryKeys.fullDetail(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

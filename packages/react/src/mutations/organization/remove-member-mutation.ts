@@ -1,4 +1,7 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
   type QueryClient,
@@ -8,7 +11,6 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
-import { listOrganizationMembersOptions } from "../../queries/organization/list-organization-members-query"
 
 export type RemoveMemberParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["removeMember"]>[0]
@@ -16,7 +18,7 @@ export type RemoveMemberParams<TAuthClient extends OrganizationAuthClient> =
 export type RemoveMemberOptions<TAuthClient extends OrganizationAuthClient> =
   Omit<
     ReturnType<typeof removeMemberOptions<TAuthClient>>,
-    "mutationKey" | "mutationFn"
+    "mutationKey" | "mutationFn" | "meta"
   >
 
 export function removeMemberOptions<TAuthClient extends OrganizationAuthClient>(
@@ -52,14 +54,12 @@ export function useRemoveMember<TAuthClient extends OrganizationAuthClient>(
     {
       ...removeMemberOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await context.client.invalidateQueries({
-          queryKey: listOrganizationMembersOptions(authClient, userId, {
-            query: { organizationId: data.member.organizationId }
-          }).queryKey
-        })
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [
+          organizationQueryKeys.members.all(userId),
+          organizationQueryKeys.fullDetails(userId)
+        ],
+        invalidates: [organizationQueryKeys.lists(userId)]
       }
     },
     queryClient

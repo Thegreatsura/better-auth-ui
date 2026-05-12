@@ -21,7 +21,7 @@ export type SetActiveOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof setActiveOrganizationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function setActiveOrganizationOptions<
@@ -105,7 +105,7 @@ export function useSetActiveOrganization<
       onError: (error, variables, onMutateResult, context) => {
         const previousOrganization = onMutateResult?.previousOrganization
 
-        if (previousOrganization) {
+        if (previousOrganization !== undefined && error.error) {
           context.client.setQueryData(
             organizationQueryKeys.activeOrganization(userId),
             previousOrganization

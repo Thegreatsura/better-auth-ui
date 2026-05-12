@@ -1,96 +1,67 @@
 import { authQueryKeys } from "../../lib/auth-query-keys"
 
-/**
- * Hierarchical query key factory for organization-related queries.
- *
- * Keys are nested under `["auth", "user", userId, "organization"]` so they
- * can be invalidated in bulk per-user:
- *
- * ```ts
- * queryClient.invalidateQueries({ queryKey: authQueryKeys.user(userId) })
- * ```
- */
+/** Query key factory for organization queries, scoped per user. */
 export const organizationQueryKeys = {
-  /** Prefix for every organization query scoped to a specific user. */
-  user: (userId: string | undefined) =>
+  all: (userId: string | undefined) =>
     [...authQueryKeys.user(userId), "organization"] as const,
 
-  /** Key for `organization.listOrganizations` for the given user. */
-  listOrganizations: <TQuery = undefined>(
+  lists: (userId: string | undefined) =>
+    [...organizationQueryKeys.all(userId), "list"] as const,
+
+  list: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+    [...organizationQueryKeys.lists(userId), query ?? null] as const,
+
+  fullDetails: (userId: string | undefined) =>
+    [...organizationQueryKeys.all(userId), "fullDetails"] as const,
+  fullDetail: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "listOrganizations",
-      query ?? null
-    ] as const,
+  ) => [...organizationQueryKeys.fullDetails(userId), query ?? null] as const,
 
-  /** Key for `organization.getFullOrganization` for the given user. */
-  fullOrganization: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "getFullOrganization",
-      query ?? null
-    ] as const,
-
-  /**
-   * Key for the active organization query — i.e. `getFullOrganization` with
-   * no `query` argument. Shares a cache entry with
-   * `fullOrganization(userId)`.
-   */
   activeOrganization: (userId: string | undefined) =>
-    organizationQueryKeys.fullOrganization(userId),
+    organizationQueryKeys.fullDetail(userId),
 
-  /** Key for `organization.listMembers`. The `organizationId` is part of `query`. */
-  listMembers: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "listMembers",
-      query ?? null
-    ] as const,
+  members: {
+    all: (userId: string | undefined) =>
+      [...organizationQueryKeys.all(userId), "members"] as const,
+    lists: (userId: string | undefined) =>
+      [...organizationQueryKeys.members.all(userId), "list"] as const,
+    list: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+      [...organizationQueryKeys.members.lists(userId), query ?? null] as const
+  },
 
-  /** Key for `organization.listInvitations`. The `organizationId` is part of `query`. */
-  listInvitations: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "listInvitations",
-      query ?? null
-    ] as const,
+  invitations: {
+    all: (userId: string | undefined) =>
+      [...organizationQueryKeys.all(userId), "invitations"] as const,
+    lists: (userId: string | undefined) =>
+      [...organizationQueryKeys.invitations.all(userId), "list"] as const,
+    list: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+      [
+        ...organizationQueryKeys.invitations.lists(userId),
+        query ?? null
+      ] as const
+  },
 
-  /** Key for `organization.listUserInvitations` (invitations for the current user). */
-  listUserInvitations: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "listUserInvitations",
-      query ?? null
-    ] as const,
+  userInvitations: {
+    all: (userId: string | undefined) =>
+      [...organizationQueryKeys.all(userId), "userInvitations"] as const,
+    lists: (userId: string | undefined) =>
+      [...organizationQueryKeys.userInvitations.all(userId), "list"] as const,
+    list: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+      [
+        ...organizationQueryKeys.userInvitations.lists(userId),
+        query ?? null
+      ] as const
+  },
 
-  /**
-   * Key for `organization.hasPermission` (server evaluates the member's role,
-   * including dynamic access control when enabled). `hasPermission` is the
-   * only org client method without a nested `query` field — its params are
-   * flat — so `query` here is the params object minus `fetchOptions`.
-   */
-  hasPermission: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...organizationQueryKeys.user(userId),
-      "hasPermission",
-      query ?? null
-    ] as const
+  permissions: {
+    all: (userId: string | undefined) =>
+      [...organizationQueryKeys.all(userId), "permissions"] as const,
+    has: <TQuery = undefined>(userId: string | undefined, query?: TQuery) =>
+      [
+        ...organizationQueryKeys.permissions.all(userId),
+        "has",
+        query ?? null
+      ] as const
+  }
 } as const

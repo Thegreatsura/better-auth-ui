@@ -8,6 +8,7 @@ import {
   useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
+
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
 
@@ -18,7 +19,7 @@ export type AcceptInvitationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof acceptInvitationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function acceptInvitationOptions<
@@ -54,17 +55,12 @@ export function useAcceptInvitation<TAuthClient extends OrganizationAuthClient>(
     {
       ...acceptInvitationOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await Promise.all([
-          context.client.invalidateQueries({
-            queryKey: organizationQueryKeys.listUserInvitations(userId)
-          }),
-          context.client.invalidateQueries({
-            queryKey: organizationQueryKeys.listOrganizations(userId)
-          })
-        ])
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [
+          organizationQueryKeys.userInvitations.all(userId),
+          organizationQueryKeys.lists(userId)
+        ],
+        invalidates: [organizationQueryKeys.fullDetails(userId)]
       }
     },
     queryClient

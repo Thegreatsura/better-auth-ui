@@ -1,4 +1,7 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
   type QueryClient,
@@ -8,10 +11,6 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
-import {
-  listOrganizationInvitationsOptions,
-  useActiveOrganization
-} from "../../queries/organization"
 
 export type InviteMemberParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["inviteMember"]>[0]
@@ -19,7 +18,7 @@ export type InviteMemberParams<TAuthClient extends OrganizationAuthClient> =
 export type InviteMemberOptions<TAuthClient extends OrganizationAuthClient> =
   Omit<
     ReturnType<typeof inviteMemberOptions<TAuthClient>>,
-    "mutationKey" | "mutationFn"
+    "mutationKey" | "mutationFn" | "meta"
   >
 
 export function inviteMemberOptions<TAuthClient extends OrganizationAuthClient>(
@@ -53,27 +52,15 @@ export function useInviteMember<
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
-  const { data: activeOrganization } = useActiveOrganization(
-    authClient,
-    undefined,
-    queryClient
-  )
-
   return useMutation(
     {
       ...inviteMemberOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        const organizationId =
-          variables.organizationId || activeOrganization?.id
-
-        await context.client.invalidateQueries({
-          queryKey: listOrganizationInvitationsOptions(authClient, userId, {
-            query: { organizationId }
-          }).queryKey
-        })
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [
+          organizationQueryKeys.invitations.all(userId),
+          organizationQueryKeys.fullDetails(userId)
+        ]
       }
     },
     queryClient

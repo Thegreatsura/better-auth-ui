@@ -1,4 +1,4 @@
-import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
+import { authMutationKeys } from "@better-auth-ui/core"
 import {
   matchMutation,
   matchQuery,
@@ -42,24 +42,24 @@ export function MutationInvalidator() {
         return
       }
 
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          // invalidate all matching tags at once
-          // or every auth query if no meta is provided
-          mutation.meta?.invalidates?.some((queryKey) =>
-            matchQuery({ queryKey }, query)
-          ) ?? matchQuery({ queryKey: authQueryKeys.all }, query)
-      })
+      const { invalidates, awaits } = mutation.meta ?? {}
 
-      return queryClient.invalidateQueries(
-        {
+      if (invalidates?.length) {
+        queryClient.invalidateQueries({
           predicate: (query) =>
-            mutation.meta?.awaits?.some((queryKey) =>
-              matchQuery({ queryKey }, query)
-            ) ?? false
-        },
-        { cancelRefetch: false }
-      )
+            invalidates.some((queryKey) => matchQuery({ queryKey }, query))
+        })
+      }
+
+      if (awaits?.length) {
+        return queryClient.invalidateQueries(
+          {
+            predicate: (query) =>
+              awaits.some((queryKey) => matchQuery({ queryKey }, query))
+          },
+          { cancelRefetch: false }
+        )
+      }
     }
 
     return () => {

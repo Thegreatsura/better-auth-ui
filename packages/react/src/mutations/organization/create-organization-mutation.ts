@@ -20,7 +20,7 @@ export type CreateOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof createOrganizationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function createOrganizationOptions<
@@ -58,12 +58,9 @@ export function useCreateOrganization<
     {
       ...createOrganizationOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await context.client.invalidateQueries({
-          queryKey: organizationQueryKeys.listOrganizations(userId)
-        })
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [organizationQueryKeys.lists(userId)],
+        invalidates: [organizationQueryKeys.fullDetails(userId)]
       }
     },
     queryClient

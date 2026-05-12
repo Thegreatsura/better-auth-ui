@@ -1,4 +1,7 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
   type QueryClient,
@@ -8,11 +11,6 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
-import {
-  activeOrganizationOptions,
-  fullOrganizationOptions,
-  listOrganizationsOptions
-} from "../../queries/organization"
 
 export type UpdateOrganizationParams<
   TAuthClient extends OrganizationAuthClient
@@ -22,7 +20,7 @@ export type UpdateOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof updateOrganizationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function updateOrganizationOptions<
@@ -60,22 +58,11 @@ export function useUpdateOrganization<
     {
       ...updateOrganizationOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await Promise.all([
-          context.client.invalidateQueries({
-            queryKey: listOrganizationsOptions(authClient, userId).queryKey
-          }),
-          context.client.invalidateQueries({
-            queryKey: activeOrganizationOptions(authClient, userId).queryKey
-          }),
-          context.client.invalidateQueries({
-            queryKey: fullOrganizationOptions(authClient, userId, {
-              query: { organizationId: data.id }
-            }).queryKey
-          })
-        ])
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [
+          organizationQueryKeys.lists(userId),
+          organizationQueryKeys.fullDetails(userId)
+        ]
       }
     },
     queryClient

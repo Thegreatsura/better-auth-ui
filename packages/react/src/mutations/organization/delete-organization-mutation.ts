@@ -20,7 +20,7 @@ export type DeleteOrganizationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof deleteOrganizationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function deleteOrganizationOptions<
@@ -58,17 +58,9 @@ export function useDeleteOrganization<
     {
       ...deleteOrganizationOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await Promise.all([
-          context.client.invalidateQueries({
-            queryKey: organizationQueryKeys.listOrganizations(userId)
-          }),
-          context.client.invalidateQueries({
-            queryKey: organizationQueryKeys.activeOrganization(userId)
-          })
-        ])
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [organizationQueryKeys.lists(userId)],
+        invalidates: [organizationQueryKeys.fullDetails(userId)]
       }
     },
     queryClient

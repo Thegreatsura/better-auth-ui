@@ -38,10 +38,7 @@ export function listOrganizationsOptions<
   params?: ListOrganizationsParams<TAuthClient>
 ) {
   type TData = ListOrganizationsData<TAuthClient>
-  const queryKey = organizationQueryKeys.listOrganizations(
-    userId,
-    params?.query
-  )
+  const queryKey = organizationQueryKeys.list(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

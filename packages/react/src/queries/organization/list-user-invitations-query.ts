@@ -34,7 +34,7 @@ export function listUserInvitationsOptions<
   params?: ListUserInvitationsParams<TAuthClient>
 ) {
   type TData = ListUserInvitationsData<TAuthClient>
-  const queryKey = organizationQueryKeys.listUserInvitations(
+  const queryKey = organizationQueryKeys.userInvitations.list(
     userId,
     params?.query
   )

@@ -38,7 +38,7 @@ export function hasPermissionOptions<
   // `hasPermission` is the only org client method without a `query` field — its
   // params are flat — so the "query" portion is everything except `fetchOptions`.
   const { fetchOptions, ...query } = params
-  const queryKey = organizationQueryKeys.hasPermission(userId, query)
+  const queryKey = organizationQueryKeys.permissions.has(userId, query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

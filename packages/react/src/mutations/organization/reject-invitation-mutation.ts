@@ -1,4 +1,7 @@
-import { organizationMutationKeys } from "@better-auth-ui/core/plugins"
+import {
+  organizationMutationKeys,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
   type QueryClient,
@@ -8,7 +11,6 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
-import { listUserInvitationsOptions } from "../../queries/organization"
 
 export type RejectInvitationParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["rejectInvitation"]>[0]
@@ -17,7 +19,7 @@ export type RejectInvitationOptions<
   TAuthClient extends OrganizationAuthClient
 > = Omit<
   ReturnType<typeof rejectInvitationOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 export function rejectInvitationOptions<
@@ -53,12 +55,8 @@ export function useRejectInvitation<TAuthClient extends OrganizationAuthClient>(
     {
       ...rejectInvitationOptions(authClient),
       ...options,
-      onSuccess: async (data, variables, onMutateResult, context) => {
-        await context.client.invalidateQueries({
-          queryKey: listUserInvitationsOptions(authClient, userId).queryKey
-        })
-
-        return options?.onSuccess?.(data, variables, onMutateResult, context)
+      meta: {
+        awaits: [organizationQueryKeys.userInvitations.all(userId)]
       }
     },
     queryClient
