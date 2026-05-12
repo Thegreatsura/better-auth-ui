@@ -96,4 +96,15 @@ describe("Solid docs navigation", () => {
     expect(source).toContain("Solid")
     expect(source).not.toContain("/r/solid")
   })
+
+  it("keeps Solid plugin docs honest about the type-only plugin export", () => {
+    const plugins = readDocsFile("solid", "plugins.mdx")
+
+    expect(plugins).toContain("type-only")
+    expect(plugins).toContain("export type { AuthPlugin }")
+    expect(plugins).toContain("Use Better Auth plugins")
+    expect(plugins).not.toContain(
+      "Use `@better-auth-ui/solid/plugins` for Solid package helpers"
+    )
+  })
 })

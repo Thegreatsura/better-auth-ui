@@ -3,18 +3,26 @@ title: Plugins
 description: Plugin registration notes for the Solid package.
 ---
 
-Solid plugin support follows the shared `@better-auth-ui/core` plugin contracts. Use `@better-auth-ui/solid/plugins` for Solid package helpers and keep Better Auth server plugin registration in your app's auth config.
+Solid plugin support follows the shared `@better-auth-ui/core` plugin contracts. Use Better Auth plugins in your app's server/client auth config, then wire Solid query and mutation factories from `@better-auth-ui/solid` in your UI.
+
+`@better-auth-ui/solid/plugins` is currently a type-only export:
+
+```ts
+export type { AuthPlugin } from "@better-auth-ui/core"
+```
+
+It does not ship runtime plugin helpers yet. If a plugin needs UI, install or create the Solid/Zaidan component for that feature in your app or registry source.
 
 ## Supported parity
 
-| Area | Solid status | Notes |
-|------|--------------|-------|
-| Captcha | Supported through shared config | Use the same core captcha options as React-compatible flows. |
-| Passkey | Supported | Query and mutation factories are available for list/add/delete/sign-in flows. |
-| Multi-session | Supported | Query and mutation keys align with the core namespace. |
-| API key | Supported | API-key query/mutation factories use the shared plugin key contracts. |
-| Magic link | Supported | Mutation factories preserve Better Auth fetch error behavior. |
-| Username | Supported | Username sign-in and availability flows use shared mutation keys. |
+| Area | Package status | Example/registry status | Notes |
+|------|----------------|-------------------------|-------|
+| Captcha | Shared config types only | Not shown | Use the same core captcha options as React-compatible flows; no Solid/Zaidan captcha UI is delivered yet. |
+| Passkey | Query and mutation factories | Settings list shell shown; dialogs still pending | Factories are available for list/add/delete/sign-in flows. |
+| Multi-session | Query and mutation factories | Account/session rows shown; switch/revoke actions still pending | Query and mutation keys align with the core namespace. |
+| API key | Query and mutation factories | Settings list shell shown; create/delete dialogs still pending | API-key query/mutation factories use shared plugin key contracts. |
+| Magic link | Mutation factory | Not shown in the current Solid registry | Mutation factories preserve Better Auth fetch error behavior. |
+| Username | Mutation factories | Sign-in route supports username/email selection | Username sign-in and availability flows use shared mutation keys. |
 
 ## Non-goals
 
