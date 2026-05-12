@@ -7,12 +7,16 @@ export function ErrorToaster() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    queryClient.getQueryCache().config.onError = (error) => {
-      const err = error as BetterFetchError
-      if (err?.error) toast.danger(err.error.message)
-    }
+    queryClient.setQueryDefaults(["auth"], {
+      throwOnError: (error) => {
+        const err = error as BetterFetchError
+        if (err?.error) toast.danger(err.error.message)
 
-    queryClient.setMutationDefaults([], {
+        return false
+      }
+    })
+
+    queryClient.setMutationDefaults(["auth"], {
       onError: (error) => {
         toast.danger(
           (error as BetterFetchError)?.error?.message || error.message
