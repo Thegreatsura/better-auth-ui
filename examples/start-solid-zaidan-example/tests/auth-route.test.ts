@@ -642,6 +642,59 @@ describe("Solid auth route component selection", () => {
     )
   })
 
+  it("wires active sessions to real Solid session queries and revoke/sign-out parity", () => {
+    const settingsComponents = readFileSync(
+      resolve(__dirname, "../src/routes/settings/-route-components.tsx"),
+      "utf8"
+    )
+    const solidIndex = readFileSync(
+      resolve(__dirname, "../../../packages/solid/src/index.ts"),
+      "utf8"
+    )
+
+    expect(solidIndex).toContain(
+      'export * from "./queries/settings/list-sessions-query"'
+    )
+    expect(settingsComponents).toContain('import Bowser from "bowser"')
+    expect(settingsComponents).toContain("listSessionsOptions")
+    expect(settingsComponents).toContain("revokeSessionOptions")
+    expect(settingsComponents).toContain("const activeSessions = createQuery")
+    expect(settingsComponents).toContain("...listSessionsOptions(")
+    expect(settingsComponents).toContain("const revokeSession = createMutation")
+    expect(settingsComponents).toContain(
+      "...revokeSessionOptions(auth.authClient)"
+    )
+    expect(settingsComponents).toContain("revokeSession.mutate(activeSession)")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.revokeSessionSuccess"
+    )
+    expect(settingsComponents).toContain("activeSession.token ===")
+    expect(settingsComponents).toContain("props.session.data?.session.token")
+    expect(settingsComponents).toContain("auth.navigate({")
+    expect(settingsComponents).toContain("auth.basePaths.auth")
+    expect(settingsComponents).toContain("auth.viewPaths.auth.signOut")
+    expect(settingsComponents).toContain("auth.localization.auth.signOut")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.revokeSession"
+    )
+    expect(settingsComponents).toContain("auth.localization.settings.revoke")
+    expect(settingsComponents).toContain(
+      "auth.localization.settings.currentSession"
+    )
+    expect(settingsComponents).toContain(
+      "Bowser.parse(props.activeSession.userAgent"
+    )
+    expect(settingsComponents).toContain("<Smartphone")
+    expect(settingsComponents).toContain("<Monitor")
+    expect(settingsComponents).toContain("<X")
+    expect(settingsComponents).not.toContain(
+      "Session revocation is not wired in this Solid slice yet."
+    )
+    expect(settingsComponents).not.toMatch(
+      /<Button disabled size="sm" type="button" variant="outline">\s*<LogOut \/>\s*Sign out/
+    )
+  })
+
   it("renders registered security plugin sections with shadcn-like API keys, passkeys, and danger-zone structure", () => {
     const authProvider = readFileSync(
       resolve(__dirname, "../src/components/auth/auth-provider.tsx"),

@@ -23,6 +23,7 @@
     "@tanstack/solid-router": "^1.167.65",
     "@tanstack/solid-start": "^1.167.62",
     "better-auth": "^1.6.10",
+    "bowser": "^2.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
