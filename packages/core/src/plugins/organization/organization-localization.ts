@@ -108,6 +108,6 @@ export const organizationLocalization = {
   /** @remarks `"Invitations to join an organization will show up here."` */
   userInvitationsEmptyDescription:
     "Invitations to join an organization will show up here."
-} as const
+}
 
 export type OrganizationLocalization = typeof organizationLocalization
