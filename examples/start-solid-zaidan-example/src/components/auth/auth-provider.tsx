@@ -1,71 +1,26 @@
-import { apiKeyClient } from "@better-auth/api-key/client"
-import { passkeyClient } from "@better-auth/passkey/client"
 import {
-  apiKeyPlugin,
-  deleteUserPlugin,
-  multiSessionPlugin,
-  passkeyPlugin,
-  usernamePlugin
-} from "@better-auth-ui/core/plugins"
-import type { AuthClient } from "@better-auth-ui/solid"
-import {
-  createAuthClient,
-  AuthProvider as SolidAuthProvider
+  AuthProvider as AuthProviderPrimitive,
+  type AuthProviderProps
 } from "@better-auth-ui/solid"
-import type { QueryClient } from "@tanstack/solid-query"
-import { useNavigate } from "@tanstack/solid-router"
-import { multiSessionClient, usernameClient } from "better-auth/client/plugins"
-import type { JSX } from "solid-js"
 
 import { ErrorToaster } from "./error-toaster"
 
-const resolveAuthBaseURL = () => {
-  if (import.meta.env.VITE_AUTH_URL) return import.meta.env.VITE_AUTH_URL
+export type { AuthProviderProps }
 
-  if (import.meta.env.SSR) return "http://localhost:5173/api/auth"
-
-  return `${window.location.origin}/api/auth`
-}
-
-const authBaseURL = resolveAuthBaseURL()
-export const authClient: AuthClient = createAuthClient({
-  baseURL: authBaseURL,
-  plugins: [
-    multiSessionClient(),
-    apiKeyClient(),
-    passkeyClient(),
-    usernameClient()
-  ]
-})
-
-export type AuthProviderProps = {
-  children?: JSX.Element | (() => JSX.Element)
-  queryClient?: QueryClient
-}
+const resolveProviderChildren = (children: AuthProviderProps["children"]) =>
+  typeof children === "function" ? children() : children
 
 export function AuthProvider(props: AuthProviderProps) {
-  const navigate = useNavigate()
+  const { children, ...config } = props
 
   return (
-    <SolidAuthProvider
-      authClient={authClient}
-      redirectTo="/settings/account"
-      navigate={navigate}
-      queryClient={props.queryClient}
-      plugins={[
-        multiSessionPlugin(),
-        apiKeyPlugin(),
-        passkeyPlugin(),
-        deleteUserPlugin(),
-        usernamePlugin()
-      ]}
-    >
+    <AuthProviderPrimitive {...config}>
       {() => (
         <>
-          {props.children}
+          {resolveProviderChildren(children)}
           <ErrorToaster />
         </>
       )}
-    </SolidAuthProvider>
+    </AuthProviderPrimitive>
   )
 }

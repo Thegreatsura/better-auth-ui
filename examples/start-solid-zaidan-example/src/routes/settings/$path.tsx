@@ -5,9 +5,9 @@ import { createFileRoute, notFound, redirect } from "@tanstack/solid-router"
 import { createIsomorphicFn } from "@tanstack/solid-start"
 import { getRequestHeaders } from "@tanstack/solid-start/server"
 
-import { authClient } from "@/components/auth/auth-provider"
 import { Settings } from "@/components/auth/settings/settings"
 import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
 
 export const Route = createFileRoute("/settings/$path")({
   async beforeLoad({ params: { path }, context: { queryClient }, location }) {

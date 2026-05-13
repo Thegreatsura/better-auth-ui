@@ -96,23 +96,50 @@ describe("Solid auth route component selection", () => {
     expect(authComponent).toContain("export function resolveAuthRoute(")
   })
 
-  it("wires the Solid auth provider to TanStack navigation and the shadcn redirect target", () => {
+  it("wires Solid app providers like shadcn with TanStack navigation and the redirect target", () => {
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
+      "utf8"
+    )
     const authProvider = readFileSync(
       resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
       "utf8"
     )
+    const authClient = readFileSync(
+      resolve(__dirname, "../src/lib/auth-client.ts"),
+      "utf8"
+    )
 
-    expect(authProvider).toContain(
+    expect(providers).toContain(
       'import { useNavigate } from "@tanstack/solid-router"'
     )
-    expect(authProvider).toContain("const navigate = useNavigate()")
-    expect(authProvider).toContain('redirectTo="/settings/account"')
-    expect(authProvider).toContain("navigate={navigate}")
+    expect(providers).toContain(
+      'import { AuthProvider } from "./auth/auth-provider"'
+    )
+    expect(providers).toContain(
+      'import { authClient } from "@/lib/auth-client"'
+    )
+    expect(providers).toContain("const navigate = useNavigate()")
+    expect(providers).toContain('redirectTo="/settings/account"')
+    expect(providers).toContain("navigate={navigate}")
+    expect(providers).toContain("multiSessionPlugin()")
+    expect(providers).toContain("apiKeyPlugin()")
+    expect(providers).toContain("passkeyPlugin()")
+    expect(providers).toContain("deleteUserPlugin()")
+    expect(providers).toContain("usernamePlugin()")
+    expect(authClient).toContain("export const authClient")
+    expect(authClient).toContain("createAuthClient")
+    expect(authProvider).not.toContain("useNavigate")
+    expect(authProvider).not.toContain("createAuthClient")
   })
 
   it("shares the router QueryClient with Solid auth queries across navigation", () => {
     const rootRoute = readFileSync(
       resolve(__dirname, "../src/routes/__root.tsx"),
+      "utf8"
+    )
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
       "utf8"
     )
     const authProvider = readFileSync(
@@ -127,13 +154,20 @@ describe("Solid auth route component selection", () => {
     expect(rootRoute).toContain("queryClient: QueryClient")
     expect(rootRoute).toContain("const routeContext = Route.useRouteContext()")
     expect(rootRoute).toContain(
-      "<AuthProvider queryClient={routeContext().queryClient}>"
+      "<Providers queryClient={routeContext().queryClient}>"
     )
-    expect(authProvider).toContain(
+    expect(rootRoute).toContain(
+      'import { Providers } from "@/components/providers"'
+    )
+    expect(providers).toContain(
       'import type { QueryClient } from "@tanstack/solid-query"'
     )
-    expect(authProvider).toContain("queryClient?: QueryClient")
-    expect(authProvider).toContain("queryClient={props.queryClient}")
+    expect(providers).toContain("queryClient?: QueryClient")
+    expect(providers).toContain("queryClient={props.queryClient}")
+    expect(authProvider).toContain("AuthProvider as AuthProviderPrimitive")
+    expect(authProvider).toContain("type AuthProviderProps")
+    expect(authProvider).toContain("<ErrorToaster />")
+    expect(authProvider).not.toContain("queryClient?: QueryClient")
   })
 
   it("redirects Solid sign-in success like shadcn and refreshes the session query", () => {
@@ -329,8 +363,8 @@ describe("Solid auth route component selection", () => {
       resolve(__dirname, "../src/routes/settings/$path.tsx"),
       "utf8"
     )
-    const authProvider = readFileSync(
-      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+    const authClient = readFileSync(
+      resolve(__dirname, "../src/lib/auth-client.ts"),
       "utf8"
     )
 
@@ -348,7 +382,13 @@ describe("Solid auth route component selection", () => {
     expect(settingsRoute).toContain('params: { path: "sign-in" }')
     expect(settingsRoute).toContain("search: { redirectTo: location.href }")
     expect(settingsRoute).not.toContain("minimal {path()} settings route")
-    expect(authProvider).toContain("export const authClient")
+    expect(settingsRoute).toContain(
+      'import { authClient } from "@/lib/auth-client"'
+    )
+    expect(settingsRoute).not.toContain(
+      'import { authClient } from "@/components/auth/auth-provider"'
+    )
+    expect(authClient).toContain("export const authClient")
   })
 
   it("gates Solid settings navigation at the route instead of redirecting from the component", () => {
@@ -1295,8 +1335,8 @@ describe("Solid auth route component selection", () => {
   })
 
   it("renders registered security plugin sections with shadcn-like API keys, passkeys, and danger-zone structure", () => {
-    const authProvider = readFileSync(
-      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
       "utf8"
     )
     const settingsComponents = readFileSync(
@@ -1311,7 +1351,7 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(authProvider).toContain("deleteUserPlugin")
+    expect(providers).toContain("deleteUserPlugin")
     expect(securitySettings).toContain('hasAuthPlugin(auth.plugins, "apiKey")')
     expect(securitySettings).toContain('hasAuthPlugin(auth.plugins, "passkey")')
     expect(securitySettings).toContain(
