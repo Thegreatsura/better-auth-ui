@@ -1,6 +1,7 @@
 import {
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync
@@ -124,6 +125,17 @@ const registryUrlsForManifest = (manifest: SolidRegistryManifest) => [
   )
 ]
 
+const collectMdxFiles = (root: string): string[] =>
+  readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
+    const path = resolve(root, entry.name)
+
+    if (entry.isDirectory()) {
+      return collectMdxFiles(path)
+    }
+
+    return entry.name.endsWith(".mdx") ? [path] : []
+  })
+
 export const verifySolidRegistryCoherence = ({
   exampleRoot,
   manifest,
@@ -135,10 +147,10 @@ export const verifySolidRegistryCoherence = ({
   const examplePackageJson = readJson<PackageJson>(
     resolve(exampleRoot, "package.json")
   )
-  const docsRegistryPage = readFileSync(
-    resolve(repoRoot, "apps/docs/content/docs/solid/registry.mdx"),
-    "utf8"
-  )
+  const zaidanDocsRoot = resolve(repoRoot, "apps/docs/content/docs/zaidan")
+  const registryDocsContent = collectMdxFiles(zaidanDocsRoot)
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n")
   const publicSolidRegistryRoot = resolve(repoRoot, "apps/docs/public/r/solid")
   const publicSolidRegistry = readJson<SolidRegistryManifest>(
     resolve(publicSolidRegistryRoot, "registry.json")
@@ -156,7 +168,7 @@ export const verifySolidRegistryCoherence = ({
     (file) => !existsSync(resolve(publicSolidRegistryRoot, file))
   )
   const missingDocsLinks = registryUrlsForManifest(manifest).filter(
-    (url) => !docsRegistryPage.includes(url)
+    (url) => !registryDocsContent.includes(url)
   )
   const shadcnCouplingFindings = [
     shadcnRegistry.namespace === manifest.namespace

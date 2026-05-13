@@ -1,0 +1,44 @@
+---
+title: <SecuritySettings />
+description: A Solid security settings stack for password, sessions, linked accounts, passkeys, API keys, and danger-zone cards.
+---
+
+## Usage
+
+Use `SecuritySettings` inside your settings shell when the active tab is security.
+
+```tsx
+import { SecuritySettings } from "@/components/auth/settings/security/security-settings"
+
+export function SecurityTab() {
+  return <SecuritySettings />
+}
+```
+
+The component renders only the cards supported by your Better Auth config and installed payloads.
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/security-settings.json
+```
+
+## Props
+
+This component does not accept props. It reads plugin state and auth configuration from `AuthProvider`.
+
+## Plugin gates
+
+- `emailAndPassword` shows password management.
+- `socialProviders` shows linked account management.
+- `apiKey` shows API key management when the API key plugin is installed.
+- `passkey` shows passkey management when the passkey plugin is installed.
+- `deleteUser` shows the danger-zone card when the delete-user plugin is installed.
+
+## Installed files
+
+- `src/components/auth/settings/security/security-settings.tsx`
+- `src/components/auth/settings/shared/helpers.ts`
+- `src/components/auth/settings/shared/types.ts`
+
+After install, add plugin payloads such as passkey and api-key only when the matching Better Auth plugins are configured.

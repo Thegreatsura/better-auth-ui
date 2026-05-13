@@ -4,42 +4,53 @@ description: Integrate the Solid package with TanStack Start.
 icon: TanStackStart
 ---
 
-The Solid reference app lives at `examples/start-solid-zaidan-example`. It is the source of truth for Solid Start wiring and the Zaidan registry source files.
+The Solid runtime integration is simple: create one Better Auth client, provide it through `AuthProvider`, and share the same Solid Query client used by your TanStack Start app.
 
-## Install the Solid runtime packages
+## Quick path
 
-```package-install
-@better-auth-ui/solid @tanstack/solid-query @tanstack/solid-router @tanstack/solid-start better-auth solid-js
-```
-
-## Provider boundary
-
-Wrap your Solid app with a Solid Query client and the Solid auth provider from `@better-auth-ui/solid`.
+1. Create the auth client in app code.
+2. Create or reuse your `QueryClient`.
+3. Put `AuthProvider` inside your route shell so all auth UI reads the same context.
 
 ```tsx
-import { AuthProvider } from "@better-auth-ui/solid"
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
+import { AuthProvider, createAuthClient } from "@better-auth-ui/solid"
+import { QueryClient } from "@tanstack/solid-query"
+import type { JSX } from "solid-js"
 
+const authClient = createAuthClient({ baseURL: "/api/auth" })
 const queryClient = new QueryClient()
 
-export function Providers(props: { children: Element }) {
+export function Providers(props: { children: JSX.Element }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>{props.children}</AuthProvider>
-    </QueryClientProvider>
+    <AuthProvider authClient={authClient} queryClient={queryClient}>
+      {props.children}
+    </AuthProvider>
   )
 }
 ```
 
-## Start routes
+## Provider primitive
 
-Use the example as the reviewable baseline for file-based routes, auth server wiring, and registry-owned components:
+`AuthProvider` accepts the same Solid auth config used by the copied UI components and runtime helpers. Its important runtime behavior is:
+
+| Concern | Behavior |
+| --- | --- |
+| Auth context | `useAuth()` reads the resolved config from Solid context. |
+| Query client | `queryClient` is optional; the package has a fallback client, but app-owned clients are preferred. |
+| Children | `children` may be a Solid element or function; function children are evaluated while the auth config is available. |
+| Errors | Package query/mutation helpers preserve Better Auth errors by passing `throw: true`. |
+
+## TanStack Start boundary
+
+Keep the server route (`/api/auth/*`) in your app's TanStack Start server code. The Solid package does not own route generation; it provides helpers used by the route shell and auth components.
+
+Reference paths for current runtime wiring:
 
 - `examples/start-solid-zaidan-example/src/lib/auth.ts`
+- `examples/start-solid-zaidan-example/src/lib/auth-client.ts`
+- `examples/start-solid-zaidan-example/src/components/providers.tsx`
 - `examples/start-solid-zaidan-example/src/routes/api/auth/$.ts`
-- `examples/start-solid-zaidan-example/src/routes/auth/$path.tsx`
-- `examples/start-solid-zaidan-example/src/components/auth/sign-in.tsx`
 
-## Boundary
+## Zaidan handoff
 
-The existing docs app remains a React/Fumadocs runtime. Solid documentation is content-only here; Solid components execute in the Solid Start example, not inside the docs app.
+If you need copied sign-in, settings, user menu, or plugin UI files, continue in [Zaidan](/docs/zaidan). Those pages own CLI installation and component customization. This page owns only package/runtime integration.

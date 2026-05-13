@@ -1,15 +1,16 @@
 {
   "title": "Solid",
   "icon": "Solid",
-  "description": "Solid package and Zaidan registry",
+  "description": "Solid package and runtime APIs",
   "root": true,
   "pages": [
     "index",
     "integrations",
-    "plugins",
-    "registry",
     "queries",
     "mutations",
-    "gaps"
+    "server",
+    "plugins",
+    "gaps",
+    "registry"
   ]
 }

@@ -1,29 +1,41 @@
 ---
 title: Plugins
-description: Plugin registration notes for the Solid package.
+description: Plugin contracts for the Solid package runtime.
 ---
 
-Solid plugin support follows the shared `@better-auth-ui/core` plugin contracts. Use Better Auth plugins in your app's server/client auth config, then wire Solid query and mutation factories from `@better-auth-ui/solid` in your UI.
+Solid plugin docs describe package/runtime contracts, not installable component catalogs.
 
-`@better-auth-ui/solid/plugins` is currently a type-only export:
+## Quick path
+
+1. Enable Better Auth plugins in your app server config.
+2. Enable matching Better Auth client plugins in your Solid client config.
+3. Use Solid query and mutation factories from `@better-auth-ui/solid` where the plugin exposes runtime endpoints.
+4. Use [Zaidan plugins](/docs/zaidan/plugins) only when you need copied UI files.
+
+## Package export boundary
+
+`@better-auth-ui/solid/plugins` is a type-only export:
 
 ```ts
 export type { AuthPlugin } from "@better-auth-ui/core"
 ```
 
-It does not ship runtime plugin helpers yet. If a plugin needs UI, install or create the Solid/Zaidan component for that feature in your app or registry source.
+It does not ship runtime plugin helpers. Runtime plugin composition still comes from Better Auth, `@better-auth-ui/core/plugins`, or app-local Solid adapters when a plugin needs Solid UI registration.
 
-## Supported parity
+## Runtime capabilities
 
-| Area | Package status | Example/registry status | Notes |
-|------|----------------|-------------------------|-------|
-| Captcha | Shared config types only | Not shown | Use the same core captcha options as React-compatible flows; no Solid/Zaidan captcha UI is delivered yet. |
-| Passkey | Query and mutation factories | Settings list shell shown; dialogs still pending | Factories are available for list/add/delete/sign-in flows. |
-| Multi-session | Query and mutation factories | Account/session rows shown; switch/revoke actions still pending | Query and mutation keys align with the core namespace. |
-| API key | Query and mutation factories | Settings list shell shown; create/delete dialogs still pending | API-key query/mutation factories use shared plugin key contracts. |
-| Magic link | Mutation factory | Not shown in the current Solid registry | Mutation factories preserve Better Auth fetch error behavior. |
-| Username | Mutation factories | Sign-in route supports username/email selection | Username sign-in and availability flows use shared mutation keys. |
+| Capability | Solid package API |
+| --- | --- |
+| Username | `signInUsernameOptions` and `isUsernameAvailableOptions`. |
+| Magic link | `signInMagicLinkOptions`. Replace development email handlers with a production email provider in app code. |
+| Passkey | `listPasskeysOptions`, `addPasskeyOptions`, `deletePasskeyOptions`, and `signInPasskeyOptions`. Configure WebAuthn origin/trusted origins in Better Auth. |
+| Multi-session | `listDeviceSessionsOptions`, `setActiveSessionOptions`, and `revokeMultiSessionOptions`. |
+| API key | `listApiKeysOptions`, `createApiKeyOptions`, and `deleteApiKeyOptions`. |
+| Delete user | `deleteUserOptions`; the Better Auth server config still owns the actual delete-user capability. |
+| Social provider | `signInSocialOptions`, `linkSocialOptions`, and `unlinkAccountOptions`; provider secrets stay in app/server environment config. |
 
-## Non-goals
+## Caveats
 
-`react-email`, `sonner`, and HeroUI React component integrations are not Solid plugin exports. Track these in [Gaps](/docs/solid/gaps) instead of assuming silent parity.
+- Captcha is out of scope for the Solid package widget contract in this slice. Server-side Better Auth captcha config can still protect endpoints, but a Solid UI token/reset lifecycle needs a separate design task.
+- Theme switching is app/UI behavior. The Solid package does not export a theme plugin.
+- Installable plugin screens are documented under [Zaidan plugins](/docs/zaidan/plugins), because those files are copied into your app and become app-owned.

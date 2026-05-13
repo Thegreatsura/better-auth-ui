@@ -1,0 +1,45 @@
+---
+title: Registry
+description: Solid registry endpoint, namespace, and generation ownership.
+---
+
+The Zaidan registry track owns the Solid install payloads hosted by the docs app. The docs runtime serves static JSON; it does not execute Solid components.
+
+## Endpoint
+
+```txt
+https://better-auth-ui.com/r/solid/registry.json
+```
+
+Install payloads directly from the `solid` namespace:
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/sign-up.json
+```
+
+## Source of truth
+
+- Edit component source in `examples/start-solid-zaidan-example/src/components/**`.
+- Update `examples/start-solid-zaidan-example/registry.manifest.ts` when the payload graph changes.
+- Regenerate JSON under `apps/docs/public/r/solid/**` instead of hand-editing generated payloads.
+- Review generated output through `apps/docs/public/r/solid/registry.json` and item files such as `apps/docs/public/r/solid/sign-in.json`.
+- Keep the static host README under `apps/docs/public/r/solid/README.md` focused on hosting rules only.
+
+## Verification
+
+```bash
+bun nx run start-solid-zaidan-example:test -- tests/registry.test.ts --run
+```
+
+That focused test checks manifest names, generated static payloads, docs links, and registry isolation.
+
+## Payload model
+
+- `namespace: "solid"` keeps these payloads separate from the React shadcn registry.
+- `registryDependencies` names other Solid payloads that should be installed first.
+- `files` are copied from `examples/start-solid-zaidan-example/src/**` into the consuming app.
+- Runtime packages such as `@better-auth-ui/solid`, `better-auth`, `solid-js`, and `@tanstack/solid-query` remain package dependencies.
+
+## Boundary
+
+Keep runtime package docs in [Solid](/docs/solid). Keep installation, payload grouping, and copied-file ownership in Zaidan.

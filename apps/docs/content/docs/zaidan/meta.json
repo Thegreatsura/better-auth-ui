@@ -1,0 +1,14 @@
+{
+  "title": "Zaidan",
+  "icon": "PackagePlus",
+  "description": "Solid registry components and installable payloads",
+  "root": true,
+  "pages": [
+    "index",
+    "integrations",
+    "concepts",
+    "registry",
+    "plugins",
+    "components"
+  ]
+}

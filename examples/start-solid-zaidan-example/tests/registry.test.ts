@@ -34,6 +34,85 @@ const collectFiles = (root: string): string[] =>
     return entry.isDirectory() ? collectFiles(path) : [path]
   })
 
+const expectDocsPagesExist = (sectionRoot: string, pages: string[]) => {
+  for (const page of pages) {
+    if (page.startsWith("---")) {
+      continue
+    }
+
+    const mdxPath = resolve(sectionRoot, `${page}.mdx`)
+    const indexPath = resolve(sectionRoot, page, "index.mdx")
+
+    expect(
+      existsSync(mdxPath) || existsSync(indexPath),
+      `Expected docs page for ${page} under ${sectionRoot}`
+    ).toBe(true)
+  }
+}
+
+const docsRouteToFileCandidates = (docsRoot: string, route: string) => {
+  const cleanRoute = route.split("#")[0]?.replace(/\/$/, "") ?? route
+  const relativeRoute = cleanRoute.replace(/^\/docs\/?/, "") || "index"
+
+  return [
+    resolve(docsRoot, `${relativeRoute}.mdx`),
+    resolve(docsRoot, relativeRoute, "index.mdx")
+  ]
+}
+
+const extractLocalDocsLinks = (content: string) => {
+  const markdownLinks = [
+    ...content.matchAll(/\[[^\]]+\]\((\/docs\/[^)\s]+)\)/g)
+  ].map(([, href]) => href)
+  const hrefLinks = [...content.matchAll(/href="(\/docs\/[^"]+)"/g)].map(
+    ([, href]) => href
+  )
+
+  return [...markdownLinks, ...hrefLinks]
+}
+
+const extractSolidRegistryLinks = (content: string) =>
+  [
+    ...content.matchAll(
+      /https:\/\/better-auth-ui\.com\/r\/solid\/([a-z0-9-]+\.json)/g
+    )
+  ].map(([, item]) => item)
+
+const extractFrontmatterTitle = (content: string) =>
+  content.match(/^title:\s*(.+)$/m)?.[1]
+
+const extractLevelTwoHeadings = (content: string) =>
+  [...content.matchAll(/^##\s+(.+)$/gm)].map(([, heading]) => heading)
+
+const expectedSolidRegistryPayloadNames = [
+  "auth-provider",
+  "additional-field",
+  "sign-in",
+  "sign-up",
+  "magic-link",
+  "username",
+  "passkey",
+  "api-key",
+  "forgot-password",
+  "reset-password",
+  "sign-out",
+  "auth",
+  "user-button",
+  "user-avatar",
+  "user-view",
+  "user-profile",
+  "account-settings",
+  "security-settings",
+  "settings",
+  "active-sessions",
+  "linked-accounts",
+  "change-password",
+  "change-email",
+  "delete-user",
+  "multi-session",
+  "theme"
+]
+
 const verifyLocalRegistryCoherence = () =>
   verifySolidRegistryCoherence({
     exampleRoot: resolve(__dirname, ".."),
@@ -88,6 +167,25 @@ describe("Solid registry isolation", () => {
     expect(
       dependencies.every((dependency) => !dependency.includes("react"))
     ).toBe(true)
+  })
+
+  it("exposes registry payloads for implemented Solid auth surfaces", () => {
+    expect(solidRegistryManifest.items.map((item) => item.name)).toEqual(
+      expectedSolidRegistryPayloadNames
+    )
+
+    const signInPayload = solidRegistryManifest.items.find(
+      (item) => item.name === "sign-in"
+    )
+    expect(signInPayload?.files.map((file) => file.path)).toEqual(
+      expect.arrayContaining([
+        "src/components/auth/sign-in.tsx",
+        "src/components/auth/username/sign-in-username.tsx",
+        "src/components/auth/sign-in-path.ts",
+        "src/components/auth/provider-button.tsx",
+        "src/components/auth/provider-buttons.tsx"
+      ])
+    )
   })
 
   it("keeps the example scaffold on TanStack Start Solid instead of React Start", () => {
@@ -216,8 +314,8 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/components/ui/sonner.tsx"),
       "utf8"
     )
-    const rootRoute = readFileSync(
-      resolve(__dirname, "../src/routes/__root.tsx"),
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
       "utf8"
     )
     const authProvider = readFileSync(
@@ -238,8 +336,8 @@ describe("Solid registry isolation", () => {
     expect(toaster).toContain('"--normal-bg": "var(--popover)"')
     expect(toaster).toContain("CircleCheck")
     expect(toaster).toContain("LoaderCircle")
-    expect(rootRoute).toContain('from "@/components/ui/sonner"')
-    expect(rootRoute).toContain("<Toaster />")
+    expect(providers).toContain('from "./ui/sonner"')
+    expect(providers).toContain("<Toaster />")
     expect(authProvider).toContain('from "./error-toaster"')
     expect(authProvider).toContain("<ErrorToaster />")
     expect(errorToaster).toContain('import { toast } from "solid-sonner"')
@@ -253,12 +351,10 @@ describe("Solid registry isolation", () => {
       "utf8"
     )
 
-    expect(authProvider).not.toContain("const resolveProviderChildren")
-    expect(authProvider).not.toContain(
-      "resolveProviderChildren(props.children)"
-    )
+    expect(authProvider).toContain("const resolveProviderChildren")
+    expect(authProvider).toContain("const { children, ...config } = props")
+    expect(authProvider).toContain("resolveProviderChildren(children)")
     expect(authProvider).toContain("{() => (")
-    expect(authProvider).toContain("{props.children}")
     expect(authProvider).toContain("<ErrorToaster />")
   })
 
@@ -418,7 +514,7 @@ describe("Solid registry isolation", () => {
     expect(solidBase).toContain("bg-border -mx-1 my-1 h-px")
 
     const solidUserButton = readFileSync(
-      resolve(__dirname, "../src/components/auth/user-button.tsx"),
+      resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
       "utf8"
     )
     expect(solidUserButton).toContain(
@@ -437,7 +533,7 @@ describe("Solid registry isolation", () => {
     ]
     const formAuthFiles = [
       {
-        path: "src/components/auth/sign-in.tsx",
+        path: "src/components/auth/username/sign-in-username.tsx",
         imports: [
           'from "@/components/ui/button"',
           'from "@/components/ui/card"'
@@ -500,7 +596,10 @@ describe("Solid registry isolation", () => {
       registryDependencies: string[]
     }>(join(outputRoot, "solid/sign-up.json"))
 
-    expect(signUp.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(signUp.registryDependencies).toEqual([
+      "solid/auth-provider",
+      "solid/additional-field"
+    ])
     expect(signUp.dependencies).toEqual(
       expect.arrayContaining([
         "@kobalte/core",
@@ -511,6 +610,8 @@ describe("Solid registry isolation", () => {
     )
     expect(signUp.files.map((file) => file.path)).toEqual([
       "src/components/auth/sign-up.tsx",
+      "src/components/auth/provider-button.tsx",
+      "src/components/auth/provider-buttons.tsx",
       ...uiFiles
     ])
     expect(signUp.files.map((file) => file.type)).toContain("registry:ui")
@@ -575,8 +676,12 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/components/auth/sign-up.tsx"),
       "utf8"
     )
-    const authProvider = readFileSync(
-      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+    const authClient = readFileSync(
+      resolve(__dirname, "../src/lib/auth-client.ts"),
+      "utf8"
+    )
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
       "utf8"
     )
     const rootRoute = readFileSync(
@@ -592,21 +697,23 @@ describe("Solid registry isolation", () => {
       "utf8"
     )
 
-    expect(authProvider).toContain("import.meta.env.SSR")
-    expect(authProvider).toContain("http://localhost:5173/api/auth")
-    expect(authProvider).toContain("resolveAuthBaseURL")
-    expect(authProvider).toContain("window.location.origin")
-    expect(authProvider).not.toContain(': "/api/auth"')
-    expect(homeRoute).toContain('from "@/components/auth/user-button"')
+    expect(authClient).toContain("import.meta.env.SSR")
+    expect(authClient).toContain("http://localhost:5173/api/auth")
+    expect(authClient).toContain("resolveAuthBaseURL")
+    expect(authClient).toContain("window.location.origin")
+    expect(authClient).not.toContain(': "/api/auth"')
+    expect(homeRoute).toContain('from "@/components/auth/user/user-button"')
     expect(homeRoute).toContain("<UserButton />")
     expect(homeRoute).not.toContain("<SignIn />")
     expect(authRoute).not.toContain('from "@/components/auth/auth-provider"')
     expect(authRoute).not.toContain("<AuthProvider>")
-    expect(rootRoute).toContain('from "@/components/auth/auth-provider"')
+    expect(rootRoute).toContain('from "@/components/providers"')
     expect(rootRoute).toContain(
-      "<AuthProvider queryClient={routeContext().queryClient}>"
+      "<Providers queryClient={routeContext().queryClient}>"
     )
-    expect(rootRoute).toContain("</AuthProvider>")
+    expect(rootRoute).toContain("</Providers>")
+    expect(providers).toContain('from "./auth/auth-provider"')
+    expect(providers).toContain("authClient={authClient}")
     expect(signOut).toContain('from "@better-auth-ui/solid"')
     expect(signOut).toContain('from "solid-js"')
     expect(signOut).toContain("auth.authClient.signOut")
@@ -684,7 +791,7 @@ describe("Solid registry isolation", () => {
       "utf8"
     )
     const authForms = [
-      "src/components/auth/sign-in.tsx",
+      "src/components/auth/username/sign-in-username.tsx",
       "src/components/auth/sign-up.tsx",
       "src/components/auth/forgot-password.tsx",
       "src/components/auth/reset-password.tsx"
@@ -703,13 +810,16 @@ describe("Solid registry isolation", () => {
       expect(content).toContain("<CardHeader>")
       expect(content).toContain("<CardTitle")
       expect(content).toContain("<CardContent>")
-      expect(content).toContain('class="w-full max-w-sm"')
+      expect(content).toContain('"w-full max-w-sm"')
     }
   })
 
   it("moves auth forms closer to the shadcn field and footer structure", () => {
     const signIn = readFileSync(
-      resolve(__dirname, "../src/components/auth/sign-in.tsx"),
+      resolve(
+        __dirname,
+        "../src/components/auth/username/sign-in-username.tsx"
+      ),
       "utf8"
     )
     const signUp = readFileSync(
@@ -776,7 +886,10 @@ describe("Solid registry isolation", () => {
 
   it("adds password visibility toggles and inline field feedback parity", () => {
     const signIn = readFileSync(
-      resolve(__dirname, "../src/components/auth/sign-in.tsx"),
+      resolve(
+        __dirname,
+        "../src/components/auth/username/sign-in-username.tsx"
+      ),
       "utf8"
     )
     const signUp = readFileSync(
@@ -861,12 +974,15 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/lib/auth.ts"),
       "utf8"
     )
-    const authProvider = readFileSync(
-      resolve(__dirname, "../src/components/auth/auth-provider.tsx"),
+    const authClient = readFileSync(
+      resolve(__dirname, "../src/lib/auth-client.ts"),
       "utf8"
     )
     const signIn = readFileSync(
-      resolve(__dirname, "../src/components/auth/sign-in.tsx"),
+      resolve(
+        __dirname,
+        "../src/components/auth/username/sign-in-username.tsx"
+      ),
       "utf8"
     )
     const signUp = readFileSync(
@@ -875,17 +991,19 @@ describe("Solid registry isolation", () => {
     )
 
     expect(authConfig).toContain('from "better-auth/plugins"')
-    expect(authConfig).toContain(
-      "plugins: [multiSession(), passkey(), username(), apiKey()]"
-    )
+    expect(authConfig).toContain("multiSession()")
+    expect(authConfig).toContain("passkey()")
+    expect(authConfig).toContain("username()")
+    expect(authConfig).toContain("apiKey()")
+    expect(authConfig).toContain("magicLink({")
 
-    expect(authProvider).toContain('from "@better-auth/api-key/client"')
-    expect(authProvider).toContain('from "@better-auth/passkey/client"')
-    expect(authProvider).toContain('from "better-auth/client/plugins"')
-    expect(authProvider).toContain("multiSessionClient()")
-    expect(authProvider).toContain("apiKeyClient()")
-    expect(authProvider).toContain("passkeyClient()")
-    expect(authProvider).toContain("usernameClient()")
+    expect(authClient).toContain('from "@better-auth/api-key/client"')
+    expect(authClient).toContain('from "@better-auth/passkey/client"')
+    expect(authClient).toContain('from "better-auth/client/plugins"')
+    expect(authClient).toContain("multiSessionClient()")
+    expect(authClient).toContain("apiKeyClient()")
+    expect(authClient).toContain("passkeyClient()")
+    expect(authClient).toContain("usernameClient()")
 
     expect(signIn).toContain("signInUsernameOptions")
     expect(signIn).toContain("usernameOrEmailPlaceholder")
@@ -908,7 +1026,7 @@ describe("Solid registry isolation", () => {
       "utf8"
     )
     const userButton = readFileSync(
-      resolve(__dirname, "../src/components/auth/user-button.tsx"),
+      resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
       "utf8"
     )
     const theme = readFileSync(
@@ -921,6 +1039,10 @@ describe("Solid registry isolation", () => {
     )
     const rootRoute = readFileSync(
       resolve(__dirname, "../src/routes/__root.tsx"),
+      "utf8"
+    )
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
       "utf8"
     )
     const avatar = readFileSync(
@@ -950,11 +1072,15 @@ describe("Solid registry isolation", () => {
       ),
       "utf8"
     )
+    const themeToggleItem = readFileSync(
+      resolve(__dirname, "../src/components/auth/theme/theme-toggle-item.tsx"),
+      "utf8"
+    )
     const packageJson = readJson<{
       dependencies: Record<string, string>
     }>(resolve(__dirname, "../package.json"))
 
-    expect(homeRoute).toContain('from "@/components/auth/user-button"')
+    expect(homeRoute).toContain('from "@/components/auth/user/user-button"')
     expect(homeRoute).toContain("<UserButton />")
     expect(homeRoute).not.toContain("<SignIn />")
 
@@ -989,18 +1115,18 @@ describe("Solid registry isolation", () => {
 
     expect(userButton).toContain('from "@better-auth-ui/solid"')
     expect(userButton).toContain("useSession")
-    expect(userButton).toContain('from "@/components/ui/avatar"')
+    expect(userButton).toContain('from "@/components/auth/user/user-avatar"')
+    expect(userButton).toContain('from "@/components/auth/user/user-view"')
+    expect(userButton).toContain('from "@/components/ui/button"')
     expect(userButton).toContain('from "@/components/ui/dropdown-menu"')
     expect(userButton).toContain('from "@/components/ui/separator"')
     expect(userButton).toContain('from "@/components/ui/skeleton"')
-    expect(userButton).toContain('from "@/components/ui/tabs"')
     expect(userButton).toContain("<DropdownMenu")
     expect(userButton).toContain("modal={false}")
-    expect(userButton).toContain("<Avatar")
+    expect(userButton).toContain("<UserAvatar")
     expect(userButton).toContain("<DropdownMenuTrigger")
     expect(userButton).toContain("<DropdownMenuContent")
     expect(userButton).toContain("<DropdownMenuSeparator")
-    expect(userButton).toContain("auth.localization.auth.account")
     expect(userButton).toContain("auth.localization.auth.signIn")
     expect(userButton).toContain("auth.localization.auth.signUp")
     expect(userButton).toContain("auth.localization.auth.signOut")
@@ -1011,21 +1137,22 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain('size: "default" as const')
     expect(userButton).toContain('size() === "icon"')
     expect(userButton).toContain("ThemeToggleItem")
-    expect(userButton).toContain("PaletteIcon")
-    expect(userButton).toContain("<Tabs")
-    expect(userButton).toContain("<TabsList")
-    expect(userButton).toContain("<TabsTrigger")
-    expect(userButton).toContain('aria-label="System"')
-    expect(userButton).toContain('aria-label="Light"')
-    expect(userButton).toContain('aria-label="Dark"')
-    expect(userButton).toContain('from "@/lib/theme"')
-    expect(userButton).toContain("readStoredThemePreference")
-    expect(userButton).toContain("saveThemePreference")
-    expect(userButton).toContain("applyThemePreference")
+    expect(themeToggleItem).toContain('from "@/components/ui/tabs"')
+    expect(themeToggleItem).toContain("PaletteIcon")
+    expect(themeToggleItem).toContain("<Tabs")
+    expect(themeToggleItem).toContain("<TabsList")
+    expect(themeToggleItem).toContain("<TabsTrigger")
+    expect(themeToggleItem).toContain('aria-label="System"')
+    expect(themeToggleItem).toContain('aria-label="Light"')
+    expect(themeToggleItem).toContain('aria-label="Dark"')
+    expect(themeToggleItem).toContain('from "@/lib/theme"')
+    expect(themeToggleItem).toContain("readStoredThemePreference")
+    expect(themeToggleItem).toContain("saveThemePreference")
+    expect(themeToggleItem).toContain("applyThemePreference")
     expect(shadcnThemeToggleItem).toContain('[role="tab"][data-state="active"]')
-    expect(userButton).toContain('[role="tab"][data-selected]')
-    expect(userButton).toContain("focusActiveTab")
-    expect(userButton).toContain("onFocus")
+    expect(themeToggleItem).toContain('[role="tab"][data-selected]')
+    expect(themeToggleItem).toContain("focusActiveTab")
+    expect(themeToggleItem).toContain("onFocus")
     expect(userButton).toContain("isUserButtonHydrated")
     expect(userButton).toContain("setIsUserButtonHydrated(true)")
     expect(userButton).toContain("when={isUserButtonHydrated()}")
@@ -1062,7 +1189,7 @@ describe("Solid registry isolation", () => {
     )
     expect(userButton).not.toContain("needToCreateAnAccount")
 
-    expect(header).toContain('from "./auth/user-button"')
+    expect(header).toContain('from "./auth/user/user-button"')
     expect(header).toContain('<UserButton size="icon" align="end" />')
 
     expect(theme).toContain("export const themeStorageKey")
@@ -1077,7 +1204,7 @@ describe("Solid registry isolation", () => {
     expect(rootRoute).toContain('from "@/lib/theme"')
     expect(rootRoute).toContain("themeScript")
     expect(rootRoute).toContain("<script>{themeScript}</script>")
-    expect(rootRoute).toContain("syncDocumentThemePreference()")
+    expect(providers).toContain("syncDocumentThemePreference()")
   })
 
   it("writes registry index and item snapshots only inside the solid namespace", () => {
@@ -1091,16 +1218,15 @@ describe("Solid registry isolation", () => {
       outputRoot
     })
 
-    expect(result.files.sort()).toEqual([
-      join(outputRoot, "solid/README.md"),
-      join(outputRoot, "solid/auth-provider.json"),
-      join(outputRoot, "solid/forgot-password.json"),
-      join(outputRoot, "solid/registry.json"),
-      join(outputRoot, "solid/reset-password.json"),
-      join(outputRoot, "solid/sign-in.json"),
-      join(outputRoot, "solid/sign-out.json"),
-      join(outputRoot, "solid/sign-up.json")
-    ])
+    expect(result.files.sort()).toEqual(
+      [
+        join(outputRoot, "solid/README.md"),
+        join(outputRoot, "solid/registry.json"),
+        ...expectedSolidRegistryPayloadNames.map((name) =>
+          join(outputRoot, `solid/${name}.json`)
+        )
+      ].sort()
+    )
     expect(readFileSync(untouchedRootRegistry, "utf8")).toBe(
       '{"name":"existing-shadcn"}\n'
     )
@@ -1110,18 +1236,11 @@ describe("Solid registry isolation", () => {
       namespace: string
       items: Array<{ name: string }>
     }>(join(outputRoot, "solid/registry.json"))
-    expect(registry).toMatchObject({
-      name: "better-auth-ui-solid",
-      namespace: "solid",
-      items: [
-        { name: "auth-provider" },
-        { name: "forgot-password" },
-        { name: "reset-password" },
-        { name: "sign-up" },
-        { name: "sign-in" },
-        { name: "sign-out" }
-      ]
-    })
+    expect(registry.name).toBe("better-auth-ui-solid")
+    expect(registry.namespace).toBe("solid")
+    expect(registry.items.map((item) => item.name)).toEqual(
+      expectedSolidRegistryPayloadNames
+    )
 
     const signIn = readJson<{
       dependencies: string[]
@@ -1135,7 +1254,7 @@ describe("Solid registry isolation", () => {
     expect(signIn.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          content: expect.stringContaining("export function SignIn"),
+          content: expect.stringContaining("<SignInUsername />"),
           path: "src/components/auth/sign-in.tsx"
         }),
         expect.objectContaining({
@@ -1146,8 +1265,9 @@ describe("Solid registry isolation", () => {
         })
       ])
     )
-    expect(signIn.files[0]?.content).toContain("useAuth")
-    expect(signIn.files[0]?.content).toContain("signInEmailOptions")
+    expect(signIn.files[0]?.content).toContain(
+      'from "./username/sign-in-username"'
+    )
 
     const signOut = readJson<{
       files: Array<{ content: string; path: string }>
@@ -1258,7 +1378,10 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/sign-up.json"))
     expect(signUp.name).toBe("sign-up")
     expect(signUp.dependencies).toContain("@better-auth-ui/solid@latest")
-    expect(signUp.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(signUp.registryDependencies).toEqual([
+      "solid/auth-provider",
+      "solid/additional-field"
+    ])
     expect(signUp.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -1310,16 +1433,780 @@ describe("Solid registry isolation", () => {
     expect(report.packageName).toBe("@better-auth-ui/solid")
     expect(report.packageExports).toEqual([".", "./server", "./plugins"])
     expect(report.exampleSolidDependency).toBe("*")
-    expect(report.staticItemNames).toEqual([
-      "auth-provider",
-      "forgot-password",
-      "reset-password",
-      "sign-up",
-      "sign-in",
-      "sign-out"
-    ])
+    expect(report.staticItemNames).toEqual(expectedSolidRegistryPayloadNames)
     expect(report.missingStaticFiles).toEqual([])
     expect(report.missingDocsLinks).toEqual([])
+  })
+
+  it("keeps Solid plugin docs from contradicting implemented registry and example support", () => {
+    const pluginsDoc = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/solid/plugins.mdx"),
+      "utf8"
+    )
+    const gapsDoc = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/solid/gaps.mdx"),
+      "utf8"
+    )
+    const integrationsDoc = readFileSync(
+      resolve(
+        __dirname,
+        "../../../apps/docs/content/docs/solid/integrations.mdx"
+      ),
+      "utf8"
+    )
+    const zaidanPluginsDoc = readFileSync(
+      resolve(
+        __dirname,
+        "../../../apps/docs/content/docs/zaidan/plugins/index.mdx"
+      ),
+      "utf8"
+    )
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
+      "utf8"
+    )
+
+    const implementedPluginPayloads = [
+      "username",
+      "passkey",
+      "multi-session",
+      "api-key",
+      "delete-user",
+      "magic-link",
+      "theme"
+    ]
+
+    for (const payload of implementedPluginPayloads) {
+      expect(solidRegistryManifest.items.map((item) => item.name)).toContain(
+        payload
+      )
+      expect(zaidanPluginsDoc).toContain(`/r/solid/${payload}.json`)
+      expect(pluginsDoc).not.toContain(`/r/solid/${payload}.json`)
+    }
+
+    const stalePendingClaims = [
+      "dialogs still pending",
+      "actions still pending",
+      "create/delete dialogs still pending",
+      "Not shown in the current Solid registry"
+    ]
+
+    for (const staleClaim of stalePendingClaims) {
+      expect(pluginsDoc).not.toContain(staleClaim)
+    }
+
+    expect(providers).toContain("github")
+    expect(pluginsDoc).toContain("Social provider")
+    expect(pluginsDoc).toContain("signInMagicLinkOptions")
+    expect(pluginsDoc).toContain("email provider")
+    expect(pluginsDoc).toContain("WebAuthn")
+    expect(pluginsDoc).toContain("origin")
+    expect(pluginsDoc).toContain("captcha")
+    expect(pluginsDoc).toContain("out of scope")
+    expect(gapsDoc).not.toContain("passkey dialogs are pending")
+    expect(gapsDoc).not.toContain("multi-session actions are pending")
+    expect(gapsDoc).not.toContain("API key dialogs are pending")
+    expect(integrationsDoc).toContain("authClient={authClient}")
+    expect(integrationsDoc).toContain(
+      "examples/start-solid-zaidan-example/src/components/providers.tsx"
+    )
+    expect(integrationsDoc).toContain(
+      "examples/start-solid-zaidan-example/src/routes/api/auth/$.ts"
+    )
+  })
+
+  it("keeps the top-level Solid and Zaidan docs IA ownership explicit", () => {
+    const rootMeta = readJson<{
+      pages: string[]
+    }>(resolve(__dirname, "../../../apps/docs/content/docs/meta.json"))
+    const solidMeta = readJson<{
+      description: string
+      pages: string[]
+      root: boolean
+      title: string
+    }>(resolve(__dirname, "../../../apps/docs/content/docs/solid/meta.json"))
+    const zaidanMeta = readJson<{
+      description: string
+      pages: string[]
+      root: boolean
+      title: string
+    }>(resolve(__dirname, "../../../apps/docs/content/docs/zaidan/meta.json"))
+    const zaidanPluginsMeta = readJson<{
+      pages: string[]
+    }>(
+      resolve(
+        __dirname,
+        "../../../apps/docs/content/docs/zaidan/plugins/meta.json"
+      )
+    )
+    const zaidanComponentsMeta = readJson<{
+      pages: string[]
+    }>(
+      resolve(
+        __dirname,
+        "../../../apps/docs/content/docs/zaidan/components/meta.json"
+      )
+    )
+    const solidOverview = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/solid/index.mdx"),
+      "utf8"
+    )
+    const solidRegistry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/solid/registry.mdx"),
+      "utf8"
+    )
+    const zaidanOverview = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan/index.mdx"),
+      "utf8"
+    )
+    const zaidanRegistry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan/registry.mdx"),
+      "utf8"
+    )
+    const solidAndZaidanDocs = collectFiles(
+      resolve(__dirname, "../../../apps/docs/content/docs")
+    ).filter(
+      (path) =>
+        /\/docs\/(solid|zaidan)\//.test(path) && /\.(mdx|json)$/.test(path)
+    )
+
+    expect(rootMeta.pages).toEqual([
+      "index",
+      "shadcn",
+      "heroui",
+      "react",
+      "solid",
+      "zaidan"
+    ])
+    expect(solidMeta).toMatchObject({
+      title: "Solid",
+      description: "Solid package and runtime APIs",
+      root: true
+    })
+    expect(solidMeta.pages).toEqual([
+      "index",
+      "integrations",
+      "queries",
+      "mutations",
+      "server",
+      "plugins",
+      "gaps",
+      "registry"
+    ])
+    expect(zaidanMeta).toMatchObject({
+      title: "Zaidan",
+      description: "Solid registry components and installable payloads",
+      root: true
+    })
+    expect(zaidanMeta.pages).toEqual([
+      "index",
+      "integrations",
+      "concepts",
+      "registry",
+      "plugins",
+      "components"
+    ])
+    expect(zaidanPluginsMeta.pages).toEqual([
+      "index",
+      "username",
+      "passkey",
+      "multi-session",
+      "api-key",
+      "delete-user",
+      "magic-link",
+      "theme"
+    ])
+    expect(zaidanComponentsMeta.pages).toEqual([
+      "index",
+      "---Provider---",
+      "auth-provider",
+      "---Shared---",
+      "additional-field",
+      "---Auth---",
+      "auth",
+      "sign-in",
+      "sign-up",
+      "forgot-password",
+      "reset-password",
+      "sign-out",
+      "---User---",
+      "user-button",
+      "user-avatar",
+      "user-view",
+      "---Settings---",
+      "settings",
+      "account-settings",
+      "user-profile",
+      "change-email",
+      "security-settings",
+      "active-sessions",
+      "linked-accounts",
+      "change-password"
+    ])
+    expect(solidOverview).toContain("Solid package/runtime track")
+    expect(solidOverview).toContain("/docs/zaidan")
+    expect(solidOverview).not.toContain("Zaidan registry entry points")
+    expect(solidRegistry).toContain(
+      "moved to [Zaidan registry](/docs/zaidan/registry)"
+    )
+    expect(zaidanOverview).toContain("Zaidan registry track")
+    expect(zaidanOverview).toContain(
+      "zaidan add https://better-auth-ui.com/r/solid/sign-up.json"
+    )
+    expect(zaidanRegistry).toContain(
+      "https://better-auth-ui.com/r/solid/registry.json"
+    )
+    expectDocsPagesExist(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan"),
+      zaidanMeta.pages
+    )
+    expectDocsPagesExist(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan/plugins"),
+      zaidanPluginsMeta.pages
+    )
+    expectDocsPagesExist(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan/components"),
+      zaidanComponentsMeta.pages
+    )
+    expect(solidAndZaidanDocs.length).toBeGreaterThan(0)
+
+    for (const docsPath of solidAndZaidanDocs) {
+      const content = readFileSync(docsPath, "utf8")
+
+      expect(content).not.toContain("coverage table")
+      expect(content).not.toContain("Coverage table")
+      expect(content).not.toContain("coverage matrix")
+      expect(content).not.toContain("Coverage matrix")
+    }
+  })
+
+  it("keeps Solid package docs focused on runtime APIs instead of registry installation", () => {
+    const solidDocsRoot = resolve(
+      __dirname,
+      "../../../apps/docs/content/docs/solid"
+    )
+    const packageDocNames = [
+      "index",
+      "integrations",
+      "queries",
+      "mutations",
+      "server",
+      "plugins",
+      "gaps"
+    ]
+    const solidPackageDocs = packageDocNames.map((name) => ({
+      name,
+      content: readFileSync(resolve(solidDocsRoot, `${name}.mdx`), "utf8")
+    }))
+    const combinedSolidPackageDocs = solidPackageDocs
+      .map(({ content }) => content)
+      .join("\n")
+
+    expect(combinedSolidPackageDocs).toContain(
+      "@better-auth-ui/solid owns provider wiring, Solid Query factories, mutation factories, server helpers, and plugin type contracts."
+    )
+    expect(combinedSolidPackageDocs).toContain(
+      'import { AuthProvider, createAuthClient } from "@better-auth-ui/solid"'
+    )
+    expect(combinedSolidPackageDocs).toContain("ensureSession")
+    expect(combinedSolidPackageDocs).toContain("prefetchSession")
+    expect(combinedSolidPackageDocs).toContain("fetchSession")
+    expect(combinedSolidPackageDocs).toContain("useSession")
+    expect(combinedSolidPackageDocs).toContain("listAccountsOptions")
+    expect(combinedSolidPackageDocs).toContain("listPasskeysOptions")
+    expect(combinedSolidPackageDocs).toContain("createApiKeyOptions")
+    expect(combinedSolidPackageDocs).toContain("signInUsernameOptions")
+    expect(combinedSolidPackageDocs).toContain("@better-auth-ui/solid/plugins")
+    expect(combinedSolidPackageDocs).toContain("type-only export")
+    expect(combinedSolidPackageDocs).toContain("@better-auth-ui/solid/server")
+
+    for (const { name, content } of solidPackageDocs) {
+      expect(
+        content,
+        `${name} should not duplicate Zaidan CLI commands`
+      ).not.toContain("zaidan add")
+      expect(
+        content,
+        `${name} should not own registry payload URLs`
+      ).not.toContain("/r/solid/")
+    }
+  })
+
+  it("keeps Solid and Zaidan docs cross-links resolvable without stale registry ownership", () => {
+    const docsRoot = resolve(__dirname, "../../../apps/docs/content/docs")
+    const solidRegistry = readFileSync(
+      resolve(docsRoot, "solid/registry.mdx"),
+      "utf8"
+    )
+    const solidAndZaidanDocs = collectFiles(docsRoot).filter(
+      (path) =>
+        /\/docs\/(solid|zaidan)\//.test(path) && /\.(mdx|json)$/.test(path)
+    )
+    const registryPayloadNames = new Set([
+      "registry.json",
+      ...solidRegistryManifest.items.map((item) => `${item.name}.json`)
+    ])
+
+    expect(solidRegistry).toContain("/docs/zaidan/registry")
+    expect(solidRegistry).not.toContain("zaidan add")
+    expect(solidRegistry).not.toContain(
+      "https://better-auth-ui.com/r/solid/sign-up.json"
+    )
+
+    for (const docsPath of solidAndZaidanDocs) {
+      const content = readFileSync(docsPath, "utf8")
+
+      expect(
+        content,
+        `${docsPath} should not claim live Solid previews`
+      ).not.toContain("ComponentPreview")
+      expect(
+        content,
+        `${docsPath} should not claim live Solid previews`
+      ).not.toContain("live Solid preview")
+      expect(
+        content,
+        `${docsPath} should not claim captcha UI support`
+      ).not.toContain("Captcha is supported")
+      expect(
+        content,
+        `${docsPath} should not keep stale pending claims`
+      ).not.toContain("Not shown in the current Solid registry")
+      expect(
+        content,
+        `${docsPath} should not keep stale pending claims`
+      ).not.toContain("dialogs still pending")
+
+      for (const link of extractLocalDocsLinks(content)) {
+        const candidates = docsRouteToFileCandidates(docsRoot, link)
+        expect(
+          candidates.some((candidate) => existsSync(candidate)),
+          `Expected ${docsPath} to link to an existing docs route: ${link}`
+        ).toBe(true)
+      }
+
+      for (const payload of extractSolidRegistryLinks(content)) {
+        expect(
+          registryPayloadNames.has(payload),
+          `Expected ${docsPath} to link to an existing Solid registry payload: ${payload}`
+        ).toBe(true)
+      }
+    }
+  })
+
+  it("documents Zaidan quickstart, registry ownership, plugins, and component payloads without skeleton language", () => {
+    const zaidanDocsRoot = resolve(
+      __dirname,
+      "../../../apps/docs/content/docs/zaidan"
+    )
+    const zaidanDocs = collectFiles(zaidanDocsRoot).filter((path) =>
+      /\.(mdx|json)$/.test(path)
+    )
+    const readZaidanDoc = (relativePath: string) =>
+      readFileSync(resolve(zaidanDocsRoot, relativePath), "utf8")
+    const componentDoc = (name: string) =>
+      readZaidanDoc(`components/${name}.mdx`)
+    const pluginDoc = (name: string) => readZaidanDoc(`plugins/${name}.mdx`)
+
+    const overview = readZaidanDoc("index.mdx")
+    const integrations = readZaidanDoc("integrations/index.mdx")
+    const concepts = readZaidanDoc("concepts/index.mdx")
+    const registry = readZaidanDoc("registry.mdx")
+    const componentsIndex = readZaidanDoc("components/index.mdx")
+    const pluginsIndex = readZaidanDoc("plugins/index.mdx")
+    const pluginPayloadNames = [
+      "username",
+      "passkey",
+      "multi-session",
+      "api-key",
+      "delete-user",
+      "magic-link",
+      "theme"
+    ]
+    const componentPayloadNames = solidRegistryManifest.items
+      .map((item) => item.name)
+      .filter((name) => !pluginPayloadNames.includes(name))
+
+    expect(overview).toContain("## Quick path")
+    expect(overview).toContain(
+      "zaidan add https://better-auth-ui.com/r/solid/auth-provider.json"
+    )
+    expect(overview).toContain(
+      "zaidan add https://better-auth-ui.com/r/solid/sign-in.json"
+    )
+    expect(overview).toContain(
+      "examples/start-solid-zaidan-example/src/components/providers.tsx"
+    )
+
+    expect(integrations).toContain("## Quick path")
+    expect(integrations).toContain("components.json")
+    expect(integrations).toContain(
+      '"@zaidan": "https://zaidan.carere.dev/r/{style}/{name}.json"'
+    )
+    expect(integrations).toContain("src/styles/globals.css")
+    expect(integrations).toContain("@tanstack/solid-start")
+
+    expect(concepts).toContain("## Payload ownership")
+    expect(concepts).toContain("registryDependencies")
+    expect(concepts).toContain("Copied files are app-owned")
+    expect(concepts).toContain("Do not hand-edit generated JSON")
+
+    expect(registry).toContain(
+      "examples/start-solid-zaidan-example/registry.manifest.ts"
+    )
+    expect(registry).toContain("apps/docs/public/r/solid/registry.json")
+    expect(registry).toContain(
+      "bun nx run start-solid-zaidan-example:test -- tests/registry.test.ts --run"
+    )
+
+    expect(pluginsIndex).toContain("## Install model")
+    expect(pluginsIndex).toContain(
+      "Social/GitHub is provider-button support, not a separate payload"
+    )
+    expect(pluginsIndex).toContain("Captcha is pending/out of scope")
+    expect(componentsIndex).toContain("## Install model")
+    expect(componentsIndex).toContain(
+      "Email templates are intentionally out of scope"
+    )
+    expect(componentsIndex).toContain("Provider")
+    expect(componentsIndex).toContain("Settings")
+
+    const expectedComponentTitles: Record<string, string> = {
+      "account-settings": "<AccountSettings />",
+      "active-sessions": "<ActiveSessions />",
+      "additional-field": "<AdditionalField />",
+      auth: "<Auth />",
+      "auth-provider": "<AuthProvider />",
+      "change-email": "<ChangeEmail />",
+      "change-password": "<ChangePassword />",
+      "forgot-password": "<ForgotPassword />",
+      "linked-accounts": "<LinkedAccounts />",
+      "reset-password": "<ResetPassword />",
+      "security-settings": "<SecuritySettings />",
+      settings: "<Settings />",
+      "sign-in": "<SignIn />",
+      "sign-out": "<SignOut />",
+      "sign-up": "<SignUp />",
+      "user-avatar": "<UserAvatar />",
+      "user-button": "<UserButton />",
+      "user-profile": "<UserProfile />",
+      "user-view": "<UserView />"
+    }
+
+    for (const [name, title] of Object.entries(expectedComponentTitles)) {
+      expect(
+        extractFrontmatterTitle(componentDoc(name)),
+        `Zaidan component docs should use shadcn-style JSX title for ${name}`
+      ).toBe(title)
+    }
+
+    for (const name of componentPayloadNames) {
+      const page = componentDoc(name)
+      const item = solidRegistryManifest.items.find(
+        (entry) => entry.name === name
+      )
+
+      expect(page, `component ${name} should link its payload`).toContain(
+        `/r/solid/${name}.json`
+      )
+      expect(
+        page,
+        `component ${name} should include install command`
+      ).toContain(`zaidan add https://better-auth-ui.com/r/solid/${name}.json`)
+      expect(page, `component ${name} should identify copied files`).toContain(
+        item?.files[0]?.path
+      )
+      expect(page, `component ${name} should explain ownership`).toContain(
+        "After install"
+      )
+    }
+
+    for (const name of pluginPayloadNames) {
+      const page = pluginDoc(name)
+
+      expect(page, `plugin ${name} should link its payload`).toContain(
+        `/r/solid/${name}.json`
+      )
+      expect(page, `plugin ${name} should state prerequisites`).toContain(
+        "## Runtime prerequisites"
+      )
+      expect(page, `plugin ${name} should state copied files`).toContain(
+        "## Copied files"
+      )
+      expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
+        "/docs/solid/plugins"
+      )
+    }
+
+    expect(pluginDoc("magic-link")).toContain("real email provider")
+    expect(pluginDoc("passkey")).toContain("WebAuthn origin")
+    expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
+    expect(pluginDoc("theme")).toContain("src/lib/theme.ts")
+    expect(componentDoc("sign-in")).toContain("username-aware")
+    expect(componentDoc("user-button")).toContain("theme")
+    expect(componentDoc("security-settings")).toContain("passkey")
+
+    const authProviderDoc = componentDoc("auth-provider")
+    const authProviderHeadings = extractLevelTwoHeadings(authProviderDoc)
+
+    expect(authProviderDoc).toContain("Solid Query")
+    expect(authProviderHeadings).toEqual(
+      expect.arrayContaining(["Usage", "Props"])
+    )
+    expect(authProviderHeadings).not.toContain("What it copies")
+    expect(authProviderDoc).toContain("authClient")
+    expect(authProviderDoc).toContain("queryClient")
+    expect(authProviderDoc).toContain("navigate")
+
+    const authFlowDocs: Record<
+      string,
+      {
+        importExample: string
+        props: string[]
+        usageExample: string
+      }
+    > = {
+      auth: {
+        importExample: 'import { Auth } from "@/components/auth/auth"',
+        props: ["path"],
+        usageExample: "<Auth path={params.path} />"
+      },
+      "sign-in": {
+        importExample: 'import { SignIn } from "@/components/auth/sign-in"',
+        props: [],
+        usageExample: "<SignIn />"
+      },
+      "sign-up": {
+        importExample: 'import { SignUp } from "@/components/auth/sign-up"',
+        props: [],
+        usageExample: "<SignUp />"
+      },
+      "sign-out": {
+        importExample: 'import { SignOut } from "@/components/auth/sign-out"',
+        props: ["label"],
+        usageExample: '<SignOut label="Signing you out…" />'
+      },
+      "forgot-password": {
+        importExample:
+          'import { ForgotPassword } from "@/components/auth/forgot-password"',
+        props: ["redirectTo"],
+        usageExample: '<ForgotPassword redirectTo="/auth/reset-password" />'
+      },
+      "reset-password": {
+        importExample:
+          'import { ResetPassword } from "@/components/auth/reset-password"',
+        props: ["token"],
+        usageExample: "<ResetPassword token={token} />"
+      }
+    }
+
+    for (const [name, expectation] of Object.entries(authFlowDocs)) {
+      const page = componentDoc(name)
+      const headings = extractLevelTwoHeadings(page)
+
+      expect(headings, `${name} should lead with usage`).toEqual(
+        expect.arrayContaining(["Usage", "Installation", "Props"])
+      )
+      expect(
+        headings,
+        `${name} should not lead with copied files`
+      ).not.toContain("What it copies")
+      expect(page, `${name} should show Solid/Zaidan import`).toContain(
+        expectation.importExample
+      )
+      expect(page, `${name} should show practical usage`).toContain(
+        expectation.usageExample
+      )
+      expect(page, `${name} should keep files as secondary content`).toContain(
+        "## Installed files"
+      )
+
+      for (const prop of expectation.props) {
+        expect(page, `${name} should document prop ${prop}`).toContain(
+          `\`${prop}\``
+        )
+      }
+    }
+
+    const userSurfaceDocs: Record<
+      string,
+      {
+        importExample: string
+        props: string[]
+        usageExample: string
+      }
+    > = {
+      "user-button": {
+        importExample:
+          'import { UserButton } from "@/components/auth/user/user-button"',
+        props: ["class", "align", "sideOffset", "size", "variant"],
+        usageExample: '<UserButton size="icon" align="end" />'
+      },
+      "user-view": {
+        importExample:
+          'import { UserView } from "@/components/auth/user/user-view"',
+        props: ["image", "initials", "label", "secondaryLabel"],
+        usageExample:
+          '<UserView label="Ada Lovelace" secondaryLabel="ada@example.com" />'
+      },
+      "user-avatar": {
+        importExample:
+          'import { UserAvatar } from "@/components/auth/user/user-avatar"',
+        props: ["class", "fallback", "image", "initials", "label"],
+        usageExample: '<UserAvatar label="Ada Lovelace" initials="AL" />'
+      }
+    }
+
+    for (const [name, expectation] of Object.entries(userSurfaceDocs)) {
+      const page = componentDoc(name)
+      const headings = extractLevelTwoHeadings(page)
+
+      expect(headings, `${name} should lead with usage`).toEqual(
+        expect.arrayContaining(["Usage", "Installation", "Props"])
+      )
+      expect(
+        headings,
+        `${name} should not lead with copied files`
+      ).not.toContain("What it copies")
+      expect(page, `${name} should show Solid/Zaidan import`).toContain(
+        expectation.importExample
+      )
+      expect(page, `${name} should show practical usage`).toContain(
+        expectation.usageExample
+      )
+      expect(page, `${name} should keep files as secondary content`).toContain(
+        "## Installed files"
+      )
+
+      for (const prop of expectation.props) {
+        expect(page, `${name} should document prop ${prop}`).toContain(
+          `\`${prop}\``
+        )
+      }
+    }
+
+    expect(componentDoc("user-button")).toContain("theme")
+    expect(componentDoc("user-button")).toContain("session")
+    expect(componentDoc("user-button")).toContain("multi-session")
+    expect(componentDoc("user-avatar")).toContain("session user")
+
+    const settingsDocs: Record<
+      string,
+      {
+        importExample: string
+        pluginGates: string[]
+        props: string[]
+        usageExample: string
+      }
+    > = {
+      settings: {
+        importExample:
+          'import { Settings } from "@/components/auth/settings/settings"',
+        pluginGates: ["session", "account", "security"],
+        props: ["class", "path"],
+        usageExample: "<Settings path={path()} />"
+      },
+      "account-settings": {
+        importExample:
+          'import { AccountSettings } from "@/components/auth/settings/account/account-settings"',
+        pluginGates: ["theme", "multi-session", "delete-user"],
+        props: [],
+        usageExample: "<AccountSettings />"
+      },
+      "user-profile": {
+        importExample:
+          'import { UserProfile } from "@/components/auth/settings/account/user-profile"',
+        pluginGates: ["username", "session user", "avatar"],
+        props: [],
+        usageExample: "<UserProfile />"
+      },
+      "change-email": {
+        importExample:
+          'import { ChangeEmail } from "@/components/auth/settings/account/change-email"',
+        pluginGates: ["changeEmailOptions", "email verification", "session"],
+        props: [],
+        usageExample: "<ChangeEmail />"
+      },
+      "security-settings": {
+        importExample:
+          'import { SecuritySettings } from "@/components/auth/settings/security/security-settings"',
+        pluginGates: [
+          "emailAndPassword",
+          "socialProviders",
+          "apiKey",
+          "passkey",
+          "deleteUser"
+        ],
+        props: [],
+        usageExample: "<SecuritySettings />"
+      },
+      "active-sessions": {
+        importExample:
+          'import { ActiveSessionsSettings } from "@/components/auth/settings/security/active-sessions"',
+        pluginGates: ["session", "listSessionsOptions", "revokeSessionOptions"],
+        props: [],
+        usageExample: "<ActiveSessionsSettings />"
+      },
+      "linked-accounts": {
+        importExample:
+          'import { LinkedAccountsSettings } from "@/components/auth/settings/security/linked-accounts"',
+        pluginGates: ["socialProviders", "listAccountsOptions", "GitHub"],
+        props: [],
+        usageExample: "<LinkedAccountsSettings />"
+      },
+      "change-password": {
+        importExample:
+          'import { ChangePasswordSettings } from "@/components/auth/settings/security/change-password"',
+        pluginGates: [
+          "emailAndPassword",
+          "credential",
+          "requestPasswordResetOptions"
+        ],
+        props: ["confirmPassword"],
+        usageExample: "<ChangePasswordSettings confirmPassword />"
+      }
+    }
+
+    for (const [name, expectation] of Object.entries(settingsDocs)) {
+      const page = componentDoc(name)
+      const headings = extractLevelTwoHeadings(page)
+
+      expect(headings, `${name} should lead with usage`).toEqual(
+        expect.arrayContaining(["Usage", "Installation", "Props"])
+      )
+      expect(
+        headings,
+        `${name} should not lead with copied files`
+      ).not.toContain("What it copies")
+      expect(page, `${name} should show Solid/Zaidan import`).toContain(
+        expectation.importExample
+      )
+      expect(page, `${name} should show practical usage`).toContain(
+        expectation.usageExample
+      )
+      expect(page, `${name} should keep files as secondary content`).toContain(
+        "## Installed files"
+      )
+
+      for (const prop of expectation.props) {
+        expect(page, `${name} should document prop ${prop}`).toContain(
+          `\`${prop}\``
+        )
+      }
+
+      for (const gate of expectation.pluginGates) {
+        expect(page, `${name} should document gate ${gate}`).toContain(gate)
+      }
+    }
+
+    for (const docsPath of zaidanDocs) {
+      const content = readFileSync(docsPath, "utf8")
+      expect(content).not.toContain("Initial IA")
+      expect(content).not.toContain("should explain")
+      expect(content).not.toContain("placeholder")
+      expect(content).not.toContain("TODO")
+      expect(content).not.toContain("skeleton")
+    }
   })
 
   it("keeps the existing shadcn registry uncoupled from Solid registry payloads", () => {
@@ -1327,6 +2214,8 @@ describe("Solid registry isolation", () => {
 
     expect(report.shadcnRegistryName).toBe("better-auth-ui")
     expect(report.shadcnCouplingFindings).toEqual([])
-    expect(report.staticItemNames).toHaveLength(6)
+    expect(report.staticItemNames).toHaveLength(
+      expectedSolidRegistryPayloadNames.length
+    )
   })
 })

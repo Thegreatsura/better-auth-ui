@@ -1,0 +1,32 @@
+---
+title: Concepts
+description: Ownership model for Zaidan registry payloads.
+---
+
+Zaidan copies Solid component files into your app. After install, your app owns those files.
+
+## Mental model
+
+- **Payload**: one generated JSON file under `/r/solid`.
+- **Registry dependency**: another Solid payload required by the current payload.
+- **App ownership**: copied files are yours to customize.
+- **Runtime dependency**: package code such as `@better-auth-ui/solid` that remains installed from npm.
+
+## Payload ownership
+
+- `examples/start-solid-zaidan-example/registry.manifest.ts` declares each payload name, dependency list, `registryDependencies`, and copied files.
+- `apps/docs/public/r/solid/**` is generated output. Do not hand-edit generated JSON.
+- Copied files are app-owned after install. Keep local changes in your app instead of expecting the registry to preserve them.
+- Package behavior belongs to [Solid runtime docs](/docs/solid); install shape belongs here.
+
+## Update strategy
+
+Re-run `zaidan add` when you intentionally want a fresh copy of a payload. Review the diff like normal application code, especially for auth routes, provider setup, and settings pages.
+
+## Dependency graph
+
+Install `auth-provider` first, then add feature payloads. Payloads such as `settings` depend on account and security surfaces; plugin payloads such as `passkey` or `api-key` depend on the provider and the matching Better Auth client/server plugin.
+
+## Boundary with Solid
+
+Zaidan docs explain what gets installed. Solid docs explain the runtime API that installed files call.

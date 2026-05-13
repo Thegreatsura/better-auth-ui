@@ -31,11 +31,12 @@ describe("Solid docs navigation", () => {
       pages: [
         "index",
         "integrations",
-        "plugins",
-        "registry",
         "queries",
         "mutations",
-        "gaps"
+        "server",
+        "plugins",
+        "gaps",
+        "registry"
       ]
     })
   })
@@ -48,6 +49,7 @@ describe("Solid docs navigation", () => {
       "registry.mdx",
       "queries.mdx",
       "mutations.mdx",
+      "server.mdx",
       "gaps.mdx"
     ]
 
@@ -61,18 +63,7 @@ describe("Solid docs navigation", () => {
 
     expect(index).toContain("@better-auth-ui/solid")
     expect(integrations).toContain("examples/start-solid-zaidan-example")
-    expect(registry).toContain(
-      "https://better-auth-ui.com/r/solid/registry.json"
-    )
-    expect(registry).toContain(
-      "https://better-auth-ui.com/r/solid/forgot-password.json"
-    )
-    expect(registry).toContain(
-      "https://better-auth-ui.com/r/solid/reset-password.json"
-    )
-    expect(registry).toContain(
-      "https://better-auth-ui.com/r/solid/sign-up.json"
-    )
+    expect(registry).toContain("/docs/zaidan/registry")
     expect(registry).toContain("apps/docs/public/r/solid")
   })
 
@@ -85,13 +76,10 @@ describe("Solid docs navigation", () => {
     expect(gaps).toContain("@react-email/components")
     expect(gaps).toContain("solid-js/web")
     expect(gaps).toContain("renderToString")
-    expect(gaps).toContain("@monkedevlife/solidjs-email-render")
-    expect(gaps).toContain("deprecated")
     expect(gaps).toContain("app-owned")
-    expect(gaps).toContain("sonner")
-    expect(gaps).toContain("solid-sonner")
-    expect(mutations).toContain("Zaidan Sonner")
-    expect(mutations).toContain("@better-auth-ui/solid` does not re-export")
+    expect(gaps).toContain("Toast UI")
+    expect(mutations).toContain("The Solid package does not render toast UI")
+    expect(mutations).toContain("installed Zaidan components")
     expect(gaps).toContain("HeroUI")
     expect(source).toContain("Solid")
     expect(source).not.toContain("/r/solid")
@@ -102,7 +90,7 @@ describe("Solid docs navigation", () => {
 
     expect(plugins).toContain("type-only")
     expect(plugins).toContain("export type { AuthPlugin }")
-    expect(plugins).toContain("Use Better Auth plugins")
+    expect(plugins).toContain("Enable Better Auth plugins")
     expect(plugins).not.toContain(
       "Use `@better-auth-ui/solid/plugins` for Solid package helpers"
     )

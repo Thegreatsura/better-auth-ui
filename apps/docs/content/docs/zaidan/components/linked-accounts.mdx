@@ -1,0 +1,42 @@
+---
+title: <LinkedAccounts />
+description: A Solid security card for linking and unlinking configured social provider accounts.
+---
+
+## Usage
+
+Render `LinkedAccountsSettings` when your app exposes social providers.
+
+```tsx
+import { LinkedAccountsSettings } from "@/components/auth/settings/security/linked-accounts"
+
+export function SocialAccountsCard() {
+  return <LinkedAccountsSettings />
+}
+```
+
+The card combines existing linked accounts with configured providers so users can connect or disconnect accounts such as GitHub.
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/linked-accounts.json
+```
+
+## Props
+
+This component does not accept props. Providers come from `AuthProvider` via Better Auth UI configuration.
+
+## Plugin gates
+
+- `socialProviders` controls whether `SecuritySettings` renders this card.
+- Uses `listAccountsOptions` to load linked accounts outside SSR.
+- Configure social providers such as GitHub in Better Auth before exposing link/unlink actions.
+
+## Installed files
+
+- `src/components/auth/settings/security/linked-accounts.tsx`
+- `src/components/auth/settings/security/linked-account.tsx`
+- Local card, button, and menu primitives.
+
+After install, review provider labels and unlink confirmation copy for your app.

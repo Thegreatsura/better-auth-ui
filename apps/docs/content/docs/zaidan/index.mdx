@@ -1,0 +1,46 @@
+---
+title: Overview
+description: Zaidan registry track for Solid component payloads.
+icon: PackagePlus
+---
+
+Zaidan is the registry track for installing Solid-owned Better Auth UI components. It owns `zaidan add` workflows, `/r/solid` payloads, component customization, and installable plugin UI surfaces.
+
+Use [Solid](/docs/solid) for `@better-auth-ui/solid` package/runtime APIs.
+
+## Quick path
+
+1. Wire the runtime provider in `examples/start-solid-zaidan-example/src/components/providers.tsx` or your equivalent Solid Start provider shell.
+2. Install the provider payload first so other payloads can reuse its `AuthProvider`, error toaster, theme helper, and Solid Query context.
+3. Add the auth or settings payloads you need from the `solid` registry namespace.
+4. Customize the copied files in your app; package APIs stay in `@better-auth-ui/solid`.
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
+zaidan add https://better-auth-ui.com/r/solid/sign-up.json
+zaidan add https://better-auth-ui.com/r/solid/sign-in.json
+```
+
+The payloads are generated from `examples/start-solid-zaidan-example/registry.manifest.ts` and hosted under `apps/docs/public/r/solid/**`.
+
+## What Zaidan owns
+
+- Registry endpoint and generated payload metadata.
+- Installable auth, user, settings, and plugin component files.
+- Zaidan/Tailwind/Kobalte setup needed by those payloads.
+- Links back to Solid runtime docs when an installed component needs package APIs.
+- Social/GitHub provider buttons are included by auth payloads when your Better Auth client enables those providers.
+
+## Next
+
+<Cards>
+  <Card title="Registry" href="/docs/zaidan/registry">
+    Review the endpoint, payload namespace, and source-of-truth rule.
+  </Card>
+  <Card title="Plugins" href="/docs/zaidan/plugins">
+    See installable plugin UI surfaces such as passkey, API key, and magic link.
+  </Card>
+  <Card title="Components" href="/docs/zaidan/components">
+    Browse provider, auth, user, and settings payloads.
+  </Card>
+</Cards>

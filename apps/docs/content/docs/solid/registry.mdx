@@ -1,32 +1,18 @@
 ---
-title: Zaidan registry
-description: Install Solid-owned registry payloads from the isolated Solid namespace.
+title: Registry handoff
+description: Legacy Solid registry page that points to the Zaidan documentation owner.
 ---
+
+Registry ownership moved to [Zaidan registry](/docs/zaidan/registry). Keep this page as a stable handoff for older `/docs/solid/registry` links while the Solid section refocuses on package and runtime APIs.
 
 The Solid/Zaidan registry is generated from `examples/start-solid-zaidan-example/**` and served as static assets from `apps/docs/public/r/solid`. The docs app only hosts those files; it does not import or execute Solid components.
 
-## Registry index
+## Where to go next
 
-```txt
-https://better-auth-ui.com/r/solid/registry.json
-```
-
-Current generated payloads include:
-
-- `https://better-auth-ui.com/r/solid/auth-provider.json`
-- `https://better-auth-ui.com/r/solid/forgot-password.json`
-- `https://better-auth-ui.com/r/solid/reset-password.json`
-- `https://better-auth-ui.com/r/solid/sign-in.json`
-- `https://better-auth-ui.com/r/solid/sign-up.json`
-- `https://better-auth-ui.com/r/solid/sign-out.json`
-
-## Install path
-
-Use the Zaidan/Solid-compatible CLI flow for payloads in the `solid` namespace. Do not use the root shadcn registry URL for Solid components.
-
-```bash
-zaidan add https://better-auth-ui.com/r/solid/sign-up.json
-```
+- Use [Zaidan registry](/docs/zaidan/registry) for registry endpoints, payload inventory, generation rules, and install commands.
+- Use [Zaidan components](/docs/zaidan/components) for copied component payloads.
+- Use [Zaidan plugins](/docs/zaidan/plugins) for copied plugin UI payloads.
+- Use [Solid](/docs/solid) for package/runtime APIs.
 
 ## Source-of-truth rule
 

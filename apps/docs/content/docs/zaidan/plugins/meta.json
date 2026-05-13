@@ -1,0 +1,14 @@
+{
+  "icon": "Plug",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "username",
+    "passkey",
+    "multi-session",
+    "api-key",
+    "delete-user",
+    "magic-link",
+    "theme"
+  ]
+}

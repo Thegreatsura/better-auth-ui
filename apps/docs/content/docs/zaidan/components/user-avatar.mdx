@@ -1,0 +1,60 @@
+---
+title: <UserAvatar />
+description: Renders the Solid session user avatar with image, initials, and icon fallback support.
+---
+
+## Usage
+
+Use `UserAvatar` anywhere you need the session user image without the full account menu. Pass a stable `label` for accessible image text and either `image`, `initials`, or a custom fallback icon.
+
+```tsx
+import { UserAvatar } from "@/components/auth/user/user-avatar"
+
+export function AccountAvatar() {
+  return <UserAvatar label="Ada Lovelace" initials="AL" />
+}
+```
+
+Render it from session data when composing custom user surfaces.
+
+```tsx
+import { UserAvatar } from "@/components/auth/user/user-avatar"
+
+export function SessionAvatar(props: {
+  user: { email?: string | null; image?: string | null; name?: string | null }
+}) {
+  const label = () => props.user.name || props.user.email || "Account"
+
+  return (
+    <UserAvatar
+      image={props.user.image}
+      initials={label().slice(0, 2).toUpperCase()}
+      label={label()}
+    />
+  )
+}
+```
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/user-avatar.json
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `class` | `string` | `"size-9 rounded-full bg-muted text-muted-foreground"` | Class applied to the local avatar primitive. |
+| `fallback` | `JSX.Element` | User icon | Custom fallback rendered when no initials are provided. |
+| `image` | `string \| null` | `undefined` | Session user image URL. |
+| `initials` | `string` | `undefined` | Initials shown when the image is absent or cannot render. |
+| `label` | `string` | Required | Accessible text for the avatar image. |
+
+## Installed files
+
+- `src/components/auth/user/user-avatar.tsx`
+- `src/components/ui/avatar.tsx`
+- `src/lib/utils.ts`
+
+After install, customize fallback initials, icon behavior, or avatar sizing in your copied file.

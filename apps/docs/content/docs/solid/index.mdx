@@ -1,31 +1,38 @@
 ---
 title: Overview
-description: Solid package setup, TanStack Start integration, and Zaidan registry entry points.
+description: Solid package setup, TanStack Start integration, and runtime API boundaries.
 icon: Solid
 ---
 
-`@better-auth-ui/solid` is the SolidJS track for Better Auth UI. It keeps the same core keys, auth configuration defaults, and plugin contracts as the React package where Solid supports equivalent behavior.
+Solid package/runtime track: @better-auth-ui/solid owns provider wiring, Solid Query factories, mutation factories, server helpers, and plugin type contracts.
 
-## Install
+Use [Zaidan](/docs/zaidan) when your job is installing copied Solid components. Stay in this Solid section when your job is wiring the package runtime.
+
+## Quick path
+
+1. Install the Solid package and Solid Query.
+2. Create a Better Auth client with `createAuthClient`.
+3. Wrap your app with `AuthProvider` and pass a `QueryClient`.
+4. Use query and mutation option factories from `@better-auth-ui/solid` in your components.
+5. Use `@better-auth-ui/solid/server` only at server loaders/actions that need server-side session data.
 
 ```package-install
 @better-auth-ui/solid @tanstack/solid-query better-auth solid-js
 ```
 
-The package exports only the Solid-supported surface:
+## Package exports
 
-- `@better-auth-ui/solid` — provider, hooks/composables, query factories, mutation factories.
-- `@better-auth-ui/solid/server` — server-side session helpers.
-- `@better-auth-ui/solid/plugins` — plugin config helpers aligned with shared core contracts.
+| Export | Owns |
+| --- | --- |
+| `@better-auth-ui/solid` | `createAuthClient`, `AuthProvider`, `useAuth`, auth config types, provider icons, query factories, mutation factories, and hooks such as `useSession`. |
+| `@better-auth-ui/solid/server` | Server-safe query helpers and auth server types for TanStack Start loader boundaries. |
+| `@better-auth-ui/solid/plugins` | Type-only plugin contract re-export from `@better-auth-ui/core`. |
 
-React-only email templates and toast UI are intentionally not exported from the Solid package.
+## What belongs elsewhere
 
-## Quick path
-
-1. Install `@better-auth-ui/solid` with `@tanstack/solid-query`.
-2. Use the Solid Start reference app at `examples/start-solid-zaidan-example` for route and provider wiring.
-3. Install Zaidan registry components from the `/r/solid` namespace when component payloads are needed.
-4. Check [Gaps](/docs/solid/gaps) before assuming React package parity.
+- Component installation, generated payloads, and copied-file ownership belong in [Zaidan](/docs/zaidan).
+- React email templates, React render-hook behavior, and HeroUI React components are not Solid package APIs.
+- Registry generation is part of the Solid example + Zaidan docs, not this package reference.
 
 ## Next
 
@@ -33,10 +40,13 @@ React-only email templates and toast UI are intentionally not exported from the 
   <Card icon={<TanStackStart />} title="Solid Start" href="/docs/solid/integrations">
     Wire Better Auth UI into TanStack Start with Solid Router and Solid Query.
   </Card>
-  <Card title="Zaidan registry" href="/docs/solid/registry">
-    Install Solid-owned component payloads from the isolated registry namespace.
+  <Card title="Queries" href="/docs/solid/queries">
+    Review Solid Query factories, cache keys, and loader helpers.
   </Card>
-  <Card title="Parity gaps" href="/docs/solid/gaps">
-    See the React-only features that are explicit non-goals for this slice.
+  <Card title="Mutations" href="/docs/solid/mutations">
+    Use mutation option factories for Better Auth write endpoints.
+  </Card>
+  <Card title="Zaidan components" href="/docs/zaidan">
+    Switch tracks when you need installable Solid UI payloads.
   </Card>
 </Cards>

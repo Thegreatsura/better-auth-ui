@@ -2,7 +2,7 @@
   "name": "sign-out",
   "type": "registry:component",
   "title": "Solid Sign Out",
-  "description": "Minimal Solid sign-out component that ends the session and returns to sign in.",
+  "description": "Solid sign-out component that ends the session and returns to sign in.",
   "dependencies": [
     "@better-auth-ui/solid@latest",
     "@better-auth-ui/core@latest",
