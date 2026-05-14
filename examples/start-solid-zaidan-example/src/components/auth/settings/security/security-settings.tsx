@@ -8,12 +8,17 @@ import { ChangePasswordSettings } from "@/components/auth/settings/security/chan
 import { LinkedAccountsSettings } from "@/components/auth/settings/security/linked-accounts"
 import { hasAuthPlugin } from "@/components/auth/settings/shared/helpers"
 import type { SecurityCardsPlugin } from "@/components/auth/settings/shared/types"
+import { cn } from "@/lib/utils"
 
-export function SecuritySettings() {
+export type SecuritySettingsProps = {
+  class?: string
+}
+
+export function SecuritySettings(props: SecuritySettingsProps = {}) {
   const auth = useAuth()
 
   return (
-    <div class="flex w-full flex-col gap-4 md:gap-6">
+    <div class={cn("flex w-full flex-col gap-4 md:gap-6", props.class)}>
       <Show when={auth.emailAndPassword?.enabled}>
         <ChangePasswordSettings
           confirmPassword={auth.emailAndPassword.confirmPassword}

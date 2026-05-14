@@ -12,9 +12,16 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ProviderButtons } from "./provider-buttons"
+import { cn } from "@/lib/utils"
+import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
-export function SignUp() {
+export type SignUpProps = {
+  class?: string
+  socialLayout?: SocialLayout
+  socialPosition?: "top" | "bottom"
+}
+
+export function SignUp(props: SignUpProps) {
   const auth = useAuth()
   const queryClient = useQueryClient()
   const [email, setEmail] = createSignal("")
@@ -52,6 +59,9 @@ export function SignUp() {
       | Partial<UsernameLocalization>
       | undefined)
   }
+  const socialPosition = () => props.socialPosition ?? "bottom"
+  const showSeparator = () =>
+    Boolean(auth.emailAndPassword?.enabled && auth.socialProviders?.length)
 
   const submitSignUp = (event: SubmitEvent) => {
     event.preventDefault()
@@ -75,7 +85,7 @@ export function SignUp() {
   }
 
   return (
-    <Card class="w-full max-w-sm">
+    <Card class={cn("w-full max-w-sm", props.class)}>
       <CardHeader>
         <CardTitle class="text-xl font-semibold">
           {auth.localization.auth.signUp}
@@ -83,6 +93,17 @@ export function SignUp() {
       </CardHeader>
 
       <CardContent>
+        <Show when={socialPosition() === "top"}>
+          <Show when={auth.socialProviders?.length}>
+            <ProviderButtons socialLayout={props.socialLayout} view="signUp" />
+          </Show>
+          <Show when={showSeparator()}>
+            <div class="my-4 text-center text-muted-foreground text-xs">
+              {auth.localization.auth.or}
+            </div>
+          </Show>
+        </Show>
+
         <form aria-label="Sign up" onSubmit={submitSignUp}>
           <div class="flex flex-col gap-6">
             <Show when={auth.emailAndPassword.name}>
@@ -321,11 +342,13 @@ export function SignUp() {
           </div>
         </form>
 
-        <Show when={auth.socialProviders?.length}>
+        <Show
+          when={socialPosition() === "bottom" && auth.socialProviders?.length}
+        >
           <div class="my-4 text-center text-muted-foreground text-xs">
             {auth.localization.auth.or}
           </div>
-          <ProviderButtons view="signUp" />
+          <ProviderButtons socialLayout={props.socialLayout} view="signUp" />
         </Show>
 
         <div class="mt-4 flex w-full flex-col items-center gap-3">

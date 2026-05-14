@@ -14,9 +14,16 @@ import {
 } from "@/components/auth/settings/shared/helpers"
 import { Card, CardContent } from "@/components/ui/card"
 import { ItemGroup, ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
 import { ActiveSessionRow, ActiveSessionRowSkeleton } from "./active-session"
 
-export function ActiveSessionsSettings() {
+export type ActiveSessionsSettingsProps = {
+  class?: string
+}
+
+export function ActiveSessionsSettings(
+  props: ActiveSessionsSettingsProps = {}
+) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
@@ -50,7 +57,7 @@ export function ActiveSessionsSettings() {
   }
 
   return (
-    <div>
+    <div class={cn(props.class)}>
       <h2 class="mb-3 text-sm font-semibold">
         {auth.localization.settings.activeSessions}
       </h2>

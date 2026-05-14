@@ -8,7 +8,8 @@ import {
   User,
   UserPlus2
 } from "lucide-solid"
-import { createSignal, mergeProps, onMount, Show } from "solid-js"
+import type { JSX } from "solid-js"
+import { createMemo, createSignal, mergeProps, onMount, Show } from "solid-js"
 import { ThemeToggleItem } from "@/components/auth/theme/theme-toggle-item"
 import { UserAvatar } from "@/components/auth/user/user-avatar"
 import { UserView } from "@/components/auth/user/user-view"
@@ -26,6 +27,24 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 const menuLinkClass = "flex w-full items-center gap-1.5"
+
+export type UserButtonLinkVisibility =
+  | "authenticated"
+  | "unauthenticated"
+  | "always"
+
+export type UserButtonLink = {
+  href: string
+  icon?: JSX.Element
+  label: JSX.Element
+  variant?: "default" | "destructive"
+  visibility?: UserButtonLinkVisibility
+}
+
+const isUserButtonLink = (
+  link: UserButtonLink | JSX.Element
+): link is UserButtonLink =>
+  typeof link === "object" && link !== null && "href" in link && "label" in link
 
 const resolveUserLabel = (
   username?: string | null,
@@ -45,9 +64,11 @@ const resolveUserInitials = (
   email?: string | null
 ) => resolveUserLabel(username, name, email).slice(0, 2).toUpperCase()
 
-type UserButtonProps = {
+export type UserButtonProps = {
   class?: string
   align?: "center" | "end" | "start"
+  hideSettings?: boolean
+  links?: (UserButtonLink | JSX.Element)[]
   sideOffset?: number
   size?: "default" | "icon"
   variant?:
@@ -68,6 +89,22 @@ function UserButtonPendingView() {
         <Skeleton class="h-3 w-32" />
       </div>
     </div>
+  )
+}
+
+function renderUserLink(link: UserButtonLink | JSX.Element) {
+  if (!isUserButtonLink(link)) return link
+
+  return (
+    <DropdownMenuItem
+      class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+      variant={link.variant}
+    >
+      <a class={menuLinkClass} href={link.href}>
+        {link.icon}
+        {link.label}
+      </a>
+    </DropdownMenuItem>
   )
 }
 
@@ -103,6 +140,18 @@ export function UserButton(rawProps: UserButtonProps = {}) {
         : "py-2.5 h-auto font-normal justify-between gap-3 rounded-full",
       props.class
     )
+
+  const userLinks = createMemo(() =>
+    props.links?.flatMap((link) => {
+      if (isUserButtonLink(link)) {
+        const visibility = link.visibility ?? "always"
+        if (visibility === "authenticated" && !session.data) return []
+        if (visibility === "unauthenticated" && session.data) return []
+      }
+
+      return [renderUserLink(link)]
+    })
+  )
 
   onMount(() => setIsUserButtonHydrated(true))
 
@@ -235,6 +284,8 @@ export function UserButton(rawProps: UserButtonProps = {}) {
               when={session.data}
               fallback={
                 <>
+                  {userLinks()}
+
                   <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
                     <Link
                       class={menuLinkClass}
@@ -261,16 +312,20 @@ export function UserButton(rawProps: UserButtonProps = {}) {
                 </>
               }
             >
-              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
-                <Link
-                  class={menuLinkClass}
-                  params={{ path: settingsPath }}
-                  to="/settings/$path"
-                >
-                  <Settings class="size-4 text-muted-foreground" />
-                  {settingsLabel()}
-                </Link>
-              </DropdownMenuItem>
+              {userLinks()}
+
+              <Show when={!props.hideSettings}>
+                <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                  <Link
+                    class={menuLinkClass}
+                    params={{ path: settingsPath }}
+                    to="/settings/$path"
+                  >
+                    <Settings class="size-4 text-muted-foreground" />
+                    {settingsLabel()}
+                  </Link>
+                </DropdownMenuItem>
+              </Show>
 
               <ThemeToggleItem />
 

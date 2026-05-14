@@ -7,12 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
 
 const getUsername = (session: ReturnType<typeof useSession>) =>
   (session.data?.user as { username?: string | null } | undefined)?.username ??
   ""
 
-export function UserProfile() {
+export type UserProfileProps = {
+  class?: string
+}
+
+export function UserProfile(props: UserProfileProps = {}) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const [name, setName] = createSignal("")
@@ -38,7 +43,7 @@ export function UserProfile() {
   }
 
   return (
-    <div>
+    <div class={cn(props.class)}>
       <h2 class="mb-3 text-sm font-semibold">Profile</h2>
       <form aria-label="Profile" onSubmit={submitProfile}>
         <Card>

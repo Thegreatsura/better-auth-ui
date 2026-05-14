@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
 
 export type ResetPasswordProps = {
+  class?: string
   token?: string
 }
 
@@ -51,7 +53,7 @@ export function ResetPassword(props: ResetPasswordProps) {
   }
 
   return (
-    <Card class="w-full max-w-sm">
+    <Card class={cn("w-full max-w-sm", props.class)}>
       <CardHeader>
         <CardTitle class="text-xl font-semibold">
           {auth.localization.auth.resetPassword}

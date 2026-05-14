@@ -8,9 +8,16 @@ import type {
 } from "@/components/auth/settings/shared/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
 import { LinkedAccountRow, LinkedAccountRowSkeleton } from "./linked-account"
 
-export function LinkedAccountsSettings() {
+export type LinkedAccountsSettingsProps = {
+  class?: string
+}
+
+export function LinkedAccountsSettings(
+  props: LinkedAccountsSettingsProps = {}
+) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
@@ -45,7 +52,7 @@ export function LinkedAccountsSettings() {
   }
 
   return (
-    <div>
+    <div class={cn(props.class)}>
       <h2 class="mb-3 text-sm font-semibold">
         {auth.localization.settings.linkedAccounts}
       </h2>

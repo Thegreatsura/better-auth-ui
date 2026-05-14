@@ -1,15 +1,15 @@
 ---
-title: Server
-description: Server-side helpers and boundaries for the Solid package.
+title: SSR
+description: Server-side helpers and SSR boundaries for the Solid package.
 ---
 
-`@better-auth-ui/solid/server` provides server-safe query helpers for TanStack Start boundaries. It does not create routes, generate registry payloads, or install components.
+`@better-auth-ui/solid/server` provides server-safe query helpers for SSR boundaries. It does not create routes, generate registry payloads, install components, or prescribe TanStack Start app setup.
 
 ## Quick path
 
 1. Configure Better Auth in your app server code.
-2. Route `/api/auth/*` through your TanStack Start server handler.
-3. Use server helpers from `@better-auth-ui/solid/server` in loaders/actions that need authenticated data.
+2. Pass your app's Better Auth instance and request headers to the server helper.
+3. Seed or read the same Solid Query cache that your client-side auth hooks use after hydration.
 
 ```ts
 import { ensureSession } from "@better-auth-ui/solid/server"
@@ -37,4 +37,4 @@ export const beforeLoad = async ({ context }) => {
 
 ## Boundary
 
-Server helpers require your app's Better Auth instance and request headers. They do not own secrets, route files, or copied UI code. For component installation and customization, switch to [Zaidan](/docs/zaidan).
+Server helpers require your app's Better Auth instance and request headers. They do not own secrets, route files, or copied UI code. For TanStack Start installation and component customization, switch to [Zaidan](/docs/zaidan).

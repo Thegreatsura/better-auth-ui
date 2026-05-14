@@ -3,14 +3,5 @@
   "icon": "Solid",
   "description": "Solid package and runtime APIs",
   "root": true,
-  "pages": [
-    "index",
-    "integrations",
-    "queries",
-    "mutations",
-    "server",
-    "plugins",
-    "gaps",
-    "registry"
-  ]
+  "pages": ["index", "queries", "mutations", "ssr"]
 }

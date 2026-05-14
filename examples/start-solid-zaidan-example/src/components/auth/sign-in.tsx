@@ -1,5 +1,10 @@
-import { SignInUsername } from "./username/sign-in-username"
+import {
+  SignInUsername,
+  type SignInUsernameProps
+} from "./username/sign-in-username"
 
-export function SignIn() {
-  return <SignInUsername />
+export type SignInProps = SignInUsernameProps
+
+export function SignIn(props: SignInProps) {
+  return <SignInUsername {...props} />
 }

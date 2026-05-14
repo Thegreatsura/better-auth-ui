@@ -17,11 +17,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
+import type { SocialLayout } from "../provider-buttons"
 import { ProviderButtons } from "../provider-buttons"
 import { resolveSubmittedSignIn } from "../sign-in-path"
 
 export type SignInUsernameProps = {
-  className?: string
+  class?: string
+  socialLayout?: SocialLayout
+  socialPosition?: "top" | "bottom"
 }
 
 type AuthButtonComponent = Component<{ view?: string }>
@@ -59,6 +63,9 @@ export function SignInUsername(props: SignInUsernameProps) {
       | Partial<UsernameLocalization>
       | undefined)
   }
+  const socialPosition = () => props.socialPosition ?? "bottom"
+  const showSeparator = () =>
+    Boolean(auth.emailAndPassword?.enabled && auth.socialProviders?.length)
 
   const submitSignIn = (
     event: SubmitEvent & { currentTarget: HTMLFormElement }
@@ -90,7 +97,7 @@ export function SignInUsername(props: SignInUsernameProps) {
   }
 
   return (
-    <Card class={props.className ?? "w-full max-w-sm"}>
+    <Card class={cn("w-full max-w-sm", props.class)}>
       <CardHeader>
         <CardTitle class="text-xl font-semibold">
           {auth.localization.auth.signIn}
@@ -98,6 +105,17 @@ export function SignInUsername(props: SignInUsernameProps) {
       </CardHeader>
 
       <CardContent>
+        <Show when={socialPosition() === "top"}>
+          <Show when={auth.socialProviders?.length}>
+            <ProviderButtons socialLayout={props.socialLayout} view="signIn" />
+          </Show>
+          <Show when={showSeparator()}>
+            <div class="my-4 text-center text-muted-foreground text-xs">
+              {auth.localization.auth.or}
+            </div>
+          </Show>
+        </Show>
+
         <form aria-label="Sign in" onSubmit={submitSignIn}>
           <div class="flex flex-col gap-6">
             <div class="grid gap-3">
@@ -226,11 +244,13 @@ export function SignInUsername(props: SignInUsernameProps) {
           </div>
         </form>
 
-        <Show when={auth.socialProviders?.length}>
+        <Show
+          when={socialPosition() === "bottom" && auth.socialProviders?.length}
+        >
           <div class="my-4 text-center text-muted-foreground text-xs">
             {auth.localization.auth.or}
           </div>
-          <ProviderButtons view="signIn" />
+          <ProviderButtons socialLayout={props.socialLayout} view="signIn" />
         </Show>
 
         <div class="mt-4 flex w-full flex-col items-center gap-3">

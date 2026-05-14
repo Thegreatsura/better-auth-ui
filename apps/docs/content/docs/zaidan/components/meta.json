@@ -2,11 +2,8 @@
   "icon": "Box",
   "defaultOpen": true,
   "pages": [
-    "index",
     "---Provider---",
     "auth-provider",
-    "---Shared---",
-    "additional-field",
     "---Auth---",
     "auth",
     "sign-in",

@@ -16,6 +16,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
 
 function ChangePasswordSkeletonInput() {
   return (
@@ -25,7 +26,14 @@ function ChangePasswordSkeletonInput() {
   )
 }
 
-export function ChangePasswordSettings(props: { confirmPassword?: boolean }) {
+export type ChangePasswordSettingsProps = {
+  class?: string
+  confirmPassword?: boolean
+}
+
+export function ChangePasswordSettings(
+  props: ChangePasswordSettingsProps = {}
+) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
@@ -112,7 +120,7 @@ export function ChangePasswordSettings(props: { confirmPassword?: boolean }) {
 
   if (!linkedAccounts.isPending && !hasCredentialAccount()) {
     return (
-      <div>
+      <div class={cn(props.class)}>
         <h2 class="mb-3 text-sm font-semibold">
           {auth.localization.settings.changePassword}
         </h2>
@@ -145,7 +153,7 @@ export function ChangePasswordSettings(props: { confirmPassword?: boolean }) {
   }
 
   return (
-    <div>
+    <div class={cn(props.class)}>
       <h2 class="mb-3 text-sm font-semibold">
         {auth.localization.settings.changePassword}
       </h2>

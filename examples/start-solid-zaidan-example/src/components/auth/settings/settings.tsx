@@ -1,3 +1,4 @@
+import type { SettingsView } from "@better-auth-ui/core"
 import { useAuth, useSession } from "@better-auth-ui/solid"
 import { createMemo, Show } from "solid-js"
 import { AccountSettings } from "@/components/auth/settings/account/account-settings"
@@ -11,6 +12,13 @@ import { cn } from "@/lib/utils"
 
 export { AccountSettings } from "@/components/auth/settings/account/account-settings"
 export { SecuritySettings } from "@/components/auth/settings/security/security-settings"
+
+export type SettingsProps = {
+  class?: string
+  path?: string
+  view?: SettingsView
+  hideNav?: boolean
+}
 
 const settingsPathViews = () => {
   const auth = useAuth()
@@ -32,13 +40,29 @@ export function resolveSettingsRoute(path: string): SettingsRouteResolution {
   return { redirectTo: "/" }
 }
 
-export function Settings(props: { class?: string; path: string }) {
+export function resolveSettingsView(
+  props: Pick<SettingsProps, "path" | "view">,
+  pathViews: SettingsPathViews
+) {
+  const requestedView =
+    props.view ?? (props.path ? pathViews[props.path] : undefined)
+
+  if (requestedView === "account" || requestedView === "security") {
+    return requestedView
+  }
+
+  return undefined
+}
+
+export function Settings(props: SettingsProps) {
   const auth = useAuth()
   const session = useSession(auth.authClient, {
     enabled: !import.meta.env.SSR
   })
-  const currentView = createMemo(() => settingsPathViews()[props.path])
-  const activeRoute = createMemo(() => resolveSettingsRoute(props.path))
+  const currentView = createMemo(
+    () => resolveSettingsView(props, settingsPathViews()) ?? "account"
+  )
+  const activeRoute = createMemo(() => resolveSettingsRoute(currentView()))
 
   const handleSettingsTabChange = (nextView: string) => {
     if (nextView !== "account" && nextView !== "security") return
@@ -63,7 +87,7 @@ export function Settings(props: { class?: string; path: string }) {
             onChange={handleSettingsTabChange}
             value={currentView()}
           >
-            <div>
+            <div class={cn(props.hideNav && "hidden")}>
               <TabsList aria-label={auth.localization.settings.settings}>
                 <TabsTrigger value="account">
                   {auth.localization.settings.account}

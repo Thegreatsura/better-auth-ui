@@ -718,7 +718,7 @@ describe("Solid auth route component selection", () => {
     expect(settingsShell).toContain(
       'class={cn("w-full gap-4 md:gap-6", props.class)}'
     )
-    expect(settingsShell).toContain("<div>")
+    expect(settingsShell).toContain("<div")
     expect(settingsShell).not.toContain("<nav")
     expect(settingsShell).not.toContain("Manage account and security settings")
     expect(settingsShell).not.toMatch(/<h1[^>]*>/)
@@ -1133,6 +1133,265 @@ describe("Solid auth route component selection", () => {
       expect(source, file).not.toMatch(/<a\s/)
       expect(source, file).not.toMatch(/href=\{?`?\$?\{?auth\.basePaths\.auth/)
     }
+  })
+
+  it("keeps Auth, SignIn, and SignUp props aligned with the shadcn parity surface", () => {
+    const authComponent = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth.tsx"),
+      "utf8"
+    )
+    const signIn = readFileSync(
+      resolve(__dirname, "../src/components/auth/sign-in.tsx"),
+      "utf8"
+    )
+    const signInUsername = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/username/sign-in-username.tsx"
+      ),
+      "utf8"
+    )
+    const signUp = readFileSync(
+      resolve(__dirname, "../src/components/auth/sign-up.tsx"),
+      "utf8"
+    )
+
+    expect(authComponent).toContain(
+      'import type { SocialLayout } from "./provider-buttons"'
+    )
+    expect(authComponent).toContain("export type AuthProps = {")
+    for (const prop of [
+      "class?: string",
+      "path?: string",
+      "socialLayout?: SocialLayout",
+      'socialPosition?: "top" | "bottom"',
+      "view?: AuthView"
+    ]) {
+      expect(authComponent, prop).toContain(prop)
+    }
+    expect(authComponent).toContain("const currentView =")
+    expect(authComponent).toContain("view ??")
+    expect(authComponent).not.toContain("normalizeClassName")
+    expect(authComponent).toContain("const PluginComponent = () =>")
+    expect(authComponent).toContain("const FallbackComponent = () =>")
+    expect(authComponent).toContain("const RouteComponent = () =>")
+    expect(authComponent).toContain("<Dynamic")
+    expect(authComponent).toContain("class={props.class}")
+    expect(authComponent).toContain("socialLayout={props.socialLayout}")
+    expect(authComponent).toContain("socialPosition={props.socialPosition}")
+
+    expect(signIn).toContain("export type SignInProps = SignInUsernameProps")
+    expect(signIn).toContain("export function SignIn(props: SignInProps)")
+    expect(signIn).toContain("<SignInUsername {...props} />")
+
+    expect(signInUsername).toContain("export type SignInUsernameProps = {")
+    expect(signInUsername).toContain("class?: string")
+    expect(signInUsername).toContain("socialLayout?: SocialLayout")
+    expect(signInUsername).toContain('socialPosition?: "top" | "bottom"')
+    expect(signInUsername).toContain(
+      'const socialPosition = () => props.socialPosition ?? "bottom"'
+    )
+    expect(signInUsername).toContain(
+      'class={cn("w-full max-w-sm", props.class)}'
+    )
+    expect(signInUsername).toContain('socialPosition() === "top"')
+    expect(signInUsername).toContain('socialPosition() === "bottom"')
+    expect(signInUsername).toContain(
+      '<ProviderButtons socialLayout={props.socialLayout} view="signIn" />'
+    )
+
+    expect(signUp).toContain("export type SignUpProps = {")
+    expect(signUp).toContain("class?: string")
+    expect(signUp).toContain("socialLayout?: SocialLayout")
+    expect(signUp).toContain('socialPosition?: "top" | "bottom"')
+    expect(signUp).toContain(
+      'const socialPosition = () => props.socialPosition ?? "bottom"'
+    )
+    expect(signUp).toContain('class={cn("w-full max-w-sm", props.class)}')
+    expect(signUp).toContain('socialPosition() === "top"')
+    expect(signUp).toContain('socialPosition() === "bottom"')
+    expect(signUp).toContain(
+      '<ProviderButtons socialLayout={props.socialLayout} view="signUp" />'
+    )
+  })
+
+  it("keeps Auth view resolution reactive when the external view prop changes", () => {
+    const authComponent = readFileSync(
+      resolve(__dirname, "../src/components/auth/auth.tsx"),
+      "utf8"
+    )
+
+    expect(authComponent).toContain("const authView = () => currentView()")
+    expect(authComponent).not.toContain("const authView = currentView()")
+    expect(authComponent).toContain("const AuthComponent = () =>")
+    expect(authComponent).toContain("component={AuthComponent()}")
+  })
+
+  it("keeps Settings props aligned with the shadcn parity surface", () => {
+    const settings = readFileSync(
+      resolve(__dirname, "../src/components/auth/settings/settings.tsx"),
+      "utf8"
+    )
+
+    expect(settings).toContain("export type SettingsProps = {")
+    for (const prop of [
+      "class?: string",
+      "path?: string",
+      "view?: SettingsView",
+      "hideNav?: boolean"
+    ]) {
+      expect(settings, prop).toContain(prop)
+    }
+    expect(settings).toContain(
+      'class={cn("w-full gap-4 md:gap-6", props.class)}'
+    )
+    expect(settings).toContain("props.view ??")
+    expect(settings).toContain("resolveSettingsView")
+    expect(settings).toContain("currentView()")
+    expect(settings).toContain('class={cn(props.hideNav && "hidden")}')
+  })
+
+  it("keeps Settings subtree props aligned with the shadcn parity surface", () => {
+    const files = {
+      accountSettings: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/account/account-settings.tsx"
+        ),
+        "utf8"
+      ),
+      userProfile: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/account/user-profile.tsx"
+        ),
+        "utf8"
+      ),
+      changeEmail: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/account/change-email.tsx"
+        ),
+        "utf8"
+      ),
+      securitySettings: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/security/security-settings.tsx"
+        ),
+        "utf8"
+      ),
+      changePassword: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/security/change-password.tsx"
+        ),
+        "utf8"
+      ),
+      linkedAccounts: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/security/linked-accounts.tsx"
+        ),
+        "utf8"
+      ),
+      activeSessions: readFileSync(
+        resolve(
+          __dirname,
+          "../src/components/auth/settings/security/active-sessions.tsx"
+        ),
+        "utf8"
+      ),
+      forgotPassword: readFileSync(
+        resolve(__dirname, "../src/components/auth/forgot-password.tsx"),
+        "utf8"
+      ),
+      resetPassword: readFileSync(
+        resolve(__dirname, "../src/components/auth/reset-password.tsx"),
+        "utf8"
+      ),
+      signOut: readFileSync(
+        resolve(__dirname, "../src/components/auth/sign-out.tsx"),
+        "utf8"
+      )
+    }
+
+    for (const [name, source] of Object.entries(files)) {
+      expect(source, name).toContain("class?: string")
+      expect(source, name).not.toContain("StylableProps")
+      expect(source, name).not.toContain("normalizeClassName")
+    }
+
+    expect(files.accountSettings).toContain(
+      "export type AccountSettingsProps = {"
+    )
+    expect(files.accountSettings).toContain(
+      "export function AccountSettings(props: AccountSettingsProps = {})"
+    )
+    expect(files.accountSettings).toContain("<UserProfile />")
+
+    expect(files.userProfile).toContain("export type UserProfileProps")
+    expect(files.changeEmail).toContain("export type ChangeEmailProps")
+    expect(files.securitySettings).toContain(
+      "export type SecuritySettingsProps = {"
+    )
+    expect(files.changePassword).toContain(
+      "export type ChangePasswordSettingsProps = {"
+    )
+    expect(files.changePassword).toContain("confirmPassword?: boolean")
+    expect(files.linkedAccounts).toContain(
+      "export type LinkedAccountsSettingsProps = {"
+    )
+    expect(files.activeSessions).toContain(
+      "export type ActiveSessionsSettingsProps = {"
+    )
+    expect(files.forgotPassword).toContain(
+      "export type ForgotPasswordProps = {"
+    )
+    expect(files.resetPassword).toContain("export type ResetPasswordProps = {")
+    expect(files.signOut).toContain("export type SignOutProps = {")
+  })
+
+  it("keeps User surface props aligned with the shadcn parity surface", () => {
+    const userButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
+      "utf8"
+    )
+    const userAvatar = readFileSync(
+      resolve(__dirname, "../src/components/auth/user/user-avatar.tsx"),
+      "utf8"
+    )
+    const userView = readFileSync(
+      resolve(__dirname, "../src/components/auth/user/user-view.tsx"),
+      "utf8"
+    )
+
+    expect(userButton).toContain("export type UserButtonLinkVisibility")
+    expect(userButton).toContain("export type UserButtonLink = {")
+    expect(userButton).toContain("links?: (UserButtonLink | JSX.Element)[]")
+    expect(userButton).toContain("hideSettings?: boolean")
+    expect(userButton).toContain("props.class")
+    expect(userButton).toContain("renderUserLink")
+    expect(userButton).toContain('visibility === "authenticated"')
+    expect(userButton).toContain('visibility === "unauthenticated"')
+    expect(userButton).toContain("!props.hideSettings")
+
+    expect(userAvatar).toContain("export type UserAvatarProps = {")
+    expect(userAvatar).toContain("class?: string")
+    expect(userAvatar).toContain("user?: AuthUser")
+    expect(userAvatar).toContain("isPending?: boolean")
+    expect(userAvatar).toContain("props.class")
+    expect(userAvatar).toContain("resolvedUser")
+    expect(userAvatar).toContain("sessionPending")
+    expect(userAvatar).toContain("displayUsername")
+
+    expect(userView).toContain("export type UserViewProps = {")
+    expect(userView).toContain("class?: string")
+    expect(userView).toContain("user?: AuthUser")
+    expect(userView).toContain("isPending?: boolean")
+    expect(userView).toContain("props.class")
+    expect(userView).toContain("user={resolvedUser()}")
+    expect(userView).toContain("secondaryLabel()")
   })
 
   it("renders the account tab like the shadcn settings baseline", () => {

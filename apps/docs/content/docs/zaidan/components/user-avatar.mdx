@@ -43,13 +43,11 @@ zaidan add https://better-auth-ui.com/r/solid/user-avatar.json
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `class` | `string` | `"size-9 rounded-full bg-muted text-muted-foreground"` | Class applied to the local avatar primitive. |
-| `fallback` | `JSX.Element` | User icon | Custom fallback rendered when no initials are provided. |
-| `image` | `string \| null` | `undefined` | Session user image URL. |
-| `initials` | `string` | `undefined` | Initials shown when the image is absent or cannot render. |
-| `label` | `string` | Required | Accessible text for the avatar image. |
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/user/user-avatar.tsx" name="UserAvatarProps" />
+
+### Parity classification
+
+`user` and `isPending` match the shadcn avatar surface in Solid form. Zaidan exposes the styling hook as Solid `class`; `fallback`, `image`, `initials`, and `label` are intentional-difference helpers kept for existing Zaidan composition examples and app-owned copied files.
 
 ## Installed files
 

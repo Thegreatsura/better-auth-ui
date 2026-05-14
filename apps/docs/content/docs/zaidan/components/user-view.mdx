@@ -44,12 +44,11 @@ zaidan add https://better-auth-ui.com/r/solid/user-view.json
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `image` | `string \| null` | `undefined` | Session user image URL forwarded to `UserAvatar`. |
-| `initials` | `string` | `undefined` | Fallback text shown when no image can render. |
-| `label` | `string` | Required | Primary visible user label. Use name, username, or email. |
-| `secondaryLabel` | `string \| null` | `undefined` | Optional secondary line, commonly the user's email. |
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/user/user-view.tsx" name="UserViewProps" />
+
+### Parity classification
+
+`user` and `isPending` match the shadcn user surface in Solid form. Zaidan exposes the styling hook as Solid `class`; `image`, `initials`, `label`, and `secondaryLabel` are intentional-difference legacy composition helpers retained for app-owned copied files.
 
 ## Installed files
 

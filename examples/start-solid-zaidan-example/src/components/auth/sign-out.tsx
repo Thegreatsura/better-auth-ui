@@ -1,7 +1,9 @@
 import { useAuth } from "@better-auth-ui/solid"
 import { onMount } from "solid-js"
+import { cn } from "@/lib/utils"
 
 export type SignOutProps = {
+  class?: string
   label?: string
 }
 
@@ -27,7 +29,12 @@ export function SignOut(props: SignOutProps) {
   })
 
   return (
-    <section aria-label="Signing out" aria-live="polite" role="status">
+    <section
+      aria-label="Signing out"
+      aria-live="polite"
+      class={cn(props.class)}
+      role="status"
+    >
       <h1>Signing out</h1>
       <p>{props.label ?? "Ending your session…"}</p>
     </section>

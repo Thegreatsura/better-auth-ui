@@ -35,13 +35,11 @@ zaidan add https://better-auth-ui.com/r/solid/user-button.json
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `class` | `string` | `undefined` | Extra class applied to the trigger button. |
-| `align` | `"center" \| "end" \| "start"` | `"center"` | Aligns the dropdown content relative to the trigger. |
-| `sideOffset` | `number` | `4` | Gap between the trigger and dropdown content. |
-| `size` | `"default" \| "icon"` | `"default"` | Renders either the full account row or the avatar-only trigger. |
-| `variant` | `"default" \| "destructive" \| "ghost" \| "link" \| "outline" \| "secondary"` | `"ghost"` | Button variant forwarded to the local Zaidan button primitive. |
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/user/user-button.tsx" name="UserButtonProps" />
+
+### Parity classification
+
+`links` and `hideSettings` are Solid-adapted matches for the shadcn user menu contract. Zaidan exposes the styling hook as Solid `class` to follow local Solid conventions.
 
 ## Installed files
 
