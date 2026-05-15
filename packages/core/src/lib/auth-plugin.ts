@@ -1,5 +1,5 @@
 import type { AdditionalFields } from "../config/additional-fields-config"
-import type { SettingsTab } from "./view-paths"
+import type { SettingsTab } from "./settings-tab"
 
 /**
  * View-path contributions kept on the plugin object.
