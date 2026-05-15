@@ -1,9 +1,7 @@
-import type { SettingsTab } from "@better-auth-ui/core"
 import { createAuthPlugin } from "@better-auth-ui/core"
 import {
   organizationPlugin as coreOrganizationPlugin,
-  type OrganizationPluginOptions,
-  organizationLocalization
+  type OrganizationPluginOptions
 } from "@better-auth-ui/core/plugins"
 
 import { OrganizationsSettings } from "../../components/auth/organization/organizations-settings"
@@ -11,23 +9,17 @@ import { OrganizationsSettings } from "../../components/auth/organization/organi
 export const organizationPlugin = createAuthPlugin(
   coreOrganizationPlugin.id,
   (options: OrganizationPluginOptions = {}) => {
-    const base = coreOrganizationPlugin(options)
-    const mergedOrganizationLocalization = {
-      ...organizationLocalization,
-      ...(base.localization as Partial<typeof organizationLocalization>)
-    }
-
-    const settingsTabs: SettingsTab[] = [
-      {
-        view: "organizations",
-        label: mergedOrganizationLocalization.organizations,
-        component: OrganizationsSettings
-      }
-    ]
+    const coreOptions = coreOrganizationPlugin(options)
 
     return {
-      ...base,
-      settingsTabs
+      ...coreOptions,
+      settingsTabs: [
+        {
+          view: "organizations",
+          label: coreOptions.localization.organizations,
+          component: OrganizationsSettings
+        }
+      ]
     }
   }
 )

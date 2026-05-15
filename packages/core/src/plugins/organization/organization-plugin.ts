@@ -1,36 +1,11 @@
+import { defaultAuthConfig } from "../../config"
 import type { AvatarConfig } from "../../config/avatar-config"
 import { createAuthPlugin } from "../../lib/create-auth-plugin"
-import { resizeAvatar } from "../../lib/utils"
-// Side-effect import so declaration merging attaches to the same `view-paths`
-// module instance consumers resolve via `@better-auth-ui/core`.
-import type {} from "../../lib/view-paths"
 import {
   type OrganizationLocalization,
   organizationLocalization
 } from "./organization-localization"
 import type { OrganizationViewPaths } from "./organization-view-paths"
-
-function resolveLogoConfig(partial?: Partial<AvatarConfig>): AvatarConfig {
-  return {
-    enabled: partial?.enabled ?? true,
-    resize: partial?.resize ?? resizeAvatar,
-    size: partial?.size ?? 256,
-    extension: partial?.extension ?? "png",
-    upload: partial?.upload,
-    delete: partial?.delete
-  }
-}
-
-/** Built-in role keys whose default labels come from {@link OrganizationLocalization}. */
-const defaultLocalizedRoleKeys = ["owner", "admin", "member"] as const
-
-function defaultOrganizationRolesFromLocalization(
-  localization: OrganizationLocalization
-): Record<string, string> {
-  return Object.fromEntries(
-    defaultLocalizedRoleKeys.map((key) => [key, localization[key]])
-  )
-}
 
 declare module "../../lib/view-paths" {
   /** Widens `SettingsViewPaths` by adding the `"organizations"` path when this plugin is imported. */
@@ -53,21 +28,19 @@ export type OrganizationPluginOptions = {
    */
   localization?: Partial<OrganizationLocalization>
   /**
-   * URL segment for the organizations settings view.
-   * @remarks `string`
-   * @default "organizations"
+   * Override URL segments contributed by this plugin.
+   *
+   * - `settings.organizations` — segment for the organizations settings view (default `"organizations"`).
+   * - `organization.settings` — segment for the `/organization/...` profile and danger zone tab (default `"settings"`).
+   * - `organization.members` — segment for the `/organization/...` members and invitations tab (default `"members"`).
    */
-  path?: string
-  /**
-   * URL segment for `/organization/...` profile and danger zone tab.
-   * @default "settings"
-   */
-  organizationSettingsPath?: string
-  /**
-   * URL segment for `/organization/...` members and invitations tab.
-   * @default "members"
-   */
-  organizationMembersPath?: string
+  viewPaths?: {
+    settings?: {
+      /** @default "organizations" */
+      organizations?: string
+    }
+    organization?: Partial<OrganizationViewPaths>
+  }
   /**
    * Organization logo upload, optimization, and deletion configuration.
    * Same shape as {@link AvatarConfig} used for user avatars (`AuthConfig.avatar`).
@@ -101,20 +74,29 @@ export const organizationPlugin = createAuthPlugin(
       ...organizationLocalization,
       ...options.localization
     }
-    const defaultRoles = defaultOrganizationRolesFromLocalization(localization)
-    const baseRoles = options.roles !== undefined ? options.roles : defaultRoles
+
     return {
       localization,
-      logo: resolveLogoConfig(options.logo),
+      logo: {
+        ...defaultAuthConfig.avatar,
+        ...options.logo
+      },
       roles: {
-        ...baseRoles,
+        ...(options.roles ?? {
+          owner: localization.owner,
+          admin: localization.admin,
+          member: localization.member
+        }),
         ...options.additionalRoles
       },
       viewPaths: {
-        settings: { organizations: options.path ?? "organizations" },
+        settings: {
+          organizations:
+            options.viewPaths?.settings?.organizations ?? "organizations"
+        },
         organization: {
-          settings: options.organizationSettingsPath ?? "settings",
-          members: options.organizationMembersPath ?? "members"
+          settings: options.viewPaths?.organization?.settings ?? "settings",
+          members: options.viewPaths?.organization?.members ?? "members"
         }
       }
     }
