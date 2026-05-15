@@ -31,10 +31,6 @@ export interface AuthViewPaths {
 
 /**
  * View path segments for settings routes.
- *
- * Plugins augment this interface (via `declare module` in their own package)
- * when they add settings tabs. Read segments from
- * `useAuthPlugin(plugin).viewPaths.settings.*`.
  */
 export interface SettingsViewPaths {
   /**
