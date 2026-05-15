@@ -35,8 +35,15 @@ export type ForgotPasswordProps = {
  * @returns The forgot-password form UI as a JSX element
  */
 export function ForgotPassword({ className }: ForgotPasswordProps) {
-  const { authClient, basePaths, localization, plugins, viewPaths, Link } =
-    useAuth()
+  const {
+    authClient,
+    baseURL,
+    basePaths,
+    localization,
+    plugins,
+    viewPaths,
+    Link
+  } = useAuth()
 
   const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
@@ -56,6 +63,7 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
     const formData = new FormData(e.currentTarget)
     requestPasswordReset({
       email: formData.get("email") as string,
+      redirectTo: `${baseURL}${basePaths.auth}/${viewPaths.auth.resetPassword}`,
       fetchOptions
     })
   }
