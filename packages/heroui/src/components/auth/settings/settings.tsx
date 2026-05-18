@@ -90,12 +90,15 @@ export function Settings({
       <Tabs.ListContainer>
         <Tabs.List
           aria-label={localization.settings.settings}
-          className="overflow-scroll max-w-fit"
+          className="max-w-fit overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           <Tabs.Tab
             id="account"
             href={`${basePaths.settings}/${viewPaths.settings.account}`}
             className="gap-2"
+            onPress={(e) =>
+              e.target.scrollIntoView({ behavior: "smooth", inline: "center" })
+            }
           >
             <Person className="text-muted" />
 
@@ -108,6 +111,9 @@ export function Settings({
             id="security"
             href={`${basePaths.settings}/${viewPaths.settings.security}`}
             className="gap-2"
+            onPress={(e) =>
+              e.target.scrollIntoView({ behavior: "smooth", inline: "center" })
+            }
           >
             <Shield className="text-muted" />
 
@@ -128,6 +134,12 @@ export function Settings({
                 id={tab.view}
                 href={`${basePaths.settings}/${segment}`}
                 className="gap-2"
+                onPress={(e) =>
+                  e.target.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center"
+                  })
+                }
               >
                 {tab.label}
 
