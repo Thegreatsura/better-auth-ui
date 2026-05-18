@@ -90,7 +90,7 @@ export function Settings({
       <Tabs.ListContainer>
         <Tabs.List
           aria-label={localization.settings.settings}
-          className="overflow-auto w-fit"
+          className="overflow-scroll max-w-fit"
         >
           <Tabs.Tab
             id="account"

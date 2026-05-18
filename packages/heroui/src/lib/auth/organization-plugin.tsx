@@ -19,7 +19,6 @@ export const organizationPlugin = createAuthPlugin(
           label: (
             <>
               <Briefcase className="text-muted" />
-
               {coreOptions.localization.organizations}
             </>
           ),

@@ -1,5 +1,5 @@
 import { useAuth, useAuthPlugin, useSession } from "@better-auth-ui/react"
-import { Persons } from "@gravity-ui/icons"
+import { ArrowRightArrowLeft } from "@gravity-ui/icons"
 import { Dropdown, Label } from "@heroui/react"
 
 import { multiSessionPlugin } from "../../../lib/auth/multi-session-plugin"
@@ -35,7 +35,7 @@ export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
         className={className}
         textValue={multiSessionLocalization.switchAccount}
       >
-        <Persons className="text-muted" />
+        <ArrowRightArrowLeft className="text-muted" />
 
         <Label>{multiSessionLocalization.switchAccount}</Label>
 
