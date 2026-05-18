@@ -87,7 +87,7 @@ import { OrganizationSwitcher } from "@better-auth-ui/heroui/plugins"
 
 ### `<OrganizationSettings />`
 
-Use `<OrganizationSettings />` when you want the active organization header plus members **and** pending invitations (via `<OrganizationMembers />`, which embeds `<OrganizationInvitations />`) on a custom route or page. It is **not** injected into `/settings/account`; register a dedicated route (for example `/organization/$path`) if you use the organization shell pattern.
+Use `<OrganizationSettings />` when you want the active organization header plus members **and** pending invitations (via `<OrganizationPeople />`, which embeds `<OrganizationInvitations />`) on a custom route or page. It is **not** injected into `/settings/account`; register a dedicated route (for example `/organization/$path`) if you use the organization shell pattern.
 
 **Usage**
 
@@ -115,15 +115,23 @@ import { OrganizationSettings } from "@better-auth-ui/heroui/plugins"
 
 ### `<OrganizationMembers />`
 
-Renders the members table, invite control, and (below) `<OrganizationInvitations />`.
+Renders the members table with invite control and per-row role/remove actions.
 
 **Props**
 
 <auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-members.tsx" name="OrganizationMembersProps" />
 
+### `<OrganizationPeople />`
+
+Renders `<OrganizationMembers />` and (below) `<OrganizationInvitations />`.
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/organization/organization-people.tsx" name="OrganizationPeopleProps" />
+
 ### `<OrganizationInvitations />`
 
-Pending invitations for the **active** organization, as a table aligned with `<OrganizationMembers />`. `InvitationList` is an alias for backward compatibility.
+Pending invitations for the **active** organization, as a table aligned with `<OrganizationPeople />`. `InvitationList` is an alias for backward compatibility.
 
 **Props**
 

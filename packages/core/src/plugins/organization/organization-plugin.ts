@@ -32,7 +32,7 @@ export type OrganizationPluginOptions = {
    *
    * - `settings.organizations` — segment for the organizations settings view (default `"organizations"`).
    * - `organization.settings` — segment for the `/organization/...` profile and danger zone tab (default `"settings"`).
-   * - `organization.members` — segment for the `/organization/...` members and invitations tab (default `"members"`).
+   * - `organization.people` — segment for the `/organization/...` members and invitations tab (default `"people"`).
    */
   viewPaths?: {
     settings?: {
@@ -96,7 +96,7 @@ export const organizationPlugin = createAuthPlugin(
         },
         organization: {
           settings: options.viewPaths?.organization?.settings ?? "settings",
-          members: options.viewPaths?.organization?.members ?? "members"
+          people: options.viewPaths?.organization?.people ?? "people"
         }
       }
     }

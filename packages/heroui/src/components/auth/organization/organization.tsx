@@ -6,12 +6,12 @@ import {
   useAuthenticate,
   useAuthPlugin
 } from "@better-auth-ui/react"
+import { Gear, Person } from "@gravity-ui/icons"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useEffect, useMemo } from "react"
-
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationDangerZone } from "./organization-danger-zone"
-import { OrganizationMembers } from "./organization-members"
+import { OrganizationPeople } from "./organization-people"
 import { OrganizationProfile } from "./organization-profile"
 
 export type OrganizationProps = {
@@ -25,7 +25,7 @@ export type OrganizationProps = {
 
 /**
  * Organization management shell: tabs for profile / danger zone and for
- * members / invitations. Path segments come from
+ * people (members / invitations). Path segments come from
  * `useAuthPlugin(organizationPlugin).viewPaths.organization`.
  */
 export function Organization({
@@ -55,17 +55,11 @@ export function Organization({
       (activeOrganization as { id: string }).id
   )
 
-  const organizationsSettingsSegment = useMemo(
-    () =>
-      organizationPluginViewPaths.settings?.organizations ?? "organizations",
-    [organizationPluginViewPaths.settings?.organizations]
-  )
-
   useEffect(() => {
     if (!isFetched) return
     if (!hasActiveOrganization) {
       navigate({
-        to: `${basePaths.settings}/${organizationsSettingsSegment}`,
+        to: `${basePaths.settings}/${organizationPluginViewPaths.settings?.organizations}`,
         replace: true
       })
     }
@@ -74,14 +68,14 @@ export function Organization({
     hasActiveOrganization,
     isFetched,
     navigate,
-    organizationsSettingsSegment
+    organizationPluginViewPaths.settings?.organizations
   ])
 
   const organizationRouteSegments = useMemo(() => {
     const contributed = organizationPluginViewPaths.organization
     return {
       settings: contributed?.settings ?? "settings",
-      members: contributed?.members ?? "members"
+      people: contributed?.people ?? "people"
     }
   }, [organizationPluginViewPaths.organization])
 
@@ -91,9 +85,9 @@ export function Organization({
   > => {
     return {
       [organizationRouteSegments.settings]: "settings",
-      [organizationRouteSegments.members]: "members"
+      [organizationRouteSegments.people]: "people"
     }
-  }, [organizationRouteSegments.members, organizationRouteSegments.settings])
+  }, [organizationRouteSegments.people, organizationRouteSegments.settings])
 
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
@@ -121,17 +115,23 @@ export function Organization({
             <Tabs.Tab
               id="settings"
               href={`${basePaths.organization}/${organizationRouteSegments.settings}`}
+              className="gap-2"
             >
+              <Gear className="text-muted" />
+
               {localization.settings.settings}
 
               <Tabs.Indicator />
             </Tabs.Tab>
 
             <Tabs.Tab
-              id="members"
-              href={`${basePaths.organization}/${organizationRouteSegments.members}`}
+              id="people"
+              href={`${basePaths.organization}/${organizationRouteSegments.people}`}
+              className="gap-2"
             >
-              {organizationLocalization.members}
+              <Person className="text-muted" />
+
+              {organizationLocalization.people}
 
               <Tabs.Indicator />
             </Tabs.Tab>
@@ -147,9 +147,9 @@ export function Organization({
         </div>
       </Tabs.Panel>
 
-      <Tabs.Panel id="members" className="px-0">
+      <Tabs.Panel id="people" className="px-0">
         <div className="flex flex-col gap-4 md:gap-6">
-          <OrganizationMembers />
+          <OrganizationPeople />
         </div>
       </Tabs.Panel>
     </Tabs>

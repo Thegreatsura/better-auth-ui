@@ -1,5 +1,4 @@
 import type { AdditionalFields } from "../config/additional-fields-config"
-import type { SettingsTab } from "./settings-tab"
 
 /**
  * View-path contributions kept on the plugin object.
@@ -38,12 +37,6 @@ export interface AuthPluginBase {
    * user-defined additionalFields in the auth config.
    */
   additionalFields?: AdditionalFields
-  /**
-   * Tabs the plugin contributes to the settings page. Each entry is a
-   * {@link SettingsTab} (`view`, `label`, `component`). Read at runtime via
-   * `useAuthPlugin(plugin).settingsTabs`.
-   */
-  settingsTabs?: SettingsTab[]
 }
 
 /**

@@ -3,7 +3,8 @@ import {
   organizationPlugin as coreOrganizationPlugin,
   type OrganizationPluginOptions
 } from "@better-auth-ui/core/plugins"
-
+import type { AuthPlugin } from "@better-auth-ui/react"
+import { Briefcase } from "@gravity-ui/icons"
 import { OrganizationsSettings } from "../../components/auth/organization/organizations-settings"
 
 export const organizationPlugin = createAuthPlugin(
@@ -16,10 +17,16 @@ export const organizationPlugin = createAuthPlugin(
       settingsTabs: [
         {
           view: "organizations",
-          label: coreOptions.localization.organizations,
+          label: (
+            <>
+              <Briefcase className="text-muted" />
+
+              {coreOptions.localization.organizations}
+            </>
+          ),
           component: OrganizationsSettings
         }
       ]
-    }
+    } satisfies AuthPlugin
   }
 )

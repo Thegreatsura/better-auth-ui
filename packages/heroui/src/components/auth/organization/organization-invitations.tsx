@@ -61,7 +61,7 @@ function invitationsListFromResponse(
 
 /**
  * HeroUI {@link Table} of organization invitations (no surrounding {@link Card}).
- * Matches the layout patterns used by {@link OrganizationMembers}.
+ * Matches the layout patterns used by {@link OrganizationPeople}.
  */
 export function OrganizationInvitations({
   className,

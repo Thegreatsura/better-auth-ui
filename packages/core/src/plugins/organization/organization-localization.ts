@@ -59,6 +59,8 @@ export const organizationLocalization = {
   memberRoleUpdated: "Member role updated",
   /** @remarks `"Members"` */
   members: "Members",
+  /** @remarks `"People"` */
+  people: "People",
   /** @remarks `"Name"` */
   name: "Name",
   /** @remarks `"Enter the organization name"` */

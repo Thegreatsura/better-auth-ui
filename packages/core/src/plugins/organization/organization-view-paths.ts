@@ -11,9 +11,9 @@ export interface OrganizationViewPaths {
   settings: string
   /**
    * Path segment for members and invitations
-   * @default "members"
+   * @default "people"
    */
-  members: string
+  people: string
 }
 
 /** Valid organization management tab / route key. */

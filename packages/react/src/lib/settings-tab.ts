@@ -1,4 +1,5 @@
-import type { SettingsView } from "./view-paths"
+import type { SettingsView } from "@better-auth-ui/core"
+import type { ComponentType, ReactNode } from "react"
 
 /**
  * Tab contributions for the settings page.
@@ -13,7 +14,8 @@ export interface SettingsTab {
    */
   view: SettingsView
   /** Display label */
-  label: string
+  label: ReactNode
   /** Component rendered in the tab panel */
-  component: unknown
+  // biome-ignore lint/suspicious/noExplicitAny: any
+  component: ComponentType<any>
 }

@@ -1,5 +1,10 @@
-import type { SettingsTab, SettingsView } from "@better-auth-ui/core"
-import { useAuth, useAuthenticate } from "@better-auth-ui/react"
+import type { SettingsView } from "@better-auth-ui/core"
+import {
+  type SettingsTab,
+  useAuth,
+  useAuthenticate
+} from "@better-auth-ui/react"
+import { Person, Shield } from "@gravity-ui/icons"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import {
   type ComponentProps,
@@ -7,7 +12,6 @@ import {
   createElement,
   useMemo
 } from "react"
-
 import { AccountSettings } from "./account/account-settings"
 import { SecuritySettings } from "./security/security-settings"
 
@@ -91,7 +95,10 @@ export function Settings({
           <Tabs.Tab
             id="account"
             href={`${basePaths.settings}/${viewPaths.settings.account}`}
+            className="gap-2"
           >
+            <Person className="text-muted" />
+
             {localization.settings.account}
 
             <Tabs.Indicator />
@@ -100,7 +107,10 @@ export function Settings({
           <Tabs.Tab
             id="security"
             href={`${basePaths.settings}/${viewPaths.settings.security}`}
+            className="gap-2"
           >
+            <Shield className="text-muted" />
+
             {localization.settings.security}
 
             <Tabs.Indicator />
@@ -117,6 +127,7 @@ export function Settings({
                 key={tab.view}
                 id={tab.view}
                 href={`${basePaths.settings}/${segment}`}
+                className="gap-2"
               >
                 {tab.label}
 
