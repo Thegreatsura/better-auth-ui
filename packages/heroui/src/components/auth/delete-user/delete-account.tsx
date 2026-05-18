@@ -24,7 +24,7 @@ import { type SyntheticEvent, useState } from "react"
 
 import { deleteUserPlugin } from "../../../lib/auth/delete-user-plugin"
 
-export type DeleteUserProps = {
+export type DeleteAccountProps = {
   className?: string
   variant?: CardProps["variant"]
 }
@@ -32,11 +32,11 @@ export type DeleteUserProps = {
 /**
  * Danger-zone card to delete the authenticated account, with a confirmation dialog and toasts.
  */
-export function DeleteUser({
+export function DeleteAccount({
   className,
   variant,
   ...props
-}: DeleteUserProps & Omit<CardProps, "children">) {
+}: DeleteAccountProps & Omit<CardProps, "children">) {
   const { authClient, basePaths, localization, navigate, viewPaths } = useAuth()
 
   const {
@@ -94,11 +94,11 @@ export function DeleteUser({
       <Card.Content className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-medium leading-tight">
-            {deleteUserLocalization.deleteUser}
+            {deleteUserLocalization.deleteAccount}
           </p>
 
           <p className="text-muted text-xs mt-0.5">
-            {deleteUserLocalization.deleteUserDescription}
+            {deleteUserLocalization.deleteAccountDescription}
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export function DeleteUser({
             variant="danger-soft"
             onPress={() => setConfirmOpen(true)}
           >
-            {deleteUserLocalization.deleteUser}
+            {deleteUserLocalization.deleteAccount}
           </Button>
 
           <AlertDialog.Backdrop
@@ -127,13 +127,13 @@ export function DeleteUser({
                     </AlertDialog.Icon>
 
                     <AlertDialog.Heading>
-                      {deleteUserLocalization.deleteUser}
+                      {deleteUserLocalization.deleteAccount}
                     </AlertDialog.Heading>
                   </AlertDialog.Header>
 
                   <AlertDialog.Body className="overflow-visible">
                     <p className="text-muted text-sm">
-                      {deleteUserLocalization.deleteUserDescription}
+                      {deleteUserLocalization.deleteAccountDescription}
                     </p>
 
                     {needsPassword && (
@@ -175,7 +175,7 @@ export function DeleteUser({
                     >
                       {isPending && <Spinner color="current" size="sm" />}
 
-                      {deleteUserLocalization.deleteUser}
+                      {deleteUserLocalization.deleteAccount}
                     </Button>
                   </AlertDialog.Footer>
                 </Form>
