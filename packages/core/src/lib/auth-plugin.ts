@@ -44,10 +44,6 @@ export interface AuthPluginBase {
    * `useAuthPlugin(plugin).settingsTabs`.
    */
   settingsTabs?: SettingsTab[]
-  /**
-   * Additional properties contributed by the plugin.
-   */
-  [key: string]: unknown
 }
 
 /**
