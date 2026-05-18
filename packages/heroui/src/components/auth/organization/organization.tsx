@@ -110,12 +110,18 @@ export function Organization({
         <Tabs.ListContainer>
           <Tabs.List
             aria-label={localization.settings.settings}
-            className="w-fit overflow-auto"
+            className="max-w-fit overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             <Tabs.Tab
               id="settings"
               href={`${basePaths.organization}/${organizationRouteSegments.settings}`}
               className="gap-2"
+              onPress={(e) =>
+                e.target.scrollIntoView({
+                  behavior: "smooth",
+                  inline: "center"
+                })
+              }
             >
               <Gear className="text-muted" />
 
@@ -128,6 +134,12 @@ export function Organization({
               id="people"
               href={`${basePaths.organization}/${organizationRouteSegments.people}`}
               className="gap-2"
+              onPress={(e) =>
+                e.target.scrollIntoView({
+                  behavior: "smooth",
+                  inline: "center"
+                })
+              }
             >
               <Person className="text-muted" />
 
