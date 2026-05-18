@@ -26,13 +26,13 @@ export function Providers({ children }: { children: ReactNode }) {
         socialProviders={["github"]}
         navigate={navigate}
         plugins={[
-          apiKeyPlugin(),
-          passkeyPlugin(),
           usernamePlugin(),
           magicLinkPlugin(),
-          deleteUserPlugin(),
+          passkeyPlugin(),
+          apiKeyPlugin(),
           themePlugin({ useTheme }),
           multiSessionPlugin(),
+          deleteUserPlugin(),
           organizationPlugin()
         ]}
       >
