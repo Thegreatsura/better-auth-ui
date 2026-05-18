@@ -1,4 +1,4 @@
-import type { AuthPluginBase } from "./auth-plugin"
+import type { AuthPlugin } from "./auth-plugin"
 
 /**
  * Creates a plugin factory and attaches its `id` as a static property so
@@ -19,7 +19,7 @@ import type { AuthPluginBase } from "./auth-plugin"
 export function createAuthPlugin<
   const TId extends string,
   TArgs extends unknown[],
-  TResult extends Omit<AuthPluginBase, "id"> & object
+  TResult extends Omit<AuthPlugin, "id"> & object
 >(id: TId, factory: (...args: TArgs) => TResult) {
   const wrapped = (...args: TArgs) => ({
     ...factory(...args),
