@@ -79,6 +79,8 @@ export const organizationLocalization = {
   /** @remarks `"Create an organization to collaborate with others and manage shared access."` */
   organizationsDescription:
     "Create an organization to collaborate with others and manage shared access.",
+  /** @remarks `"Organization profile"` */
+  organizationProfile: "Organization profile",
   /** @remarks `"Organization updated successfully"` */
   organizationUpdatedSuccess: "Organization updated successfully",
   /** @remarks `"Owner"` */
@@ -87,8 +89,6 @@ export const organizationLocalization = {
   pending: "Pending",
   /** @remarks `"Personal account"` */
   personalAccount: "Personal account",
-  /** @remarks `"Profile"` */
-  profile: "Profile",
   /** @remarks `"Rejected"` */
   rejected: "Rejected",
   /** @remarks `"Reject invitation"` */

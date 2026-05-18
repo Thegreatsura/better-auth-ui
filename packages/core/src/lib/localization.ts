@@ -172,9 +172,6 @@ export const localization = {
     /** @remarks `"Optional"` */
     optional: "Optional",
 
-    /** @remarks `"Profile"` */
-    profile: "Profile",
-
     /** @remarks `"Profile updated successfully"` */
     profileUpdatedSuccess: "Profile updated successfully",
 
@@ -216,7 +213,10 @@ export const localization = {
     updatePassword: "Update password",
 
     /** @remarks `"Upload avatar"` */
-    uploadAvatar: "Upload avatar"
+    uploadAvatar: "Upload avatar",
+
+    /** @remarks `"User profile"` */
+    userProfile: "User profile"
   }
 }
 

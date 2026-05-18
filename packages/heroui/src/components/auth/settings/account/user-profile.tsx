@@ -81,7 +81,7 @@ export function UserProfile({
   return (
     <div>
       <h2 className={cn("text-sm font-semibold mb-3")}>
-        {localization.settings.profile}
+        {localization.settings.userProfile}
       </h2>
 
       <Card className={cn("p-4 gap-4", className)} variant={variant} {...props}>

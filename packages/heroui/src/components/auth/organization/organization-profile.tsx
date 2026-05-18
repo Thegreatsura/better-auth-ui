@@ -68,7 +68,7 @@ export function OrganizationProfile({
   return (
     <div>
       <h2 className={cn("mb-3 text-sm font-semibold")}>
-        {organizationLocalization.profile}
+        {organizationLocalization.organizationProfile}
       </h2>
 
       <Card className={cn("gap-4 p-4", className)} variant={variant} {...props}>
