@@ -7,7 +7,7 @@ export type OrganizationLogoProps = {
   className?: string
   fallback?: ReactNode
   isPending?: boolean
-  organization?: Organization | null
+  organization?: Partial<Organization>
   size?: AvatarProps["size"]
 }
 

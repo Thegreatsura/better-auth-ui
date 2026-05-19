@@ -10,7 +10,7 @@ import { useState } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationRow } from "./organization-row"
-import { OrganizationRowSkeleton } from "./organization-row-skeleton"
+import { OrganizationViewSkeleton } from "./organization-view-skeleton"
 import { OrganizationsEmpty } from "./organizations-empty"
 
 export type OrganizationsProps = {
@@ -53,7 +53,7 @@ export function Organizations({ variant }: OrganizationsProps) {
         <Card variant={variant}>
           <Card.Content className="gap-0">
             {organizationsPending ? (
-              <OrganizationRowSkeleton />
+              <OrganizationViewSkeleton />
             ) : !organizations?.length ? (
               <OrganizationsEmpty onCreatePress={() => setCreateOpen(true)} />
             ) : (

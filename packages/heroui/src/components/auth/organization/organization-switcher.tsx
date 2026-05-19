@@ -23,28 +23,21 @@ import { useState } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView } from "../user/user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
-import { OrganizationLogo } from "./organization-logo"
 import { OrganizationView } from "./organization-view"
 
 /** Props for the {@link OrganizationSwitcher} component. */
 export type OrganizationSwitcherProps = {
   className?: string
-  /**
-   * The placement of the element with respect to its anchor element.
-   * @default "bottom"
-   */
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
   hideCreate?: boolean
   hidePersonal?: boolean
-  /** When true, hides the manage organization / account settings link in the popover header. */
   hideSettings?: boolean
 }
 
 /**
- * Renders an organization account dropdown, mirroring {@link UserButton} layout:
- * trigger button, header summary, and a menu of organizations to activate — with
- * “Create organization” as the final item. Does not support `size="icon"`.
+ * Renders an organizations dropdown with a trigger button,
+ * header summary, and a menu of organizations to switch to.
  */
 export function OrganizationSwitcher({
   className,
@@ -53,6 +46,7 @@ export function OrganizationSwitcher({
   hideSettings,
   placement = "bottom",
   variant = "ghost",
+  size = "sm",
   ...props
 }: OrganizationSwitcherProps & ButtonProps) {
   const { authClient, basePaths, localization, viewPaths } = useAuth()
@@ -74,11 +68,7 @@ export function OrganizationSwitcher({
 
   const isPending =
     sessionPending ||
-    (session && (organizationsPending || activeOrganizationPending))
-
-  const otherOrganizations = organizations?.filter(
-    (organization) => organization.id !== activeOrganization?.id
-  )
+    (!!session && (organizationsPending || activeOrganizationPending))
 
   const [createOpen, setCreateOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -88,36 +78,38 @@ export function OrganizationSwitcher({
       <Dropdown isOpen={dropdownOpen} onOpenChange={setDropdownOpen}>
         <Button
           variant={variant}
-          className={cn(
-            "h-auto justify-start px-3 py-2 text-left font-normal",
-            className
-          )}
-          isDisabled={!session && !sessionPending}
+          className={cn("h-auto px-2 py-1", className)}
+          isDisabled={!session || isPending}
           {...props}
         >
           {isPending ? (
-            <OrganizationView isPending hideSlug />
+            <OrganizationView size={size} isPending hideRole hideSlug />
           ) : activeOrganization ? (
-            <OrganizationView hideSlug organization={activeOrganization} />
+            <OrganizationView size={size} hideRole hideSlug />
           ) : session && !hidePersonal ? (
-            <UserView hideSubtitle />
+            <UserView size={size} hideSubtitle />
           ) : (
-            <>
-              <OrganizationLogo />
-
-              <p className="text-sm font-medium">
-                {organizationLocalization.organization}
-              </p>
-            </>
+            <OrganizationView
+              size={size}
+              hideRole
+              hideSlug
+              organization={{
+                name: organizationLocalization.organization
+              }}
+            />
           )}
 
-          <ChevronsExpandVertical className="ml-auto size-3.5 shrink-0" />
+          <ChevronsExpandVertical className="size-3 shrink-0 text-muted" />
         </Button>
 
         <Dropdown.Popover placement={placement} className="max-w-svw">
           {activeOrganization ? (
             <div className="flex items-center justify-between gap-4 px-4 pt-3">
-              <OrganizationView hideSlug organization={activeOrganization} />
+              <OrganizationView
+                hideRole
+                hideSlug
+                organization={activeOrganization}
+              />
 
               {!hideSettings && (
                 <Link
@@ -165,17 +157,25 @@ export function OrganizationSwitcher({
               </Dropdown.Item>
             )}
 
-            {otherOrganizations?.map((organization) => (
-              <Dropdown.Item
-                key={organization.id}
-                textValue={organization.name}
-                onPress={() =>
-                  setActiveOrganization({ organizationId: organization.id })
-                }
-              >
-                <OrganizationView hideSlug organization={organization} />
-              </Dropdown.Item>
-            ))}
+            {organizations
+              ?.filter(
+                (organization) => organization.id !== activeOrganization?.id
+              )
+              ?.map((organization) => (
+                <Dropdown.Item
+                  key={organization.id}
+                  textValue={organization.name}
+                  onPress={() =>
+                    setActiveOrganization({ organizationId: organization.id })
+                  }
+                >
+                  <OrganizationView
+                    hideRole
+                    hideSlug
+                    organization={organization}
+                  />
+                </Dropdown.Item>
+              ))}
 
             {!hideCreate && (
               <Dropdown.Item

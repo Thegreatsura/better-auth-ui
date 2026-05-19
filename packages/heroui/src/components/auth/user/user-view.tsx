@@ -36,7 +36,7 @@ export type UserViewProps = {
 export function UserView({
   className,
   isPending,
-  size = "sm",
+  size = "md",
   hideSubtitle = false,
   user,
   ...props
@@ -57,7 +57,11 @@ export function UserView({
         className={cn("flex items-center gap-2 min-w-0", className)}
         {...props}
       >
-        <UserAvatar isPending size={size} />
+        <UserAvatar
+          isPending
+          className={size === "sm" ? "size-5 [&>span]:text-xs" : undefined}
+          size={size === "lg" ? "md" : "sm"}
+        />
 
         <div className="flex flex-col gap-1 min-w-0">
           <Skeleton className="h-3.5 w-24 rounded-lg" />
@@ -73,7 +77,11 @@ export function UserView({
       className={cn("flex items-center gap-2 min-w-0", className)}
       {...props}
     >
-      <UserAvatar user={resolvedUser} size={size} />
+      <UserAvatar
+        className={size === "sm" ? "size-5 [&>span]:text-xs" : undefined}
+        user={resolvedUser}
+        size={size === "lg" ? "md" : "sm"}
+      />
 
       <div className="flex flex-col min-w-0">
         <p className="text-foreground text-sm font-medium leading-tight truncate">

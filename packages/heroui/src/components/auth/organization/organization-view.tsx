@@ -1,20 +1,26 @@
-import { useAuthPlugin } from "@better-auth-ui/react"
-import { type AvatarProps, Chip, cn, Skeleton } from "@heroui/react"
+import {
+  type OrganizationAuthClient,
+  useActiveOrganization,
+  useAuth,
+  useAuthPlugin,
+  useListOrganizationMembers,
+  useSession
+} from "@better-auth-ui/react"
+import { type AvatarProps, Chip, cn } from "@heroui/react"
 import type { Organization } from "better-auth/client"
 import type { ComponentProps } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationLogo } from "./organization-logo"
+import { OrganizationViewSkeleton } from "./organization-view-skeleton"
 
 export type OrganizationViewProps = {
   className?: string
   isPending?: boolean
   size?: AvatarProps["size"]
-  /**
-   * When true, the slug line is omitted.
-   */
+  hideRole?: boolean
   hideSlug?: boolean
-  organization?: Organization & { role?: string }
+  organization?: Partial<Organization>
 }
 
 /**
@@ -23,55 +29,74 @@ export type OrganizationViewProps = {
 export function OrganizationView({
   className,
   isPending,
-  size = "sm",
+  size = "md",
   hideSlug,
+  hideRole,
   organization,
   ...props
 }: OrganizationViewProps & ComponentProps<"div">) {
+  const { authClient } = useAuth()
   const { roles } = useAuthPlugin(organizationPlugin)
 
-  if (isPending && !organization) {
+  const { data: session } = useSession(authClient)
+
+  const { data: activeOrganization, isPending: activeOrganizationPending } =
+    useActiveOrganization(authClient as OrganizationAuthClient, {
+      enabled: !organization && !isPending
+    })
+
+  const resolvedOrganization = organization ?? activeOrganization
+
+  const { data: membersList, isPending: membersPending } =
+    useListOrganizationMembers(authClient as OrganizationAuthClient, {
+      query: {
+        organizationId: resolvedOrganization?.id
+      },
+      enabled: !!resolvedOrganization && !hideRole
+    })
+
+  const membership = membersList?.members?.find(
+    (member) => member.userId === session?.user.id
+  )
+
+  if (isPending || activeOrganizationPending || (!hideRole && membersPending)) {
     return (
-      <div
-        className={cn("flex min-w-0 items-center gap-2", className)}
+      <OrganizationViewSkeleton
+        className={className}
+        hideSlug={hideSlug}
+        size={size}
         {...props}
-      >
-        <OrganizationLogo isPending size={size} />
-
-        <div className="flex min-w-0 flex-col gap-1">
-          <Skeleton className="h-3.5 w-24 rounded-lg" />
-
-          {!hideSlug && <Skeleton className="h-3 w-32 rounded-lg" />}
-        </div>
-      </div>
+      />
     )
   }
-
-  const slugDisplay = organization?.slug?.trim() || "—"
 
   return (
     <div
       className={cn("flex min-w-0 items-center gap-2", className)}
       {...props}
     >
-      <OrganizationLogo organization={organization ?? undefined} size={size} />
+      <OrganizationLogo
+        organization={resolvedOrganization}
+        className={size === "sm" ? "size-5 [&>span]:text-xs" : undefined}
+        size={size === "lg" ? "md" : "sm"}
+      />
 
       <div className="flex flex-col min-w-0">
         <div className="flex min-w-0 items-center gap-2">
-          <p className="text-foreground text-sm font-medium leading-tight truncate">
-            {organization?.name}
+          <p className="text-foreground text-sm font-medium truncate leading-tight">
+            {resolvedOrganization?.name}
           </p>
 
-          {organization?.role ? (
-            <Chip className="shrink-0" size="sm">
-              {roles?.[organization.role] ?? organization.role}
+          {!hideRole && !!membership && (
+            <Chip className="shrink-0 -my-0.5" size="sm">
+              {roles?.[membership.role] ?? membership.role}
             </Chip>
-          ) : null}
+          )}
         </div>
 
         {!hideSlug && (
-          <p className="text-muted text-xs leading-tight truncate overflow-x-hidden font-mono">
-            {slugDisplay}
+          <p className="text-muted text-xs truncate overflow-x-hidden font-mono leading-tight">
+            {resolvedOrganization?.slug}
           </p>
         )}
       </div>
