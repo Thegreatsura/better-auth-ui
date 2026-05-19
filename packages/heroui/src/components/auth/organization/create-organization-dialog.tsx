@@ -15,7 +15,7 @@ import {
   Spinner,
   TextField
 } from "@heroui/react"
-import { type SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
@@ -40,12 +40,12 @@ export function CreateOrganizationDialog({
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
+  const [name, setName] = useState("")
   const [slug, setSlug] = useState("")
 
   const { mutate: createOrganization, isPending: isCreating } =
     useCreateOrganization(authClient as OrganizationAuthClient, {
       onSuccess: () => {
-        setSlug("")
         onOpenChange(false)
       }
     })
@@ -53,33 +53,24 @@ export function CreateOrganizationDialog({
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const formData = new FormData(e.target as HTMLFormElement)
-    const name = (formData.get("name") as string)?.trim()
-    const submittedSlug = (formData.get("slug") as string)?.trim()
-
-    if (!name) return
-
-    createOrganization({
-      name,
-      slug:
-        submittedSlug ||
-        name
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-+|-+$/g, "")
-    })
+    createOrganization({ name, slug })
   }
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!slug) {
-      setSlug(
-        e.target.value
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-+|-+$/g, "")
-      )
+  useEffect(() => {
+    if (!isOpen) {
+      setSlug("")
+      setName("")
     }
-  }
+  }, [isOpen])
+
+  useEffect(() => {
+    setSlug(
+      name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+    )
+  }, [name])
 
   return (
     <AlertDialog.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -103,7 +94,13 @@ export function CreateOrganizationDialog({
                 {organizationLocalization.organizationsDescription}
               </p>
 
-              <TextField id="name" name="name" isDisabled={isCreating}>
+              <TextField
+                id="name"
+                name="name"
+                isDisabled={isCreating}
+                value={name}
+                onChange={setName}
+              >
                 <Label>{organizationLocalization.name}</Label>
 
                 <Input
@@ -111,7 +108,6 @@ export function CreateOrganizationDialog({
                   autoFocus
                   placeholder={organizationLocalization.namePlaceholder}
                   variant="secondary"
-                  onChange={handleNameChange}
                 />
 
                 <FieldError />
