@@ -46,7 +46,7 @@ export function OrganizationSwitcher({
   hideSettings,
   placement = "bottom",
   variant = "ghost",
-  size = "sm",
+  size = "md",
   ...props
 }: OrganizationSwitcherProps & ButtonProps) {
   const { authClient, basePaths, localization, viewPaths } = useAuth()
@@ -78,7 +78,7 @@ export function OrganizationSwitcher({
       <Dropdown isOpen={dropdownOpen} onOpenChange={setDropdownOpen}>
         <Button
           variant={variant}
-          className={cn("h-auto px-2 py-1", className)}
+          className={cn("h-auto px-2 py-2", className)}
           isDisabled={!session || isPending}
           {...props}
         >
