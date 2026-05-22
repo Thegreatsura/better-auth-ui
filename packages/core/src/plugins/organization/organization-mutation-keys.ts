@@ -42,5 +42,8 @@ export const organizationMutationKeys = {
   cancelInvitation: ["auth", "organization", "cancelInvitation"] as const,
 
   /** Key for `organization.rejectInvitation` (invitee declines). */
-  rejectInvitation: ["auth", "organization", "rejectInvitation"] as const
+  rejectInvitation: ["auth", "organization", "rejectInvitation"] as const,
+
+  /** Key for `organization.checkSlug`. */
+  checkSlug: ["auth", "organization", "checkSlug"] as const
 } as const

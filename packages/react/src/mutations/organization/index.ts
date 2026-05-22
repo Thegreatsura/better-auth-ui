@@ -1,5 +1,6 @@
 export * from "./accept-invitation-mutation"
 export * from "./cancel-invitation-mutation"
+export * from "./check-slug-mutation"
 export * from "./create-organization-mutation"
 export * from "./delete-organization-mutation"
 export * from "./invite-member-mutation"

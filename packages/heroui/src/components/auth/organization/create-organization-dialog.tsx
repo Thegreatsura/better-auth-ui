@@ -18,6 +18,7 @@ import {
 import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
+import { SlugInput } from "./slug-input"
 
 /** Props for the {@link CreateOrganizationDialog} component. */
 export type CreateOrganizationDialogProps = {
@@ -113,22 +114,11 @@ export function CreateOrganizationDialog({
                 <FieldError />
               </TextField>
 
-              <TextField
-                id="slug"
-                name="slug"
+              <SlugInput
                 value={slug}
                 onChange={setSlug}
                 isDisabled={isCreating}
-              >
-                <Label>{organizationLocalization.slug}</Label>
-
-                <Input
-                  placeholder={organizationLocalization.slugPlaceholder}
-                  variant="secondary"
-                />
-
-                <FieldError />
-              </TextField>
+              />
             </AlertDialog.Body>
 
             <AlertDialog.Footer>

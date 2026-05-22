@@ -23,6 +23,11 @@ declare module "../../lib/auth-plugin" {
 
 export type OrganizationPluginOptions = {
   /**
+   * Whether to call `organization.checkSlug` when entering an organization slug.
+   * @default true
+   */
+  checkSlug?: boolean
+  /**
    * Override the plugin's default localization strings.
    * @remarks `OrganizationLocalization`
    */
@@ -76,6 +81,7 @@ export const organizationPlugin = createAuthPlugin(
     }
 
     return {
+      checkSlug: options.checkSlug ?? true,
       localization,
       logo: {
         ...defaultAuthConfig.avatar,
