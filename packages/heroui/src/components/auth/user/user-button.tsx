@@ -53,6 +53,8 @@ export type UserButtonProps = {
   links?: (UserButtonLink | ReactElement)[]
   /** Hide the built-in "Settings" link. Useful when replacing it via `links`. */
   hideSettings?: boolean
+  /** When true, the subtitle line (email when name/username is shown) is hidden. */
+  hideSubtitle?: boolean
 }
 
 function renderUserLink(
@@ -92,7 +94,8 @@ export function UserButton({
   size = "default",
   variant = "ghost",
   links,
-  hideSettings = false
+  hideSettings,
+  hideSubtitle
 }: UserButtonProps) {
   const { authClient, basePaths, viewPaths, localization, plugins } = useAuth()
 
@@ -101,7 +104,10 @@ export function UserButton({
   const userMenuItems = plugins.flatMap(
     (plugin) =>
       plugin.userMenuItems?.map((Item, index) => (
-        <Item key={`${plugin.id}-${index.toString()}`} />
+        <Item
+          key={`${plugin.id}-${index.toString()}`}
+          hideSubtitle={hideSubtitle}
+        />
       )) ?? []
   )
 
@@ -129,7 +135,7 @@ export function UserButton({
           )}
         >
           {session || sessionPending ? (
-            <UserView isPending={sessionPending} />
+            <UserView isPending={sessionPending} hideSubtitle={hideSubtitle} />
           ) : (
             <>
               <UserAvatar />
@@ -148,7 +154,7 @@ export function UserButton({
       >
         {session && (
           <div className="px-3 pt-3 pb-1">
-            <UserView />
+            <UserView hideSubtitle={hideSubtitle} />
           </div>
         )}
 

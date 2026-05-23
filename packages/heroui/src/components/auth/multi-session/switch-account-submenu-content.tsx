@@ -21,7 +21,11 @@ import { SwitchAccountSubmenuItem } from "./switch-account-submenu-item"
  *
  * @returns The switch account submenu content as a JSX element
  */
-export function SwitchAccountSubmenuContent() {
+export function SwitchAccountSubmenuContent({
+  hideSubtitle
+}: {
+  hideSubtitle?: boolean
+}) {
   const { authClient, basePaths, viewPaths } = useAuth()
   const { localization: multiSessionLocalization } =
     useAuthPlugin(multiSessionPlugin)
@@ -34,7 +38,7 @@ export function SwitchAccountSubmenuContent() {
     <Dropdown.Popover className="min-w-40 md:min-w-56 max-w-[48svw]">
       <Dropdown.Menu>
         <Dropdown.Item className="px-2">
-          <UserView isPending={isPending} />
+          <UserView isPending={isPending} hideSubtitle={hideSubtitle} />
 
           {!isPending && <Check className="ml-auto" />}
         </Dropdown.Item>
@@ -47,6 +51,7 @@ export function SwitchAccountSubmenuContent() {
             <SwitchAccountSubmenuItem
               key={deviceSession.session.id}
               deviceSession={deviceSession}
+              hideSubtitle={hideSubtitle}
             />
           ))}
 

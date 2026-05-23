@@ -27,6 +27,8 @@ export type AccountCardProps = {
 /** Props for plugin-contributed items in the `UserButton` dropdown. */
 export type UserMenuItemProps = {
   className?: string
+  /** When true, the subtitle line (email when name/username is shown) is hidden. */
+  hideSubtitle?: boolean
 }
 
 /** Framework-agnostic slot component shapes. UI packages narrow these via `TComponents`. */

@@ -8,6 +8,7 @@ import { SwitchAccountSubmenuContent } from "./switch-account-submenu-content"
 
 export type SwitchAccountSubmenuProps = {
   className?: string
+  hideSubtitle?: boolean
 }
 
 /**
@@ -19,7 +20,10 @@ export type SwitchAccountSubmenuProps = {
  * @param className - Optional additional CSS class names
  * @returns The switch account submenu as a JSX element
  */
-export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
+export function SwitchAccountSubmenu({
+  className,
+  hideSubtitle
+}: SwitchAccountSubmenuProps) {
   const { authClient } = useAuth()
   const { data: session } = useSession(authClient)
   const { localization: multiSessionLocalization } =
@@ -43,7 +47,7 @@ export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
       </Dropdown.Item>
 
       <Dropdown.Popover className="min-w-40 md:min-w-56 max-w-[48svw]">
-        <SwitchAccountSubmenuContent />
+        <SwitchAccountSubmenuContent hideSubtitle={hideSubtitle} />
       </Dropdown.Popover>
     </Dropdown.SubmenuTrigger>
   )
