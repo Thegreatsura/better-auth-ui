@@ -8,6 +8,7 @@ import { Check, Xmark } from "@gravity-ui/icons"
 import {
   FieldError,
   InputGroup,
+  type InputProps,
   Label,
   Spinner,
   TextField,
@@ -22,7 +23,18 @@ import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 export type SlugInputProps = {
   value: string
   onChange: (value: string) => void
+  currentSlug?: string
   isDisabled?: boolean
+  variant?: InputProps["variant"]
+}
+
+/**
+ * Sanitize a slug value so it only contains lowercase alphanumeric characters
+ * and dashes. Runs of disallowed characters are collapsed to a single dash, but
+ * leading/trailing dashes are preserved while the user is still typing.
+ */
+export function sanitizeSlug(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-")
 }
 
 /**
@@ -30,6 +42,9 @@ export type SlugInputProps = {
  */
 export function SlugInput({
   value,
+  onChange,
+  currentSlug,
+  variant,
   ...props
 }: SlugInputProps & TextFieldProps) {
   const { authClient } = useAuth()
@@ -45,7 +60,8 @@ export function SlugInput({
 
   const debouncer = useDebouncer(
     (value) => {
-      if (!checkSlugEnabled || !value.trim()) return
+      if (!checkSlugEnabled || !value.trim() || value.trim() === currentSlug)
+        return
 
       checkSlug({ slug: value.trim() })
     },
@@ -59,14 +75,24 @@ export function SlugInput({
     debouncer.maybeExecute(value)
   }, [checkSlugEnabled, value, debouncer.maybeExecute, resetCheckSlug])
 
+  const handleChange = (next: string) => {
+    onChange(sanitizeSlug(next))
+  }
+
   return (
-    <TextField id="slug" name="slug" value={value} {...props}>
+    <TextField
+      id="slug"
+      name="slug"
+      {...props}
+      value={value}
+      onChange={handleChange}
+    >
       <Label>{localization.slug}</Label>
 
-      <InputGroup variant="secondary">
+      <InputGroup variant={variant}>
         <InputGroup.Input placeholder={localization.slugPlaceholder} required />
 
-        {checkSlugEnabled && !!value.trim() && (
+        {checkSlugEnabled && !!value.trim() && value.trim() !== currentSlug && (
           <InputGroup.Suffix className="px-2">
             {checkSlugData?.status ? (
               <Check className="text-success" />

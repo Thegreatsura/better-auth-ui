@@ -18,7 +18,7 @@ import {
 import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { SlugInput } from "./slug-input"
+import { SlugInput, sanitizeSlug } from "./slug-input"
 
 /** Props for the {@link CreateOrganizationDialog} component. */
 export type CreateOrganizationDialogProps = {
@@ -65,12 +65,7 @@ export function CreateOrganizationDialog({
   }, [isOpen])
 
   useEffect(() => {
-    setSlug(
-      name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-    )
+    setSlug(sanitizeSlug(name).replace(/^-+|-+$/g, ""))
   }, [name])
 
   return (
@@ -118,6 +113,7 @@ export function CreateOrganizationDialog({
                 value={slug}
                 onChange={setSlug}
                 isDisabled={isCreating}
+                variant="secondary"
               />
             </AlertDialog.Body>
 

@@ -19,10 +19,11 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import type { SyntheticEvent } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { ChangeOrganizationLogo } from "./change-organization-logo"
+import { SlugInput } from "./slug-input"
 
 export type OrganizationProfileProps = {
   className?: string
@@ -44,6 +45,12 @@ export function OrganizationProfile({
   const { data: activeOrganization, isPending: isActiveOrganizationPending } =
     useActiveOrganization(authClient as OrganizationAuthClient)
 
+  const [slug, setSlug] = useState(activeOrganization?.slug ?? "")
+
+  useEffect(() => {
+    setSlug(activeOrganization?.slug ?? "")
+  }, [activeOrganization?.slug])
+
   const { mutate: commitOrganizationUpdate, isPending } = useUpdateOrganization(
     authClient as OrganizationAuthClient,
     {
@@ -58,12 +65,13 @@ export function OrganizationProfile({
 
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
-    const slug = formData.get("slug") as string
 
     commitOrganizationUpdate({
       data: { name, slug }
     })
   }
+
+  const inputVariant = variant === "transparent" ? "primary" : "secondary"
 
   return (
     <div>
@@ -91,7 +99,7 @@ export function OrganizationProfile({
                 className={cn(!activeOrganization && "hidden")}
                 autoComplete="organization"
                 placeholder={organizationLocalization.namePlaceholder}
-                variant={variant === "transparent" ? "primary" : "secondary"}
+                variant={inputVariant}
               />
 
               {!activeOrganization && (
@@ -101,27 +109,20 @@ export function OrganizationProfile({
               <FieldError />
             </TextField>
 
-            <TextField
-              key={activeOrganization?.slug ?? ""}
-              name="slug"
-              defaultValue={activeOrganization?.slug ?? ""}
-              isDisabled={isPending || !activeOrganization}
-            >
-              <Label>{organizationLocalization.slug}</Label>
-
-              <Input
-                className={cn(!activeOrganization && "hidden")}
-                autoComplete="off"
-                placeholder={organizationLocalization.slugPlaceholder}
-                variant={variant === "transparent" ? "primary" : "secondary"}
+            {activeOrganization ? (
+              <SlugInput
+                value={slug}
+                onChange={setSlug}
+                currentSlug={activeOrganization.slug}
+                isDisabled={isPending}
+                variant={inputVariant}
               />
-
-              {!activeOrganization && (
+            ) : (
+              <TextField isDisabled>
+                <Label>{organizationLocalization.slug}</Label>
                 <Skeleton className="h-10 w-full rounded-xl md:h-9" />
-              )}
-
-              <FieldError />
-            </TextField>
+              </TextField>
+            )}
 
             <Button
               type="submit"
