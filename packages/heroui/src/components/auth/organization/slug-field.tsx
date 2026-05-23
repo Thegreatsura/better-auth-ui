@@ -19,8 +19,8 @@ import { useEffect } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
-/** Props for the {@link SlugInput} component. */
-export type SlugInputProps = {
+/** Props for the {@link SlugField} component. */
+export type SlugFieldProps = {
   value: string
   onChange: (value: string) => void
   currentSlug?: string
@@ -40,13 +40,13 @@ export function sanitizeSlug(value: string) {
 /**
  * Organization slug field with debounced availability checking.
  */
-export function SlugInput({
+export function SlugField({
   value,
   onChange,
   currentSlug,
   variant,
   ...props
-}: SlugInputProps & TextFieldProps) {
+}: SlugFieldProps & TextFieldProps) {
   const { authClient } = useAuth()
   const { localization, checkSlug: checkSlugEnabled } =
     useAuthPlugin(organizationPlugin)

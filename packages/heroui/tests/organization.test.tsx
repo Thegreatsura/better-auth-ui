@@ -5,7 +5,7 @@ import { useState } from "react"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider } from "../src/components/auth/auth-provider"
-import { SlugInput } from "../src/components/auth/organization/slug-input"
+import { SlugField } from "../src/components/auth/organization/slug-field"
 import { organizationPlugin } from "../src/lib/auth/organization-plugin"
 
 function createTestQueryClient() {
@@ -22,7 +22,7 @@ async function sleep(ms: number) {
   })
 }
 
-function createSlugInputAuthClient(
+function createSlugFieldAuthClient(
   impl: (params: {
     slug: string
   }) => Promise<{ status: boolean }> = async () => ({ status: true })
@@ -36,7 +36,7 @@ function createSlugInputAuthClient(
   }
 }
 
-function ControlledSlugInput({
+function ControlledSlugField({
   initialValue = "",
   currentSlug
 }: {
@@ -45,19 +45,19 @@ function ControlledSlugInput({
 }) {
   const [value, setValue] = useState(initialValue)
   return (
-    <SlugInput value={value} onChange={setValue} currentSlug={currentSlug} />
+    <SlugField value={value} onChange={setValue} currentSlug={currentSlug} />
   )
 }
 
-function renderSlugInput(
+function renderSlugField(
   options: {
-    authClient?: ReturnType<typeof createSlugInputAuthClient>
+    authClient?: ReturnType<typeof createSlugFieldAuthClient>
     pluginOptions?: Parameters<typeof organizationPlugin>[0]
     initialValue?: string
     currentSlug?: string
   } = {}
 ) {
-  const authClient = options.authClient ?? createSlugInputAuthClient()
+  const authClient = options.authClient ?? createSlugFieldAuthClient()
   const { container } = render(
     <AuthProvider
       authClient={authClient}
@@ -65,7 +65,7 @@ function renderSlugInput(
       plugins={[organizationPlugin(options.pluginOptions)]}
       queryClient={createTestQueryClient()}
     >
-      <ControlledSlugInput
+      <ControlledSlugField
         initialValue={options.initialValue}
         currentSlug={options.currentSlug}
       />
@@ -74,9 +74,9 @@ function renderSlugInput(
   return { authClient, container }
 }
 
-describe("<SlugInput />", () => {
+describe("<SlugField />", () => {
   it("renders no availability indicator before any input", () => {
-    const { container } = renderSlugInput()
+    const { container } = renderSlugField()
 
     expect(container.querySelector(".text-success")).not.toBeInTheDocument()
     expect(container.querySelector(".text-danger")).not.toBeInTheDocument()
@@ -84,8 +84,8 @@ describe("<SlugInput />", () => {
 
   it("shows the check icon after typing a free slug", async () => {
     const user = userEvent.setup()
-    const { authClient, container } = renderSlugInput({
-      authClient: createSlugInputAuthClient(async () => ({ status: true }))
+    const { authClient, container } = renderSlugField({
+      authClient: createSlugFieldAuthClient(async () => ({ status: true }))
     })
 
     await user.type(screen.getByLabelText("Slug"), "my-org")
@@ -111,8 +111,8 @@ describe("<SlugInput />", () => {
 
   it("shows the X icon when the slug is unavailable", async () => {
     const user = userEvent.setup()
-    const { container } = renderSlugInput({
-      authClient: createSlugInputAuthClient(async () => {
+    const { container } = renderSlugField({
+      authClient: createSlugFieldAuthClient(async () => {
         throw new Error("ORGANIZATION_SLUG_ALREADY_TAKEN")
       })
     })
@@ -129,7 +129,7 @@ describe("<SlugInput />", () => {
 
   it("does not call checkSlug when checkSlug is disabled", async () => {
     const user = userEvent.setup()
-    const { authClient, container } = renderSlugInput({
+    const { authClient, container } = renderSlugField({
       pluginOptions: { checkSlug: false }
     })
 
@@ -141,7 +141,7 @@ describe("<SlugInput />", () => {
   })
 
   it("skips the availability check when the value matches currentSlug", async () => {
-    const { authClient } = renderSlugInput({
+    const { authClient } = renderSlugField({
       currentSlug: "my-org",
       initialValue: "my-org"
     })

@@ -18,7 +18,7 @@ import {
   Link
 } from "@heroui/react"
 import { buttonVariants } from "@heroui/styles"
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView } from "../user/user-view"
@@ -30,6 +30,7 @@ export type OrganizationSwitcherProps = {
   className?: string
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
+  trigger?: ReactNode
   hideCreate?: boolean
   hidePersonal?: boolean
   hideSettings?: boolean
@@ -44,9 +45,10 @@ export function OrganizationSwitcher({
   hideCreate,
   hidePersonal,
   hideSettings,
-  placement = "bottom",
+  placement,
   variant = "ghost",
   size = "md",
+  trigger,
   ...props
 }: OrganizationSwitcherProps & ButtonProps) {
   const { authClient, basePaths, localization, viewPaths } = useAuth()
@@ -76,31 +78,35 @@ export function OrganizationSwitcher({
   return (
     <>
       <Dropdown isOpen={dropdownOpen} onOpenChange={setDropdownOpen}>
-        <Button
-          variant={variant}
-          className={cn("h-auto px-2 py-2", className)}
-          isDisabled={!session || isPending}
-          {...props}
-        >
-          {isPending ? (
-            <OrganizationView size={size} isPending hideRole hideSlug />
-          ) : activeOrganization ? (
-            <OrganizationView size={size} hideRole hideSlug />
-          ) : session && !hidePersonal ? (
-            <UserView size={size} hideSubtitle />
-          ) : (
-            <OrganizationView
-              size={size}
-              hideRole
-              hideSlug
-              organization={{
-                name: organizationLocalization.organization
-              }}
-            />
-          )}
+        {trigger ? (
+          <Dropdown.Trigger>{trigger}</Dropdown.Trigger>
+        ) : (
+          <Button
+            variant={variant}
+            className={cn("h-auto px-2 py-2", className)}
+            isDisabled={!session || isPending}
+            {...props}
+          >
+            {isPending ? (
+              <OrganizationView size={size} isPending hideRole hideSlug />
+            ) : activeOrganization ? (
+              <OrganizationView size={size} hideRole hideSlug />
+            ) : session && !hidePersonal ? (
+              <UserView size={size} hideSubtitle />
+            ) : (
+              <OrganizationView
+                size={size}
+                hideRole
+                hideSlug
+                organization={{
+                  name: organizationLocalization.organization
+                }}
+              />
+            )}
 
-          <ChevronsExpandVertical className="size-3 shrink-0 text-muted" />
-        </Button>
+            <ChevronsExpandVertical className="size-3 shrink-0 text-muted" />
+          </Button>
+        )}
 
         <Dropdown.Popover placement={placement} className="max-w-svw">
           {activeOrganization ? (

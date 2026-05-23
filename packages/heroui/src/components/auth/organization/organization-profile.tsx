@@ -23,7 +23,7 @@ import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { ChangeOrganizationLogo } from "./change-organization-logo"
-import { SlugInput } from "./slug-input"
+import { SlugField } from "./slug-field"
 
 export type OrganizationProfileProps = {
   className?: string
@@ -110,7 +110,7 @@ export function OrganizationProfile({
             </TextField>
 
             {activeOrganization ? (
-              <SlugInput
+              <SlugField
                 value={slug}
                 onChange={setSlug}
                 currentSlug={activeOrganization.slug}

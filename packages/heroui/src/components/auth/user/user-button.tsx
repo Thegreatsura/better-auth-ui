@@ -46,10 +46,7 @@ export type UserButtonLink = {
 export type UserButtonProps = {
   className?: string
   size?: "default" | "icon"
-  /**
-   * The placement of the element with respect to its anchor element.
-   * @default "bottom"
-   */
+  /** The placement of the element with respect to its anchor element. */
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
   /** Additional menu entries rendered above the built-in items. */
@@ -91,7 +88,7 @@ function renderUserLink(
  */
 export function UserButton({
   className,
-  placement = "bottom",
+  placement,
   size = "default",
   variant = "ghost",
   links,
@@ -127,7 +124,7 @@ export function UserButton({
         <Button
           variant={variant}
           className={cn(
-            "h-auto font-normal justify-start px-3 py-2 text-left",
+            "h-auto font-normal justify-start px-2 py-2 text-left",
             className
           )}
         >
@@ -141,7 +138,7 @@ export function UserButton({
             </>
           )}
 
-          <ChevronsExpandVertical className="ml-auto size-3.5" />
+          <ChevronsExpandVertical className="ml-auto size-3 text-muted" />
         </Button>
       )}
 

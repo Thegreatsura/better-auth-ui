@@ -18,7 +18,7 @@ import {
 import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { SlugInput, sanitizeSlug } from "./slug-input"
+import { SlugField, sanitizeSlug } from "./slug-field"
 
 /** Props for the {@link CreateOrganizationDialog} component. */
 export type CreateOrganizationDialogProps = {
@@ -46,14 +46,11 @@ export function CreateOrganizationDialog({
 
   const { mutate: createOrganization, isPending: isCreating } =
     useCreateOrganization(authClient as OrganizationAuthClient, {
-      onSuccess: () => {
-        onOpenChange(false)
-      }
+      onSuccess: () => onOpenChange(false)
     })
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     createOrganization({ name, slug })
   }
 
@@ -65,7 +62,7 @@ export function CreateOrganizationDialog({
   }, [isOpen])
 
   useEffect(() => {
-    setSlug(sanitizeSlug(name).replace(/^-+|-+$/g, ""))
+    setSlug(sanitizeSlug(name))
   }, [name])
 
   return (
@@ -109,7 +106,7 @@ export function CreateOrganizationDialog({
                 <FieldError />
               </TextField>
 
-              <SlugInput
+              <SlugField
                 value={slug}
                 onChange={setSlug}
                 isDisabled={isCreating}
