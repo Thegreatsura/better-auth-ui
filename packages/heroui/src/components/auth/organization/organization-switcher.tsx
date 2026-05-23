@@ -34,6 +34,7 @@ export type OrganizationSwitcherProps = {
   hideCreate?: boolean
   hidePersonal?: boolean
   hideSettings?: boolean
+  hideSlug?: boolean
 }
 
 /**
@@ -45,6 +46,7 @@ export function OrganizationSwitcher({
   hideCreate,
   hidePersonal,
   hideSettings,
+  hideSlug = true,
   placement,
   variant = "ghost",
   size = "md",
@@ -83,21 +85,26 @@ export function OrganizationSwitcher({
         ) : (
           <Button
             variant={variant}
-            className={cn("h-auto px-2 py-2", className)}
+            className={cn("h-auto px-2 py-2 text-left", className)}
             isDisabled={!session || isPending}
             {...props}
           >
             {isPending ? (
-              <OrganizationView size={size} isPending hideRole hideSlug />
+              <OrganizationView
+                size={size}
+                isPending
+                hideRole
+                hideSlug={hideSlug}
+              />
             ) : activeOrganization ? (
-              <OrganizationView size={size} hideRole hideSlug />
+              <OrganizationView size={size} hideRole hideSlug={hideSlug} />
             ) : session && !hidePersonal ? (
-              <UserView size={size} hideSubtitle />
+              <UserView size={size} hideSubtitle={hideSlug} />
             ) : (
               <OrganizationView
                 size={size}
                 hideRole
-                hideSlug
+                hideSlug={hideSlug}
                 organization={{
                   name: organizationLocalization.organization
                 }}
@@ -113,7 +120,7 @@ export function OrganizationSwitcher({
             <div className="flex items-center justify-between gap-4 px-4 pt-3">
               <OrganizationView
                 hideRole
-                hideSlug
+                hideSlug={hideSlug}
                 organization={activeOrganization}
               />
 
@@ -134,7 +141,7 @@ export function OrganizationSwitcher({
             </div>
           ) : !isPending && session?.user && !hidePersonal ? (
             <div className="flex items-center justify-between gap-4 px-4 pt-3">
-              <UserView hideSubtitle />
+              <UserView hideSubtitle={hideSlug} />
 
               {!hideSettings && (
                 <Link
@@ -159,7 +166,7 @@ export function OrganizationSwitcher({
                 textValue={organizationLocalization.personalAccount}
                 onPress={() => setActiveOrganization({ organizationId: null })}
               >
-                <UserView hideSubtitle />
+                <UserView hideSubtitle={hideSlug} />
               </Dropdown.Item>
             )}
 
@@ -177,7 +184,7 @@ export function OrganizationSwitcher({
                 >
                   <OrganizationView
                     hideRole
-                    hideSlug
+                    hideSlug={hideSlug}
                     organization={organization}
                   />
                 </Dropdown.Item>

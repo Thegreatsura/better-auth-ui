@@ -6,7 +6,7 @@ export const Route = createFileRoute("/")({ component: App })
 function App() {
   return (
     <div className="grow flex items-center justify-center flex-col gap-4">
-      <UserButton hideSubtitle />
+      <UserButton />
     </div>
   )
 }
