@@ -10,9 +10,8 @@ import { Gear, Person } from "@gravity-ui/icons"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useEffect, useMemo } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { OrganizationDangerZone } from "./organization-danger-zone"
 import { OrganizationPeople } from "./organization-people"
-import { OrganizationProfile } from "./organization-profile"
+import { OrganizationSettings } from "./organization-settings"
 
 export type OrganizationProps = {
   className?: string
@@ -134,17 +133,11 @@ export function Organization({
       )}
 
       <Tabs.Panel id="settings" className="px-0">
-        <div className="flex flex-col gap-4 md:gap-6">
-          <OrganizationProfile variant={variant} />
-
-          <OrganizationDangerZone variant={variant} />
-        </div>
+        <OrganizationSettings variant={variant} />
       </Tabs.Panel>
 
       <Tabs.Panel id="people" className="px-0">
-        <div className="flex flex-col gap-4 md:gap-6">
-          <OrganizationPeople />
-        </div>
+        <OrganizationPeople />
       </Tabs.Panel>
     </Tabs>
   )

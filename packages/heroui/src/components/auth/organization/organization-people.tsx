@@ -18,15 +18,9 @@ export function OrganizationPeople({
   ...props
 }: OrganizationPeopleProps & ComponentProps<"div">) {
   return (
-    <div className={cn("flex w-full flex-col gap-8", className)} {...props}>
+    <div className={cn("flex flex-col gap-4 md:gap-6", className)} {...props}>
       <OrganizationMembers />
-
       <OrganizationInvitations />
     </div>
   )
 }
-
-export {
-  OrganizationMembers,
-  type OrganizationMembersProps
-} from "./organization-members"
