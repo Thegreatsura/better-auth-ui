@@ -16,8 +16,8 @@ import {
   Table,
   toast
 } from "@heroui/react"
+import type { Member, User } from "better-auth/client"
 import { type ComponentProps, useState } from "react"
-
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView, type UserViewProps } from "../user/user-view"
 import { InviteMemberDialog } from "./invite-member-dialog"
@@ -38,13 +38,9 @@ export function OrganizationMembers({
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: members, isPending } = useListOrganizationMembers(
+  const { data: membersData, isPending } = useListOrganizationMembers(
     authClient as OrganizationAuthClient
   )
-
-  const memberList = (
-    members as { members?: MemberRowProps["member"][] } | undefined
-  )?.members
 
   const [inviteOpen, setInviteOpen] = useState(false)
 
@@ -107,7 +103,7 @@ export function OrganizationMembers({
               {tableHeader}
 
               <Table.Body>
-                {(memberList ?? []).map((member) => (
+                {membersData?.members.map((member) => (
                   <MemberTableRow
                     key={member.id}
                     member={member}
@@ -148,17 +144,7 @@ function MembersTableSkeletonRow() {
 }
 
 type MemberRowProps = {
-  member: {
-    id: string
-    user: {
-      id: string
-      name: string
-      email: string
-      image?: string
-    }
-    role: string
-    createdAt: string
-  }
+  member: Member & { user: Partial<User> }
   isOwner: boolean
 }
 
