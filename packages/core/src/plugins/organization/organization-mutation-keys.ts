@@ -32,6 +32,9 @@ export const organizationMutationKeys = {
   /** Key for `organization.removeMember`. */
   removeMember: ["auth", "organization", "removeMember"] as const,
 
+  /** Key for `organization.leave`. */
+  leave: ["auth", "organization", "leave"] as const,
+
   /** Key for `organization.updateMemberRole`. */
   updateMemberRole: ["auth", "organization", "updateMemberRole"] as const,
 

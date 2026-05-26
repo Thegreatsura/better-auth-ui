@@ -2,131 +2,128 @@ import {
   type OrganizationAuthClient,
   useAuth,
   useAuthPlugin,
+  useHasPermission,
+  useLeaveOrganization,
   useRemoveMember,
   useUpdateMemberRole
 } from "@better-auth-ui/react"
 import { Pencil, TrashBin } from "@gravity-ui/icons"
-import { Button, Dropdown, Label, Table, toast } from "@heroui/react"
+import { Button, Dropdown, Label, Spinner, Table, toast } from "@heroui/react"
 import type { Member, User } from "better-auth/client"
-import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView } from "../user/user-view"
+import { OrganizationMemberRowSkeleton } from "./organization-member-row-skeleton"
 
 export type OrganizationMemberRowProps = {
   member: Member & { user: Partial<User> }
+  isOwner?: boolean
 }
 
-export function OrganizationMemberRow({ member }: OrganizationMemberRowProps) {
-  const isOwner = member.role === "owner"
-  const { authClient, localization } = useAuth()
+export function OrganizationMemberRow({
+  member,
+  isOwner
+}: OrganizationMemberRowProps) {
+  const { authClient } = useAuth()
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
-  const [confirmRemove, setConfirmRemove] = useState(false)
+  const { data: hasUpdatePermission, isPending: updatePermissionPending } =
+    useHasPermission(authClient as OrganizationAuthClient, {
+      permissions: { member: ["update"] }
+    })
+
+  const { data: hasDeletePermission, isPending: deletePermissionPending } =
+    useHasPermission(authClient as OrganizationAuthClient, {
+      permissions: { member: ["delete"] }
+    })
+
+  const isPending = updatePermissionPending || deletePermissionPending
 
   const { mutate: removeMember, isPending: removing } = useRemoveMember(
     authClient as OrganizationAuthClient
   )
 
-  const { mutate: updateMemberRole, isPending: updating } = useUpdateMemberRole(
-    authClient as OrganizationAuthClient
-  )
+  const { mutate: updateMemberRole, isPending: isUpdatingRole } =
+    useUpdateMemberRole(authClient as OrganizationAuthClient)
+
+  const { mutate: leaveOrganization, isPending: leaving } =
+    useLeaveOrganization(authClient as OrganizationAuthClient)
 
   const roleLabel = roles?.[member.role] ?? member.role
 
-  const assignableRoles = Object.entries(roles ?? {}).filter(
-    ([key]) => key !== "owner"
+  const assignableRoles = Object.entries(roles).filter(
+    ([key]) => isOwner || key !== "owner"
   )
 
   const setRole = (role: string) => {
     updateMemberRole(
-      { memberId: member.id, role: role as "admin" | "member" },
+      { memberId: member.id, role: role },
       {
         onSuccess: () =>
-          toast.success(organizationLocalization.memberRoleUpdated),
-        onError: (error) =>
-          toast.danger(
-            error instanceof Error ? error.message : "Failed to update role"
-          )
+          toast.success(organizationLocalization.memberRoleUpdated)
       }
     )
   }
 
+  if (isPending) {
+    return <OrganizationMemberRowSkeleton />
+  }
+
   return (
-    <Table.Row id={member.id}>
+    <Table.Row>
       <Table.Cell>
         <UserView user={member.user} />
       </Table.Cell>
 
-      <Table.Cell className="text-sm">{roleLabel}</Table.Cell>
+      <Table.Cell>{roleLabel}</Table.Cell>
 
-      <Table.Cell className="text-end">
-        {!isOwner &&
-          (confirmRemove ? (
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                onPress={() => setConfirmRemove(false)}
-                isDisabled={removing}
-              >
-                {localization.settings.cancel}
-              </Button>
-
-              <Button
-                size="sm"
-                variant="danger"
-                isPending={removing}
-                onPress={() => {
-                  removeMember({ memberIdOrEmail: member.id })
-                  setConfirmRemove(false)
-                }}
-              >
-                {organizationLocalization.confirm}
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center justify-end gap-1">
-              <Dropdown>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="tertiary"
-                  isDisabled={removing || updating}
-                  aria-label={organizationLocalization.changeMemberRole}
-                >
-                  <Pencil className="size-4" />
-                </Button>
-
-                <Dropdown.Popover className="min-w-fit">
-                  <Dropdown.Menu>
-                    {assignableRoles.map(([key, label]) => (
-                      <Dropdown.Item
-                        key={key}
-                        textValue={label}
-                        isDisabled={member.role === key}
-                        onAction={() => setRole(key)}
-                      >
-                        <Label>{label}</Label>
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown.Popover>
-              </Dropdown>
-
+      <Table.Cell>
+        <div className="flex items-center justify-end gap-1">
+          {hasUpdatePermission?.success && (
+            <Dropdown>
               <Button
                 isIconOnly
                 size="sm"
-                variant="danger-soft"
-                onPress={() => setConfirmRemove(true)}
-                isDisabled={removing || updating}
-                aria-label={organizationLocalization.removeMember}
+                variant="tertiary"
+                isDisabled={isUpdatingRole}
+                aria-label={organizationLocalization.changeMemberRole}
               >
-                <TrashBin className="size-4" />
+                {isUpdatingRole ? (
+                  <Spinner color="current" size="sm" />
+                ) : (
+                  <Pencil />
+                )}
               </Button>
-            </div>
-          ))}
+
+              <Dropdown.Popover className="min-w-fit">
+                <Dropdown.Menu>
+                  {assignableRoles.map(([key, label]) => (
+                    <Dropdown.Item
+                      key={key}
+                      textValue={label}
+                      isDisabled={member.role === key}
+                      onAction={() => setRole(key)}
+                    >
+                      <Label>{label}</Label>
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown.Popover>
+            </Dropdown>
+          )}
+
+          {hasDeletePermission?.success && (
+            <Button
+              isIconOnly
+              size="sm"
+              variant="danger-soft"
+              aria-label={organizationLocalization.removeMember}
+            >
+              <TrashBin />
+            </Button>
+          )}
+        </div>
       </Table.Cell>
     </Table.Row>
   )

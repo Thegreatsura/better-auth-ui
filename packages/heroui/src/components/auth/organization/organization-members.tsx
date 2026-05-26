@@ -2,7 +2,8 @@ import {
   type OrganizationAuthClient,
   useAuth,
   useAuthPlugin,
-  useListOrganizationMembers
+  useListOrganizationMembers,
+  useSession
 } from "@better-auth-ui/react"
 import { ChevronUp, Funnel, Plus, Xmark } from "@gravity-ui/icons"
 import {
@@ -39,6 +40,7 @@ export function OrganizationMembers({
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
+  const { data: session } = useSession(authClient)
   const { data: membersData, isPending } = useListOrganizationMembers(
     authClient as OrganizationAuthClient
   )
@@ -76,6 +78,10 @@ export function OrganizationMembers({
   }, [sortDescriptor, filteredMembers])
 
   const [inviteOpen, setInviteOpen] = useState(false)
+
+  const isOwner = membersData?.members.some(
+    (member) => member.role === "owner" && member.userId === session?.user.id
+  )
 
   return (
     <div className={cn("flex flex-col gap-3", className)} {...props}>
@@ -137,7 +143,7 @@ export function OrganizationMembers({
                   <Dropdown.ItemIndicator />
                 </Dropdown.Item>
 
-                {Object.entries(roles ?? {}).map(([key, label]) => (
+                {Object.entries(roles).map(([key, label]) => (
                   <Dropdown.Item key={key} id={key} textValue={label}>
                     <Label>{label}</Label>
                     <Dropdown.ItemIndicator />
@@ -152,7 +158,9 @@ export function OrganizationMembers({
           <Chip size="sm" variant="secondary" className="w-fit">
             <Chip.Label>
               {organizationLocalization.role}:{" "}
-              <span>{roles?.[roleFilter] ?? roleFilter}</span>
+              <span className="capitalize">
+                {roles?.[roleFilter] ?? roleFilter}
+              </span>
             </Chip.Label>
 
             <button
@@ -172,10 +180,10 @@ export function OrganizationMembers({
               aria-label={organizationLocalization.members}
               sortDescriptor={sortDescriptor}
               onSortChange={(descriptor) => {
-                const isCycleReset =
+                const shouldReset =
                   sortDescriptor?.column === descriptor.column &&
                   descriptor.direction === "ascending"
-                setSortDescriptor(isCycleReset ? undefined : descriptor)
+                setSortDescriptor(shouldReset ? undefined : descriptor)
               }}
             >
               <Table.Header>
@@ -205,7 +213,11 @@ export function OrganizationMembers({
                   <OrganizationMemberRowSkeleton />
                 ) : (
                   sortedMembers?.map((member) => (
-                    <OrganizationMemberRow key={member.id} member={member} />
+                    <OrganizationMemberRow
+                      key={member.id}
+                      member={member}
+                      isOwner={isOwner}
+                    />
                   ))
                 )}
               </Table.Body>
