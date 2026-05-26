@@ -36,66 +36,48 @@ export function Organization({
   view,
   ...props
 }: OrganizationProps & ComponentProps<"div">) {
+  if (!view && !path) {
+    throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
+  }
+
   const { authClient, basePaths, localization, navigate } = useAuth()
   useAuthenticate(authClient)
 
   const {
     localization: organizationLocalization,
-    viewPaths: organizationPluginViewPaths
+    viewPaths: organizationViewPaths
   } = useAuthPlugin(organizationPlugin)
 
-  const { data: activeOrganization, isFetched } = useActiveOrganization(
+  const { data: activeOrganization, isPending } = useActiveOrganization(
     authClient as OrganizationAuthClient
   )
 
-  const hasActiveOrganization = Boolean(
-    activeOrganization &&
-      typeof activeOrganization === "object" &&
-      "id" in activeOrganization &&
-      (activeOrganization as { id: string }).id
-  )
-
   useEffect(() => {
-    if (!isFetched) return
-    if (!hasActiveOrganization) {
+    if (!isPending && !activeOrganization) {
       navigate({
-        to: `${basePaths.settings}/${organizationPluginViewPaths.settings?.organizations}`,
+        to: `${basePaths.settings}/${organizationViewPaths.settings?.organizations}`,
         replace: true
       })
     }
   }, [
     basePaths.settings,
-    hasActiveOrganization,
-    isFetched,
+    isPending,
     navigate,
-    organizationPluginViewPaths.settings?.organizations
+    organizationViewPaths.settings?.organizations,
+    activeOrganization
   ])
 
-  const organizationRouteSegments = useMemo(() => {
-    const contributed = organizationPluginViewPaths.organization
-    return {
-      settings: contributed?.settings ?? "settings",
-      people: contributed?.people ?? "people"
-    }
-  }, [organizationPluginViewPaths.organization])
+  const currentView = useMemo(() => {
+    if (view) return view
 
-  const organizationPathViews = useMemo((): Record<
-    string,
-    OrganizationView
-  > => {
-    return {
-      [organizationRouteSegments.settings]: "settings",
-      [organizationRouteSegments.people]: "people"
-    }
-  }, [organizationRouteSegments.people, organizationRouteSegments.settings])
+    const match = Object.entries(organizationViewPaths.organization).find(
+      ([, segment]) => segment === path
+    )
 
-  if (!view && !path) {
-    throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
-  }
+    return match?.[0] as OrganizationView | undefined
+  }, [view, path, organizationViewPaths.organization])
 
-  const currentView = view ?? (path ? organizationPathViews[path] : undefined)
-
-  if (!isFetched || !hasActiveOrganization) {
+  if (!isPending && !activeOrganization) {
     return null
   }
 
@@ -114,7 +96,7 @@ export function Organization({
           >
             <Tabs.Tab
               id="settings"
-              href={`${basePaths.organization}/${organizationRouteSegments.settings}`}
+              href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
               className="gap-2"
               onPress={(e) =>
                 e.target.scrollIntoView({
@@ -132,7 +114,7 @@ export function Organization({
 
             <Tabs.Tab
               id="people"
-              href={`${basePaths.organization}/${organizationRouteSegments.people}`}
+              href={`${basePaths.organization}/${organizationViewPaths.organization.people}`}
               className="gap-2"
               onPress={(e) =>
                 e.target.scrollIntoView({

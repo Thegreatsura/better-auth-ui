@@ -1,6 +1,7 @@
 import { createAuthPlugin } from "@better-auth-ui/core"
 import {
   organizationPlugin as coreOrganizationPlugin,
+  type OrganizationLocalization,
   type OrganizationPluginOptions
 } from "@better-auth-ui/core/plugins"
 import { Briefcase } from "@gravity-ui/icons"
@@ -13,6 +14,7 @@ export const organizationPlugin = createAuthPlugin(
 
     return {
       ...coreOptions,
+      localization: coreOptions.localization as OrganizationLocalization,
       settingsTabs: [
         {
           view: "organizations",
