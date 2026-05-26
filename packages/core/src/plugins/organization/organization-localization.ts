@@ -7,6 +7,8 @@ export const organizationLocalization = {
   actions: "Actions",
   /** @remarks `"Admin"` */
   admin: "Admin",
+  /** @remarks `"All"` */
+  all: "All",
   /** @remarks `"Canceled"` */
   canceled: "Canceled",
   /** @remarks `"Cancel invitation"` */
@@ -15,6 +17,8 @@ export const organizationLocalization = {
   changeLogo: "Change logo",
   /** @remarks `"Change role"` */
   changeMemberRole: "Change role",
+  /** @remarks `"Clear"` */
+  clear: "Clear",
   /** @remarks `"Confirm"` */
   confirm: "Confirm",
   /** @remarks `"Create organization"` */
@@ -99,6 +103,8 @@ export const organizationLocalization = {
   removeMember: "Remove member",
   /** @remarks `"Role"` */
   role: "Role",
+  /** @remarks `"Search..."` */
+  search: "Search...",
   /** @remarks `"Slug"` */
   slug: "Slug",
   /** @remarks `"organization-slug"` */
