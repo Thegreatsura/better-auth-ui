@@ -2,22 +2,13 @@ import {
   type OrganizationAuthClient,
   useActiveOrganization,
   useAuth,
-  useAuthPlugin,
-  useDeleteOrganization
+  useAuthPlugin
 } from "@better-auth-ui/react"
-import { TriangleExclamation } from "@gravity-ui/icons"
-import {
-  AlertDialog,
-  Button,
-  Card,
-  type CardProps,
-  Form,
-  Spinner,
-  toast
-} from "@heroui/react"
-import { type SyntheticEvent, useState } from "react"
+import { AlertDialog, Button, Card, type CardProps } from "@heroui/react"
+import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
+import { DeleteOrganizationDialog } from "./delete-organization-dialog"
 
 export type DeleteOrganizationProps = {
   className?: string
@@ -33,11 +24,8 @@ export function DeleteOrganization({
   variant,
   ...props
 }: DeleteOrganizationProps & Omit<CardProps, "children">) {
-  const { authClient, basePaths, localization, navigate } = useAuth()
+  const { authClient } = useAuth()
   const { localization: organizationLocalization } =
-    useAuthPlugin(organizationPlugin)
-
-  const { viewPaths: organizationPluginViewPaths } =
     useAuthPlugin(organizationPlugin)
 
   const { data: activeOrganization } = useActiveOrganization(
@@ -45,37 +33,6 @@ export function DeleteOrganization({
   )
 
   const [confirmOpen, setConfirmOpen] = useState(false)
-
-  const { mutate: deleteOrganization, isPending } = useDeleteOrganization(
-    authClient as OrganizationAuthClient,
-    {
-      onSuccess: () => {
-        setConfirmOpen(false)
-        toast.success(organizationLocalization.organizationDeleted)
-
-        const organizationsSettingsSegment =
-          organizationPluginViewPaths.settings?.organizations ?? "organizations"
-
-        navigate({
-          to: `${basePaths.settings}/${organizationsSettingsSegment}`,
-          replace: true
-        })
-      }
-    }
-  )
-
-  function handleDialogOpenChange(open: boolean) {
-    setConfirmOpen(open)
-  }
-
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
-    e.preventDefault()
-    if (!activeOrganization) return
-
-    deleteOrganization({
-      organizationId: activeOrganization.id
-    })
-  }
 
   return (
     <Card className={className} variant={variant} {...props}>
@@ -100,54 +57,13 @@ export function DeleteOrganization({
             {organizationLocalization.deleteOrganization}
           </Button>
 
-          <AlertDialog.Backdrop
-            isOpen={confirmOpen}
-            onOpenChange={handleDialogOpenChange}
-          >
-            <AlertDialog.Container>
-              <AlertDialog.Dialog>
-                <Form onSubmit={handleSubmit}>
-                  <AlertDialog.CloseTrigger />
-
-                  <AlertDialog.Header>
-                    <AlertDialog.Icon status="danger">
-                      <TriangleExclamation />
-                    </AlertDialog.Icon>
-
-                    <AlertDialog.Heading>
-                      {organizationLocalization.deleteOrganization}
-                    </AlertDialog.Heading>
-                  </AlertDialog.Header>
-
-                  <AlertDialog.Body>
-                    <p className="text-muted text-sm">
-                      {organizationLocalization.deleteOrganizationWarning}
-                    </p>
-                  </AlertDialog.Body>
-
-                  <AlertDialog.Footer>
-                    <Button
-                      slot="close"
-                      variant="tertiary"
-                      isDisabled={isPending}
-                    >
-                      {localization.settings.cancel}
-                    </Button>
-
-                    <Button
-                      type="submit"
-                      variant="danger"
-                      isPending={isPending}
-                    >
-                      {isPending && <Spinner color="current" size="sm" />}
-
-                      {organizationLocalization.deleteOrganization}
-                    </Button>
-                  </AlertDialog.Footer>
-                </Form>
-              </AlertDialog.Dialog>
-            </AlertDialog.Container>
-          </AlertDialog.Backdrop>
+          {activeOrganization && (
+            <DeleteOrganizationDialog
+              isOpen={confirmOpen}
+              onOpenChange={setConfirmOpen}
+              organizationId={activeOrganization.id}
+            />
+          )}
         </AlertDialog>
       </Card.Content>
     </Card>
