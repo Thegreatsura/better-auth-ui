@@ -6,6 +6,7 @@ import {
 } from "@better-auth-ui/react"
 import { Button, cn, Table } from "@heroui/react"
 import { type ComponentProps, useState } from "react"
+
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { OrganizationMemberRow } from "./organization-member-row"
@@ -33,18 +34,6 @@ export function OrganizationMembers({
 
   const [inviteOpen, setInviteOpen] = useState(false)
 
-  const tableHeader = (
-    <Table.Header>
-      <Table.Column isRowHeader>{organizationLocalization.member}</Table.Column>
-
-      <Table.Column>{organizationLocalization.role}</Table.Column>
-
-      <Table.Column className="w-px text-end">
-        {organizationLocalization.actions}
-      </Table.Column>
-    </Table.Header>
-  )
-
   return (
     <div className={cn("flex flex-col gap-3", className)} {...props}>
       <div className="flex items-end justify-between gap-3">
@@ -62,48 +51,35 @@ export function OrganizationMembers({
         </Button>
       </div>
 
-      {isPending ? (
-        <Table>
-          <Table.ScrollContainer>
-            <Table.Content
-              aria-label={organizationLocalization.members}
-              aria-busy="true"
-              className="min-w-[36rem]"
-            >
-              {tableHeader}
+      <Table>
+        <Table.ScrollContainer>
+          <Table.Content aria-label={organizationLocalization.members}>
+            <Table.Header>
+              <Table.Column isRowHeader>
+                {organizationLocalization.member}
+              </Table.Column>
 
-              <Table.Body>
-                {Array.from({ length: 5 }, (_, index) => (
-                  <OrganizationMemberRowSkeleton
-                    key={`member-skeleton-${index.toString()}`}
-                  />
-                ))}
-              </Table.Body>
-            </Table.Content>
-          </Table.ScrollContainer>
-        </Table>
-      ) : (
-        <Table>
-          <Table.ScrollContainer>
-            <Table.Content
-              aria-label={organizationLocalization.members}
-              className="min-w-[36rem]"
-            >
-              {tableHeader}
+              <Table.Column isRowHeader>
+                {organizationLocalization.role}
+              </Table.Column>
 
-              <Table.Body>
-                {membersData?.members.map((member) => (
-                  <OrganizationMemberRow
-                    key={member.id}
-                    member={member}
-                    isOwner={member.role === "owner"}
-                  />
-                ))}
-              </Table.Body>
-            </Table.Content>
-          </Table.ScrollContainer>
-        </Table>
-      )}
+              <Table.Column className="text-end" isRowHeader>
+                {organizationLocalization.actions}
+              </Table.Column>
+            </Table.Header>
+
+            <Table.Body>
+              {isPending ? (
+                <OrganizationMemberRowSkeleton />
+              ) : (
+                membersData?.members.map((member) => (
+                  <OrganizationMemberRow key={member.id} member={member} />
+                ))
+              )}
+            </Table.Body>
+          </Table.Content>
+        </Table.ScrollContainer>
+      </Table>
 
       <InviteMemberDialog isOpen={inviteOpen} onOpenChange={setInviteOpen} />
     </div>

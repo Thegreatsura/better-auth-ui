@@ -15,13 +15,10 @@ import { UserView, type UserViewProps } from "../user/user-view"
 
 export type OrganizationMemberRowProps = {
   member: Member & { user: Partial<User> }
-  isOwner: boolean
 }
 
-export function OrganizationMemberRow({
-  member,
-  isOwner
-}: OrganizationMemberRowProps) {
+export function OrganizationMemberRow({ member }: OrganizationMemberRowProps) {
+  const isOwner = member.role === "owner"
   const { authClient, localization } = useAuth()
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
