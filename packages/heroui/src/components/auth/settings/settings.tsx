@@ -1,17 +1,8 @@
 import type { SettingsView } from "@better-auth-ui/core"
-import {
-  type SettingsTab,
-  useAuth,
-  useAuthenticate
-} from "@better-auth-ui/react"
+import { useAuth, useAuthenticate } from "@better-auth-ui/react"
 import { Person, Shield } from "@gravity-ui/icons"
 import { type CardProps, cn, Tabs } from "@heroui/react"
-import {
-  type ComponentProps,
-  type ComponentType,
-  createElement,
-  useMemo
-} from "react"
+import { type ComponentProps, useMemo } from "react"
 import { AccountSettings } from "./account/account-settings"
 import { SecuritySettings } from "./security/security-settings"
 
@@ -51,34 +42,20 @@ export function Settings({
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
   }
 
-  // Built-ins first, then plugin segments (same idea as `<Auth>` resolving
-  // `magicLink` from `plugin.viewPaths.auth` — not merged on `AuthProvider`).
-  const settingsPathViews = useMemo(() => {
-    const map: Record<string, string> = {}
-    for (const [viewKey, segment] of Object.entries(viewPaths.settings)) {
-      map[segment] = viewKey
-    }
-    for (const plugin of plugins) {
-      const contributed = plugin.viewPaths?.settings
-      if (!contributed) continue
-      for (const [viewKey, segment] of Object.entries(contributed)) {
-        map[segment] = viewKey
-      }
-    }
-    return map as Record<string, SettingsView>
-  }, [viewPaths.settings, plugins])
+  // Built-ins first, then plugin segments
+  const currentView = useMemo(() => {
+    if (view) return view
+    if (!path) return undefined
 
-  const currentView = view || (path ? settingsPathViews[path] : undefined)
+    const match = [
+      viewPaths.settings,
+      ...plugins.map((plugin) => plugin.viewPaths?.settings)
+    ]
+      .flatMap((source) => Object.entries(source ?? {}))
+      .find(([, segment]) => segment === path)
 
-  const settingsTabs = useMemo((): SettingsTab[] => {
-    const tabs: SettingsTab[] = []
-    for (const plugin of plugins) {
-      if (plugin.settingsTabs) {
-        tabs.push(...plugin.settingsTabs)
-      }
-    }
-    return tabs
-  }, [plugins])
+    return match?.[0] as SettingsView | undefined
+  }, [view, path, viewPaths.settings, plugins])
 
   return (
     <Tabs
@@ -122,31 +99,27 @@ export function Settings({
             <Tabs.Indicator />
           </Tabs.Tab>
 
-          {settingsTabs.map((tab) => {
-            const segment =
-              plugins.find((p) =>
-                p.settingsTabs?.some((t) => t.view === tab.view)
-              )?.viewPaths?.settings?.[tab.view] ?? tab.view
+          {plugins.flatMap(
+            (plugin) =>
+              plugin.settingsTabs?.map((settingsTab) => (
+                <Tabs.Tab
+                  key={settingsTab.view}
+                  id={settingsTab.view}
+                  href={`${basePaths.settings}/${plugin.viewPaths?.settings?.[settingsTab.view]}`}
+                  className="gap-2"
+                  onPress={(e) =>
+                    e.target.scrollIntoView({
+                      behavior: "smooth",
+                      inline: "center"
+                    })
+                  }
+                >
+                  {settingsTab.label}
 
-            return (
-              <Tabs.Tab
-                key={tab.view}
-                id={tab.view}
-                href={`${basePaths.settings}/${segment}`}
-                className="gap-2"
-                onPress={(e) =>
-                  e.target.scrollIntoView({
-                    behavior: "smooth",
-                    inline: "center"
-                  })
-                }
-              >
-                {tab.label}
-
-                <Tabs.Indicator />
-              </Tabs.Tab>
-            )
-          })}
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+              )) ?? []
+          )}
         </Tabs.List>
       </Tabs.ListContainer>
 
@@ -158,18 +131,17 @@ export function Settings({
         <SecuritySettings variant={variant} />
       </Tabs.Panel>
 
-      {settingsTabs.map((tab) => (
-        <Tabs.Panel key={tab.view} id={tab.view} className="px-0">
-          {tab.component && typeof tab.component === "function"
-            ? createElement(
-                tab.component as ComponentType<{
-                  variant?: CardProps["variant"]
-                }>,
-                { variant }
-              )
-            : null}
-        </Tabs.Panel>
-      ))}
+      {plugins.flatMap((plugin) =>
+        plugin.settingsTabs?.map((settingsTab) => (
+          <Tabs.Panel
+            key={settingsTab.view}
+            id={settingsTab.view}
+            className="px-0"
+          >
+            <settingsTab.component variant={variant} />
+          </Tabs.Panel>
+        ))
+      )}
     </Tabs>
   )
 }
