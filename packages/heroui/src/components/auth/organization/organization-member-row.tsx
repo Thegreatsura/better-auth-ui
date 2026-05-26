@@ -11,7 +11,7 @@ import type { Member, User } from "better-auth/client"
 import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { UserView, type UserViewProps } from "../user/user-view"
+import { UserView } from "../user/user-view"
 
 export type OrganizationMemberRowProps = {
   member: Member & { user: Partial<User> }
@@ -56,14 +56,10 @@ export function OrganizationMemberRow({ member }: OrganizationMemberRowProps) {
   return (
     <Table.Row id={member.id}>
       <Table.Cell>
-        <UserView
-          className="gap-3 py-0.5"
-          size="md"
-          user={member.user as UserViewProps["user"]}
-        />
+        <UserView user={member.user} />
       </Table.Cell>
 
-      <Table.Cell className="min-w-52 text-sm">{roleLabel}</Table.Cell>
+      <Table.Cell className="text-sm">{roleLabel}</Table.Cell>
 
       <Table.Cell className="text-end">
         {!isOwner &&
