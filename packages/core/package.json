@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
     "test": "vitest"
   },
   "files": [
@@ -15,10 +14,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./plugins": {
+      "development": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }

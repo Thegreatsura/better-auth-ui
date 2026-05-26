@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "build": "tsc && bun run styles",
-    "dev": "bun run styles && tsc --watch",
     "styles": "mkdir -p dist && cp src/styles.css dist/styles.css",
     "test": "vitest"
   },
@@ -14,18 +13,24 @@
   ],
   "exports": {
     ".": {
+      "development": "./src/index.tsx",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./email": {
+      "development": "./src/email.ts",
       "types": "./dist/email.d.ts",
       "import": "./dist/email.js"
     },
     "./plugins": {
+      "development": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     },
-    "./styles": "./dist/styles.css"
+    "./styles": {
+      "development": "./src/styles.css",
+      "default": "./dist/styles.css"
+    }
   },
   "devDependencies": {
     "@gravity-ui/icons": "^2.18.0",

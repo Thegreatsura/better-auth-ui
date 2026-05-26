@@ -44,7 +44,7 @@ export function OrganizationMembers({
   )
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>()
-  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [roleFilter, setRoleFilter] = useState("all")
   const [search, setSearch] = useState("")
 
   const filteredMembers = useMemo(() => {
