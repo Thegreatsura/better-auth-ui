@@ -31,7 +31,7 @@ export function OrganizationDangerZone({
         <Card.Content className="gap-0">
           <LeaveOrganization />
 
-          <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+          <div className="border-b border-dashed -mx-4 my-4" />
 
           <DeleteOrganization />
         </Card.Content>

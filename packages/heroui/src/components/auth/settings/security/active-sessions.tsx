@@ -43,7 +43,7 @@ export function ActiveSessions({
             activeSessions?.map((activeSession, index) => (
               <div key={activeSession.id}>
                 {index > 0 && (
-                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                  <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
                 <ActiveSession activeSession={activeSession} />

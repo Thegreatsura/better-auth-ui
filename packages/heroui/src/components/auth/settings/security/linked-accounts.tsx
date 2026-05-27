@@ -54,7 +54,7 @@ export function LinkedAccounts({
             ? socialProviders?.map((provider, index) => (
                 <div key={provider}>
                   {index > 0 && (
-                    <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                    <div className="border-b border-dashed -mx-4 my-4" />
                   )}
                   <AccountRowSkeleton />
                 </div>
@@ -62,7 +62,7 @@ export function LinkedAccounts({
             : allRows.map((row, index) => (
                 <div key={row.key}>
                   {index > 0 && (
-                    <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                    <div className="border-b border-dashed -mx-4 my-4" />
                   )}
 
                   <LinkedAccount
