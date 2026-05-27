@@ -1,6 +1,7 @@
 "use client"
 
 export * from "./components/auth/api-key/api-keys"
+export * from "./components/auth/api-key/organization-api-keys"
 export * from "./components/auth/delete-user/danger-zone"
 export * from "./components/auth/delete-user/delete-account"
 // Plugin-contributed components that may be used standalone

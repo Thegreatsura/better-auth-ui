@@ -13,6 +13,7 @@ It contributes:
 - An `organizations` tab to `<Settings />` listing every organization the user belongs to plus pending invitations to them
 - An `<Organization />` shell mounted at `/organization/<path>` with `settings` and `people` tabs
 - An `<OrganizationSwitcher />` dropdown to switch the active organization, manage it, or create a new one
+- An `organizationCards` plugin slot rendered inside `<OrganizationSettings />` so other plugins (e.g. [api-key](/docs/heroui/plugins/api-key)) can attach org-scoped cards
 - Hooks and mutations for every organization endpoint (`useActiveOrganization`, `useListOrganizations`, `useInviteMember`, etc.)
 
 ## Setup
@@ -710,7 +711,7 @@ The full organization management shell mounted at `/organization/<path>`. Render
 
 ### `<OrganizationSettings />`
 
-The contents of the `settings` tab — `<OrganizationProfile />` followed by `<OrganizationDangerZone />`. Drop it into a custom layout if you don't want the tabbed shell.
+The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-contributed `organizationCards` (e.g. `<OrganizationApiKeys />` from the [api-key plugin](/docs/heroui/plugins/api-key)), then `<OrganizationDangerZone />`. Drop it into a custom layout if you don't want the tabbed shell.
 
 <ComponentPreview name="heroui-organization-settings" />
 

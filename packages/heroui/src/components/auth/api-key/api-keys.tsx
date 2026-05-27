@@ -16,15 +16,30 @@ import { CreateApiKeyDialog } from "./create-api-key-dialog"
 export type ApiKeysProps = {
   className?: string
   variant?: CardProps["variant"]
+  /** Scope the list and create payload to an organization. */
+  organizationId?: string
+  /** Force the loading skeleton and disable the list query. */
+  isPending?: boolean
 }
 
-export function ApiKeys({ className, variant }: ApiKeysProps) {
+export function ApiKeys({
+  className,
+  variant,
+  organizationId,
+  isPending: isPendingProp
+}: ApiKeysProps) {
   const { authClient } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
 
-  const { data: listData, isPending } = useListApiKeys(
-    authClient as ApiKeyAuthClient
+  const { data: listData, isPending: isListPending } = useListApiKeys(
+    authClient as ApiKeyAuthClient,
+    {
+      enabled: !isPendingProp,
+      ...(organizationId ? { query: { organizationId } } : {})
+    }
   )
+
+  const isPending = isPendingProp || isListPending
 
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -65,7 +80,11 @@ export function ApiKeys({ className, variant }: ApiKeysProps) {
         </Card.Content>
       </Card>
 
-      <CreateApiKeyDialog isOpen={createOpen} onOpenChange={setCreateOpen} />
+      <CreateApiKeyDialog
+        isOpen={createOpen}
+        onOpenChange={setCreateOpen}
+        organizationId={organizationId}
+      />
     </div>
   )
 }

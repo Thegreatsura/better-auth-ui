@@ -24,11 +24,14 @@ import { NewApiKeyDialog } from "./new-api-key-dialog"
 export type CreateApiKeyDialogProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  /** Create an organization-owned key by passing the organization id. */
+  organizationId?: string
 }
 
 export function CreateApiKeyDialog({
   isOpen,
-  onOpenChange
+  onOpenChange,
+  organizationId
 }: CreateApiKeyDialogProps) {
   const { authClient, localization } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
@@ -56,7 +59,15 @@ export function CreateApiKeyDialog({
     const formData = new FormData(e.target as HTMLFormElement)
     const name = (formData.get("name") as string)?.trim()
 
-    createApiKey(name ? { name } : undefined, {
+    const payload =
+      name || organizationId
+        ? {
+            ...(name ? { name } : {}),
+            ...(organizationId ? { organizationId } : {})
+          }
+        : undefined
+
+    createApiKey(payload, {
       onSuccess: (result) => {
         handleOpenChange(false)
         setKeyName(name)

@@ -24,6 +24,12 @@ export type AccountCardProps = {
   children?: ReactNode
 }
 
+/** Props for plugin-contributed cards under `/organization/...` settings. */
+export type OrganizationCardProps = {
+  className?: string
+  children?: ReactNode
+}
+
 /** Props for plugin-contributed items in the `UserButton` dropdown. */
 export type UserMenuItemProps = {
   className?: string
@@ -41,6 +47,8 @@ export type AuthPluginComponents = {
   securityCards?: ComponentType<SecurityCardProps>[]
   /** Rendered as cards inside account settings. */
   accountCards?: ComponentType<AccountCardProps>[]
+  /** Rendered as cards inside the active organization's settings. */
+  organizationCards?: ComponentType<OrganizationCardProps>[]
   /** Rendered as items inside the `UserButton` dropdown. */
   userMenuItems?: ComponentType<UserMenuItemProps>[]
 }
