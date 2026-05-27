@@ -47,7 +47,9 @@ export function OrganizationMemberRow({
   const isPending = updatePermissionPending || deletePermissionPending
 
   const { mutate: updateMemberRole, isPending: isUpdatingRole } =
-    useUpdateMemberRole(authClient as OrganizationAuthClient)
+    useUpdateMemberRole(authClient as OrganizationAuthClient, {
+      onSuccess: () => toast.success(organizationLocalization.memberRoleUpdated)
+    })
 
   const roleLabel = roles?.[member.role] ?? member.role
 
@@ -59,16 +61,6 @@ export function OrganizationMemberRow({
 
   const [removeOpen, setRemoveOpen] = useState(false)
   const [leaveOpen, setLeaveOpen] = useState(false)
-
-  const setRole = (role: string) => {
-    updateMemberRole(
-      { memberId: member.id, role: role },
-      {
-        onSuccess: () =>
-          toast.success(organizationLocalization.memberRoleUpdated)
-      }
-    )
-  }
 
   if (isPending) {
     return <OrganizationMemberRowSkeleton />
@@ -102,12 +94,14 @@ export function OrganizationMemberRow({
 
               <Dropdown.Popover className="min-w-fit">
                 <Dropdown.Menu>
-                  {assignableRoles.map(([key, label]) => (
+                  {assignableRoles.map(([role, label]) => (
                     <Dropdown.Item
-                      key={key}
+                      key={role}
                       textValue={label}
-                      isDisabled={member.role === key}
-                      onAction={() => setRole(key)}
+                      isDisabled={member.role === role}
+                      onAction={() =>
+                        updateMemberRole({ memberId: member.id, role })
+                      }
                     >
                       <Label>{label}</Label>
                     </Dropdown.Item>
