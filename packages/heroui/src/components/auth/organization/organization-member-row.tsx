@@ -3,30 +3,36 @@ import {
   useAuth,
   useAuthPlugin,
   useHasPermission,
-  useLeaveOrganization,
-  useRemoveMember,
+  useSession,
   useUpdateMemberRole
 } from "@better-auth-ui/react"
-import { Pencil, TrashBin } from "@gravity-ui/icons"
+import { ArrowRightFromSquare, Pencil, TrashBin } from "@gravity-ui/icons"
 import { Button, Dropdown, Label, Spinner, Table, toast } from "@heroui/react"
-import type { Member, User } from "better-auth/client"
+import type { Member, Organization, User } from "better-auth/client"
+import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView } from "../user/user-view"
+import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 import { OrganizationMemberRowSkeleton } from "./organization-member-row-skeleton"
+import { RemoveMemberDialog } from "./remove-member-dialog"
 
 export type OrganizationMemberRowProps = {
   member: Member & { user: Partial<User> }
   isOwner?: boolean
+  organization: Organization
 }
 
 export function OrganizationMemberRow({
   member,
-  isOwner
+  isOwner,
+  organization
 }: OrganizationMemberRowProps) {
   const { authClient } = useAuth()
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
+
+  const { data: session } = useSession(authClient)
 
   const { data: hasUpdatePermission, isPending: updatePermissionPending } =
     useHasPermission(authClient as OrganizationAuthClient, {
@@ -40,21 +46,19 @@ export function OrganizationMemberRow({
 
   const isPending = updatePermissionPending || deletePermissionPending
 
-  const { mutate: removeMember, isPending: removing } = useRemoveMember(
-    authClient as OrganizationAuthClient
-  )
-
   const { mutate: updateMemberRole, isPending: isUpdatingRole } =
     useUpdateMemberRole(authClient as OrganizationAuthClient)
-
-  const { mutate: leaveOrganization, isPending: leaving } =
-    useLeaveOrganization(authClient as OrganizationAuthClient)
 
   const roleLabel = roles?.[member.role] ?? member.role
 
   const assignableRoles = Object.entries(roles).filter(
     ([key]) => isOwner || key !== "owner"
   )
+
+  const isCurrentUser = session?.user.id === member.userId
+
+  const [removeOpen, setRemoveOpen] = useState(false)
+  const [leaveOpen, setLeaveOpen] = useState(false)
 
   const setRole = (role: string) => {
     updateMemberRole(
@@ -113,17 +117,46 @@ export function OrganizationMemberRow({
             </Dropdown>
           )}
 
-          {hasDeletePermission?.success && (
+          {isCurrentUser ? (
             <Button
               isIconOnly
               size="sm"
               variant="danger-soft"
-              aria-label={organizationLocalization.removeMember}
+              aria-label={organizationLocalization.leaveOrganization}
+              onPress={() => setLeaveOpen(true)}
             >
-              <TrashBin />
+              <ArrowRightFromSquare />
             </Button>
+          ) : (
+            hasDeletePermission?.success && (
+              <Button
+                isIconOnly
+                size="sm"
+                variant="danger-soft"
+                aria-label={organizationLocalization.removeMember}
+                onPress={() => setRemoveOpen(true)}
+              >
+                <TrashBin />
+              </Button>
+            )
           )}
         </div>
+
+        {isCurrentUser && organization ? (
+          <LeaveOrganizationDialog
+            isOpen={leaveOpen}
+            onOpenChange={setLeaveOpen}
+            organization={organization}
+          />
+        ) : (
+          hasDeletePermission?.success && (
+            <RemoveMemberDialog
+              isOpen={removeOpen}
+              onOpenChange={setRemoveOpen}
+              member={member}
+            />
+          )
+        )}
       </Table.Cell>
     </Table.Row>
   )

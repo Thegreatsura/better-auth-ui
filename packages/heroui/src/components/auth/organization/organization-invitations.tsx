@@ -94,7 +94,7 @@ export function OrganizationInvitations({
       <Table.Column isRowHeader>{localization.auth.email}</Table.Column>
 
       <Table.Column className="whitespace-nowrap">
-        {organizationLocalization.invited}
+        {localization.settings.time}
       </Table.Column>
 
       <Table.Column>{organizationLocalization.role}</Table.Column>

@@ -1,7 +1,9 @@
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthPlugin,
+  useHasPermission,
   useListOrganizationMembers,
   useSession
 } from "@better-auth-ui/react"
@@ -41,9 +43,29 @@ export function OrganizationMembers({
     useAuthPlugin(organizationPlugin)
 
   const { data: session } = useSession(authClient)
-  const { data: membersData, isPending } = useListOrganizationMembers(
-    authClient as OrganizationAuthClient
+  const { data: activeOrganization, isPending: activeOrganizationPending } =
+    useActiveOrganization(authClient as OrganizationAuthClient)
+  const { data: membersData, isPending: membersPending } =
+    useListOrganizationMembers(authClient as OrganizationAuthClient)
+
+  const { isPending: updatePermissionPending } = useHasPermission(
+    authClient as OrganizationAuthClient,
+    {
+      permissions: { member: ["update"] }
+    }
   )
+  const { isPending: deletePermissionPending } = useHasPermission(
+    authClient as OrganizationAuthClient,
+    {
+      permissions: { member: ["delete"] }
+    }
+  )
+
+  const isPending =
+    activeOrganizationPending ||
+    membersPending ||
+    updatePermissionPending ||
+    deletePermissionPending
 
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>()
   const [roleFilter, setRoleFilter] = useState("all")
@@ -109,20 +131,24 @@ export function OrganizationMembers({
             aria-label={organizationLocalization.search}
             value={search}
             onChange={setSearch}
+            isDisabled={isPending}
           >
             <SearchField.Group>
               <SearchField.SearchIcon />
+
               <SearchField.Input
                 placeholder={organizationLocalization.search}
                 className="sm:w-[200px]"
               />
+
               <SearchField.ClearButton />
             </SearchField.Group>
           </SearchField>
 
           <Dropdown>
-            <Button size="sm" variant="secondary">
+            <Button size="sm" variant="secondary" isDisabled={isPending}>
               <Funnel />
+
               {organizationLocalization.role}
             </Button>
 
@@ -140,12 +166,14 @@ export function OrganizationMembers({
                   textValue={organizationLocalization.all}
                 >
                   <Label>{organizationLocalization.all}</Label>
+
                   <Dropdown.ItemIndicator />
                 </Dropdown.Item>
 
                 {Object.entries(roles).map(([key, label]) => (
                   <Dropdown.Item key={key} id={key} textValue={label}>
                     <Label>{label}</Label>
+
                     <Dropdown.ItemIndicator />
                   </Dropdown.Item>
                 ))}
@@ -212,11 +240,13 @@ export function OrganizationMembers({
                 {isPending ? (
                   <OrganizationMemberRowSkeleton />
                 ) : (
+                  !!activeOrganization &&
                   sortedMembers?.map((member) => (
                     <OrganizationMemberRow
                       key={member.id}
                       member={member}
                       isOwner={isOwner}
+                      organization={activeOrganization}
                     />
                   ))
                 )}

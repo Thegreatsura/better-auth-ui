@@ -32,21 +32,17 @@ export const organizationLocalization = {
     "Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.",
   /** @remarks `"Invitations"` */
   invitations: "Invitations",
-  /** @remarks `"Invite"` */
-  invite: "Invite",
-  /** @remarks `"Invited"` */
-  invited: "Invited",
-  /** @remarks `"Enter email address"` */
-  inviteEmail: "Enter email address",
   /** @remarks `"Invite member"` */
   inviteMember: "Invite member",
+  /** @remarks `"Member invited successfully"` */
+  inviteMemberSuccess: "Member invited successfully",
   /** @remarks `"We'll email them a link to join this organization. Choose the role they'll have once they accept."` */
   inviteMemberDescription:
     "We'll email them a link to join this organization. Choose the role they'll have once they accept.",
-  /** @remarks `"Leave"` */
-  leave: "Leave",
   /** @remarks `"Are you sure you want to leave this organization?"` */
   leaveConfirmation: "Are you sure you want to leave this organization?",
+  /** @remarks `"You left the organization"` */
+  leftOrganization: "You left the organization",
   /** @remarks `"Leave organization"` */
   leaveOrganization: "Leave organization",
   /** @remarks `"Logo"` */
@@ -59,6 +55,8 @@ export const organizationLocalization = {
   manage: "Manage",
   /** @remarks `"Member"` */
   member: "Member",
+  /** @remarks `"Member removed"` */
+  memberRemoved: "Member removed",
   /** @remarks `"Member role updated"` */
   memberRoleUpdated: "Member role updated",
   /** @remarks `"Members"` */
@@ -101,6 +99,9 @@ export const organizationLocalization = {
   rejectInvitation: "Reject invitation",
   /** @remarks `"Remove member"` */
   removeMember: "Remove member",
+  /** @remarks `"Are you sure you want to remove this member from the organization? They will lose access immediately."` */
+  removeMemberWarning:
+    "Are you sure you want to remove this member from the organization? They will lose access immediately.",
   /** @remarks `"Role"` */
   role: "Role",
   /** @remarks `"Search..."` */

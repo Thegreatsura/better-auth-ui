@@ -15,9 +15,10 @@ import {
   ListBox,
   Select,
   Spinner,
-  TextField
+  TextField,
+  toast
 } from "@heroui/react"
-import { type SyntheticEvent, useEffect, useState } from "react"
+import type { SyntheticEvent } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
@@ -42,16 +43,6 @@ export function InviteMemberDialog({
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
-  const roleEntries = Object.entries(roles ?? {})
-
-  const [formInstance, setFormInstance] = useState(0)
-
-  useEffect(() => {
-    if (isOpen) {
-      setFormInstance((n) => n + 1)
-    }
-  }, [isOpen])
-
   const { mutate: inviteMember, isPending: isInviting } = useInviteMember(
     authClient as OrganizationAuthClient,
     {
@@ -64,18 +55,25 @@ export function InviteMemberDialog({
 
     const formData = new FormData(e.target as HTMLFormElement)
     const email = (formData.get("email") as string)?.trim()
-    const role = (formData.get("role") as string)?.trim() || "member"
+    const role = formData.get("role") as string
 
     if (!email) return
 
-    inviteMember({ email, role: role as "owner" | "admin" | "member" })
+    inviteMember(
+      { email, role: role as "owner" | "admin" | "member" },
+      {
+        onSuccess: () => {
+          toast.success(organizationLocalization.inviteMemberSuccess)
+        }
+      }
+    )
   }
 
   return (
     <AlertDialog.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
       <AlertDialog.Container>
         <AlertDialog.Dialog>
-          <Form key={formInstance} onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit}>
             <AlertDialog.CloseTrigger />
 
             <AlertDialog.Header>
@@ -97,15 +95,15 @@ export function InviteMemberDialog({
                 id="email"
                 name="email"
                 type="email"
-                isRequired
                 isDisabled={isInviting}
               >
                 <Label>{localization.auth.email}</Label>
 
                 <Input
                   autoFocus
-                  placeholder={organizationLocalization.inviteEmail}
+                  placeholder={localization.auth.email}
                   variant="secondary"
+                  required
                 />
 
                 <FieldError />
@@ -122,13 +120,12 @@ export function InviteMemberDialog({
 
                 <Select.Trigger>
                   <Select.Value />
-
                   <Select.Indicator />
                 </Select.Trigger>
 
                 <Select.Popover>
                   <ListBox>
-                    {roleEntries.map(([key, label]) => (
+                    {Object.entries(roles).map(([key, label]) => (
                       <ListBox.Item key={key} id={key} textValue={label}>
                         {label}
 
@@ -150,7 +147,7 @@ export function InviteMemberDialog({
               <Button type="submit" isPending={isInviting}>
                 {isInviting && <Spinner color="current" size="sm" />}
 
-                {organizationLocalization.invite}
+                {organizationLocalization.inviteMember}
               </Button>
             </AlertDialog.Footer>
           </Form>
