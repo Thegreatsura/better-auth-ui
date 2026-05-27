@@ -1,7 +1,6 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { Briefcase } from "@gravity-ui/icons"
-import { Button } from "@heroui/react"
-
+import { Button, EmptyState } from "@heroui/react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
 export type OrganizationsEmptyProps = {
@@ -13,24 +12,24 @@ export function OrganizationsEmpty({ onCreatePress }: OrganizationsEmptyProps) {
     useAuthPlugin(organizationPlugin)
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-surface-secondary">
-        <Briefcase className="size-4.5" />
+    <EmptyState className="flex flex-col items-center gap-4 text-center">
+      <div className="flex size-12 items-center justify-center rounded-full bg-surface-secondary">
+        <Briefcase className="size-5" />
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-1 text-center">
-        <p className="text-sm font-semibold">
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-foreground">
           {organizationLocalization.noOrganizations}
         </p>
 
-        <p className="text-muted text-xs">
+        <span className="text-sm text-muted">
           {organizationLocalization.organizationsDescription}
-        </p>
+        </span>
       </div>
 
       <Button size="sm" onPress={onCreatePress}>
         {organizationLocalization.createOrganization}
       </Button>
-    </div>
+    </EmptyState>
   )
 }
