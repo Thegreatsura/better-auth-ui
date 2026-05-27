@@ -11,6 +11,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
+import { useActiveOrganization } from "../../queries/organization"
 
 export type InviteMemberParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["inviteMember"]>[0]
@@ -52,10 +53,22 @@ export function useInviteMember<
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
+  const { data: activeOrganization } = useActiveOrganization(
+    authClient,
+    undefined,
+    queryClient
+  )
+
   return useMutation(
     {
       ...inviteMemberOptions(authClient),
       ...options,
+      mutationFn: (params: InviteMemberParams<TAuthClient>) =>
+        authClient.organization.inviteMember({
+          ...params,
+          organizationId: params?.organizationId ?? activeOrganization?.id,
+          fetchOptions: { ...params?.fetchOptions, throw: true }
+        }),
       meta: {
         awaits: [
           organizationQueryKeys.invitations.all(userId),

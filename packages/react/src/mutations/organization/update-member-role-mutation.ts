@@ -11,6 +11,7 @@ import type { BetterFetchError } from "better-auth/react"
 
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../../queries/auth/session-query"
+import { useActiveOrganization } from "../../queries/organization"
 
 export type UpdateMemberRoleParams<TAuthClient extends OrganizationAuthClient> =
   Parameters<TAuthClient["organization"]["updateMemberRole"]>[0]
@@ -51,10 +52,22 @@ export function useUpdateMemberRole<TAuthClient extends OrganizationAuthClient>(
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
+  const { data: activeOrganization } = useActiveOrganization(
+    authClient,
+    undefined,
+    queryClient
+  )
+
   return useMutation(
     {
       ...updateMemberRoleOptions(authClient),
       ...options,
+      mutationFn: (params: UpdateMemberRoleParams<TAuthClient>) =>
+        authClient.organization.updateMemberRole({
+          ...params,
+          organizationId: params?.organizationId ?? activeOrganization?.id,
+          fetchOptions: { ...params?.fetchOptions, throw: true }
+        }),
       meta: {
         awaits: [
           organizationQueryKeys.members.all(userId),

@@ -70,16 +70,6 @@ export type OrganizationPluginOptions = {
    * @remarks `Record<string, string>`
    */
   additionalRoles?: Record<string, string>
-  /**
-   * Drive the active organization from outside (typically a route param).
-   *
-   * - `string` — activate the organization with this slug.
-   * - `null` — clear the active organization (`setActive({ organizationId: null })`).
-   * - `undefined` — don't manage the active organization (default).
-   *
-   * Pair with {@link useSyncActiveOrganization} (from `@better-auth-ui/react`)
-   * to keep `useActiveOrganization` in sync with the route.
-   */
   slug?: string | null
 }
 
