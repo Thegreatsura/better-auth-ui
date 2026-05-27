@@ -68,7 +68,7 @@ export function OrganizationInvitationTableRow({
       <Table.Cell className="text-sm">{roleLabel}</Table.Cell>
 
       <Table.Cell className="text-sm">
-        <Chip color={statusColor} size="sm">
+        <Chip color={statusColor} size="sm" variant="soft">
           {statusLabel}
         </Chip>
       </Table.Cell>
