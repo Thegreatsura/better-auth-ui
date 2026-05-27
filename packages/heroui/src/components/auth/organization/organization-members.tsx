@@ -168,8 +168,8 @@ export function OrganizationMembers({
                   <Dropdown.ItemIndicator />
                 </Dropdown.Item>
 
-                {Object.entries(roles).map(([key, label]) => (
-                  <Dropdown.Item key={key} id={key} textValue={label}>
+                {Object.entries(roles).map(([role, label]) => (
+                  <Dropdown.Item key={role} id={role} textValue={label}>
                     <Label>{label}</Label>
 
                     <Dropdown.ItemIndicator />
