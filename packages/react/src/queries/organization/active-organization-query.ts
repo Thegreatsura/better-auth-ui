@@ -111,11 +111,11 @@ export function useActiveOrganization<
 
   const { slug } = useAuthPlugin(organizationPlugin)
 
-  const { fetchOptions, ...queryOptions } = options
+  const { query, fetchOptions, ...queryOptions } = options
 
   const baseOptions = activeOrganizationOptions(authClient, userId, {
     fetchOptions,
-    ...(slug ? { query: { organizationSlug: slug } } : {})
+    query: slug ? { organizationSlug: slug } : query
   })
 
   return useQuery(

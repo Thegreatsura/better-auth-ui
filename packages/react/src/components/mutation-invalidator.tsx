@@ -7,13 +7,9 @@ import {
 } from "@tanstack/react-query"
 import { useEffect } from "react"
 
-declare module "@tanstack/react-query" {
-  interface Register {
-    mutationMeta: {
-      invalidates?: Array<QueryKey>
-      awaits?: Array<QueryKey>
-    }
-  }
+type AuthMutationMeta = {
+  invalidates?: Array<QueryKey>
+  awaits?: Array<QueryKey>
 }
 
 export function MutationInvalidator() {
@@ -42,7 +38,7 @@ export function MutationInvalidator() {
         return
       }
 
-      const { invalidates, awaits } = mutation.meta ?? {}
+      const { invalidates, awaits } = (mutation.meta ?? {}) as AuthMutationMeta
 
       if (invalidates?.length) {
         queryClient.invalidateQueries({
