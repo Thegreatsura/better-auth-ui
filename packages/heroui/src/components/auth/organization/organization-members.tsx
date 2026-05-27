@@ -7,7 +7,7 @@ import {
   useListOrganizationMembers,
   useSession
 } from "@better-auth-ui/react"
-import { ChevronUp, Funnel, Plus, Xmark } from "@gravity-ui/icons"
+import { ChevronUp, Funnel, Xmark } from "@gravity-ui/icons"
 import {
   Button,
   Chip,
@@ -119,8 +119,6 @@ export function OrganizationMembers({
           onPress={() => setInviteOpen(true)}
         >
           {organizationLocalization.inviteMember}
-
-          <Plus className="size-3.5" />
         </Button>
       </div>
 

@@ -1,31 +1,30 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
-import { Clock } from "@gravity-ui/icons"
-
+import { PaperPlane } from "@gravity-ui/icons"
+import { EmptyState } from "@heroui/react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
 /**
- * Empty state for `UserInvitations` — mirrors `ApiKeysEmpty` (icon, title,
- * description) without a primary action button.
+ * Empty state for `UserInvitations`
  */
 export function UserInvitationsEmpty() {
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-surface-secondary">
-        <Clock className="size-4.5" />
+    <EmptyState className="flex flex-col items-center gap-4 text-center">
+      <div className="flex size-12 items-center justify-center rounded-full bg-surface-secondary">
+        <PaperPlane className="size-5" />
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-1 text-center">
-        <p className="text-sm font-semibold">
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-foreground">
           {organizationLocalization.noInvitations}
         </p>
 
-        <p className="text-muted text-xs">
+        <span className="text-sm text-muted">
           {organizationLocalization.userInvitationsEmptyDescription}
-        </p>
+        </span>
       </div>
-    </div>
+    </EmptyState>
   )
 }
