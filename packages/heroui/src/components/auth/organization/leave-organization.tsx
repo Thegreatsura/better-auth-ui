@@ -8,12 +8,12 @@ import { AlertDialog, Button } from "@heroui/react"
 import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
-import { DeleteOrganizationDialog } from "./delete-organization-dialog"
+import { LeaveOrganizationDialog } from "./leave-organization-dialog"
 
 /**
- * Danger-zone row to delete the active organization (owner permission on the server).
+ * Danger-zone row to leave the active organization.
  */
-export function DeleteOrganization() {
+export function LeaveOrganization() {
   const { authClient } = useAuth()
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
@@ -28,11 +28,11 @@ export function DeleteOrganization() {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="text-sm font-medium leading-tight">
-          {organizationLocalization.deleteOrganization}
+          {organizationLocalization.leaveOrganization}
         </p>
 
         <p className="text-muted mt-0.5 text-xs">
-          {organizationLocalization.deleteOrganizationDescription}
+          {organizationLocalization.leaveOrganizationDescription}
         </p>
       </div>
 
@@ -43,11 +43,11 @@ export function DeleteOrganization() {
           variant="danger-soft"
           onPress={() => setConfirmOpen(true)}
         >
-          {organizationLocalization.deleteOrganization}
+          {organizationLocalization.leaveOrganization}
         </Button>
 
         {activeOrganization && (
-          <DeleteOrganizationDialog
+          <LeaveOrganizationDialog
             isOpen={confirmOpen}
             onOpenChange={setConfirmOpen}
             organization={activeOrganization}

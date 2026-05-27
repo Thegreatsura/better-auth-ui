@@ -46,7 +46,10 @@ export function InviteMemberDialog({
   const { mutate: inviteMember, isPending: isInviting } = useInviteMember(
     authClient as OrganizationAuthClient,
     {
-      onSuccess: () => onOpenChange(false)
+      onSuccess: () => {
+        onOpenChange(false)
+        toast.success(organizationLocalization.inviteMemberSuccess)
+      }
     }
   )
 
@@ -54,19 +57,13 @@ export function InviteMemberDialog({
     e.preventDefault()
 
     const formData = new FormData(e.target as HTMLFormElement)
-    const email = (formData.get("email") as string)?.trim()
+    const email = formData.get("email") as string
     const role = formData.get("role") as string
 
-    if (!email) return
-
-    inviteMember(
-      { email, role: role as "owner" | "admin" | "member" },
-      {
-        onSuccess: () => {
-          toast.success(organizationLocalization.inviteMemberSuccess)
-        }
-      }
-    )
+    inviteMember({
+      email: email.trim(),
+      role: role as "owner" | "admin" | "member"
+    })
   }
 
   return (

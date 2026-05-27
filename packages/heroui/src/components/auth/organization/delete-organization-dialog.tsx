@@ -5,21 +5,23 @@ import {
   useDeleteOrganization
 } from "@better-auth-ui/react"
 import { TriangleExclamation } from "@gravity-ui/icons"
-import { AlertDialog, Button, Form, Spinner, toast } from "@heroui/react"
+import { AlertDialog, Button, Card, Form, Spinner, toast } from "@heroui/react"
+import type { Organization } from "better-auth/client"
 import type { SyntheticEvent } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
+import { OrganizationView } from "./organization-view"
 
 export type DeleteOrganizationDialogProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  organizationId: string
+  organization: Organization
 }
 
 export function DeleteOrganizationDialog({
   isOpen,
   onOpenChange,
-  organizationId
+  organization
 }: DeleteOrganizationDialogProps) {
   const { authClient, basePaths, localization, navigate } = useAuth()
   const {
@@ -47,7 +49,7 @@ export function DeleteOrganizationDialog({
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    deleteOrganization({ organizationId })
+    deleteOrganization({ organizationId: organization.id })
   }
 
   return (
@@ -67,10 +69,16 @@ export function DeleteOrganizationDialog({
               </AlertDialog.Heading>
             </AlertDialog.Header>
 
-            <AlertDialog.Body>
+            <AlertDialog.Body className="flex flex-col gap-4 overflow-visible">
               <p className="text-muted text-sm">
-                {organizationLocalization.deleteOrganizationWarning}
+                {organizationLocalization.deleteOrganizationDescription}
               </p>
+
+              <Card variant="secondary">
+                <Card.Content>
+                  <OrganizationView organization={organization} hideRole />
+                </Card.Content>
+              </Card>
             </AlertDialog.Body>
 
             <AlertDialog.Footer>

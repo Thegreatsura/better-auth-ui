@@ -1,8 +1,9 @@
 import { useAuth } from "@better-auth-ui/react"
-import { type CardProps, cn } from "@heroui/react"
+import { Card, type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
 
 import { DeleteOrganization } from "./delete-organization"
+import { LeaveOrganization } from "./leave-organization"
 
 export type OrganizationDangerZoneProps = {
   className?: string
@@ -10,7 +11,8 @@ export type OrganizationDangerZoneProps = {
 }
 
 /**
- * Danger zone heading and {@link DeleteOrganization} for the active organization.
+ * Danger zone heading with {@link LeaveOrganization} and {@link DeleteOrganization}
+ * for the active organization in a single card.
  */
 export function OrganizationDangerZone({
   className,
@@ -25,7 +27,15 @@ export function OrganizationDangerZone({
         {localization.settings.dangerZone}
       </h2>
 
-      <DeleteOrganization variant={variant} />
+      <Card variant={variant}>
+        <Card.Content className="gap-0">
+          <LeaveOrganization />
+
+          <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+
+          <DeleteOrganization />
+        </Card.Content>
+      </Card>
     </div>
   )
 }

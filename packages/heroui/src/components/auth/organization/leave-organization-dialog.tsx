@@ -61,7 +61,7 @@ export function LeaveOrganizationDialog({
 
           <AlertDialog.Body className="flex flex-col gap-4 overflow-visible">
             <p className="text-muted text-sm">
-              {organizationLocalization.leaveConfirmation}
+              {organizationLocalization.leaveOrganizationDescription}
             </p>
 
             <Card variant="secondary">

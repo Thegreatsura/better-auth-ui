@@ -27,9 +27,9 @@ export const organizationLocalization = {
   deleteLogo: "Delete logo",
   /** @remarks `"Delete organization"` */
   deleteOrganization: "Delete organization",
-  /** @remarks `"Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone."` */
-  deleteOrganizationWarning:
-    "Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.",
+  /** @remarks `"Permanently delete this organization and all of its data. All members will lose access and this cannot be undone."` */
+  deleteOrganizationDescription:
+    "Permanently delete this organization and all of its data. All members will lose access and this cannot be undone.",
   /** @remarks `"Invitations"` */
   invitations: "Invitations",
   /** @remarks `"Invite member"` */
@@ -45,6 +45,9 @@ export const organizationLocalization = {
   leftOrganization: "You left the organization",
   /** @remarks `"Leave organization"` */
   leaveOrganization: "Leave organization",
+  /** @remarks `"Leave this organization and lose access to its data and resources. You'll need a new invitation to rejoin."` */
+  leaveOrganizationDescription:
+    "Leave this organization and lose access to its data and resources. You'll need a new invitation to rejoin.",
   /** @remarks `"Logo"` */
   logo: "Logo",
   /** @remarks `"Logo updated successfully"` */
