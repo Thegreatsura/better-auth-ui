@@ -17,6 +17,17 @@ import { ResetPasswordEmailDemo as HeroUIResetPasswordEmailDemo } from "./heroui
 import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/magic-link/magic-link"
 import { ManageAccountsDemo as HeroUIManageAccountsDemo } from "./heroui/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as HeroUISwitchAccountSubmenuDemo } from "./heroui/multi-session/switch-account-submenu"
+import { OrganizationDemo as HeroUIOrganizationDemo } from "./heroui/organization/organization"
+import { OrganizationDangerZoneDemo as HeroUIOrganizationDangerZoneDemo } from "./heroui/organization/organization-danger-zone"
+import { OrganizationInvitationsDemo as HeroUIOrganizationInvitationsDemo } from "./heroui/organization/organization-invitations"
+import { OrganizationMembersDemo as HeroUIOrganizationMembersDemo } from "./heroui/organization/organization-members"
+import { OrganizationPeopleDemo as HeroUIOrganizationPeopleDemo } from "./heroui/organization/organization-people"
+import { OrganizationProfileDemo as HeroUIOrganizationProfileDemo } from "./heroui/organization/organization-profile"
+import { OrganizationSettingsDemo as HeroUIOrganizationSettingsDemo } from "./heroui/organization/organization-settings"
+import { OrganizationSwitcherDemo as HeroUIOrganizationSwitcherDemo } from "./heroui/organization/organization-switcher"
+import { OrganizationsDemo as HeroUIOrganizationsDemo } from "./heroui/organization/organizations"
+import { OrganizationsSettingsDemo as HeroUIOrganizationsSettingsDemo } from "./heroui/organization/organizations-settings"
+import { UserInvitationsDemo as HeroUIUserInvitationsDemo } from "./heroui/organization/user-invitations"
 import { PasskeySignInDemo as HeroUIPasskeySignInDemo } from "./heroui/passkey/passkey-sign-in"
 import { AccountSettingsDemo as HeroUIAccountSettingsDemo } from "./heroui/settings/account/account-settings"
 import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/account/change-email"
@@ -97,6 +108,17 @@ export const demos: Record<string, ComponentType> = {
   "heroui-magic-link-email": HeroUIMagicLinkEmailDemo,
   "heroui-manage-accounts": HeroUIManageAccountsDemo,
   "heroui-new-device-email": HeroUINewDeviceEmailDemo,
+  "heroui-organization": HeroUIOrganizationDemo,
+  "heroui-organization-danger-zone": HeroUIOrganizationDangerZoneDemo,
+  "heroui-organization-invitations": HeroUIOrganizationInvitationsDemo,
+  "heroui-organization-members": HeroUIOrganizationMembersDemo,
+  "heroui-organization-people": HeroUIOrganizationPeopleDemo,
+  "heroui-organization-profile": HeroUIOrganizationProfileDemo,
+  "heroui-organization-settings": HeroUIOrganizationSettingsDemo,
+  "heroui-organization-switcher": HeroUIOrganizationSwitcherDemo,
+  "heroui-organizations": HeroUIOrganizationsDemo,
+  "heroui-organizations-settings": HeroUIOrganizationsSettingsDemo,
+  "heroui-user-invitations": HeroUIUserInvitationsDemo,
   "heroui-otp-email": HeroUIOtpEmailDemo,
   "heroui-passkey-sign-in": HeroUIPasskeySignInDemo,
   "heroui-passkeys": HeroUIPasskeysDemo,

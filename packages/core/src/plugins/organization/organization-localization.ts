@@ -19,8 +19,6 @@ export const organizationLocalization = {
   changeMemberRole: "Change role",
   /** @remarks `"Clear"` */
   clear: "Clear",
-  /** @remarks `"Confirm"` */
-  confirm: "Confirm",
   /** @remarks `"Create organization"` */
   createOrganization: "Create organization",
   /** @remarks `"Delete logo"` */
@@ -41,8 +39,6 @@ export const organizationLocalization = {
   /** @remarks `"We'll email them a link to join this organization. Choose the role they'll have once they accept."` */
   inviteMemberDescription:
     "We'll email them a link to join this organization. Choose the role they'll have once they accept.",
-  /** @remarks `"Are you sure you want to leave this organization?"` */
-  leaveConfirmation: "Are you sure you want to leave this organization?",
   /** @remarks `"You left the organization"` */
   leftOrganization: "You left the organization",
   /** @remarks `"Leave organization"` */
