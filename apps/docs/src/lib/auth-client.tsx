@@ -1,3 +1,11 @@
+import { apiKeyClient } from "@better-auth/api-key/client"
+import { passkeyClient } from "@better-auth/passkey/client"
+import {
+  magicLinkClient,
+  multiSessionClient,
+  organizationClient,
+  usernameClient
+} from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
 const DEMO_SESSION_TOKEN = "demo_sess_current"
@@ -477,6 +485,14 @@ const DEMO_USER_INVITATIONS = [
 ]
 
 export const authClient = createAuthClient({
+  plugins: [
+    organizationClient(),
+    multiSessionClient(),
+    apiKeyClient(),
+    passkeyClient(),
+    usernameClient(),
+    magicLinkClient()
+  ],
   fetchOptions: {
     customFetchImpl
   }

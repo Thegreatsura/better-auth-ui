@@ -75,9 +75,11 @@ export function OrganizationInvitations({
       const col = sortDescriptor.column as keyof typeof a
       let cmp = 0
 
-      const first = String(a[col])
-      const second = String(b[col])
-      cmp = first.localeCompare(second)
+      if (col === "createdAt") {
+        cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      } else {
+        cmp = String(a[col]).localeCompare(String(b[col]))
+      }
 
       if (sortDescriptor.direction === "descending") {
         cmp *= -1
