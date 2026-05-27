@@ -1,21 +1,11 @@
-import { AuthProvider } from "@better-auth-ui/heroui"
-import {
-  OrganizationPeople,
-  organizationPlugin
-} from "@better-auth-ui/heroui/plugins"
+import { OrganizationPeople } from "@better-auth-ui/heroui/plugins"
 
-import { authClient } from "@/lib/auth-client"
+import { OrganizationDemoWrapper } from "./organization-demo-wrapper"
 
 export function OrganizationPeopleDemo() {
   return (
-    <AuthProvider
-      authClient={authClient}
-      navigate={() => {}}
-      plugins={[organizationPlugin()]}
-    >
-      <div className="w-full">
-        <OrganizationPeople />
-      </div>
-    </AuthProvider>
+    <OrganizationDemoWrapper>
+      <OrganizationPeople />
+    </OrganizationDemoWrapper>
   )
 }
