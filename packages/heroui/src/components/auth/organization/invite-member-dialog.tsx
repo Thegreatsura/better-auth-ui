@@ -58,7 +58,7 @@ export function InviteMemberDialog({
 
     const formData = new FormData(e.target as HTMLFormElement)
     const email = formData.get("email") as string
-    const role = formData.get("role") as "owner"
+    const role = formData.get("role") as "owner" | "admin" | "member"
 
     inviteMember({
       email: email.trim(),
