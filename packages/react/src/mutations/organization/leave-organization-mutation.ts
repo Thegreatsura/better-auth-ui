@@ -65,7 +65,7 @@ export function useLeaveOrganization<
         ],
         invalidates: [
           organizationQueryKeys.lists(userId),
-          organizationQueryKeys.activeOrganization(userId)
+          organizationQueryKeys.activeOrganizations(userId)
         ]
       }
     },

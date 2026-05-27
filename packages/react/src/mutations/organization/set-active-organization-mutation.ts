@@ -65,10 +65,11 @@ export function useSetActiveOrganization<
       ...setActiveOrganizationOptions(authClient),
       ...options,
       onMutate: async (variables, context) => {
-        // Cancel any outgoing refetches
-        // (so they don't overwrite our optimistic update)
+        // Cancel any outgoing refetches across every slug-partitioned
+        // active-organization cache entry so they don't overwrite our
+        // optimistic update.
         await context.client.cancelQueries({
-          queryKey: organizationQueryKeys.activeOrganization(userId)
+          queryKey: organizationQueryKeys.activeOrganizations(userId)
         })
 
         // Snapshot the previous value
@@ -87,7 +88,11 @@ export function useSetActiveOrganization<
         }
 
         const newOrganization = organizations?.find(
-          (organization) => organization.id === variables?.organizationId
+          (organization) =>
+            (variables?.organizationId !== undefined &&
+              organization.id === variables.organizationId) ||
+            (variables?.organizationSlug !== undefined &&
+              organization.slug === variables.organizationSlug)
         )
 
         if (newOrganization) {
@@ -114,10 +119,11 @@ export function useSetActiveOrganization<
 
         return options?.onError?.(error, variables, onMutateResult, context)
       },
-      // Always refetch after error or success:
+      // Always refetch after error or success — invalidate every
+      // slug-partitioned variant via the broader prefix.
       onSettled: async (data, error, variables, onMutateResult, context) => {
         await context.client.invalidateQueries({
-          queryKey: organizationQueryKeys.activeOrganization(userId)
+          queryKey: organizationQueryKeys.activeOrganizations(userId)
         })
 
         return options?.onSettled?.(

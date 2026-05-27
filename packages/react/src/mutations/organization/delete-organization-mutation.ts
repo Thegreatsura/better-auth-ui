@@ -60,7 +60,10 @@ export function useDeleteOrganization<
       ...options,
       meta: {
         awaits: [organizationQueryKeys.lists(userId)],
-        invalidates: [organizationQueryKeys.fullDetails(userId)]
+        invalidates: [
+          organizationQueryKeys.fullDetails(userId),
+          organizationQueryKeys.activeOrganizations(userId)
+        ]
       }
     },
     queryClient

@@ -18,10 +18,27 @@ export const organizationQueryKeys = {
     query?: TQuery
   ) => [...organizationQueryKeys.fullDetails(userId), query ?? null] as const,
 
+  /**
+   * Prefix for every active-organization cache entry (used for invalidation
+   * across slug-partitioned variants).
+   */
+  activeOrganizations: (userId: string | undefined) =>
+    [...organizationQueryKeys.all(userId), "active"] as const,
+  /**
+   * Cache entry for the currently active organization. Holds a {@link
+   * ListOrganization}-shaped value — distinct from `fullDetail`, which
+   * carries members and invitations — so `setActive`'s optimistic update
+   * (which can only produce a list-shaped org) doesn't corrupt the full
+   * cache.
+   */
   activeOrganization: <TQuery = undefined>(
     userId: string | undefined,
     query?: TQuery
-  ) => organizationQueryKeys.fullDetail(userId, query),
+  ) =>
+    [
+      ...organizationQueryKeys.activeOrganizations(userId),
+      query ?? null
+    ] as const,
 
   members: {
     all: (userId: string | undefined) =>

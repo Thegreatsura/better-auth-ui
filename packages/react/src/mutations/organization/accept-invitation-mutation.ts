@@ -60,7 +60,10 @@ export function useAcceptInvitation<TAuthClient extends OrganizationAuthClient>(
           organizationQueryKeys.userInvitations.all(userId),
           organizationQueryKeys.lists(userId)
         ],
-        invalidates: [organizationQueryKeys.fullDetails(userId)]
+        invalidates: [
+          organizationQueryKeys.fullDetails(userId),
+          organizationQueryKeys.activeOrganizations(userId)
+        ]
       }
     },
     queryClient

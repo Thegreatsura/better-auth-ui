@@ -74,7 +74,8 @@ export function useUpdateOrganization<
       meta: {
         awaits: [
           organizationQueryKeys.lists(userId),
-          organizationQueryKeys.fullDetails(userId)
+          organizationQueryKeys.fullDetails(userId),
+          organizationQueryKeys.activeOrganizations(userId)
         ]
       }
     },
