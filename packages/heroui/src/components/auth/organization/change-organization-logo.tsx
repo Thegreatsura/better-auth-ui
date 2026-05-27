@@ -75,16 +75,22 @@ export function ChangeOrganizationLogo({
       },
       {
         onSuccess: async () => {
-          if (currentLogo) {
-            setIsDeleting(true)
-            try {
-              await logo.delete?.(currentLogo)
-            } finally {
-              setIsDeleting(false)
-            }
+          if (!currentLogo) {
+            toast.success(organizationLocalization.logoDeletedSuccess)
+            return
           }
 
-          toast.success(organizationLocalization.logoDeletedSuccess)
+          setIsDeleting(true)
+          try {
+            await logo.delete?.(currentLogo)
+            toast.success(organizationLocalization.logoDeletedSuccess)
+          } catch (error) {
+            if (error instanceof Error) {
+              toast.danger(error.message)
+            }
+          } finally {
+            setIsDeleting(false)
+          }
         }
       }
     )

@@ -1,4 +1,8 @@
-import { useAuth } from "@better-auth-ui/react"
+import {
+  type OrganizationAuthClient,
+  useAuth,
+  useHasPermission
+} from "@better-auth-ui/react"
 import { Card, type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
 
@@ -19,7 +23,14 @@ export function OrganizationDangerZone({
   variant,
   ...props
 }: OrganizationDangerZoneProps & ComponentProps<"div">) {
-  const { localization } = useAuth()
+  const { authClient, localization } = useAuth()
+
+  const { data: deletePermission, isPending: deletePermissionPending } =
+    useHasPermission(authClient as OrganizationAuthClient, {
+      permissions: { organization: ["delete"] }
+    })
+
+  const showDelete = deletePermissionPending || !!deletePermission?.success
 
   return (
     <div className={cn("flex w-full flex-col", className)} {...props}>
@@ -31,9 +42,13 @@ export function OrganizationDangerZone({
         <Card.Content className="gap-0">
           <LeaveOrganization />
 
-          <div className="border-b border-dashed -mx-4 my-4" />
+          {showDelete && (
+            <>
+              <div className="border-b border-dashed -mx-4 my-4" />
 
-          <DeleteOrganization />
+              <DeleteOrganization />
+            </>
+          )}
         </Card.Content>
       </Card>
     </div>

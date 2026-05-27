@@ -2,16 +2,19 @@ import {
   type OrganizationAuthClient,
   useActiveOrganization,
   useAuth,
-  useAuthPlugin
+  useAuthPlugin,
+  useHasPermission
 } from "@better-auth-ui/react"
 import { AlertDialog, Button } from "@heroui/react"
 import { useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { DeleteOrganizationDialog } from "./delete-organization-dialog"
+import { DeleteOrganizationSkeleton } from "./delete-organization-skeleton"
 
 /**
- * Danger-zone row to delete the active organization (owner permission on the server).
+ * Danger-zone row to delete the active organization. Hidden for members without
+ * the `organization:delete` permission.
  */
 export function DeleteOrganization() {
   const { authClient } = useAuth()
@@ -22,7 +25,22 @@ export function DeleteOrganization() {
     authClient as OrganizationAuthClient
   )
 
+  const { data: permission, isPending: permissionPending } = useHasPermission(
+    authClient as OrganizationAuthClient,
+    {
+      permissions: { organization: ["delete"] }
+    }
+  )
+
   const [confirmOpen, setConfirmOpen] = useState(false)
+
+  if (permissionPending) {
+    return <DeleteOrganizationSkeleton />
+  }
+
+  if (!permission?.success) {
+    return null
+  }
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
