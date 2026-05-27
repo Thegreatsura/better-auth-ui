@@ -1,32 +1,30 @@
 import { fileToBase64 } from "@better-auth-ui/core"
 import {
   type OrganizationAuthClient,
+  useActiveOrganization,
   useAuth,
   useAuthPlugin,
   useUpdateOrganization
 } from "@better-auth-ui/react"
 import { CloudArrowUpIn, TrashBin } from "@gravity-ui/icons"
 import { Button, cn, Dropdown, Label, Spinner, toast } from "@heroui/react"
-import type { Organization } from "better-auth/client"
 import { type ChangeEvent, useRef, useState } from "react"
-
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationLogo } from "./organization-logo"
 
 export type ChangeOrganizationLogoProps = {
   className?: string
-  isOrganizationLoading?: boolean
-  organization?: Organization | null
 }
 
 export function ChangeOrganizationLogo({
-  className,
-  isOrganizationLoading,
-  organization
+  className
 }: ChangeOrganizationLogoProps) {
   const { authClient } = useAuth()
   const { logo, localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
+
+  const { data: activeOrganization, isPending: activeOrganizationPending } =
+    useActiveOrganization(authClient as OrganizationAuthClient)
 
   const { mutate: updateOrganization, isPending: updatePending } =
     useUpdateOrganization(authClient as OrganizationAuthClient)
@@ -39,7 +37,7 @@ export function ChangeOrganizationLogo({
 
   async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file || !organization) return
+    if (!file || !activeOrganization) return
 
     e.target.value = ""
 
@@ -69,14 +67,12 @@ export function ChangeOrganizationLogo({
   }
 
   async function handleDelete() {
-    const currentLogo = organization?.logo
+    const currentLogo = activeOrganization?.logo
 
     updateOrganization(
       {
-        data: { logo: null }
-      } as unknown as Parameters<
-        OrganizationAuthClient["organization"]["update"]
-      >[0],
+        data: { logo: "" }
+      },
       {
         onSuccess: async () => {
           if (currentLogo) {
@@ -100,7 +96,9 @@ export function ChangeOrganizationLogo({
 
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      <Label isDisabled={!organization}>{organizationLocalization.logo}</Label>
+      <Label isDisabled={!activeOrganization}>
+        {organizationLocalization.logo}
+      </Label>
 
       <input
         ref={fileInputRef}
@@ -116,19 +114,19 @@ export function ChangeOrganizationLogo({
           isIconOnly
           variant="ghost"
           className="p-0 h-auto w-auto rounded-full"
-          isDisabled={!organization || isPending}
+          isDisabled={!activeOrganization || isPending}
           onPress={() => fileInputRef.current?.click()}
         >
           <OrganizationLogo
             size="lg"
-            isPending={isOrganizationLoading}
-            organization={organization ?? undefined}
+            isPending={activeOrganizationPending}
+            organization={activeOrganization}
           />
         </Button>
 
         <Dropdown>
           <Button
-            isDisabled={!organization || isPending}
+            isDisabled={!activeOrganization || isPending}
             size="sm"
             variant="secondary"
           >
@@ -150,7 +148,7 @@ export function ChangeOrganizationLogo({
 
               <Dropdown.Item
                 textValue={organizationLocalization.deleteLogo}
-                isDisabled={!organization?.logo}
+                isDisabled={!activeOrganization?.logo}
                 onAction={handleDelete}
                 variant="danger"
               >

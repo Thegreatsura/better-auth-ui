@@ -42,8 +42,9 @@ export function OrganizationProfile({
   const { localization: organizationLocalization } =
     useAuthPlugin(organizationPlugin)
 
-  const { data: activeOrganization, isPending: isActiveOrganizationPending } =
-    useActiveOrganization(authClient as OrganizationAuthClient)
+  const { data: activeOrganization } = useActiveOrganization(
+    authClient as OrganizationAuthClient
+  )
 
   const [slug, setSlug] = useState(activeOrganization?.slug ?? "")
 
@@ -79,13 +80,10 @@ export function OrganizationProfile({
         {organizationLocalization.organizationProfile}
       </h2>
 
-      <Card className={cn("gap-4 p-4", className)} variant={variant} {...props}>
+      <Card className={cn(className)} variant={variant} {...props}>
         <Card.Content>
           <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <ChangeOrganizationLogo
-              isOrganizationLoading={isActiveOrganizationPending}
-              organization={activeOrganization}
-            />
+            <ChangeOrganizationLogo />
 
             <TextField
               key={activeOrganization?.name}
@@ -129,9 +127,10 @@ export function OrganizationProfile({
               isPending={isPending}
               isDisabled={!activeOrganization}
               size="sm"
-              className="mt-1 self-start"
+              className="mt-1"
             >
               {isPending && <Spinner color="current" size="sm" />}
+
               {localization.settings.saveChanges}
             </Button>
           </Form>
