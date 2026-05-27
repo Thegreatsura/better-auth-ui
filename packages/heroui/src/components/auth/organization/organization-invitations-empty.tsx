@@ -1,7 +1,6 @@
 import { useAuthPlugin } from "@better-auth-ui/react"
 import { PaperPlane } from "@gravity-ui/icons"
-import { Button } from "@heroui/react"
-
+import { Button, EmptyState } from "@heroui/react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
 export type OrganizationInvitationsEmptyProps = {
@@ -19,24 +18,22 @@ export function OrganizationInvitationsEmpty({
     useAuthPlugin(organizationPlugin)
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-8">
-      <div className="flex size-10 items-center justify-center rounded-xl bg-surface-secondary">
-        <PaperPlane className="size-4.5" />
-      </div>
+    <EmptyState className="flex flex-col items-center gap-4 text-center p-4">
+      <PaperPlane className="size-6 text-muted" />
 
-      <div className="flex flex-col items-center justify-center gap-1 text-center">
-        <p className="text-sm font-semibold">
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-foreground">
           {organizationLocalization.noInvitations}
         </p>
 
-        <p className="text-muted text-xs">
+        <span className="text-sm text-muted">
           {organizationLocalization.organizationInvitationsEmptyDescription}
-        </p>
+        </span>
       </div>
 
       <Button size="sm" onPress={onInvitePress}>
         {organizationLocalization.inviteMember}
       </Button>
-    </div>
+    </EmptyState>
   )
 }

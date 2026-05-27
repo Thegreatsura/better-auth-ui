@@ -32,6 +32,8 @@ export const organizationLocalization = {
     "Permanently delete this organization and all of its data. All members will lose access and this cannot be undone.",
   /** @remarks `"Invitations"` */
   invitations: "Invitations",
+  /** @remarks `"Invited at"` */
+  invitedAt: "Invited at",
   /** @remarks `"Invite member"` */
   inviteMember: "Invite member",
   /** @remarks `"Member invited successfully"` */
