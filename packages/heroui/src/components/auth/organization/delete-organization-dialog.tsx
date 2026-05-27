@@ -36,11 +36,8 @@ export function DeleteOrganizationDialog({
         onOpenChange(false)
         toast.success(organizationLocalization.organizationDeleted)
 
-        const organizationsSettingsSegment =
-          organizationPluginViewPaths.settings?.organizations ?? "organizations"
-
         navigate({
-          to: `${basePaths.settings}/${organizationsSettingsSegment}`,
+          to: `${basePaths.settings}/${organizationPluginViewPaths.settings.organizations}`,
           replace: true
         })
       }

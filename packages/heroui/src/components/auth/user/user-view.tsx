@@ -28,7 +28,7 @@ export type UserViewProps = {
  * Render a compact user item with an avatar, a primary label (display username, name, or email), and an optional subtitle (email).
  *
  * @param isPending - If true and no `user` prop is provided, renders a loading skeleton instead of user details
- * @param size - Avatar size variant; defaults to `"sm"`
+ * @param size - Avatar size variant; defaults to `"md"`
  * @param hideSubtitle - When true, omits the muted subtitle row under the primary label
  * @param user - Optional user to display; when omitted the current session user is used if available
  * @returns A React element containing the user's avatar and text labels

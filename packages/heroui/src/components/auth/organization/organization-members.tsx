@@ -82,8 +82,9 @@ export function OrganizationMembers({
 
   const sortedMembers = useMemo(() => {
     if (!sortDescriptor) return filteredMembers
+    if (!filteredMembers) return filteredMembers
 
-    return filteredMembers?.sort((a, b) => {
+    return [...filteredMembers].sort((a, b) => {
       const col = sortDescriptor.column as keyof Member | "user"
       const first =
         col === "user" ? a.user.name || a.user.email : String(a[col])

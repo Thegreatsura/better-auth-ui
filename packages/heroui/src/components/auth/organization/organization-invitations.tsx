@@ -69,8 +69,9 @@ export function OrganizationInvitations({
 
   const sortedInvitations = useMemo(() => {
     if (!sortDescriptor) return filteredInvitations
+    if (!filteredInvitations) return filteredInvitations
 
-    return filteredInvitations?.sort((a, b) => {
+    return [...filteredInvitations].sort((a, b) => {
       const col = sortDescriptor.column as keyof typeof a
       let cmp = 0
 
