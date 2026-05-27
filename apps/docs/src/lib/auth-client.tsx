@@ -407,6 +407,16 @@ const DEMO_ACTIVE_ORGANIZATION = {
   ],
   invitations: [
     {
+      id: "inv_jane",
+      organizationId: "org_acme",
+      email: "jane.doe@example.com",
+      role: "admin",
+      status: "accepted",
+      expiresAt: new Date(Date.now() + 86_400_000 * 7).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
       id: "inv_alex",
       organizationId: "org_acme",
       email: "alex@example.com",
@@ -421,7 +431,27 @@ const DEMO_ACTIVE_ORGANIZATION = {
       organizationId: "org_acme",
       email: "morgan@example.com",
       role: "admin",
-      status: "pending",
+      status: "rejected",
+      expiresAt: new Date(Date.now() + 86_400_000 * 5).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_john",
+      organizationId: "org_acme",
+      email: "john.smith@example.com",
+      role: "member",
+      status: "accepted",
+      expiresAt: new Date(Date.now() + 86_400_000 * 7).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_taylor",
+      organizationId: "org_acme",
+      email: "taylor@example.com",
+      role: "member",
+      status: "canceled",
       expiresAt: new Date(Date.now() + 86_400_000 * 5).toISOString(),
       inviterId: "123",
       createdAt: NOW
