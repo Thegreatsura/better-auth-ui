@@ -18,8 +18,8 @@ import {
   Link
 } from "@heroui/react"
 import { buttonVariants } from "@heroui/styles"
+import type { Organization } from "better-auth/client"
 import { type ReactNode, useState } from "react"
-
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { UserView } from "../user/user-view"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
@@ -35,6 +35,7 @@ export type OrganizationSwitcherProps = {
   hidePersonal?: boolean
   hideSettings?: boolean
   hideSlug?: boolean
+  setActive?: (organization: Organization | null) => void
 }
 
 /**
@@ -47,17 +48,19 @@ export function OrganizationSwitcher({
   hidePersonal,
   hideSettings,
   hideSlug = true,
+  setActive,
   placement,
   variant = "ghost",
   size = "md",
   trigger,
   ...props
 }: OrganizationSwitcherProps & ButtonProps) {
-  const { authClient, basePaths, localization, viewPaths } = useAuth()
+  const { authClient, navigate, basePaths, localization, viewPaths } = useAuth()
   const { data: session, isPending: sessionPending } = useSession(authClient)
   const {
     localization: organizationLocalization,
-    viewPaths: organizationViewPaths
+    viewPaths: organizationViewPaths,
+    slug
   } = useAuthPlugin(organizationPlugin)
 
   const { data: activeOrganization, isPending: activeOrganizationPending } =
@@ -76,6 +79,20 @@ export function OrganizationSwitcher({
 
   const [createOpen, setCreateOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+
+  function handleSetActive(organization: Organization | null) {
+    if (setActive) {
+      setActive(organization)
+    } else if (slug !== undefined) {
+      navigate({
+        to: organization
+          ? `${basePaths.organization}/${organization.slug}/${organizationViewPaths.organization.settings}`
+          : `${basePaths.settings}/${viewPaths.settings.account}`
+      })
+    } else {
+      setActiveOrganization({ organizationId: organization?.id })
+    }
+  }
 
   return (
     <>
@@ -164,7 +181,7 @@ export function OrganizationSwitcher({
             {!!activeOrganization && !hidePersonal && (
               <Dropdown.Item
                 textValue={organizationLocalization.personalAccount}
-                onPress={() => setActiveOrganization({ organizationId: null })}
+                onPress={() => handleSetActive(null)}
               >
                 <UserView hideSubtitle={hideSlug} />
               </Dropdown.Item>
@@ -178,9 +195,7 @@ export function OrganizationSwitcher({
                 <Dropdown.Item
                   key={organization.id}
                   textValue={organization.name}
-                  onPress={() =>
-                    setActiveOrganization({ organizationId: organization.id })
-                  }
+                  onPress={() => handleSetActive(organization)}
                 >
                   <OrganizationView
                     hideRole

@@ -1,4 +1,7 @@
-import { organizationQueryKeys } from "@better-auth-ui/core/plugins"
+import {
+  organizationPlugin,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
   type QueryClient,
@@ -7,7 +10,7 @@ import {
   useQuery
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
-
+import { useAuthPlugin } from "../../hooks/use-auth-plugin"
 import type { OrganizationAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 import type { FullOrganizationParams } from "./full-organization-query"
@@ -19,7 +22,7 @@ export type ActiveOrganizationData<
 
 export type ActiveOrganizationParams<
   TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
-> = FullOrganizationParams<TAuthClient> & { query?: never }
+> = FullOrganizationParams<TAuthClient>
 
 export type ActiveOrganizationOptions<
   TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
@@ -36,7 +39,10 @@ export function activeOrganizationOptions<
   params?: ActiveOrganizationParams<TAuthClient>
 ) {
   type TData = ActiveOrganizationData<TAuthClient>
-  const queryKey = organizationQueryKeys.activeOrganization(userId)
+  const queryKey = organizationQueryKeys.activeOrganization(
+    userId,
+    params?.query
+  )
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {
@@ -103,17 +109,21 @@ export function useActiveOrganization<
   const { data: session } = useSession(authClient, undefined, queryClient)
   const userId = session?.user.id
 
+  const { slug } = useAuthPlugin(organizationPlugin)
+
   const { fetchOptions, ...queryOptions } = options
 
   const baseOptions = activeOrganizationOptions(authClient, userId, {
-    fetchOptions
+    fetchOptions,
+    ...(slug ? { query: { organizationSlug: slug } } : {})
   })
 
   return useQuery(
     {
       ...queryOptions,
       ...baseOptions,
-      queryFn: userId ? baseOptions.queryFn : skipToken
+      queryFn:
+        slug === null ? () => null : userId ? baseOptions.queryFn : skipToken
     },
     queryClient
   )

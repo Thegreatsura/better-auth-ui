@@ -44,7 +44,8 @@ export function Organization({
 
   const {
     localization: organizationLocalization,
-    viewPaths: organizationViewPaths
+    viewPaths: organizationViewPaths,
+    slug
   } = useAuthPlugin(organizationPlugin)
 
   const { data: activeOrganization, isPending } = useActiveOrganization(
@@ -95,7 +96,11 @@ export function Organization({
           >
             <Tabs.Tab
               id="settings"
-              href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
+              href={
+                slug
+                  ? `${basePaths.organization}/${slug}/${organizationViewPaths.organization.settings}`
+                  : `${basePaths.organization}/${organizationViewPaths.organization.settings}`
+              }
               className="gap-2"
               onPress={(e) =>
                 e.target.scrollIntoView({
@@ -113,7 +118,11 @@ export function Organization({
 
             <Tabs.Tab
               id="people"
-              href={`${basePaths.organization}/${organizationViewPaths.organization.people}`}
+              href={
+                slug
+                  ? `${basePaths.organization}/${slug}/${organizationViewPaths.organization.people}`
+                  : `${basePaths.organization}/${organizationViewPaths.organization.people}`
+              }
               className="gap-2"
               onPress={(e) =>
                 e.target.scrollIntoView({

@@ -18,8 +18,10 @@ export const organizationQueryKeys = {
     query?: TQuery
   ) => [...organizationQueryKeys.fullDetails(userId), query ?? null] as const,
 
-  activeOrganization: (userId: string | undefined) =>
-    organizationQueryKeys.fullDetail(userId),
+  activeOrganization: <TQuery = undefined>(
+    userId: string | undefined,
+    query?: TQuery
+  ) => organizationQueryKeys.fullDetail(userId, query),
 
   members: {
     all: (userId: string | undefined) =>

@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsPathRouteImport } from './routes/settings/$path'
-import { Route as OrganizationPathRouteImport } from './routes/organization/$path'
 import { Route as AuthPathRouteImport } from './routes/auth/$path'
+import { Route as OrganizationSlugPathRouteImport } from './routes/organization/$slug/$path'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -25,14 +25,14 @@ const SettingsPathRoute = SettingsPathRouteImport.update({
   path: '/settings/$path',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrganizationPathRoute = OrganizationPathRouteImport.update({
-  id: '/organization/$path',
-  path: '/organization/$path',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthPathRoute = AuthPathRouteImport.update({
   id: '/auth/$path',
   path: '/auth/$path',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizationSlugPathRoute = OrganizationSlugPathRouteImport.update({
+  id: '/organization/$slug/$path',
+  path: '/organization/$slug/$path',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -44,55 +44,55 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth/$path': typeof AuthPathRoute
-  '/organization/$path': typeof OrganizationPathRoute
   '/settings/$path': typeof SettingsPathRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/organization/$slug/$path': typeof OrganizationSlugPathRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/$path': typeof AuthPathRoute
-  '/organization/$path': typeof OrganizationPathRoute
   '/settings/$path': typeof SettingsPathRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/organization/$slug/$path': typeof OrganizationSlugPathRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth/$path': typeof AuthPathRoute
-  '/organization/$path': typeof OrganizationPathRoute
   '/settings/$path': typeof SettingsPathRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/organization/$slug/$path': typeof OrganizationSlugPathRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth/$path'
-    | '/organization/$path'
     | '/settings/$path'
     | '/api/auth/$'
+    | '/organization/$slug/$path'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/$path'
-    | '/organization/$path'
     | '/settings/$path'
     | '/api/auth/$'
+    | '/organization/$slug/$path'
   id:
     | '__root__'
     | '/'
     | '/auth/$path'
-    | '/organization/$path'
     | '/settings/$path'
     | '/api/auth/$'
+    | '/organization/$slug/$path'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthPathRoute: typeof AuthPathRoute
-  OrganizationPathRoute: typeof OrganizationPathRoute
   SettingsPathRoute: typeof SettingsPathRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  OrganizationSlugPathRoute: typeof OrganizationSlugPathRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -111,18 +111,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsPathRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/organization/$path': {
-      id: '/organization/$path'
-      path: '/organization/$path'
-      fullPath: '/organization/$path'
-      preLoaderRoute: typeof OrganizationPathRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/$path': {
       id: '/auth/$path'
       path: '/auth/$path'
       fullPath: '/auth/$path'
       preLoaderRoute: typeof AuthPathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organization/$slug/$path': {
+      id: '/organization/$slug/$path'
+      path: '/organization/$slug/$path'
+      fullPath: '/organization/$slug/$path'
+      preLoaderRoute: typeof OrganizationSlugPathRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -138,9 +138,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthPathRoute: AuthPathRoute,
-  OrganizationPathRoute: OrganizationPathRoute,
   SettingsPathRoute: SettingsPathRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  OrganizationSlugPathRoute: OrganizationSlugPathRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

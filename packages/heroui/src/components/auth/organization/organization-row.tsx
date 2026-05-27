@@ -22,7 +22,8 @@ export function OrganizationRow({ organization }: OrganizationRowProps) {
   const { authClient, basePaths, navigate } = useAuth()
   const {
     localization: organizationLocalization,
-    viewPaths: organizationViewPaths
+    viewPaths: organizationViewPaths,
+    slug
   } = useAuthPlugin(organizationPlugin)
 
   const { mutate: setActiveOrganization, isPending: setActivePending } =
@@ -34,6 +35,16 @@ export function OrganizationRow({ organization }: OrganizationRowProps) {
       }
     })
 
+  function manageOrganization() {
+    if (slug !== undefined) {
+      navigate({
+        to: `${basePaths.organization}/${organization.slug}/${organizationViewPaths.organization.settings}`
+      })
+    } else {
+      setActiveOrganization({ organizationId: organization.id })
+    }
+  }
+
   return (
     <div className="flex items-center gap-3">
       <OrganizationView organization={organization} />
@@ -43,9 +54,7 @@ export function OrganizationRow({ organization }: OrganizationRowProps) {
         variant="outline"
         size="sm"
         isPending={setActivePending}
-        onPress={() =>
-          setActiveOrganization({ organizationId: organization.id })
-        }
+        onPress={manageOrganization}
         aria-label={organizationLocalization.manage}
       >
         {setActivePending ? <Spinner color="current" size="sm" /> : <Gear />}
