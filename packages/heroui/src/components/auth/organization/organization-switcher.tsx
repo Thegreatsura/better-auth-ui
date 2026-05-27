@@ -143,7 +143,11 @@ export function OrganizationSwitcher({
 
               {!hideSettings && (
                 <Link
-                  href={`${basePaths.organization}/${organizationViewPaths.organization.settings}`}
+                  href={
+                    slug
+                      ? `${basePaths.organization}/${slug}/${organizationViewPaths.organization.settings}`
+                      : `${basePaths.organization}/${organizationViewPaths.organization.settings}`
+                  }
                   className={cn(
                     buttonVariants({ variant: "outline", size: "sm" }),
                     "shrink-0 gap-2"
