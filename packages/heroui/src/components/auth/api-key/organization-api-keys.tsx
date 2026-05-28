@@ -17,7 +17,7 @@ export type OrganizationApiKeysProps = {
 /**
  * {@link ApiKeys} scoped to the active organization.
  *
- * Hidden for members whose role isn't `owner` or `admin`. Better Auth's
+ * Hidden for members whose role isn't `owner`. Better Auth's
  * `/organization/has-permission` endpoint isn't usable for `apiKey:*` checks
  * (it doesn't pass `allowCreatorAllPermissions` and the default org AC has no
  * `apiKey` statements), so we gate on role directly.
