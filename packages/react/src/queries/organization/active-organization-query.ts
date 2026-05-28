@@ -16,6 +16,12 @@ import { useSession } from "../auth/session-query"
 import type { FullOrganizationParams } from "./full-organization-query"
 import type { ListOrganization } from "./list-organizations-query"
 
+// The active-organization cache holds a `ListOrganization`-shaped value even
+// though we fetch via `getFullOrganization`. The `members`/`invitations`
+// fields are intentionally discarded by the `as Promise<TData>` cast in
+// `queryFn` below so that `setActive`'s optimistic update — which can only
+// produce a list-shaped org — never corrupts a full-detail cache entry.
+// See `organizationQueryKeys.activeOrganization` for the rationale.
 export type ActiveOrganizationData<
   TAuthClient extends OrganizationAuthClient = OrganizationAuthClient
 > = ListOrganization<TAuthClient>

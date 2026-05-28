@@ -12,47 +12,30 @@ export function ErrorToaster() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const queryCache = queryClient.getQueryCache()
-    const previousQueryOnError = queryCache.config.onError
+    const unsubscribeQuery = queryClient.getQueryCache().subscribe((event) => {
+      if (event.type !== "updated" || event.action.type !== "error") return
+      if (!matchQuery({ queryKey: authQueryKeys.all }, event.query)) return
 
-    queryCache.config.onError = (error, query) => {
-      previousQueryOnError?.(error, query)
-
-      if (!matchQuery({ queryKey: authQueryKeys.all }, query)) return
-
-      const err = error as BetterFetchError
+      const err = event.action.error as BetterFetchError
       if (err?.error) toast.error(err.error.message)
-    }
+    })
 
-    const mutationCache = queryClient.getMutationCache()
-    const previousMutationOnError = mutationCache.config.onError
+    const unsubscribeMutation = queryClient
+      .getMutationCache()
+      .subscribe((event) => {
+        if (event.type !== "updated" || event.action.type !== "error") return
+        if (
+          !matchMutation({ mutationKey: authMutationKeys.all }, event.mutation)
+        )
+          return
 
-    mutationCache.config.onError = (
-      error,
-      variables,
-      onMutateResult,
-      mutation,
-      context
-    ) => {
-      previousMutationOnError?.(
-        error,
-        variables,
-        onMutateResult,
-        mutation,
-        context
-      )
-
-      if (!matchMutation({ mutationKey: authMutationKeys.all }, mutation)) {
-        return
-      }
-
-      const err = error as BetterFetchError
-      toast.error(err.error?.message || err.message)
-    }
+        const err = event.action.error as BetterFetchError
+        toast.error(err.error?.message || err.message)
+      })
 
     return () => {
-      queryCache.config.onError = previousQueryOnError
-      mutationCache.config.onError = previousMutationOnError
+      unsubscribeQuery()
+      unsubscribeMutation()
     }
   }, [queryClient])
 

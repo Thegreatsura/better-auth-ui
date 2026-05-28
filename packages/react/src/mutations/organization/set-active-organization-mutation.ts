@@ -72,19 +72,23 @@ export function useSetActiveOrganization<
           queryKey: organizationQueryKeys.activeOrganizations(userId)
         })
 
-        // Snapshot the previous value
-        const previousOrganization = context.client.getQueryData(
-          organizationQueryKeys.activeOrganization(userId)
-        )
+        // Snapshot every slug-partitioned variant so the rollback hits
+        // whichever cache entry the UI is actually subscribed to (the
+        // entry's key is `[..., 'active', { organizationSlug }]` when the
+        // plugin's slug option is set, and `[..., 'active', null]`
+        // otherwise).
+        const previousOrganizations = context.client.getQueriesData({
+          queryKey: organizationQueryKeys.activeOrganizations(userId)
+        })
 
         // Optimistically update to the new value
         if (variables?.organizationId === null) {
-          context.client.setQueryData(
-            organizationQueryKeys.activeOrganization(userId),
+          context.client.setQueriesData(
+            { queryKey: organizationQueryKeys.activeOrganizations(userId) },
             null
           )
 
-          return { previousOrganization }
+          return { previousOrganizations }
         }
 
         const newOrganization = organizations?.find(
@@ -96,25 +100,23 @@ export function useSetActiveOrganization<
         )
 
         if (newOrganization) {
-          context.client.setQueryData(
-            organizationQueryKeys.activeOrganization(userId),
+          context.client.setQueriesData(
+            { queryKey: organizationQueryKeys.activeOrganizations(userId) },
             newOrganization
           )
         }
 
-        // Return a result with the snapshotted value
-        return { previousOrganization }
+        return { previousOrganizations }
       },
       // If the mutation fails,
       // use the result returned from onMutate to roll back
       onError: (error, variables, onMutateResult, context) => {
-        const previousOrganization = onMutateResult?.previousOrganization
+        const previousOrganizations = onMutateResult?.previousOrganizations
 
-        if (previousOrganization !== undefined && error.error) {
-          context.client.setQueryData(
-            organizationQueryKeys.activeOrganization(userId),
-            previousOrganization
-          )
+        if (previousOrganizations?.length && error.error) {
+          for (const [queryKey, data] of previousOrganizations) {
+            context.client.setQueryData(queryKey, data)
+          }
         }
 
         return options?.onError?.(error, variables, onMutateResult, context)

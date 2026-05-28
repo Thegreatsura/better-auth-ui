@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth, useAuthPlugin, useSession } from "@better-auth-ui/react"
-import { UsersRound } from "lucide-react"
+import { ArrowLeftRight } from "lucide-react"
 
 import {
   DropdownMenuSub,
@@ -37,7 +37,7 @@ export function SwitchAccountSubmenu({ className }: SwitchAccountSubmenuProps) {
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger className={className}>
-        <UsersRound className="text-muted-foreground" />
+        <ArrowLeftRight className="text-muted-foreground" />
 
         {multiSessionLocalization.switchAccount}
       </DropdownMenuSubTrigger>

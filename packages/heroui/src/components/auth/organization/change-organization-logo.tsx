@@ -54,16 +54,16 @@ export function ChangeOrganizationLogo({
         { data: { logo: image } },
         {
           onSuccess: () =>
-            toast.success(organizationLocalization.logoChangedSuccess)
+            toast.success(organizationLocalization.logoChangedSuccess),
+          onSettled: () => setIsUploading(false)
         }
       )
     } catch (error) {
+      setIsUploading(false)
       if (error instanceof Error) {
         toast.danger(error.message)
       }
     }
-
-    setIsUploading(false)
   }
 
   async function handleDelete() {
