@@ -15,22 +15,22 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "development": "./src/index.ts",
+      "src": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./email": {
-      "development": "./src/email.ts",
+      "src": "./src/email.ts",
       "types": "./dist/email.d.ts",
       "import": "./dist/email.js"
     },
     "./server": {
-      "development": "./src/server.ts",
+      "src": "./src/server.ts",
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
     },
     "./plugins": {
-      "development": "./src/plugins.ts",
+      "src": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }

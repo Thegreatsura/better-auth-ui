@@ -5,7 +5,7 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "customConditions": ["development"],
+    "customConditions": ["src"],
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",

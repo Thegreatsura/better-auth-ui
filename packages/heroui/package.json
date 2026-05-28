@@ -12,22 +12,22 @@
   ],
   "exports": {
     ".": {
-      "development": "./src/index.tsx",
+      "src": "./src/index.tsx",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./email": {
-      "development": "./src/email.ts",
+      "src": "./src/email.ts",
       "types": "./dist/email.d.ts",
       "import": "./dist/email.js"
     },
     "./plugins": {
-      "development": "./src/plugins.ts",
+      "src": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     },
     "./styles": {
-      "development": "./src/styles.css",
+      "src": "./src/styles.css",
       "default": "./dist/styles.css"
     }
   },
@@ -61,7 +61,8 @@
     "@tanstack/react-query": ">=5.100.14",
     "better-auth": ">=1.6.11",
     "react": ">=19.2.6",
-    "react-dom": ">=19.2.6"
+    "react-dom": ">=19.2.6",
+    "bowser": ">=2.11.0"
   },
   "repository": {
     "type": "git",
