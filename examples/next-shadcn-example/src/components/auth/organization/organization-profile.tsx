@@ -85,6 +85,7 @@ export function OrganizationProfile({ className }: OrganizationProfileProps) {
 
               {activeOrganization ? (
                 <Input
+                  key={activeOrganization.id}
                   id={nameInputId}
                   name="name"
                   defaultValue={activeOrganization.name}
