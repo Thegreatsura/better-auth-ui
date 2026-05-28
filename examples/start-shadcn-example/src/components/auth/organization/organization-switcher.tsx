@@ -161,7 +161,7 @@ export function OrganizationSwitcher({
                       : `${basePaths.organization}/${organizationViewPaths.organization.settings}`
                   }
                   className={cn(
-                    "shrink-0 inline-flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-1 text-xs font-medium hover:bg-muted"
+                    "shrink-0 inline-flex items-center gap-1.5 rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-muted"
                   )}
                 >
                   <SettingsIcon className="size-3.5 text-muted-foreground" />
@@ -178,7 +178,7 @@ export function OrganizationSwitcher({
                 <Link
                   href={`${basePaths.settings}/${viewPaths.settings.account}`}
                   className={cn(
-                    "shrink-0 inline-flex items-center gap-2 rounded-md border border-input bg-background px-2.5 py-1 text-xs font-medium hover:bg-muted"
+                    "shrink-0 inline-flex items-center gap-1.5 rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-muted"
                   )}
                 >
                   <SettingsIcon className="size-3.5 text-muted-foreground" />
