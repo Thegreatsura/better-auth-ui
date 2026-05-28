@@ -288,7 +288,7 @@
     },
     "packages/core": {
       "name": "@better-auth-ui/core",
-      "version": "1.6.11",
+      "version": "1.6.12",
       "devDependencies": {
         "better-auth": "^1.6.11",
         "vitest": "^4.1.7",
@@ -299,7 +299,7 @@
     },
     "packages/heroui": {
       "name": "@better-auth-ui/heroui",
-      "version": "1.6.11",
+      "version": "1.6.12",
       "devDependencies": {
         "@gravity-ui/icons": "^2.18.0",
         "@heroui/react": "^3.1.0",
@@ -336,7 +336,7 @@
     },
     "packages/react": {
       "name": "@better-auth-ui/react",
-      "version": "1.6.11",
+      "version": "1.6.12",
       "devDependencies": {
         "@better-auth/api-key": "^1.6.11",
         "@better-auth/passkey": "^1.6.11",
