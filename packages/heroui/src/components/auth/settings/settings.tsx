@@ -25,7 +25,7 @@ export type SettingsProps = {
  * @param variant - Card variant forwarded to each settings section card
  * @returns A DOM tree containing the responsive settings tabs and the currently selected settings panel
  *
- * @throws Error if neither `view` nor `path` is provided
+ * @throws Error if neither `view` nor `path` is provided, or if `path` does not match any settings view
  */
 export function Settings({
   className,
@@ -56,6 +56,18 @@ export function Settings({
 
     return match?.[0] as SettingsView | undefined
   }, [view, path, viewPaths.settings, plugins])
+
+  if (!currentView) {
+    const validPaths = [
+      viewPaths.settings,
+      ...plugins.map((plugin) => plugin.viewPaths?.settings)
+    ]
+      .flatMap((source) => Object.values(source ?? {}))
+      .join(", ")
+    throw new Error(
+      `[Better Auth UI] Unknown settings path "${path}". Valid paths are: ${validPaths}`
+    )
+  }
 
   return (
     <Tabs

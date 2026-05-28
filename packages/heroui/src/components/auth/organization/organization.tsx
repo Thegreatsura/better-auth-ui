@@ -77,6 +77,15 @@ export function Organization({
     return match?.[0] as OrganizationView | undefined
   }, [view, path, organizationViewPaths.organization])
 
+  if (!currentView) {
+    const validPaths = Object.values(organizationViewPaths.organization).join(
+      ", "
+    )
+    throw new Error(
+      `[Better Auth UI] Unknown organization path "${path}". Valid paths are: ${validPaths}`
+    )
+  }
+
   if (!isPending && !activeOrganization) {
     return null
   }
