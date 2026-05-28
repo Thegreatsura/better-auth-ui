@@ -12,30 +12,47 @@ export function ErrorToaster() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const unsubscribeQuery = queryClient.getQueryCache().subscribe((event) => {
-      if (event.type !== "updated" || event.action.type !== "error") return
-      if (!matchQuery({ queryKey: authQueryKeys.all }, event.query)) return
+    const queryCache = queryClient.getQueryCache()
+    const previousQueryOnError = queryCache.config.onError
 
-      const err = event.action.error as BetterFetchError
+    queryCache.config.onError = (error, query) => {
+      previousQueryOnError?.(error, query)
+
+      if (!matchQuery({ queryKey: authQueryKeys.all }, query)) return
+
+      const err = error as BetterFetchError
       if (err?.error) toast.error(err.error.message)
-    })
+    }
 
-    const unsubscribeMutation = queryClient
-      .getMutationCache()
-      .subscribe((event) => {
-        if (event.type !== "updated" || event.action.type !== "error") return
-        if (
-          !matchMutation({ mutationKey: authMutationKeys.all }, event.mutation)
-        )
-          return
+    const mutationCache = queryClient.getMutationCache()
+    const previousMutationOnError = mutationCache.config.onError
 
-        const err = event.action.error as BetterFetchError
-        toast.error(err.error?.message || err.message)
-      })
+    mutationCache.config.onError = (
+      error,
+      variables,
+      onMutateResult,
+      mutation,
+      context
+    ) => {
+      previousMutationOnError?.(
+        error,
+        variables,
+        onMutateResult,
+        mutation,
+        context
+      )
+
+      if (!matchMutation({ mutationKey: authMutationKeys.all }, mutation)) {
+        return
+      }
+
+      const err = error as BetterFetchError
+      toast.error(err.error?.message || err.message)
+    }
 
     return () => {
-      unsubscribeQuery()
-      unsubscribeMutation()
+      queryCache.config.onError = previousQueryOnError
+      mutationCache.config.onError = previousMutationOnError
     }
   }, [queryClient])
 

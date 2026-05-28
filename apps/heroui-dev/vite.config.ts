@@ -19,6 +19,19 @@ const config = defineConfig({
     // default condition list.
     conditions: ["src"]
   },
+  // The Cloudflare Vite plugin runs its own SSR environment and does NOT
+  // inherit top-level `resolve.conditions`. Mirror the `src` condition here
+  // so workspace packages resolve to their TSX sources in SSR as well —
+  // otherwise client and SSR load different files and the devtools-vite
+  // source tagger produces mismatched `data-tsd-source` attributes,
+  // triggering hydration errors. See cloudflare/workers-sdk#13138.
+  environments: {
+    ssr: {
+      resolve: {
+        conditions: ["src"]
+      }
+    }
+  },
   plugins: [
     cloudflare({ viteEnvironment: { name: "ssr" } }),
     devtools(),

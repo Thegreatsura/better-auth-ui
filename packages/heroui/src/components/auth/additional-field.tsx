@@ -8,6 +8,7 @@ import {
   ComboBox,
   DateField,
   DatePicker,
+  type DateValue,
   FieldError,
   Input,
   InputGroup,
@@ -387,7 +388,7 @@ export function AdditionalField({
       <DatePicker
         className="w-full [&[data-required=true]>.label]:after:content-none"
         name={name}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue as unknown as DateValue}
         granularity={isDateTime ? "minute" : "day"}
         isDisabled={isPending}
         isReadOnly={field.readOnly}
