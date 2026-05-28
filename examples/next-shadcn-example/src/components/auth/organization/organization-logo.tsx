@@ -50,6 +50,7 @@ export function OrganizationLogo({
   }
 
   const initials = organization?.name?.slice(0, 2).toUpperCase()
+  const normalizedLogo = organization?.logo?.trim() || undefined
 
   return (
     <Avatar
@@ -59,12 +60,12 @@ export function OrganizationLogo({
     >
       <AvatarImage
         alt={organization?.name ?? "Organization"}
-        src={organization?.logo ?? undefined}
+        src={normalizedLogo}
       />
 
       <AvatarFallback
         className={cn("text-muted-foreground!", fallbackTextClasses[size])}
-        delayMs={organization?.logo ? 600 : undefined}
+        delayMs={normalizedLogo ? 600 : undefined}
       >
         {fallback || initials || <Briefcase className="size-4" />}
       </AvatarFallback>

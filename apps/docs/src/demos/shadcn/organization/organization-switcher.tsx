@@ -1,20 +1,11 @@
-import { AuthProvider } from "@/components/auth/auth-provider"
 import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
-import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { authClient } from "@/lib/auth-client"
+
+import { OrganizationDemoWrapper } from "./organization-demo-wrapper"
 
 export function OrganizationSwitcherDemo() {
   return (
-    <AuthProvider
-      authClient={authClient}
-      navigate={() => {}}
-      plugins={[organizationPlugin()]}
-      Link={(props) => (
-        // biome-ignore lint/a11y/useValidAnchor: ignore
-        <a {...props} href={undefined} />
-      )}
-    >
+    <OrganizationDemoWrapper>
       <OrganizationSwitcher align="start" />
-    </AuthProvider>
+    </OrganizationDemoWrapper>
   )
 }

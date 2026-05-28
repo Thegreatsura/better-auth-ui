@@ -52,7 +52,7 @@ export function OrganizationView({
       query: {
         organizationId: resolvedOrganization?.id
       },
-      enabled: !!resolvedOrganization && !hideRole
+      enabled: !!resolvedOrganization?.id && !hideRole
     })
 
   const membership = membersList?.members?.find(
@@ -62,7 +62,7 @@ export function OrganizationView({
   if (
     isPending ||
     (!organization && activeOrganizationPending) ||
-    (!hideRole && !!resolvedOrganization && membersPending)
+    (!hideRole && !!resolvedOrganization?.id && membersPending)
   ) {
     return (
       <OrganizationViewSkeleton

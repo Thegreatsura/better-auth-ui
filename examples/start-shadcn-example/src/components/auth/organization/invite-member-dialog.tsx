@@ -7,7 +7,7 @@ import {
   useInviteMember
 } from "@better-auth-ui/react"
 import { UserPlus } from "lucide-react"
-import { type SyntheticEvent, useState } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import {
@@ -40,6 +40,9 @@ export type InviteMemberDialogProps = {
   onOpenChange: (open: boolean) => void
 }
 
+const pickDefaultRole = (keys: string[]) =>
+  keys.includes("member") ? "member" : (keys.at(-1) ?? "")
+
 /**
  * Render a dialog for inviting a member to the organization.
  */
@@ -51,7 +54,14 @@ export function InviteMemberDialog({
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
-  const [role, setRole] = useState("member")
+  const [role, setRole] = useState(() => pickDefaultRole(Object.keys(roles)))
+
+  useEffect(() => {
+    setRole((current) => {
+      const keys = Object.keys(roles)
+      return keys.includes(current) ? current : pickDefaultRole(keys)
+    })
+  }, [roles])
 
   const { mutate: inviteMember, isPending: isInviting } = useInviteMember(
     authClient as OrganizationAuthClient,
@@ -63,8 +73,12 @@ export function InviteMemberDialog({
     }
   )
 
+  const isRoleValid = Object.keys(roles).includes(role)
+
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (!isRoleValid) return
 
     const formData = new FormData(e.target as HTMLFormElement)
     const email = formData.get("email") as string
@@ -144,7 +158,7 @@ export function InviteMemberDialog({
               {localization.settings.cancel}
             </AlertDialogCancel>
 
-            <Button type="submit" disabled={isInviting}>
+            <Button type="submit" disabled={isInviting || !isRoleValid}>
               {isInviting && <Spinner />}
 
               {organizationLocalization.inviteMember}

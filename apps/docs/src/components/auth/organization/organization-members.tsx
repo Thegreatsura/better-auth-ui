@@ -285,7 +285,7 @@ function SortableTableHead({
   onClick: () => void
 }) {
   return (
-    <TableHead>
+    <TableHead aria-sort={sortDirection ?? "none"}>
       <button
         type="button"
         onClick={onClick}

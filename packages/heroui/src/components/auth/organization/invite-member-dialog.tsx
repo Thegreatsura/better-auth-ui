@@ -18,7 +18,7 @@ import {
   TextField,
   toast
 } from "@heroui/react"
-import type { SyntheticEvent } from "react"
+import { type SyntheticEvent, useEffect, useState } from "react"
 
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 
@@ -27,6 +27,9 @@ export type InviteMemberDialogProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
 }
+
+const pickDefaultRole = (keys: string[]) =>
+  keys.includes("member") ? "member" : (keys.at(-1) ?? "")
 
 /**
  * Render a dialog for inviting a member to the organization.
@@ -43,6 +46,15 @@ export function InviteMemberDialog({
   const { localization: organizationLocalization, roles } =
     useAuthPlugin(organizationPlugin)
 
+  const [role, setRole] = useState(() => pickDefaultRole(Object.keys(roles)))
+
+  useEffect(() => {
+    setRole((current) => {
+      const keys = Object.keys(roles)
+      return keys.includes(current) ? current : pickDefaultRole(keys)
+    })
+  }, [roles])
+
   const { mutate: inviteMember, isPending: isInviting } = useInviteMember(
     authClient as OrganizationAuthClient,
     {
@@ -53,16 +65,19 @@ export function InviteMemberDialog({
     }
   )
 
+  const isRoleValid = Object.keys(roles).includes(role)
+
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    if (!isRoleValid) return
+
     const formData = new FormData(e.target as HTMLFormElement)
     const email = formData.get("email") as string
-    const role = formData.get("role") as "owner" | "admin" | "member"
 
     inviteMember({
       email: email.trim(),
-      role
+      role: role as Parameters<typeof inviteMember>[0]["role"]
     })
   }
 
@@ -108,7 +123,10 @@ export function InviteMemberDialog({
 
               <Select
                 name="role"
-                defaultValue="member"
+                value={role}
+                onChange={(value) => {
+                  if (typeof value === "string") setRole(value)
+                }}
                 isDisabled={isInviting}
                 variant="secondary"
                 fullWidth
@@ -141,7 +159,11 @@ export function InviteMemberDialog({
                 {localization.settings.cancel}
               </Button>
 
-              <Button type="submit" isPending={isInviting}>
+              <Button
+                type="submit"
+                isPending={isInviting}
+                isDisabled={!isRoleValid}
+              >
                 {isInviting && <Spinner color="current" size="sm" />}
 
                 {organizationLocalization.inviteMember}
