@@ -21,6 +21,7 @@ export function ErrorToaster() {
       if (!matchQuery({ queryKey: authQueryKeys.all }, query)) return
 
       const err = error as BetterFetchError
+      if (err?.error?.code === "EMAIL_NOT_VERIFIED") return
       if (err?.error) toast.error(err.error.message)
     }
 
@@ -47,6 +48,7 @@ export function ErrorToaster() {
       }
 
       const err = error as BetterFetchError
+      if (err.error?.code === "EMAIL_NOT_VERIFIED") return
       toast.error(err.error?.message || err.message)
     }
 

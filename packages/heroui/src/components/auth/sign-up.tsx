@@ -71,10 +71,9 @@ export function SignUp({
   const { mutate: signUpEmail, isPending: signUpEmailPending } = useSignUpEmail(
     authClient,
     {
-      onError: (error) => {
+      onError: () => {
         setPassword("")
         setConfirmPassword("")
-        toast.danger(error.error?.message || error.message)
         resetFetchOptions()
       },
       onSuccess: () => {

@@ -139,11 +139,10 @@ function ChangePasswordForm({
   const [confirmPassword, setConfirmPassword] = useState("")
 
   const { mutate: changePassword, isPending } = useChangePassword(authClient, {
-    onError: (error) => {
+    onError: () => {
       setCurrentPassword("")
       setNewPassword("")
       setConfirmPassword("")
-      toast.danger(error.error?.message || error.message)
     },
     onSuccess: () => {
       setCurrentPassword("")

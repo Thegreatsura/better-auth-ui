@@ -95,8 +95,6 @@ export function SignInUsername({
                 })
             }
           })
-        } else {
-          toast.danger(error.error?.message || error.message)
         }
 
         resetFetchOptions()
@@ -106,9 +104,8 @@ export function SignInUsername({
 
   const { mutate: signInUsername, isPending: isSignInUsernamePending } =
     useSignInUsername(authClient as UsernameAuthClient, {
-      onError: (error) => {
+      onError: () => {
         setPassword("")
-        toast.danger(error.error?.message || error.message)
         resetFetchOptions()
       },
       onSuccess: () => navigate({ to: redirectTo })
