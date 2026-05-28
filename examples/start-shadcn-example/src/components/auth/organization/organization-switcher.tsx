@@ -105,7 +105,7 @@ export function OrganizationSwitcher({
           : `${basePaths.settings}/${viewPaths.settings.account}`
       })
     } else {
-      setActiveOrganization({ organizationId: organization?.id })
+      setActiveOrganization({ organizationId: organization?.id ?? null })
     }
   }
 

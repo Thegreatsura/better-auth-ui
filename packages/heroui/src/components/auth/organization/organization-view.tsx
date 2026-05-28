@@ -59,7 +59,11 @@ export function OrganizationView({
     (member) => member.userId === session?.user.id
   )
 
-  if (isPending || activeOrganizationPending || (!hideRole && membersPending)) {
+  if (
+    isPending ||
+    (!organization && activeOrganizationPending) ||
+    (!hideRole && !!resolvedOrganization && membersPending)
+  ) {
     return (
       <OrganizationViewSkeleton
         className={className}

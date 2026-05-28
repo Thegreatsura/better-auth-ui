@@ -65,7 +65,14 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const mergedConfig = deepmerge(defaultAuthConfig, config) as AuthConfig
+  const { authClient, ...partialConfig } = config
+  const mergedConfig = {
+    ...deepmerge<Omit<AuthConfig, "authClient">>(
+      defaultAuthConfig,
+      partialConfig
+    ),
+    authClient
+  }
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&

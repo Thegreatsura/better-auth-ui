@@ -13,6 +13,7 @@ import { type ComponentProps, type ReactNode, useMemo, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -245,7 +246,7 @@ export function OrganizationInvitations({
           </div>
         )}
 
-        <div className="overflow-hidden rounded-md border">
+        <Card className="p-0">
           <Table aria-label={organizationLocalization.invitations}>
             <TableHeader>
               <TableRow>
@@ -320,7 +321,7 @@ export function OrganizationInvitations({
               )}
             </TableBody>
           </Table>
-        </div>
+        </Card>
       </div>
 
       <InviteMemberDialog open={inviteOpen} onOpenChange={setInviteOpen} />
@@ -342,7 +343,7 @@ function SortableTableHead({
       <button
         type="button"
         onClick={onClick}
-        className="flex w-full items-center justify-between gap-2 text-left font-medium"
+        className="flex w-full items-center gap-2 text-left font-medium"
       >
         {children}
 
