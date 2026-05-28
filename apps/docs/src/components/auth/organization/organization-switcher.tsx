@@ -154,20 +154,19 @@ export function OrganizationSwitcher({
               />
 
               {!hideSettings && (
-                <Link
-                  href={
-                    slug
-                      ? `${basePaths.organization}/${slug}/${organizationViewPaths.organization.settings}`
-                      : `${basePaths.organization}/${organizationViewPaths.organization.settings}`
-                  }
-                  className={cn(
-                    "shrink-0 inline-flex items-center gap-1.5 rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-muted"
-                  )}
-                >
-                  <SettingsIcon className="size-3.5 text-muted-foreground" />
+                <Button asChild variant="outline" size="sm">
+                  <Link
+                    href={
+                      slug
+                        ? `${basePaths.organization}/${slug}/${organizationViewPaths.organization.settings}`
+                        : `${basePaths.organization}/${organizationViewPaths.organization.settings}`
+                    }
+                  >
+                    <SettingsIcon className="text-muted-foreground" />
 
-                  {organizationLocalization.manage}
-                </Link>
+                    {organizationLocalization.manage}
+                  </Link>
+                </Button>
               )}
             </div>
           ) : !isPending && session?.user && !hidePersonal ? (
@@ -175,16 +174,15 @@ export function OrganizationSwitcher({
               <UserView hideSubtitle={hideSlug} />
 
               {!hideSettings && (
-                <Link
-                  href={`${basePaths.settings}/${viewPaths.settings.account}`}
-                  className={cn(
-                    "shrink-0 inline-flex items-center gap-1.5 rounded-md border border-input px-2 py-1 text-xs font-medium hover:bg-muted"
-                  )}
-                >
-                  <SettingsIcon className="size-3.5 text-muted-foreground" />
+                <Button asChild variant="outline" size="sm">
+                  <Link
+                    href={`${basePaths.settings}/${viewPaths.settings.account}`}
+                  >
+                    <SettingsIcon className="text-muted-foreground" />
 
-                  {localization.settings.settings}
-                </Link>
+                    {localization.settings.settings}
+                  </Link>
+                </Button>
               )}
             </div>
           ) : null}

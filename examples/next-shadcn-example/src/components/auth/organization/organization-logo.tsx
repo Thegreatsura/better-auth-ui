@@ -63,7 +63,7 @@ export function OrganizationLogo({
       />
 
       <AvatarFallback
-        className={fallbackTextClasses[size]}
+        className={cn("text-muted-foreground!", fallbackTextClasses[size])}
         delayMs={organization?.logo ? 600 : undefined}
       >
         {fallback || initials || <Briefcase className="size-4" />}
