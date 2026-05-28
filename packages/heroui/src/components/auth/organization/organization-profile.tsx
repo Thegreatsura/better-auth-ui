@@ -86,7 +86,7 @@ export function OrganizationProfile({
             <ChangeOrganizationLogo />
 
             <TextField
-              key={activeOrganization?.name}
+              key={`${activeOrganization?.id}-${activeOrganization?.name}-name`}
               name="name"
               defaultValue={activeOrganization?.name}
               isDisabled={isPending || !activeOrganization}

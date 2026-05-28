@@ -90,7 +90,7 @@ export function UserProfile({
             <ChangeAvatar />
 
             <TextField
-              key={session?.user?.name}
+              key={`${session?.user?.id}-${session?.user?.name}-name`}
               name="name"
               defaultValue={session?.user.name}
               isDisabled={isPending || !session}
@@ -131,9 +131,9 @@ export function UserProfile({
                   field.name
                 ]
 
-                // Re-mount when the session value loads so the field's
-                // uncontrolled `defaultValue` reflects the latest data.
-                const key = `${field.name}:${
+                // Re-mount when the user or the session value changes so the
+                // field's uncontrolled `defaultValue` reflects the latest data.
+                const key = `${session.user.id}-${field.name}-${
                   value instanceof Date
                     ? value.toISOString()
                     : String(value ?? "")
