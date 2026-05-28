@@ -94,9 +94,9 @@ export function SlugField({
         {checkSlugEnabled && !!value.trim() && value.trim() !== currentSlug && (
           <InputGroupAddon align="inline-end">
             {checkSlugData?.status ? (
-              <Check className="text-emerald-500" />
+              <Check className="size-4 text-foreground" />
             ) : checkSlugError ? (
-              <X className="text-destructive" />
+              <X className="size-4 text-destructive" />
             ) : (
               <Spinner />
             )}
