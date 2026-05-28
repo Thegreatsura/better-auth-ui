@@ -1,15 +1,23 @@
-import { passkeyMutationKeys } from "@better-auth-ui/core/plugins"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  passkeyMutationKeys,
+  passkeyQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
+
 import type { PasskeyAuthClient } from "../../lib/auth-client"
-import { useListPasskeys } from "../../queries/passkey/list-passkeys-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type AddPasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["passkey"]["addPasskey"]>[0]
 
 export type AddPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof addPasskeyOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -42,25 +50,28 @@ export function addPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 /**
  * Create a mutation for registering a new passkey.
  *
- * Wraps `authClient.passkey.addPasskey`, refetches the user's passkey list
- * on success, and forwards React Query mutation options such as
- * `onSuccess`, `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the user's
+ * passkey list (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useAddPasskey<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
-  options?: AddPasskeyOptions<TAuthClient>
+  options?: AddPasskeyOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListPasskeys(authClient, { refetchOnMount: false })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...addPasskeyOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...addPasskeyOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [passkeyQueryKeys.lists(userId)]
+      }
+    },
+    queryClient
+  )
 }

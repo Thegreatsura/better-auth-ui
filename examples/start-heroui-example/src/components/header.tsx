@@ -10,10 +10,10 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <Logo />
 
-          <h1 className="text-base">BETTER-AUTH. UI</h1>
+          <h1 className="sm:text-base truncate">BETTER-AUTH. UI</h1>
         </Link>
 
-        <UserButton size="icon" />
+        <UserButton size="icon" placement="bottom end" />
       </div>
     </header>
   )

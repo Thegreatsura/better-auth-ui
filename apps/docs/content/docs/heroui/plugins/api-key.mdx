@@ -7,6 +7,11 @@ import { Step, Steps } from 'fumadocs-ui/components/steps'
 
 The API key plugin adds programmatic API key management to your authentication UI. Users can create, copy, and revoke API keys from a security card in account settings.
 
+It contributes:
+
+- An `<ApiKeys />` card to the security settings tab for user-owned keys
+- An `<OrganizationApiKeys />` card to `<OrganizationSettings />` for organization-owned keys (opt-in via `apiKeyPlugin({ organization: true })`; requires the [organization plugin](/docs/heroui/plugins/organization) and a matching server-side API key config)
+
 ## Setup
 
 <Steps>
@@ -73,7 +78,7 @@ import { authClient } from "@/lib/auth-client"
 
 <ComponentPreview name="heroui-api-keys" />
 
-The `<ApiKeys />` security card is automatically rendered in `<AccountSettings />` when the plugin is registered.
+The `<ApiKeys />` security card is automatically rendered in `<SecuritySettings />` when the plugin is registered. Pass `organizationId` to scope the list and create payload to an organization instead of the signed-in user.
 
 **Usage**
 
@@ -86,6 +91,59 @@ import { ApiKeys } from "@better-auth-ui/heroui/plugins"
 **Props**
 
 <auto-type-table path="../../../../../../packages/heroui/src/components/auth/api-key/api-keys.tsx" name="ApiKeysProps" />
+
+### `<OrganizationApiKeys />`
+
+A thin wrapper around `<ApiKeys />` that resolves the active organization via `useActiveOrganization` and forwards its id. Rendered inside `<OrganizationSettings />` only when the plugin is registered with `{ organization: true }`.
+
+To enable, opt in on the UI plugin and add a matching API key configuration to your Better Auth server config. The plugin uses a fixed `configId` of `"organization"`, so the server entry **must** be `{ configId: "organization", references: "organization" }`:
+
+```ts title="components/providers.tsx"
+import { AuthProvider } from "@better-auth-ui/heroui"
+import { apiKeyPlugin } from "@better-auth-ui/heroui/plugins"
+
+import { authClient } from "@/lib/auth-client"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    apiKeyPlugin({ organization: true }) // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { apiKey } from "@better-auth/api-key"
+import { organization } from "better-auth/plugins"
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    organization(),
+    apiKey([
+      { configId: "default", references: "user" },
+      { configId: "organization", references: "organization" } // [!code highlight]
+    ])
+  ]
+})
+```
+
+See the [Better Auth docs](https://www.better-auth.com/docs/plugins/api-key/advanced#organization-owned-api-keys) for role-based permissions on organization-owned keys.
+
+**Usage**
+
+```tsx
+import { OrganizationApiKeys } from "@better-auth-ui/heroui/plugins"
+
+<OrganizationApiKeys />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/api-key/organization-api-keys.tsx" name="OrganizationApiKeysProps" />
 
 ## Options
 

@@ -64,7 +64,7 @@ export function ChangeEmail({
             <Fieldset className="w-full gap-4">
               <Fieldset.Group>
                 <TextField
-                  key={session?.user.email}
+                  key={`${session?.user.id}-${session?.user.email}-email`}
                   name="email"
                   type="email"
                   defaultValue={session?.user.email}

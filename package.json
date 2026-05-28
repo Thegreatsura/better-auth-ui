@@ -15,17 +15,17 @@
   ],
   "devDependencies": {
     "@better-auth-ui/react": "workspace:*",
-    "@better-auth/api-key": "^1.6.10",
+    "@better-auth/api-key": "^1.6.11",
     "@biomejs/biome": "2.4.15",
-    "@nx/js": "22.7.1",
+    "@nx/js": "22.7.4",
     "@swc-node/register": "~1.11.1",
-    "@swc/core": "~1.15.33",
-    "@swc/helpers": "~0.5.21",
-    "@vitejs/plugin-react": "^6.0.1",
-    "lefthook": "^2.1.6",
-    "nx": "22.7.1",
+    "@swc/core": "~1.15.40",
+    "@swc/helpers": "~0.5.22",
+    "@vitejs/plugin-react": "^6.0.2",
+    "lefthook": "^2.1.8",
+    "nx": "22.7.4",
     "typescript": "^6.0.3",
-    "vite": "^8.0.11",
-    "vite-plugin-dts": "^5.0.0"
+    "vite": "^8.0.14",
+    "vite-plugin-dts": "^5.0.1"
   }
 }

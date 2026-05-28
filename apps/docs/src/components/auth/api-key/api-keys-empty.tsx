@@ -9,9 +9,10 @@ import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 
 export type ApiKeysEmptyProps = {
   onCreatePress: () => void
+  hideCreate?: boolean
 }
 
-export function ApiKeysEmpty({ onCreatePress }: ApiKeysEmptyProps) {
+export function ApiKeysEmpty({ onCreatePress, hideCreate }: ApiKeysEmptyProps) {
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
 
   return (
@@ -31,9 +32,11 @@ export function ApiKeysEmpty({ onCreatePress }: ApiKeysEmptyProps) {
           </p>
         </div>
 
-        <Button size="sm" onClick={onCreatePress}>
-          {apiKeyLocalization.createApiKey}
-        </Button>
+        {!hideCreate && (
+          <Button size="sm" onClick={onCreatePress}>
+            {apiKeyLocalization.createApiKey}
+          </Button>
+        )}
       </CardContent>
     </Card>
   )

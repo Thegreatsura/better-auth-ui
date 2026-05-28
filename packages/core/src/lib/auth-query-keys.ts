@@ -16,6 +16,12 @@
  * etc.) and across client- and server-side query variants — the cache
  * entries line up regardless of which query options factory produced them.
  *
+ * Plugin-specific query keys live alongside their plugin (e.g.
+ * `apiKeyQueryKeys`, `organizationQueryKeys`, `passkeyQueryKeys`,
+ * `multiSessionQueryKeys`) and chain off `authQueryKeys.user(userId)` so
+ * everything still sits under the shared `["auth", "user", userId, ...]`
+ * subtree.
+ *
  * For mutation keys, see `authMutationKeys` in `./auth-mutation-keys`.
  */
 export const authQueryKeys = {
@@ -30,29 +36,6 @@ export const authQueryKeys = {
   /** Prefix for every query scoped to a specific user. */
   user: (userId: string | undefined) =>
     [...authQueryKeys.users(), userId] as const,
-
-  /** Key for `multiSession.listDeviceSessions` for the given user. */
-  listDeviceSessions: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) =>
-    [
-      ...authQueryKeys.user(userId),
-      "listDeviceSessions",
-      query ?? null
-    ] as const,
-
-  /** Key for the user's passkey list. */
-  listPasskeys: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) => [...authQueryKeys.user(userId), "listPasskeys", query ?? null] as const,
-
-  /** Key for the user's API keys list (`apiKey.list`). */
-  listApiKeys: <TQuery = undefined>(
-    userId: string | undefined,
-    query?: TQuery
-  ) => [...authQueryKeys.user(userId), "listApiKeys", query ?? null] as const,
 
   /** Key for `accountInfo` for the given user. */
   accountInfo: <TQuery = undefined>(

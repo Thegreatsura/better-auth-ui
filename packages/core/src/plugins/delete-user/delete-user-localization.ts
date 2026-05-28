@@ -1,9 +1,9 @@
 export const deleteUserLocalization = {
-  /** @remarks `"Delete user"` */
-  deleteUser: "Delete user",
+  /** @remarks `"Delete account"` */
+  deleteAccount: "Delete account",
 
   /** @remarks `"Permanently remove your account and all associated data. This cannot be undone."` */
-  deleteUserDescription:
+  deleteAccountDescription:
     "Permanently remove your account and all associated data. This cannot be undone.",
 
   /** @remarks `"Check your email to confirm account deletion."` */

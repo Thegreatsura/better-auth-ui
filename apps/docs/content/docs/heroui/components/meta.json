@@ -31,6 +31,7 @@
     "email/password-changed-email",
     "email/email-changed-email",
     "email/otp-email",
-    "email/new-device-email"
+    "email/new-device-email",
+    "email/organization-invitation-email"
   ]
 }

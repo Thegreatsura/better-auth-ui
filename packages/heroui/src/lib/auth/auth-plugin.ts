@@ -3,6 +3,7 @@ import type {
   AccountCardProps,
   AuthPlugin as AuthPluginPrimitive,
   AuthPluginComponents as BaseAuthPluginComponents,
+  OrganizationCardProps,
   SecurityCardProps,
   UserMenuItemProps
 } from "@better-auth-ui/react"
@@ -36,7 +37,7 @@ declare module "@better-auth-ui/core" {
 /** Heroui slot component shapes — inherits from the framework-agnostic defaults and narrows slots that receive a heroui variant from the host. */
 export type AuthPluginComponents = Omit<
   BaseAuthPluginComponents,
-  "securityCards" | "accountCards"
+  "securityCards" | "accountCards" | "organizationCards"
 > & {
   /** Rendered as cards inside security settings */
   securityCards?: ComponentType<
@@ -45,6 +46,10 @@ export type AuthPluginComponents = Omit<
   /** Rendered as cards inside account settings */
   accountCards?: ComponentType<
     AccountCardProps & { variant?: CardProps["variant"] }
+  >[]
+  /** Rendered as cards inside the active organization's settings */
+  organizationCards?: ComponentType<
+    OrganizationCardProps & { variant?: CardProps["variant"] }
   >[]
   /** Rendered as items inside the `UserButton` dropdown (e.g. account switcher). */
   userMenuItems?: ComponentType<UserMenuItemProps>[]

@@ -46,16 +46,15 @@ export type UserButtonLink = {
 export type UserButtonProps = {
   className?: string
   size?: "default" | "icon"
-  /**
-   * The placement of the element with respect to its anchor element.
-   * @default "bottom"
-   */
+  /** The placement of the element with respect to its anchor element. */
   placement?: DropdownPopoverProps["placement"]
   variant?: ButtonProps["variant"]
   /** Additional menu entries rendered above the built-in items. */
   links?: (UserButtonLink | ReactElement)[]
   /** Hide the built-in "Settings" link. Useful when replacing it via `links`. */
   hideSettings?: boolean
+  /** When true, the subtitle line (email when name/username is shown) is hidden. */
+  hideSubtitle?: boolean
 }
 
 function renderUserLink(
@@ -91,11 +90,12 @@ function renderUserLink(
  */
 export function UserButton({
   className,
-  placement = "bottom",
+  placement,
   size = "default",
   variant = "ghost",
   links,
-  hideSettings = false
+  hideSettings,
+  hideSubtitle
 }: UserButtonProps) {
   const { authClient, basePaths, viewPaths, localization, plugins } = useAuth()
 
@@ -104,7 +104,10 @@ export function UserButton({
   const userMenuItems = plugins.flatMap(
     (plugin) =>
       plugin.userMenuItems?.map((Item, index) => (
-        <Item key={`${plugin.id}-${index.toString()}`} />
+        <Item
+          key={`${plugin.id}-${index.toString()}`}
+          hideSubtitle={hideSubtitle}
+        />
       )) ?? []
   )
 
@@ -127,12 +130,12 @@ export function UserButton({
         <Button
           variant={variant}
           className={cn(
-            "h-auto font-normal justify-start px-3 py-2 text-left",
+            "h-auto font-normal justify-start px-2 py-2 text-left",
             className
           )}
         >
           {session || sessionPending ? (
-            <UserView isPending={sessionPending} />
+            <UserView isPending={sessionPending} hideSubtitle={hideSubtitle} />
           ) : (
             <>
               <UserAvatar />
@@ -141,7 +144,7 @@ export function UserButton({
             </>
           )}
 
-          <ChevronsExpandVertical className="ml-auto size-3.5" />
+          <ChevronsExpandVertical className="ml-auto size-3 text-muted" />
         </Button>
       )}
 
@@ -151,7 +154,7 @@ export function UserButton({
       >
         {session && (
           <div className="px-3 pt-3 pb-1">
-            <UserView />
+            <UserView hideSubtitle={hideSubtitle} />
           </div>
         )}
 

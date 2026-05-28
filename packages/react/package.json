@@ -3,8 +3,7 @@
   "version": "1.6.8",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "tsc --watch",
+    "build": "tsc",
     "email": "email dev --dir src/components/auth/email -p 9000",
     "test": "vitest"
   },
@@ -16,51 +15,55 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./email": {
+      "development": "./src/email.ts",
       "types": "./dist/email.d.ts",
       "import": "./dist/email.js"
     },
     "./server": {
+      "development": "./src/server.ts",
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
     },
     "./plugins": {
+      "development": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }
   },
   "devDependencies": {
-    "@better-auth/api-key": "^1.6.9",
-    "@better-auth/passkey": "^1.6.10",
+    "@better-auth/api-key": "^1.6.11",
+    "@better-auth/passkey": "^1.6.11",
     "@react-email/components": "^1.0.12",
     "@react-email/preview-server": "^5.2.10",
-    "@tanstack/react-query": "^5.100.9",
+    "@tanstack/react-query": "^5.100.14",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.5.2",
-    "@types/react": "^19.2.14",
-    "@vitejs/plugin-react": "^6.0.1",
-    "@vitest/browser-playwright": "^4.1.5",
-    "better-auth": "^1.6.10",
+    "@types/react": "^19.2.15",
+    "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/browser-playwright": "^4.1.7",
+    "better-auth": "^1.6.11",
     "clsx": "^2.1.1",
-    "playwright": "^1.59.1",
+    "playwright": "^1.60.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-email": "^6.1.1",
+    "react-email": "^6.4.0",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.3.0",
-    "vitest": "^4.1.5",
+    "vitest": "^4.1.7",
     "zod": "^4.4.3"
   },
   "peerDependencies": {
     "@better-auth-ui/core": "*",
-    "@better-auth/api-key": ">=1.6.9",
-    "@better-auth/passkey": ">=1.6.10",
+    "@better-auth/api-key": ">=1.6.11",
+    "@better-auth/passkey": ">=1.6.11",
     "@react-email/components": ">=1.0.12",
-    "@tanstack/react-query": ">=5.100.9",
-    "better-auth": ">=1.6.10",
+    "@tanstack/react-query": ">=5.100.14",
+    "better-auth": ">=1.6.11",
     "clsx": ">=2.0.0",
     "react": ">=19.2.6",
     "react-dom": ">=19.2.6",

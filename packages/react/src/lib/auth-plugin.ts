@@ -1,5 +1,6 @@
 import type { AuthPluginBase, AuthView } from "@better-auth-ui/core"
 import type { ComponentType, ReactNode } from "react"
+import type { SettingsTab } from "./settings-tab"
 
 export type { AuthPluginViewPaths } from "@better-auth-ui/core"
 
@@ -23,9 +24,17 @@ export type AccountCardProps = {
   children?: ReactNode
 }
 
+/** Props for plugin-contributed cards under `/organization/...` settings. */
+export type OrganizationCardProps = {
+  className?: string
+  children?: ReactNode
+}
+
 /** Props for plugin-contributed items in the `UserButton` dropdown. */
 export type UserMenuItemProps = {
   className?: string
+  /** When true, the subtitle line (email when name/username is shown) is hidden. */
+  hideSubtitle?: boolean
 }
 
 /** Framework-agnostic slot component shapes. UI packages narrow these via `TComponents`. */
@@ -38,6 +47,8 @@ export type AuthPluginComponents = {
   securityCards?: ComponentType<SecurityCardProps>[]
   /** Rendered as cards inside account settings. */
   accountCards?: ComponentType<AccountCardProps>[]
+  /** Rendered as cards inside the active organization's settings. */
+  organizationCards?: ComponentType<OrganizationCardProps>[]
   /** Rendered as items inside the `UserButton` dropdown. */
   userMenuItems?: ComponentType<UserMenuItemProps>[]
 }
@@ -74,4 +85,10 @@ export type AuthPlugin<
   TComponents & {
     views?: AuthPluginViews<TAuthViewProps, TSettingsViewProps>
     fallbackViews?: AuthPluginFallbackViews<TAuthViewProps>
+    /**
+     * Tabs the plugin contributes to the settings page. Each entry is a
+     * {@link SettingsTab} (`view`, `label`, `component`). Read at runtime via
+     * `useAuthPlugin(plugin).settingsTabs`.
+     */
+    settingsTabs?: SettingsTab[]
   }

@@ -3,16 +3,7 @@ import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
 
 export default defineConfig({
-  plugins: [
-    react(),
-    dts({
-      tsconfigPath: "./tsconfig.json",
-      // Force a full type-check + emit on every dts run so cross-package
-      // type changes propagate immediately in dev (vite build --watch);
-      // incremental mode can otherwise skip re-emitting .d.ts files.
-      compilerOptions: { incremental: false, composite: false }
-    })
-  ],
+  plugins: [react(), dts({ tsconfigPath: "./tsconfig.json" })],
   build: {
     lib: {
       entry: {
@@ -21,18 +12,11 @@ export default defineConfig({
         server: "src/server.ts",
         plugins: "src/plugins.ts"
       },
-      formats: ["es"],
-      fileName: "[name]"
+      formats: ["es"]
     },
     rolldownOptions: {
-      external: (id) =>
-        !id.startsWith(".") && !id.startsWith("/") && !id.startsWith("\0"),
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: "src"
-      }
-    },
-    outDir: "dist",
-    emptyOutDir: true
+      // All bare module IDs (not starting with `.` or `/` or `C:\`)
+      external: /^[^./](?!:[/\\])/
+    }
   }
 })

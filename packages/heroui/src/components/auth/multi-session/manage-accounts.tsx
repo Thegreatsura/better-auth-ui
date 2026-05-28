@@ -66,7 +66,7 @@ export function ManageAccounts({
           {allRows.map((row, index) => (
             <div key={row.key}>
               {index > 0 && (
-                <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                <div className="border-b border-dashed -mx-4 my-4" />
               )}
 
               <ManageAccount

@@ -5,7 +5,7 @@ description: Add account deletion with confirmation dialog to your authenticatio
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 
-The delete-user plugin adds account deletion functionality. Users can permanently delete their account with a confirmation dialog.
+The delete-user plugin adds account deletion functionality. Users can permanently delete their account with a confirmation dialog via the `<DeleteAccount />` card, wrapped by `<DangerZone />` in security settings.
 
 ## Setup
 
@@ -70,7 +70,7 @@ import { deleteUserPlugin } from "@better-auth-ui/heroui/plugins" // [!code high
 
 <ComponentPreview name="heroui-delete-user-danger-zone" />
 
-The `<DangerZone />` card is automatically rendered in `<SecuritySettings />` when the plugin is registered.
+The `<DangerZone />` card is automatically rendered in `<SecuritySettings />` when the plugin is registered. It renders a danger zone heading and the `<DeleteAccount />` card below it.
 
 **Usage**
 
@@ -83,6 +83,22 @@ import { DangerZone } from "@better-auth-ui/heroui/plugins"
 **Props**
 
 <auto-type-table path="../../../../../../packages/heroui/src/components/auth/delete-user/danger-zone.tsx" name="DangerZoneProps" />
+
+### `<DeleteAccount />`
+
+The delete account card with confirmation dialog. Used inside `<DangerZone />` by default; import it directly if you need a custom layout.
+
+**Usage**
+
+```tsx
+import { DeleteAccount } from "@better-auth-ui/heroui/plugins"
+
+<DeleteAccount />
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../packages/heroui/src/components/auth/delete-user/delete-account.tsx" name="DeleteAccountProps" />
 
 ## Options
 

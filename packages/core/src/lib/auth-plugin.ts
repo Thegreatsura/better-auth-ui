@@ -6,8 +6,11 @@ import type { AdditionalFields } from "../config/additional-fields-config"
  * Plugins that add routable sub-pages (e.g. `magicLinkPlugin` adds
  * `/auth/magic-link`) declare the URL segment under the matching section.
  * Read at runtime via `useAuthPlugin(plugin).viewPaths.*`.
+ *
+ * Plugin-specific namespaces (e.g. organization route segments) are merged
+ * via module augmentation from that plugin’s module — not declared here.
  */
-export type AuthPluginViewPaths = {
+export interface AuthPluginViewPaths {
   auth?: Record<string, string>
   settings?: Record<string, string>
 }
@@ -34,10 +37,6 @@ export interface AuthPluginBase {
    * user-defined additionalFields in the auth config.
    */
   additionalFields?: AdditionalFields
-  /**
-   * Additional properties contributed by the plugin.
-   */
-  [key: string]: unknown
 }
 
 /**

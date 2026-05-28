@@ -1,3 +1,11 @@
+import { apiKeyClient } from "@better-auth/api-key/client"
+import { passkeyClient } from "@better-auth/passkey/client"
+import {
+  magicLinkClient,
+  multiSessionClient,
+  organizationClient,
+  usernameClient
+} from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
 const DEMO_SESSION_TOKEN = "demo_sess_current"
@@ -225,6 +233,65 @@ const customFetchImpl: typeof fetch = async (input, _init) => {
     })
   }
 
+  if (endpoint === "/api/auth/organization/list") {
+    return new Response(JSON.stringify(DEMO_ORGANIZATIONS), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/get-full-organization") {
+    return new Response(JSON.stringify(DEMO_ACTIVE_ORGANIZATION), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/list-members") {
+    return new Response(
+      JSON.stringify({
+        members: DEMO_ACTIVE_ORGANIZATION.members,
+        total: DEMO_ACTIVE_ORGANIZATION.members.length
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    )
+  }
+
+  if (endpoint === "/api/auth/organization/list-invitations") {
+    return new Response(JSON.stringify(DEMO_ACTIVE_ORGANIZATION.invitations), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/list-user-invitations") {
+    return new Response(JSON.stringify(DEMO_USER_INVITATIONS), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/has-permission") {
+    return new Response(JSON.stringify({ success: true, error: null }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/set-active") {
+    return new Response(JSON.stringify(DEMO_ACTIVE_ORGANIZATION), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
+  if (endpoint === "/api/auth/organization/check-slug") {
+    return new Response(JSON.stringify({ status: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    })
+  }
+
   if (endpoint === "/api/auth/multi-session/list-device-sessions") {
     return new Response(
       JSON.stringify([
@@ -274,7 +341,158 @@ const customFetchImpl: typeof fetch = async (input, _init) => {
   })
 }
 
+const NOW = new Date().toISOString()
+
+const DEMO_ORGANIZATIONS = [
+  {
+    id: "org_acme",
+    name: "Acme Inc.",
+    slug: "acme",
+    logo: null,
+    createdAt: NOW,
+    metadata: null
+  },
+  {
+    id: "org_globex",
+    name: "Globex Corporation",
+    slug: "globex",
+    logo: null,
+    createdAt: NOW,
+    metadata: null
+  },
+  {
+    id: "org_initech",
+    name: "Initech",
+    slug: "initech",
+    logo: null,
+    createdAt: NOW,
+    metadata: null
+  }
+]
+
+const DEMO_ACTIVE_ORGANIZATION = {
+  ...DEMO_ORGANIZATIONS[0],
+  members: [
+    {
+      id: "mem_dave",
+      organizationId: "org_acme",
+      userId: "123",
+      role: "owner",
+      createdAt: NOW,
+      user: {
+        id: "123",
+        name: "daveycodez",
+        email: "daveycodez@example.com",
+        image: "/avatars/daveycodez.png"
+      }
+    },
+    {
+      id: "mem_jane",
+      organizationId: "org_acme",
+      userId: "user_jane",
+      role: "admin",
+      createdAt: NOW,
+      user: {
+        id: "user_jane",
+        name: "Jane Doe",
+        email: "jane.doe@example.com",
+        image: null
+      }
+    },
+    {
+      id: "mem_john",
+      organizationId: "org_acme",
+      userId: "user_john",
+      role: "member",
+      createdAt: NOW,
+      user: {
+        id: "user_john",
+        name: "John Smith",
+        email: "john.smith@example.com",
+        image: null
+      }
+    }
+  ],
+  invitations: [
+    {
+      id: "inv_jane",
+      organizationId: "org_acme",
+      email: "jane.doe@example.com",
+      role: "admin",
+      status: "accepted",
+      expiresAt: new Date(Date.now() + 86_400_000 * 7).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_alex",
+      organizationId: "org_acme",
+      email: "alex@example.com",
+      role: "member",
+      status: "pending",
+      expiresAt: new Date(Date.now() + 86_400_000 * 7).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_morgan",
+      organizationId: "org_acme",
+      email: "morgan@example.com",
+      role: "admin",
+      status: "rejected",
+      expiresAt: new Date(Date.now() + 86_400_000 * 5).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_john",
+      organizationId: "org_acme",
+      email: "john.smith@example.com",
+      role: "member",
+      status: "accepted",
+      expiresAt: new Date(Date.now() + 86_400_000 * 7).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    },
+    {
+      id: "inv_taylor",
+      organizationId: "org_acme",
+      email: "taylor@example.com",
+      role: "member",
+      status: "canceled",
+      expiresAt: new Date(Date.now() + 86_400_000 * 5).toISOString(),
+      inviterId: "123",
+      createdAt: NOW
+    }
+  ]
+}
+
+const DEMO_USER_INVITATIONS = [
+  {
+    id: "inv_initech_for_user",
+    organizationId: "org_initech",
+    email: "daveycodez@example.com",
+    role: "member",
+    status: "pending",
+    expiresAt: new Date(Date.now() + 86_400_000 * 3).toISOString(),
+    inviterId: "user_peter",
+    createdAt: NOW,
+    organizationName: "Initech",
+    organizationSlug: "initech",
+    organizationLogo: null,
+    inviterEmail: "peter@initech.com"
+  }
+]
+
 export const authClient = createAuthClient({
+  plugins: [
+    organizationClient(),
+    multiSessionClient(),
+    apiKeyClient(),
+    passkeyClient(),
+    usernameClient(),
+    magicLinkClient()
+  ],
   fetchOptions: {
     customFetchImpl
   }

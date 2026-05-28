@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { apiKeyQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
   type QueryClient,
@@ -11,24 +11,31 @@ import type { BetterFetchError } from "better-auth/react"
 import type { ApiKeyAuthClient, InferData } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
 
-export type ListApiKeysData<TAuthClient extends ApiKeyAuthClient> = InferData<
-  TAuthClient["apiKey"]["list"]
->
+export type ListApiKeysData<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = InferData<TAuthClient["apiKey"]["list"]>
 
-export type ListApiKeysParams<TAuthClient extends ApiKeyAuthClient> =
-  Parameters<TAuthClient["apiKey"]["list"]>[0]
+export type ListApiKeysParams<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Parameters<TAuthClient["apiKey"]["list"]>[0]
 
 export type ListedApiKey<
   TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
 > = NonNullable<ListApiKeysData<TAuthClient>>["apiKeys"][number]
 
-export type ListApiKeysOptions<TAuthClient extends ApiKeyAuthClient> = Omit<
+export type ListApiKeysOptions<
+  TAuthClient extends ApiKeyAuthClient = ApiKeyAuthClient
+> = Omit<
   ReturnType<typeof listApiKeysOptions<TAuthClient>>,
   "queryKey" | "queryFn"
 >
 
 /**
  * Query options factory for the current user's API keys.
+ *
+ * Shares a query key with the server-side `listApiKeysOptions` from
+ * `@better-auth-ui/react/server`, so SSR-hydrated data is reused from the
+ * cache without an immediate refetch.
  *
  * @param authClient - The Better Auth client with the API key plugin.
  * @param userId - The current signed-in user's ID. Used for cache partitioning.
@@ -40,7 +47,7 @@ export function listApiKeysOptions<TAuthClient extends ApiKeyAuthClient>(
   params?: ListApiKeysParams<TAuthClient>
 ) {
   type TData = ListApiKeysData<TAuthClient>
-  const queryKey = authQueryKeys.listApiKeys(userId, params?.query)
+  const queryKey = apiKeyQueryKeys.list(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {
@@ -84,6 +91,11 @@ export type UseListApiKeysOptions<TAuthClient extends ApiKeyAuthClient> =
 
 /**
  * Subscribe to the current user's API keys via TanStack Query.
+ *
+ * Shares a query key with the server-side `listApiKeysOptions`, so
+ * SSR-hydrated data is reused from the cache without an immediate refetch.
+ * The query is gated on a signed-in user; while the session is loading or
+ * absent, the underlying `queryFn` is replaced with `skipToken`.
  *
  * @param authClient - The Better Auth client with the API key plugin.
  * @param options - `apiKey.list` params merged with `useQuery` options.

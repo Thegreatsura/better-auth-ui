@@ -12,22 +12,32 @@ export type UserViewProps = {
   className?: string
   isPending?: boolean
   size?: AvatarProps["size"]
+  /**
+   * When true, the subtitle line (email when name/username is shown) is hidden.
+   * @default false
+   */
+  hideSubtitle?: boolean
   /** @remarks `User` */
-  user?: User & { username?: string | null; displayUsername?: string | null }
+  user?: Partial<User> & {
+    username?: string | null
+    displayUsername?: string | null
+  }
 }
 
 /**
- * Render a compact user item with an avatar, a primary label (display username, name, or email), and an optional secondary email line.
+ * Render a compact user item with an avatar, a primary label (display username, name, or email), and an optional subtitle (email).
  *
  * @param isPending - If true and no `user` prop is provided, renders a loading skeleton instead of user details
- * @param size - Avatar size variant; defaults to `"sm"`
+ * @param size - Avatar size variant; defaults to `"md"`
+ * @param hideSubtitle - When true, omits the muted subtitle row under the primary label
  * @param user - Optional user to display; when omitted the current session user is used if available
  * @returns A React element containing the user's avatar and text labels
  */
 export function UserView({
   className,
   isPending,
-  size = "sm",
+  size = "md",
+  hideSubtitle = false,
   user,
   ...props
 }: UserViewProps & ComponentProps<"div">) {
@@ -47,11 +57,16 @@ export function UserView({
         className={cn("flex items-center gap-2 min-w-0", className)}
         {...props}
       >
-        <UserAvatar isPending size={size} />
+        <UserAvatar
+          isPending
+          className={size === "sm" ? "size-5 [&>span]:text-xs" : undefined}
+          size={size === "lg" ? "md" : "sm"}
+        />
 
         <div className="flex flex-col gap-1 min-w-0">
           <Skeleton className="h-3.5 w-24 rounded-lg" />
-          <Skeleton className="h-3 w-32 rounded-lg" />
+
+          {!hideSubtitle ? <Skeleton className="h-3 w-32 rounded-lg" /> : null}
         </div>
       </div>
     )
@@ -62,20 +77,25 @@ export function UserView({
       className={cn("flex items-center gap-2 min-w-0", className)}
       {...props}
     >
-      <UserAvatar user={resolvedUser} size={size} />
+      <UserAvatar
+        className={size === "sm" ? "size-5 [&>span]:text-xs" : undefined}
+        user={resolvedUser}
+        size={size === "lg" ? "md" : "sm"}
+      />
 
-      <div className="min-w-0">
-        <p className="text-sm font-medium truncate leading-tight">
+      <div className="flex flex-col min-w-0">
+        <p className="text-foreground text-sm font-medium leading-tight truncate">
           {resolvedUser?.displayUsername ||
             resolvedUser?.name ||
             resolvedUser?.email}
         </p>
 
-        {(resolvedUser?.displayUsername || resolvedUser?.name) && (
-          <p className="text-muted text-xs mb-0.5 truncate overflow-x-hidden">
+        {!hideSubtitle &&
+        (resolvedUser?.displayUsername || resolvedUser?.name) ? (
+          <p className="text-muted text-xs leading-tight truncate overflow-x-hidden">
             {resolvedUser?.email}
           </p>
-        )}
+        ) : null}
       </div>
     </div>
   )

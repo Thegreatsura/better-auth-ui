@@ -1,3 +1,5 @@
+import { transformerMetaHighlight } from "@shikijs/transformers"
+import { rehypeCodeDefaultOptions } from "fumadocs-core/mdx-plugins"
 import { defineConfig, defineDocs } from "fumadocs-mdx/config"
 import lastModified from "fumadocs-mdx/plugins/last-modified"
 import {
@@ -101,6 +103,13 @@ export default defineConfig({
       persist: {
         id: "package-manager"
       }
+    },
+    rehypeCodeOptions: {
+      ...rehypeCodeDefaultOptions,
+      transformers: [
+        ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerMetaHighlight()
+      ]
     }
   }
 })

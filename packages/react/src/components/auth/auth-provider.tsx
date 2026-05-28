@@ -12,16 +12,11 @@ import {
   QueryClientContext,
   QueryClientProvider
 } from "@tanstack/react-query"
-import {
-  createContext,
-  type PropsWithChildren,
-  type ReactNode,
-  useContext
-} from "react"
+import { type PropsWithChildren, type ReactNode, useContext } from "react"
 import type { AuthClient } from "../../lib/auth-client"
+import { MutationInvalidator } from "../mutation-invalidator"
+import { AuthContext } from "./auth-context"
 import { FetchOptionsProvider } from "./fetch-options-provider"
-
-const AuthContext = createContext<AuthConfig | undefined>(undefined)
 
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
@@ -70,19 +65,14 @@ export function AuthProvider({
   queryClient,
   ...config
 }: AuthProviderProps) {
-  const mergedConfig = deepmerge(defaultAuthConfig, {
-    ...config,
-    viewPaths: {
-      auth: {
-        ...defaultAuthConfig.viewPaths.auth,
-        ...config.viewPaths?.auth
-      },
-      settings: {
-        ...defaultAuthConfig.viewPaths.settings,
-        ...config.viewPaths?.settings
-      }
-    }
-  } as AuthConfig)
+  const { authClient, ...partialConfig } = config
+  const mergedConfig = {
+    ...deepmerge<Omit<AuthConfig, "authClient">>(
+      defaultAuthConfig,
+      partialConfig
+    ),
+    authClient
+  }
 
   mergedConfig.redirectTo =
     (typeof window !== "undefined" &&
@@ -105,18 +95,16 @@ export function AuthProvider({
 
   const contextQueryClient = useContext(QueryClientContext)
 
-  if (contextQueryClient) {
-    return (
-      <AuthContext.Provider value={mergedConfig}>
-        <FetchOptionsProvider>{children}</FetchOptionsProvider>
-      </AuthContext.Provider>
-    )
-  }
-
   return (
-    <QueryClientProvider client={queryClient || fallbackQueryClient}>
+    <QueryClientProvider
+      client={queryClient || contextQueryClient || fallbackQueryClient}
+    >
       <AuthContext.Provider value={mergedConfig}>
-        <FetchOptionsProvider>{children}</FetchOptionsProvider>
+        <FetchOptionsProvider>
+          <MutationInvalidator />
+
+          {children}
+        </FetchOptionsProvider>
       </AuthContext.Provider>
     </QueryClientProvider>
   )

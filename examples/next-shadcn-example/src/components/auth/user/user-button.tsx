@@ -162,7 +162,7 @@ export function UserButton({
               </>
             )}
 
-            <ChevronsUpDown className="ml-auto" />
+            <ChevronsUpDown className="ml-auto size-4" />
           </Button>
         )}
       </DropdownMenuTrigger>

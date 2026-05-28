@@ -2,8 +2,10 @@
  * Mutation keys contributed by the API key plugin.
  */
 export const apiKeyMutationKeys = {
+  /** Root key for every api key mutation. */
+  all: ["auth", "apiKey"] as const,
   /** Key for `apiKey.create`. */
-  createApiKey: ["auth", "apiKey", "create"] as const,
+  create: ["auth", "apiKey", "create"] as const,
   /** Key for `apiKey.delete`. */
-  deleteApiKey: ["auth", "apiKey", "delete"] as const
+  delete: ["auth", "apiKey", "delete"] as const
 } as const

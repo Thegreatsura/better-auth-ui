@@ -346,6 +346,10 @@
         {
           "path": "src/components/auth/api-key/delete-api-key-dialog.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/organization-api-keys.tsx",
+          "type": "registry:component"
         }
       ]
     },
@@ -401,6 +405,185 @@
       ]
     },
     {
+      "name": "organization",
+      "type": "registry:component",
+      "title": "Organization",
+      "description": "Organization plugin: multi-tenant organization management with members, invitations, and roles. Registers an organizations tab in account settings, mounts a full `<Organization />` shell with settings and people tabs, and an `<OrganizationSwitcher />` dropdown for the header.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/react-pacer",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "avatar",
+        "badge",
+        "button",
+        "card",
+        "dropdown-menu",
+        "field",
+        "input",
+        "input-group",
+        "label",
+        "select",
+        "separator",
+        "skeleton",
+        "sonner",
+        "spinner",
+        "table",
+        "tabs",
+        "https://better-auth-ui.com/r/user-view.json"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/auth/organization-plugin.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/organization/organization.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-switcher.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-settings.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-people.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-profile.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-danger-zone.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-members.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-member-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-member-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitation-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitation-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitations-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organizations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organizations-settings.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organizations-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitation-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitation-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitations-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/create-organization-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/invite-member-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/delete-organization-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/delete-organization-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/delete-organization.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/leave-organization-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/leave-organization.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/remove-member-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/change-organization-logo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-logo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-view.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-view-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/slug-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "theme",
       "type": "registry:component",
       "title": "Theme",
@@ -434,7 +617,7 @@
       "name": "delete-user",
       "type": "registry:component",
       "title": "Delete User",
-      "description": "Delete-user plugin: danger zone card with account deletion and confirmation dialog. Registers a DangerZone security card in account settings that is shown when the plugin is registered.",
+      "description": "Delete-user plugin: danger zone with DeleteAccount card and confirmation dialog. Registers a DangerZone security card in account settings when the plugin is registered.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
@@ -465,7 +648,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/delete-user/delete-user.tsx",
+          "path": "src/components/auth/delete-user/delete-account.tsx",
           "type": "registry:component"
         }
       ]
@@ -985,6 +1168,28 @@
       "files": [
         {
           "path": "../../packages/react/src/components/auth/email/new-device.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "organization-invitation-email",
+      "type": "registry:component",
+      "title": "Organization Invitation Email",
+      "description": "Email template component that invites a user to join an organization.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@react-email/components"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "../../packages/react/src/components/auth/email/organization-invitation.tsx",
           "type": "registry:component"
         },
         {

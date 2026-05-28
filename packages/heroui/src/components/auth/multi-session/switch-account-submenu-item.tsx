@@ -14,6 +14,7 @@ type DeviceSession = {
 
 export type SwitchAccountSubmenuItemProps = {
   deviceSession: DeviceSession
+  hideSubtitle?: boolean
 }
 
 /**
@@ -23,7 +24,8 @@ export type SwitchAccountSubmenuItemProps = {
  * @returns The switch account dropdown item as a JSX element
  */
 export function SwitchAccountSubmenuItem({
-  deviceSession
+  deviceSession,
+  hideSubtitle
 }: SwitchAccountSubmenuItemProps) {
   const { authClient } = useAuth()
   const { mutate: setActiveSession, isPending } = useSetActiveSession(
@@ -41,7 +43,7 @@ export function SwitchAccountSubmenuItem({
         setActiveSession({ sessionToken: deviceSession.session.token })
       }
     >
-      <UserView user={deviceSession.user} />
+      <UserView user={deviceSession.user} hideSubtitle={hideSubtitle} />
 
       {isPending && <Spinner color="current" size="sm" className="ml-auto" />}
     </Dropdown.Item>

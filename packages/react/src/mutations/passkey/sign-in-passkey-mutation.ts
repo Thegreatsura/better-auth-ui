@@ -1,20 +1,20 @@
+import { authQueryKeys } from "@better-auth-ui/core"
 import { passkeyMutationKeys } from "@better-auth-ui/core/plugins"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { PasskeyAuthClient } from "../../lib/auth-client"
-import { sessionOptions } from "../../queries/auth/session-query"
 
 export type SignInPasskeyParams<TAuthClient extends PasskeyAuthClient> =
   Parameters<TAuthClient["signIn"]["passkey"]>[0]
 
 export type SignInPasskeyOptions<TAuthClient extends PasskeyAuthClient> = Omit<
   ReturnType<typeof signInPasskeyOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -47,28 +47,25 @@ export function signInPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 /**
  * Create a mutation for passkey sign-in.
  *
- * Wraps `authClient.signIn.passkey`, resets the session query on success so
- * the new session is refetched, and forwards React Query mutation options
- * such as `onSuccess`, `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the session
+ * query so the new session is refetched (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client with the passkey plugin.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useSignInPasskey<TAuthClient extends PasskeyAuthClient>(
   authClient: TAuthClient,
-  options?: SignInPasskeyOptions<TAuthClient>
+  options?: SignInPasskeyOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    ...signInPasskeyOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      queryClient.resetQueries({
-        queryKey: sessionOptions(authClient).queryKey
-      })
-
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...signInPasskeyOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.session]
+      }
+    },
+    queryClient
+  )
 }

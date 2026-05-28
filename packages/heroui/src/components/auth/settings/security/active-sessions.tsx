@@ -25,9 +25,11 @@ export function ActiveSessions({
 
   const { data: sessions, isPending } = useListSessions(authClient)
 
-  const activeSessions = sessions?.toSorted((activeSession) =>
-    activeSession.id === session?.session.id ? -1 : 1
-  )
+  const activeSessions =
+    sessions &&
+    [...sessions].sort((a, b) =>
+      a.id === session?.session.id ? -1 : b.id === session?.session.id ? 1 : 0
+    )
 
   return (
     <div>
@@ -43,7 +45,7 @@ export function ActiveSessions({
             activeSessions?.map((activeSession, index) => (
               <div key={activeSession.id}>
                 {index > 0 && (
-                  <div className="border-b border-dashed -mx-4 md:-mx-6 my-4" />
+                  <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
                 <ActiveSession activeSession={activeSession} />

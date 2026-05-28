@@ -3,8 +3,7 @@
   "version": "1.6.8",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "tsc --watch",
+    "build": "tsc",
     "test": "vitest"
   },
   "files": [
@@ -15,20 +14,22 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./plugins": {
-      "types": "./dist/plugins/index.d.ts",
+      "development": "./src/plugins.ts",
+      "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }
   },
   "devDependencies": {
-    "better-auth": "^1.6.10",
-    "vitest": "^4.1.5"
+    "better-auth": "^1.6.11",
+    "vitest": "^4.1.7"
   },
   "peerDependencies": {
-    "better-auth": ">=1.6.10"
+    "better-auth": ">=1.6.11"
   },
   "repository": {
     "type": "git",

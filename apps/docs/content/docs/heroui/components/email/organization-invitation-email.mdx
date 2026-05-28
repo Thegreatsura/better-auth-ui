@@ -1,0 +1,75 @@
+---
+title: <OrganizationInvitationEmail />
+description: Email template component that invites a user to join an organization.
+---
+
+## Usage
+
+<ComponentPreview name="heroui-organization-invitation-email" />
+
+```tsx file=<rootDir>/src/demos/heroui/email/organization-invitation-email.tsx#L13-
+```
+
+## Server setup
+
+Wire the email into the Better Auth `organization` plugin via `sendInvitationEmail`. Point `url` at the settings page where pending invitations are listed — better-auth-ui renders them under `/settings/organizations`.
+
+```tsx title="auth.ts"
+import { OrganizationInvitationEmail } from "@better-auth-ui/heroui/email"
+import { render } from "@react-email/render"
+import { betterAuth } from "better-auth"
+import { organization } from "better-auth/plugins"
+
+const baseUrl = process.env.BETTER_AUTH_URL!
+
+export const auth = betterAuth({
+  plugins: [
+    organization({
+      async sendInvitationEmail(data) {
+        const html = await render(
+          <OrganizationInvitationEmail
+            url={`${baseUrl}/settings/organizations`}
+            email={data.email}
+            inviterName={data.inviter.user.name}
+            inviterEmail={data.inviter.user.email}
+            organizationName={data.organization.name}
+            organizationLogoURL={data.organization.logo ?? undefined}
+            role={data.role}
+            appName="My App"
+            poweredBy
+          />
+        )
+
+        await sendEmail({
+          to: data.email,
+          subject: `You're invited to ${data.organization.name}`,
+          html
+        })
+      }
+    })
+  ]
+})
+```
+
+<Callout>
+  `url` should always resolve to `{baseUrl}/settings/organizations` — that's
+  where the `<UserInvitations />` table inside `<OrganizationsSettings />`
+  renders pending invitations the user can accept or reject.
+</Callout>
+
+## Props
+
+<auto-type-table path="../../../../../../../packages/react/src/components/auth/email/organization-invitation.tsx" name="OrganizationInvitationEmailProps" />
+
+## Features
+
+- Inviter name and email display
+- Organization name and optional organization logo
+- Role being offered (e.g. member, admin, owner)
+- Accept invitation button linking to the settings invitations page
+- Fallback URL for manual copy/paste
+- Optional expiration time
+- Security notice for unexpected invitations
+- Customizable branding and styling
+- Support for light/dark mode themes
+- Localization support

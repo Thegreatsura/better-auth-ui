@@ -11,12 +11,24 @@ import { EmailChangedEmailDemo as HeroUIEmailChangedEmailDemo } from "./heroui/e
 import { EmailVerificationEmailDemo as HeroUIEmailVerificationEmailDemo } from "./heroui/email/email-verification-email"
 import { MagicLinkEmailDemo as HeroUIMagicLinkEmailDemo } from "./heroui/email/magic-link-email"
 import { NewDeviceEmailDemo as HeroUINewDeviceEmailDemo } from "./heroui/email/new-device-email"
+import { OrganizationInvitationEmailDemo as HeroUIOrganizationInvitationEmailDemo } from "./heroui/email/organization-invitation-email"
 import { OtpEmailDemo as HeroUIOtpEmailDemo } from "./heroui/email/otp-email"
 import { PasswordChangedEmailDemo as HeroUIPasswordChangedEmailDemo } from "./heroui/email/password-changed-email"
 import { ResetPasswordEmailDemo as HeroUIResetPasswordEmailDemo } from "./heroui/email/reset-password-email"
 import { MagicLinkDemo as HeroUIMagicLinkDemo } from "./heroui/magic-link/magic-link"
 import { ManageAccountsDemo as HeroUIManageAccountsDemo } from "./heroui/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as HeroUISwitchAccountSubmenuDemo } from "./heroui/multi-session/switch-account-submenu"
+import { OrganizationDemo as HeroUIOrganizationDemo } from "./heroui/organization/organization"
+import { OrganizationDangerZoneDemo as HeroUIOrganizationDangerZoneDemo } from "./heroui/organization/organization-danger-zone"
+import { OrganizationInvitationsDemo as HeroUIOrganizationInvitationsDemo } from "./heroui/organization/organization-invitations"
+import { OrganizationMembersDemo as HeroUIOrganizationMembersDemo } from "./heroui/organization/organization-members"
+import { OrganizationPeopleDemo as HeroUIOrganizationPeopleDemo } from "./heroui/organization/organization-people"
+import { OrganizationProfileDemo as HeroUIOrganizationProfileDemo } from "./heroui/organization/organization-profile"
+import { OrganizationSettingsDemo as HeroUIOrganizationSettingsDemo } from "./heroui/organization/organization-settings"
+import { OrganizationSwitcherDemo as HeroUIOrganizationSwitcherDemo } from "./heroui/organization/organization-switcher"
+import { OrganizationsDemo as HeroUIOrganizationsDemo } from "./heroui/organization/organizations"
+import { OrganizationsSettingsDemo as HeroUIOrganizationsSettingsDemo } from "./heroui/organization/organizations-settings"
+import { UserInvitationsDemo as HeroUIUserInvitationsDemo } from "./heroui/organization/user-invitations"
 import { PasskeySignInDemo as HeroUIPasskeySignInDemo } from "./heroui/passkey/passkey-sign-in"
 import { AccountSettingsDemo as HeroUIAccountSettingsDemo } from "./heroui/settings/account/account-settings"
 import { ChangeEmailDemo as HeroUIChangeEmailDemo } from "./heroui/settings/account/change-email"
@@ -49,12 +61,24 @@ import { EmailChangedEmailDemo as ShadcnEmailChangedEmailDemo } from "./shadcn/e
 import { EmailVerificationEmailDemo as ShadcnEmailVerificationEmailDemo } from "./shadcn/email/email-verification-email"
 import { MagicLinkEmailDemo as ShadcnMagicLinkEmailDemo } from "./shadcn/email/magic-link-email"
 import { NewDeviceEmailDemo as ShadcnNewDeviceEmailDemo } from "./shadcn/email/new-device-email"
+import { OrganizationInvitationEmailDemo as ShadcnOrganizationInvitationEmailDemo } from "./shadcn/email/organization-invitation-email"
 import { OtpEmailDemo as ShadcnOtpEmailDemo } from "./shadcn/email/otp-email"
 import { PasswordChangedEmailDemo as ShadcnPasswordChangedEmailDemo } from "./shadcn/email/password-changed-email"
 import { ResetPasswordEmailDemo as ShadcnResetPasswordEmailDemo } from "./shadcn/email/reset-password-email"
 import { MagicLinkDemo as ShadcnMagicLinkDemo } from "./shadcn/magic-link/magic-link"
 import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as ShadcnSwitchAccountSubmenuDemo } from "./shadcn/multi-session/switch-account-submenu"
+import { OrganizationDemo as ShadcnOrganizationDemo } from "./shadcn/organization/organization"
+import { OrganizationDangerZoneDemo as ShadcnOrganizationDangerZoneDemo } from "./shadcn/organization/organization-danger-zone"
+import { OrganizationInvitationsDemo as ShadcnOrganizationInvitationsDemo } from "./shadcn/organization/organization-invitations"
+import { OrganizationMembersDemo as ShadcnOrganizationMembersDemo } from "./shadcn/organization/organization-members"
+import { OrganizationPeopleDemo as ShadcnOrganizationPeopleDemo } from "./shadcn/organization/organization-people"
+import { OrganizationProfileDemo as ShadcnOrganizationProfileDemo } from "./shadcn/organization/organization-profile"
+import { OrganizationSettingsDemo as ShadcnOrganizationSettingsDemo } from "./shadcn/organization/organization-settings"
+import { OrganizationSwitcherDemo as ShadcnOrganizationSwitcherDemo } from "./shadcn/organization/organization-switcher"
+import { OrganizationsDemo as ShadcnOrganizationsDemo } from "./shadcn/organization/organizations"
+import { OrganizationsSettingsDemo as ShadcnOrganizationsSettingsDemo } from "./shadcn/organization/organizations-settings"
+import { UserInvitationsDemo as ShadcnUserInvitationsDemo } from "./shadcn/organization/user-invitations"
 import { PasskeySignInDemo as ShadcnPasskeySignInDemo } from "./shadcn/passkey/passkey-sign-in"
 import { AccountSettingsDemo as ShadcnAccountSettingsDemo } from "./shadcn/settings/account/account-settings"
 import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/account/change-email"
@@ -97,6 +121,18 @@ export const demos: Record<string, ComponentType> = {
   "heroui-magic-link-email": HeroUIMagicLinkEmailDemo,
   "heroui-manage-accounts": HeroUIManageAccountsDemo,
   "heroui-new-device-email": HeroUINewDeviceEmailDemo,
+  "heroui-organization": HeroUIOrganizationDemo,
+  "heroui-organization-danger-zone": HeroUIOrganizationDangerZoneDemo,
+  "heroui-organization-invitations": HeroUIOrganizationInvitationsDemo,
+  "heroui-organization-members": HeroUIOrganizationMembersDemo,
+  "heroui-organization-people": HeroUIOrganizationPeopleDemo,
+  "heroui-organization-profile": HeroUIOrganizationProfileDemo,
+  "heroui-organization-settings": HeroUIOrganizationSettingsDemo,
+  "heroui-organization-switcher": HeroUIOrganizationSwitcherDemo,
+  "heroui-organizations": HeroUIOrganizationsDemo,
+  "heroui-organizations-settings": HeroUIOrganizationsSettingsDemo,
+  "heroui-user-invitations": HeroUIUserInvitationsDemo,
+  "heroui-organization-invitation-email": HeroUIOrganizationInvitationEmailDemo,
   "heroui-otp-email": HeroUIOtpEmailDemo,
   "heroui-passkey-sign-in": HeroUIPasskeySignInDemo,
   "heroui-passkeys": HeroUIPasskeysDemo,
@@ -135,6 +171,18 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-magic-link-email": ShadcnMagicLinkEmailDemo,
   "shadcn-manage-accounts": ShadcnManageAccountsDemo,
   "shadcn-new-device-email": ShadcnNewDeviceEmailDemo,
+  "shadcn-organization": ShadcnOrganizationDemo,
+  "shadcn-organization-danger-zone": ShadcnOrganizationDangerZoneDemo,
+  "shadcn-organization-invitations": ShadcnOrganizationInvitationsDemo,
+  "shadcn-organization-members": ShadcnOrganizationMembersDemo,
+  "shadcn-organization-people": ShadcnOrganizationPeopleDemo,
+  "shadcn-organization-profile": ShadcnOrganizationProfileDemo,
+  "shadcn-organization-settings": ShadcnOrganizationSettingsDemo,
+  "shadcn-organization-switcher": ShadcnOrganizationSwitcherDemo,
+  "shadcn-organizations": ShadcnOrganizationsDemo,
+  "shadcn-organizations-settings": ShadcnOrganizationsSettingsDemo,
+  "shadcn-user-invitations": ShadcnUserInvitationsDemo,
+  "shadcn-organization-invitation-email": ShadcnOrganizationInvitationEmailDemo,
   "shadcn-otp-email": ShadcnOtpEmailDemo,
   "shadcn-passkey-sign-in": ShadcnPasskeySignInDemo,
   "shadcn-passkeys": ShadcnPasskeysDemo,

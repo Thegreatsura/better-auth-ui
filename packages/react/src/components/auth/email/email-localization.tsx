@@ -2,6 +2,7 @@ import EmailChangedEmail from "./email-changed"
 import EmailVerificationEmail from "./email-verification"
 import MagicLinkEmail from "./magic-link"
 import NewDeviceEmail from "./new-device"
+import OrganizationInvitationEmail from "./organization-invitation"
 import OtpEmail from "./otp-email"
 import PasswordChangedEmail from "./password-changed"
 import ResetPasswordEmail from "./reset-password"
@@ -10,15 +11,16 @@ import ResetPasswordEmail from "./reset-password"
  * Aggregated localization strings for all email components.
  *
  * Combines localization strings from all email templates (EmailChangedEmail,
- * EmailVerificationEmail, MagicLinkEmail, NewDeviceEmail, OtpEmail,
- * PasswordChangedEmail, ResetPasswordEmail) into a single object for convenient
- * bulk customization.
+ * EmailVerificationEmail, MagicLinkEmail, NewDeviceEmail,
+ * OrganizationInvitationEmail, OtpEmail, PasswordChangedEmail,
+ * ResetPasswordEmail) into a single object for convenient bulk customization.
  */
 export const emailLocalization = {
   ...EmailChangedEmail.localization,
   ...EmailVerificationEmail.localization,
   ...MagicLinkEmail.localization,
   ...NewDeviceEmail.localization,
+  ...OrganizationInvitationEmail.localization,
   ...OtpEmail.localization,
   ...PasswordChangedEmail.localization,
   ...ResetPasswordEmail.localization

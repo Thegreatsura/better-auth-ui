@@ -16,15 +16,38 @@ import { CreateApiKeyDialog } from "./create-api-key-dialog"
 export type ApiKeysProps = {
   className?: string
   variant?: CardProps["variant"]
+  /** Scope the list and create payload to an organization. */
+  organizationId?: string
+  /** Force the loading skeleton and disable the list query. */
+  isPending?: boolean
+  /** Hide the "Create API key" button (header + empty state). */
+  hideCreate?: boolean
+  /** Hide the per-row delete button on listed keys. */
+  hideDelete?: boolean
 }
 
-export function ApiKeys({ className, variant }: ApiKeysProps) {
+export function ApiKeys({
+  className,
+  variant,
+  organizationId,
+  isPending: isPendingProp,
+  hideCreate,
+  hideDelete
+}: ApiKeysProps) {
   const { authClient } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
 
-  const { data: listData, isPending } = useListApiKeys(
-    authClient as ApiKeyAuthClient
+  const { data: listData, isPending: isListPending } = useListApiKeys(
+    authClient as ApiKeyAuthClient,
+    {
+      enabled: !isPendingProp,
+      ...(organizationId
+        ? { query: { organizationId, configId: "organization" } }
+        : {})
+    }
   )
+
+  const isPending = isPendingProp || isListPending
 
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -35,14 +58,16 @@ export function ApiKeys({ className, variant }: ApiKeysProps) {
           {apiKeyLocalization.apiKeys}
         </h2>
 
-        <Button
-          className="shrink-0"
-          size="sm"
-          isDisabled={isPending}
-          onPress={() => setCreateOpen(true)}
-        >
-          {apiKeyLocalization.createApiKey}
-        </Button>
+        {!hideCreate && (
+          <Button
+            className="shrink-0"
+            size="sm"
+            isDisabled={isPending}
+            onPress={() => setCreateOpen(true)}
+          >
+            {apiKeyLocalization.createApiKey}
+          </Button>
+        )}
       </div>
 
       <Card variant={variant}>
@@ -50,7 +75,10 @@ export function ApiKeys({ className, variant }: ApiKeysProps) {
           {isPending ? (
             <ApiKeySkeleton />
           ) : !listData?.apiKeys.length ? (
-            <ApiKeysEmpty onCreatePress={() => setCreateOpen(true)} />
+            <ApiKeysEmpty
+              onCreatePress={() => setCreateOpen(true)}
+              hideCreate={hideCreate}
+            />
           ) : (
             listData?.apiKeys.map((key, index) => (
               <div key={key.id}>
@@ -58,14 +86,24 @@ export function ApiKeys({ className, variant }: ApiKeysProps) {
                   <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
-                <ApiKey apiKey={key} />
+                <ApiKey
+                  apiKey={key}
+                  hideDelete={hideDelete}
+                  organizationId={organizationId}
+                />
               </div>
             ))
           )}
         </Card.Content>
       </Card>
 
-      <CreateApiKeyDialog isOpen={createOpen} onOpenChange={setCreateOpen} />
+      {!hideCreate && (
+        <CreateApiKeyDialog
+          isOpen={createOpen}
+          onOpenChange={setCreateOpen}
+          organizationId={organizationId}
+        />
+      )}
     </div>
   )
 }

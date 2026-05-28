@@ -82,7 +82,7 @@ export interface AuthConfig {
   navigate: (options: { to: string; replace?: boolean }) => void
 }
 
-export const defaultAuthConfig: AuthConfig = {
+export const defaultAuthConfig: Omit<AuthConfig, "authClient"> = {
   avatar: {
     enabled: true,
     resize: resizeAvatar,

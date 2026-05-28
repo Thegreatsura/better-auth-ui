@@ -1,9 +1,5 @@
 /**
  * View path segments for authentication routes.
- *
- * Contains the fixed built-ins every install ships with. Plugin-contributed
- * paths (e.g. `magicLinkPlugin`'s `magicLink`) live on the plugin object and
- * are read via `useAuthPlugin(plugin).viewPaths.auth.*`.
  */
 export interface AuthViewPaths {
   /**

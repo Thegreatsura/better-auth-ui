@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { deleteUserMutationKeys } from "@better-auth-ui/core/plugins"
 import { mutationOptions, useMutation } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
@@ -21,7 +21,7 @@ export type DeleteUserOptions<TAuthClient extends AuthClient> = Omit<
 export function deleteUserOptions<TAuthClient extends AuthClient>(
   authClient: TAuthClient
 ) {
-  const mutationKey = authMutationKeys.deleteUser
+  const mutationKey = deleteUserMutationKeys.deleteUser
 
   const mutationFn = (params: DeleteUserParams<TAuthClient>) =>
     authClient.deleteUser({
