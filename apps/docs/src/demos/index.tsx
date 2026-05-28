@@ -66,6 +66,17 @@ import { ResetPasswordEmailDemo as ShadcnResetPasswordEmailDemo } from "./shadcn
 import { MagicLinkDemo as ShadcnMagicLinkDemo } from "./shadcn/magic-link/magic-link"
 import { ManageAccountsDemo as ShadcnManageAccountsDemo } from "./shadcn/multi-session/manage-accounts"
 import { SwitchAccountSubmenuDemo as ShadcnSwitchAccountSubmenuDemo } from "./shadcn/multi-session/switch-account-submenu"
+import { OrganizationDemo as ShadcnOrganizationDemo } from "./shadcn/organization/organization"
+import { OrganizationDangerZoneDemo as ShadcnOrganizationDangerZoneDemo } from "./shadcn/organization/organization-danger-zone"
+import { OrganizationInvitationsDemo as ShadcnOrganizationInvitationsDemo } from "./shadcn/organization/organization-invitations"
+import { OrganizationMembersDemo as ShadcnOrganizationMembersDemo } from "./shadcn/organization/organization-members"
+import { OrganizationPeopleDemo as ShadcnOrganizationPeopleDemo } from "./shadcn/organization/organization-people"
+import { OrganizationProfileDemo as ShadcnOrganizationProfileDemo } from "./shadcn/organization/organization-profile"
+import { OrganizationSettingsDemo as ShadcnOrganizationSettingsDemo } from "./shadcn/organization/organization-settings"
+import { OrganizationSwitcherDemo as ShadcnOrganizationSwitcherDemo } from "./shadcn/organization/organization-switcher"
+import { OrganizationsDemo as ShadcnOrganizationsDemo } from "./shadcn/organization/organizations"
+import { OrganizationsSettingsDemo as ShadcnOrganizationsSettingsDemo } from "./shadcn/organization/organizations-settings"
+import { UserInvitationsDemo as ShadcnUserInvitationsDemo } from "./shadcn/organization/user-invitations"
 import { PasskeySignInDemo as ShadcnPasskeySignInDemo } from "./shadcn/passkey/passkey-sign-in"
 import { AccountSettingsDemo as ShadcnAccountSettingsDemo } from "./shadcn/settings/account/account-settings"
 import { ChangeEmailDemo as ShadcnChangeEmailDemo } from "./shadcn/settings/account/change-email"
@@ -157,6 +168,17 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-magic-link-email": ShadcnMagicLinkEmailDemo,
   "shadcn-manage-accounts": ShadcnManageAccountsDemo,
   "shadcn-new-device-email": ShadcnNewDeviceEmailDemo,
+  "shadcn-organization": ShadcnOrganizationDemo,
+  "shadcn-organization-danger-zone": ShadcnOrganizationDangerZoneDemo,
+  "shadcn-organization-invitations": ShadcnOrganizationInvitationsDemo,
+  "shadcn-organization-members": ShadcnOrganizationMembersDemo,
+  "shadcn-organization-people": ShadcnOrganizationPeopleDemo,
+  "shadcn-organization-profile": ShadcnOrganizationProfileDemo,
+  "shadcn-organization-settings": ShadcnOrganizationSettingsDemo,
+  "shadcn-organization-switcher": ShadcnOrganizationSwitcherDemo,
+  "shadcn-organizations": ShadcnOrganizationsDemo,
+  "shadcn-organizations-settings": ShadcnOrganizationsSettingsDemo,
+  "shadcn-user-invitations": ShadcnUserInvitationsDemo,
   "shadcn-otp-email": ShadcnOtpEmailDemo,
   "shadcn-passkey-sign-in": ShadcnPasskeySignInDemo,
   "shadcn-passkeys": ShadcnPasskeysDemo,

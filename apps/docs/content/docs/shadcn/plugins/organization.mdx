@@ -723,10 +723,9 @@ Read these inside custom slot components via `useAuthPlugin(organizationPlugin).
 
 Dropdown that shows the active organization, lets the user switch between organizations, and exposes a "Create organization" entry. Drop it in your app shell — typically next to `<UserButton />`.
 
-```tsx
-import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+<ComponentPreview name="shadcn-organization-switcher" />
 
-<OrganizationSwitcher />
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-switcher.tsx
 ```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-switcher.tsx" name="OrganizationSwitcherProps" />
@@ -735,17 +734,21 @@ import { OrganizationSwitcher } from "@/components/auth/organization/organizatio
 
 The full organization management shell mounted at `/organization/<path>`. Renders `settings` (profile + danger zone) and `people` (members + invitations) tabs for the active organization.
 
-```tsx
-import { Organization } from "@/components/auth/organization/organization"
+<ComponentPreview name="shadcn-organization" />
 
-<Organization path={path} />
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization.tsx
 ```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization.tsx" name="OrganizationProps" />
 
 ### `<OrganizationSettings />`
 
-The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-contributed `organizationCards` (e.g. `<OrganizationApiKeys />` from the [api-key plugin](/docs/shadcn/plugins/api-key)), then `<OrganizationDangerZone />`.
+The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-contributed `organizationCards` (e.g. `<OrganizationApiKeys />` from the [api-key plugin](/docs/shadcn/plugins/api-key)), then `<OrganizationDangerZone />`. Drop it into a custom layout if you don't want the tabbed shell.
+
+<ComponentPreview name="shadcn-organization-settings" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-settings.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-settings.tsx" name="OrganizationSettingsProps" />
 
@@ -753,11 +756,21 @@ The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-con
 
 Editable profile card for the active organization: logo, display name, and slug. Submits via `useUpdateOrganization`.
 
+<ComponentPreview name="shadcn-organization-profile" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-profile.tsx
+```
+
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-profile.tsx" name="OrganizationProfileProps" />
 
 ### `<OrganizationDangerZone />`
 
 Danger-zone card with `<LeaveOrganization />` and `<DeleteOrganization />` rows.
+
+<ComponentPreview name="shadcn-organization-danger-zone" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-danger-zone.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-danger-zone.tsx" name="OrganizationDangerZoneProps" />
 
@@ -765,11 +778,21 @@ Danger-zone card with `<LeaveOrganization />` and `<DeleteOrganization />` rows.
 
 The contents of the `people` tab — `<OrganizationMembers />` on top, `<OrganizationInvitations />` below.
 
+<ComponentPreview name="shadcn-organization-people" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-people.tsx
+```
+
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-people.tsx" name="OrganizationPeopleProps" />
 
 ### `<OrganizationMembers />`
 
 Searchable, sortable, filter-by-role table of the active organization's members with an invite control and per-row role / remove actions.
+
+<ComponentPreview name="shadcn-organization-members" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-members.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-members.tsx" name="OrganizationMembersProps" />
 
@@ -777,11 +800,21 @@ Searchable, sortable, filter-by-role table of the active organization's members 
 
 Pending invitations for the active organization as a table aligned with `<OrganizationMembers />`. Includes role / status filters and a per-row cancel action.
 
+<ComponentPreview name="shadcn-organization-invitations" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organization-invitations.tsx
+```
+
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-invitations.tsx" name="OrganizationInvitationsProps" />
 
 ### `<OrganizationsSettings />`
 
 The user-level organizations panel rendered at `/settings/organizations`. Lists every organization the user belongs to (with a "Create organization" button and empty state) plus invitations addressed to the user.
+
+<ComponentPreview name="shadcn-organizations-settings" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organizations-settings.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organizations-settings.tsx" name="OrganizationsSettingsProps" />
 
@@ -789,11 +822,21 @@ The user-level organizations panel rendered at `/settings/organizations`. Lists 
 
 List of organizations the user belongs to with a "Create organization" button and per-row Manage control. Embedded inside `<OrganizationsSettings />`.
 
+<ComponentPreview name="shadcn-organizations" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/organizations.tsx
+```
+
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organizations.tsx" name="OrganizationsProps" />
 
 ### `<UserInvitations />`
 
 Invitations addressed to the signed-in user across every organization, with Accept / Reject actions. Embedded inside `<OrganizationsSettings />`.
+
+<ComponentPreview name="shadcn-user-invitations" />
+
+```tsx file=<rootDir>/src/demos/shadcn/organization/user-invitations.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/user-invitations.tsx" name="UserInvitationsProps" />
 
