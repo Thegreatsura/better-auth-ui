@@ -50,8 +50,7 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
     {
-      onError: (error) => {
-        toast.error(error.error?.message || error.message)
+      onError: () => {
         resetFetchOptions()
       },
       onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)

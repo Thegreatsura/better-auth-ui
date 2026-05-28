@@ -88,8 +88,6 @@ export function SignIn({
                 })
             }
           })
-        } else {
-          toast.error(error.error?.message || error.message)
         }
 
         resetFetchOptions()
