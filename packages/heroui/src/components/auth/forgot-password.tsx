@@ -29,7 +29,7 @@ export type ForgotPasswordProps = {
  * Render a card-based "Forgot Password" form that sends a password-reset email.
  *
  * The form displays an email input, submit button, and a link back to sign-in.
- * Toasts are displayed on success or error via the `useRequestPasswordReset` hook.
+ * Success toasts are shown via `useRequestPasswordReset`; errors are handled globally by `ErrorToaster`.
  *
  * @param className - Optional additional CSS class names applied to the card
  * @returns The forgot-password form UI as a JSX element
