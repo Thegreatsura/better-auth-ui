@@ -11,7 +11,7 @@ export function DeleteOrganizationSkeleton() {
         <Skeleton className="h-3 w-64 rounded-lg" />
       </div>
 
-      <Skeleton className="h-8 w-36 shrink-0 rounded-lg" />
+      <Skeleton className="h-8 w-36 shrink-0 rounded-full" />
     </div>
   )
 }

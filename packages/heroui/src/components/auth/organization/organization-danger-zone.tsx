@@ -7,6 +7,7 @@ import { Card, type CardProps, cn } from "@heroui/react"
 import type { ComponentProps } from "react"
 
 import { DeleteOrganization } from "./delete-organization"
+import { DeleteOrganizationSkeleton } from "./delete-organization-skeleton"
 import { LeaveOrganization } from "./leave-organization"
 
 export type OrganizationDangerZoneProps = {
@@ -17,6 +18,11 @@ export type OrganizationDangerZoneProps = {
 /**
  * Danger zone heading with {@link LeaveOrganization} and {@link DeleteOrganization}
  * for the active organization in a single card.
+ *
+ * Resolves the `organization:delete` permission before rendering anything to
+ * avoid flashing {@link LeaveOrganization} (and a stray separator) before the
+ * delete row appears or disappears. Inner {@link DeleteOrganization} also
+ * self-gates so it stays safe to use standalone.
  */
 export function OrganizationDangerZone({
   className,
@@ -30,7 +36,7 @@ export function OrganizationDangerZone({
       permissions: { organization: ["delete"] }
     })
 
-  const showDelete = deletePermissionPending || !!deletePermission?.success
+  const canDelete = !!deletePermission?.success
 
   return (
     <div className={cn("flex w-full flex-col", className)} {...props}>
@@ -40,13 +46,19 @@ export function OrganizationDangerZone({
 
       <Card variant={variant}>
         <Card.Content className="gap-0">
-          <LeaveOrganization />
-
-          {showDelete && (
+          {deletePermissionPending ? (
+            <DeleteOrganizationSkeleton />
+          ) : (
             <>
-              <div className="border-b border-dashed -mx-4 my-4" />
+              <LeaveOrganization />
 
-              <DeleteOrganization />
+              {canDelete && (
+                <>
+                  <div className="border-b border-dashed -mx-4 my-4" />
+
+                  <DeleteOrganization />
+                </>
+              )}
             </>
           )}
         </Card.Content>

@@ -12,9 +12,11 @@ import { DeleteApiKeyDialog } from "./delete-api-key-dialog"
 
 export type ApiKeyProps = {
   apiKey: ListedApiKey
+  /** Hide the row's delete button (e.g., when caller lacks `apiKey:delete`). */
+  hideDelete?: boolean
 }
 
-export function ApiKey({ apiKey }: ApiKeyProps) {
+export function ApiKey({ apiKey, hideDelete }: ApiKeyProps) {
   const { localization } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -42,23 +44,27 @@ export function ApiKey({ apiKey }: ApiKeyProps) {
         </span>
       </div>
 
-      <Button
-        className="ml-auto shrink-0"
-        variant="outline"
-        size="sm"
-        onPress={() => setDeleteOpen(true)}
-        aria-label={apiKeyLocalization.deleteApiKey}
-      >
-        <Xmark />
+      {!hideDelete && (
+        <>
+          <Button
+            className="ml-auto shrink-0"
+            variant="outline"
+            size="sm"
+            onPress={() => setDeleteOpen(true)}
+            aria-label={apiKeyLocalization.deleteApiKey}
+          >
+            <Xmark />
 
-        {localization.settings.delete}
-      </Button>
+            {localization.settings.delete}
+          </Button>
 
-      <DeleteApiKeyDialog
-        isOpen={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        apiKey={apiKey}
-      />
+          <DeleteApiKeyDialog
+            isOpen={deleteOpen}
+            onOpenChange={setDeleteOpen}
+            apiKey={apiKey}
+          />
+        </>
+      )}
     </div>
   )
 }

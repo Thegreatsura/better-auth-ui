@@ -20,13 +20,19 @@ export type ApiKeysProps = {
   organizationId?: string
   /** Force the loading skeleton and disable the list query. */
   isPending?: boolean
+  /** Hide the "Create API key" button (header + empty state). */
+  hideCreate?: boolean
+  /** Hide the per-row delete button on listed keys. */
+  hideDelete?: boolean
 }
 
 export function ApiKeys({
   className,
   variant,
   organizationId,
-  isPending: isPendingProp
+  isPending: isPendingProp,
+  hideCreate,
+  hideDelete
 }: ApiKeysProps) {
   const { authClient } = useAuth()
   const { localization: apiKeyLocalization } = useAuthPlugin(apiKeyPlugin)
@@ -50,14 +56,16 @@ export function ApiKeys({
           {apiKeyLocalization.apiKeys}
         </h2>
 
-        <Button
-          className="shrink-0"
-          size="sm"
-          isDisabled={isPending}
-          onPress={() => setCreateOpen(true)}
-        >
-          {apiKeyLocalization.createApiKey}
-        </Button>
+        {!hideCreate && (
+          <Button
+            className="shrink-0"
+            size="sm"
+            isDisabled={isPending}
+            onPress={() => setCreateOpen(true)}
+          >
+            {apiKeyLocalization.createApiKey}
+          </Button>
+        )}
       </div>
 
       <Card variant={variant}>
@@ -65,7 +73,10 @@ export function ApiKeys({
           {isPending ? (
             <ApiKeySkeleton />
           ) : !listData?.apiKeys.length ? (
-            <ApiKeysEmpty onCreatePress={() => setCreateOpen(true)} />
+            <ApiKeysEmpty
+              onCreatePress={() => setCreateOpen(true)}
+              hideCreate={hideCreate}
+            />
           ) : (
             listData?.apiKeys.map((key, index) => (
               <div key={key.id}>
@@ -73,18 +84,20 @@ export function ApiKeys({
                   <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
-                <ApiKey apiKey={key} />
+                <ApiKey apiKey={key} hideDelete={hideDelete} />
               </div>
             ))
           )}
         </Card.Content>
       </Card>
 
-      <CreateApiKeyDialog
-        isOpen={createOpen}
-        onOpenChange={setCreateOpen}
-        organizationId={organizationId}
-      />
+      {!hideCreate && (
+        <CreateApiKeyDialog
+          isOpen={createOpen}
+          onOpenChange={setCreateOpen}
+          organizationId={organizationId}
+        />
+      )}
     </div>
   )
 }
