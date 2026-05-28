@@ -14,12 +14,12 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "development": "./src/index.ts",
+      "src": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./plugins": {
-      "development": "./src/plugins.ts",
+      "src": "./src/plugins.ts",
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js"
     }
