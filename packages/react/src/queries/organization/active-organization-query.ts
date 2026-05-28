@@ -123,7 +123,11 @@ export function useActiveOrganization<
       ...queryOptions,
       ...baseOptions,
       queryFn:
-        slug === null ? () => null : userId ? baseOptions.queryFn : skipToken
+        slug === null
+          ? async () => null
+          : userId
+            ? baseOptions.queryFn
+            : skipToken
     },
     queryClient
   )
