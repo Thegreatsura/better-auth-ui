@@ -3,8 +3,7 @@
   "version": "1.6.9",
   "type": "module",
   "scripts": {
-    "build": "tsc && bun run styles",
-    "styles": "mkdir -p dist && cp src/styles.css dist/styles.css",
+    "build": "vite build",
     "test": "vitest"
   },
   "files": [
