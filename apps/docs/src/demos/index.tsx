@@ -11,6 +11,7 @@ import { EmailChangedEmailDemo as HeroUIEmailChangedEmailDemo } from "./heroui/e
 import { EmailVerificationEmailDemo as HeroUIEmailVerificationEmailDemo } from "./heroui/email/email-verification-email"
 import { MagicLinkEmailDemo as HeroUIMagicLinkEmailDemo } from "./heroui/email/magic-link-email"
 import { NewDeviceEmailDemo as HeroUINewDeviceEmailDemo } from "./heroui/email/new-device-email"
+import { OrganizationInvitationEmailDemo as HeroUIOrganizationInvitationEmailDemo } from "./heroui/email/organization-invitation-email"
 import { OtpEmailDemo as HeroUIOtpEmailDemo } from "./heroui/email/otp-email"
 import { PasswordChangedEmailDemo as HeroUIPasswordChangedEmailDemo } from "./heroui/email/password-changed-email"
 import { ResetPasswordEmailDemo as HeroUIResetPasswordEmailDemo } from "./heroui/email/reset-password-email"
@@ -60,6 +61,7 @@ import { EmailChangedEmailDemo as ShadcnEmailChangedEmailDemo } from "./shadcn/e
 import { EmailVerificationEmailDemo as ShadcnEmailVerificationEmailDemo } from "./shadcn/email/email-verification-email"
 import { MagicLinkEmailDemo as ShadcnMagicLinkEmailDemo } from "./shadcn/email/magic-link-email"
 import { NewDeviceEmailDemo as ShadcnNewDeviceEmailDemo } from "./shadcn/email/new-device-email"
+import { OrganizationInvitationEmailDemo as ShadcnOrganizationInvitationEmailDemo } from "./shadcn/email/organization-invitation-email"
 import { OtpEmailDemo as ShadcnOtpEmailDemo } from "./shadcn/email/otp-email"
 import { PasswordChangedEmailDemo as ShadcnPasswordChangedEmailDemo } from "./shadcn/email/password-changed-email"
 import { ResetPasswordEmailDemo as ShadcnResetPasswordEmailDemo } from "./shadcn/email/reset-password-email"
@@ -130,6 +132,7 @@ export const demos: Record<string, ComponentType> = {
   "heroui-organizations": HeroUIOrganizationsDemo,
   "heroui-organizations-settings": HeroUIOrganizationsSettingsDemo,
   "heroui-user-invitations": HeroUIUserInvitationsDemo,
+  "heroui-organization-invitation-email": HeroUIOrganizationInvitationEmailDemo,
   "heroui-otp-email": HeroUIOtpEmailDemo,
   "heroui-passkey-sign-in": HeroUIPasskeySignInDemo,
   "heroui-passkeys": HeroUIPasskeysDemo,
@@ -179,6 +182,7 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-organizations": ShadcnOrganizationsDemo,
   "shadcn-organizations-settings": ShadcnOrganizationsSettingsDemo,
   "shadcn-user-invitations": ShadcnUserInvitationsDemo,
+  "shadcn-organization-invitation-email": ShadcnOrganizationInvitationEmailDemo,
   "shadcn-otp-email": ShadcnOtpEmailDemo,
   "shadcn-passkey-sign-in": ShadcnPasskeySignInDemo,
   "shadcn-passkeys": ShadcnPasskeysDemo,

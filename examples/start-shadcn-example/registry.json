@@ -1175,6 +1175,28 @@
           "type": "registry:component"
         }
       ]
+    },
+    {
+      "name": "organization-invitation-email",
+      "type": "registry:component",
+      "title": "Organization Invitation Email",
+      "description": "Email template component that invites a user to join an organization.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "@react-email/components"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "../../packages/react/src/components/auth/email/organization-invitation.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
     }
   ]
 }
