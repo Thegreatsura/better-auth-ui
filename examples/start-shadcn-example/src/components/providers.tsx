@@ -1,9 +1,11 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import { ThemeProvider, useTheme } from "next-themes"
 import type { ReactNode } from "react"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 import { deleteUserPlugin } from "@/lib/auth/delete-user-plugin"
+import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { themePlugin } from "@/lib/auth/theme-plugin"
 import { usernamePlugin } from "@/lib/auth/username-plugin"
@@ -13,6 +15,7 @@ import { Toaster } from "./ui/sonner"
 
 export function Providers({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
+  const { slug } = useParams({ strict: false })
 
   return (
     <ThemeProvider
@@ -27,12 +30,16 @@ export function Providers({ children }: { children: ReactNode }) {
         socialProviders={["github"]}
         navigate={navigate}
         plugins={[
-          apiKeyPlugin(),
-          passkeyPlugin(),
           usernamePlugin(),
-          deleteUserPlugin(),
+          magicLinkPlugin(),
+          passkeyPlugin(),
+          apiKeyPlugin({ organization: true }),
           themePlugin({ useTheme }),
-          multiSessionPlugin()
+          multiSessionPlugin(),
+          deleteUserPlugin(),
+          organizationPlugin({
+            slug: slug ?? null
+          })
         ]}
         Link={Link}
       >

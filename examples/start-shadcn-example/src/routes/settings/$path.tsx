@@ -7,11 +7,17 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 
 import { Settings } from "@/components/auth/settings/settings"
 import { auth } from "@/lib/auth"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { authClient } from "@/lib/auth-client"
+
+const validSettingsPaths = [
+  ...Object.values(viewPaths.settings),
+  ...Object.values(organizationPlugin().viewPaths.settings)
+]
 
 export const Route = createFileRoute("/settings/$path")({
   async beforeLoad({ params: { path }, context: { queryClient }, location }) {
-    if (!Object.values(viewPaths.settings).includes(path)) {
+    if (!validSettingsPaths.includes(path)) {
       throw notFound()
     }
 

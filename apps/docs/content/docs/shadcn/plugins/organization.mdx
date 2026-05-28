@@ -1,0 +1,816 @@
+---
+title: Organization
+description: Add multi-tenant organization management with members, invitations, and roles to your authentication UI.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
+
+The organization plugin adds multi-tenant organization management to your authentication UI. Users can create, switch between, and manage organizations with members, invitations, and roles.
+
+It contributes:
+
+- An `organizations` tab to `<Settings />` listing every organization the user belongs to plus pending invitations to them
+- An `<Organization />` shell mounted at `/organization/<path>` with `settings` and `people` tabs
+- An `<OrganizationSwitcher />` dropdown to switch the active organization, manage it, or create a new one
+- An `organizationCards` plugin slot rendered inside `<OrganizationSettings />` so other plugins (e.g. [api-key](/docs/shadcn/plugins/api-key)) can attach org-scoped cards
+- Hooks and mutations for every organization endpoint (`useActiveOrganization`, `useListOrganizations`, `useInviteMember`, etc.)
+
+## Setup
+
+<Steps>
+<Step>
+### Install the server plugin
+
+Add the [`organization`](https://www.better-auth.com/docs/plugins/organization) plugin to your Better Auth server config:
+
+```ts title="lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { organization } from "better-auth/plugins" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    organization() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `organizationClient()` to your auth client so `authClient.organization.*` methods are available:
+
+```ts title="lib/auth-client.ts"
+import { createAuthClient } from "better-auth/react"
+import { organizationClient } from "better-auth/client/plugins" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [organizationClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Install the UI plugin
+
+Run the shadcn CLI to install every organization component and the `organizationPlugin()` factory into your project:
+
+```npm
+npx shadcn@latest add https://better-auth-ui.com/r/organization.json
+```
+
+This drops the following into your codebase:
+
+- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
+- `src/lib/auth/organization-plugin.tsx` — `organizationPlugin()` factory
+- `src/components/auth/organization/organization.tsx` — the `/organization/<path>` shell
+- `src/components/auth/organization/organization-switcher.tsx` — header dropdown for switching organizations
+- `src/components/auth/organization/organization-settings.tsx` — settings tab contents (profile + danger zone + plugin cards)
+- `src/components/auth/organization/organization-people.tsx` — people tab contents (members + invitations)
+- `src/components/auth/organization/organization-profile.tsx` — profile card (logo, name, slug)
+- `src/components/auth/organization/organization-danger-zone.tsx` — danger zone card
+- `src/components/auth/organization/organization-members.tsx` — members table with search/filter/sort
+- `src/components/auth/organization/organization-member-row.tsx` — member row with role and remove actions
+- `src/components/auth/organization/organization-invitations.tsx` — invitations table with search/filter/sort
+- `src/components/auth/organization/organization-invitation-row.tsx` — invitation row with cancel action
+- `src/components/auth/organization/organizations.tsx` — list of organizations the user belongs to
+- `src/components/auth/organization/organization-row.tsx` — single organization row in the list
+- `src/components/auth/organization/organizations-settings.tsx` — `/settings/organizations` panel
+- `src/components/auth/organization/user-invitations.tsx` — invitations addressed to the user
+- `src/components/auth/organization/user-invitation-row.tsx` — invitation row with accept/reject actions
+- `src/components/auth/organization/create-organization-dialog.tsx` — new-organization dialog
+- `src/components/auth/organization/invite-member-dialog.tsx` — invite-by-email dialog
+- `src/components/auth/organization/delete-organization-dialog.tsx` — delete confirmation dialog
+- `src/components/auth/organization/leave-organization-dialog.tsx` — leave confirmation dialog
+- `src/components/auth/organization/remove-member-dialog.tsx` — remove-member confirmation dialog
+- `src/components/auth/organization/leave-organization.tsx` / `delete-organization.tsx` — danger-zone rows
+- `src/components/auth/organization/change-organization-logo.tsx` — logo upload control
+- `src/components/auth/organization/organization-logo.tsx`, `organization-view.tsx`, `slug-field.tsx`, plus matching skeletons and empty states
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Pass `organizationPlugin()` to `<AuthProvider>` so the organizations settings tab, the `<Organization />` shell, and `<OrganizationSwitcher />` can read plugin localization and view paths:
+
+```tsx title="components/providers.tsx"
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { organizationPlugin } from "@/lib/auth/organization-plugin" // [!code highlight]
+
+import { authClient } from "@/lib/auth-client"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    organizationPlugin() // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+</Step>
+<Step>
+### Mount the organization switcher
+
+Drop `<OrganizationSwitcher />` into your app shell — typically in the header next to `<UserButton />`. It shows the active organization, lets users switch between organizations, and exposes a "Create organization" entry:
+
+```tsx title="components/header.tsx" {2,7}
+import { UserButton } from "@/components/auth/user/user-button"
+import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+
+export function Header() {
+  return (
+    <header className="flex items-center justify-between gap-3 p-4">
+      <OrganizationSwitcher />
+
+      <UserButton />
+    </header>
+  )
+}
+```
+
+</Step>
+<Step>
+### Allow the `organizations` settings path
+
+The plugin contributes an `organizations` segment to `viewPaths.settings`. Spread `organizationPlugin().viewPaths.settings` into your settings route's allowed-path set so `/settings/organizations` resolves correctly:
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="routes/settings/$path.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { Settings } from "@/components/auth/settings/settings"
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin" // [!code highlight]
+
+const validSettingsPaths = [
+  ...Object.values(viewPaths.settings),
+  ...Object.values(organizationPlugin().viewPaths.settings) // [!code highlight]
+]
+
+export const Route = createFileRoute("/settings/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!validSettingsPaths.includes(path)) {
+      throw notFound()
+    }
+
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(queryClient, authClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: SettingsPage
+})
+
+function SettingsPage() {
+  const { path } = Route.useParams()
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+      <Settings path={path} />
+    </div>
+  )
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="app/settings/[path]/page.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { ensureSession } from "@better-auth-ui/react/server"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
+
+import { Settings } from "@/components/auth/settings/settings"
+import { auth } from "@/lib/auth"
+import { getQueryClient } from "@/lib/query-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin" // [!code highlight]
+
+const validSettingsPaths = [
+  ...Object.values(viewPaths.settings),
+  ...Object.values(organizationPlugin().viewPaths.settings) // [!code highlight]
+]
+
+export default async function SettingsPage({
+  params
+}: {
+  params: Promise<{ path: string }>
+}) {
+  const { path } = await params
+
+  if (!validSettingsPaths.includes(path)) {
+    notFound()
+  }
+
+  const queryClient = getQueryClient()
+
+  const session = await ensureSession(queryClient, auth, {
+    headers: await headers()
+  })
+
+  if (!session) {
+    redirect(
+      `/auth/sign-in?redirectTo=${encodeURIComponent(`/settings/${path}`)}`
+    )
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+        <Settings path={path} />
+      </div>
+    </HydrationBoundary>
+  )
+}
+```
+
+</Tab>
+</Tabs>
+
+`/settings/organizations` now renders `<OrganizationsSettings />` — the list of organizations the user belongs to plus pending invitations.
+
+</Step>
+<Step>
+### Create the organization page
+
+Mount a dynamic route at `/organization/<path>` that renders `<Organization />` for the matching tab. `<Organization />` is the shell — it shows the `settings` (profile + danger zone) and `people` (members + invitations) tabs for the **active** organization. The active organization is whatever the user picked in `<OrganizationSwitcher />` (persisted on the server session via `setActive`).
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="routes/organization/$path.tsx"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { Organization } from "@/components/auth/organization/organization"
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validOrganizationPaths = Object.values(
+  organizationPlugin().viewPaths.organization
+)
+
+export const Route = createFileRoute("/organization/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!validOrganizationPaths.includes(path)) {
+      throw notFound()
+    }
+
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(queryClient, authClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: OrganizationPage
+})
+
+function OrganizationPage() {
+  const { path } = Route.useParams()
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+      <Organization path={path} />
+    </div>
+  )
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="app/organization/[path]/page.tsx"
+import { ensureSession } from "@better-auth-ui/react/server"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
+
+import { Organization } from "@/components/auth/organization/organization"
+import { auth } from "@/lib/auth"
+import { getQueryClient } from "@/lib/query-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validOrganizationPaths = Object.values(
+  organizationPlugin().viewPaths.organization
+)
+
+export default async function OrganizationPage({
+  params
+}: {
+  params: Promise<{ path: string }>
+}) {
+  const { path } = await params
+
+  if (!validOrganizationPaths.includes(path)) {
+    notFound()
+  }
+
+  const queryClient = getQueryClient()
+
+  const session = await ensureSession(queryClient, auth, {
+    headers: await headers()
+  })
+
+  if (!session) {
+    redirect(
+      `/auth/sign-in?redirectTo=${encodeURIComponent(`/organization/${path}`)}`
+    )
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+        <Organization path={path} />
+      </div>
+    </HydrationBoundary>
+  )
+}
+```
+
+</Tab>
+</Tabs>
+
+`/organization/settings` and `/organization/people` now render the org management UI. Internal links from `<OrganizationSwitcher />` and from `<Organizations />` (in the settings tab) wire up automatically.
+
+</Step>
+</Steps>
+
+That's it — users can now create organizations from `/settings/organizations`, switch between them via the header switcher, and manage members and invitations at `/organization/<path>`.
+
+## Slug-based routes
+
+By default the active organization is whatever the user last picked in the switcher (persisted on the session). If you'd rather drive the active organization from the URL — for example `acme.your-app.com` or `your-app.com/organization/acme/settings` — you can opt into **slug-based routing**.
+
+This unlocks:
+
+- Shareable, bookmarkable per-org URLs that don't depend on session state
+- Server-side prefetching of the correct organization without round-tripping `setActive`
+- Letting members keep multiple organizations open in separate tabs without thrashing the active organization
+
+You wire this up by passing the URL slug into `organizationPlugin({ slug })`. The UI plugin then:
+
+1. Drives `useActiveOrganization()` to fetch the org matching that slug (instead of reading the session's active org)
+2. Rewrites every link from `<OrganizationSwitcher />`, `<Organizations />`, and the `<Organization />` tabs to include `/<slug>/`
+3. Swaps the switcher's behavior from `setActive` to `navigate` — clicking an organization takes the user to its slug-prefixed route
+
+<Steps>
+<Step>
+### Read the slug from the URL in your providers
+
+Read the slug param wherever you render `<AuthProvider>` and forward it to `organizationPlugin`.
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="components/providers.tsx"
+import { useNavigate, useParams } from "@tanstack/react-router"
+import type { ReactNode } from "react"
+
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { authClient } from "@/lib/auth-client"
+
+export function Providers({ children }: { children: ReactNode }) {
+  const navigate = useNavigate()
+  const { slug } = useParams({ strict: false }) // [!code highlight]
+
+  return (
+    <AuthProvider
+      authClient={authClient}
+      navigate={navigate}
+      plugins={[organizationPlugin({ slug: slug ?? null })]} // [!code highlight]
+    >
+      {children}
+    </AuthProvider>
+  )
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="components/providers.tsx"
+"use client"
+
+import { useParams, useRouter } from "next/navigation"
+import type { ReactNode } from "react"
+
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { authClient } from "@/lib/auth-client"
+
+export function Providers({ children }: { children: ReactNode }) {
+  const router = useRouter()
+  const params = useParams<{ slug?: string | string[] }>() // [!code highlight]
+  const slug = typeof params?.slug === "string" ? params.slug : null // [!code highlight]
+
+  return (
+    <AuthProvider
+      authClient={authClient}
+      navigate={({ to, replace }) =>
+        replace ? router.replace(to) : router.push(to)
+      }
+      plugins={[organizationPlugin({ slug })]} // [!code highlight]
+    >
+      {children}
+    </AuthProvider>
+  )
+}
+```
+
+</Tab>
+</Tabs>
+
+When the user is on a non-slug page (`/settings/organizations`, `/dashboard`, etc.) `slug` is `null`, which tells the plugin "no active organization — this is the user's personal account." Don't leave it as `undefined` here: that falls back to whatever the session has cached as active, which can leak the wrong org into non-slug pages.
+
+</Step>
+<Step>
+### Add the slug-prefixed organization route
+
+Move `/organization/$path` → `/organization/$slug/$path`. Validate both segments and gate on session as before.
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="routes/organization/$slug/$path.tsx"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { Organization } from "@/components/auth/organization/organization"
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validOrganizationPaths = Object.values(
+  organizationPlugin().viewPaths.organization
+)
+
+export const Route = createFileRoute("/organization/$slug/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!validOrganizationPaths.includes(path)) {
+      throw notFound()
+    }
+
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(queryClient, authClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: OrganizationPage
+})
+
+function OrganizationPage() {
+  const { path } = Route.useParams()
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+      <Organization path={path} />
+    </div>
+  )
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="app/organization/[slug]/[path]/page.tsx"
+import { ensureSession } from "@better-auth-ui/react/server"
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
+import { headers } from "next/headers"
+import { notFound, redirect } from "next/navigation"
+
+import { Organization } from "@/components/auth/organization/organization"
+import { auth } from "@/lib/auth"
+import { getQueryClient } from "@/lib/query-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validOrganizationPaths = Object.values(
+  organizationPlugin().viewPaths.organization
+)
+
+export default async function OrganizationPage({
+  params
+}: {
+  params: Promise<{ slug: string; path: string }>
+}) {
+  const { slug, path } = await params
+
+  if (!validOrganizationPaths.includes(path)) {
+    notFound()
+  }
+
+  const queryClient = getQueryClient()
+
+  const session = await ensureSession(queryClient, auth, {
+    headers: await headers()
+  })
+
+  if (!session) {
+    redirect(
+      `/auth/sign-in?redirectTo=${encodeURIComponent(`/organization/${slug}/${path}`)}`
+    )
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="w-full max-w-3xl mx-auto p-4 md:p-6">
+        <Organization path={path} />
+      </div>
+    </HydrationBoundary>
+  )
+}
+```
+
+</Tab>
+</Tabs>
+
+</Step>
+</Steps>
+
+Internal links — the switcher, organization rows in `/settings/organizations`, and the tab bar inside `<Organization />` — automatically include `/<slug>/` once `organizationPlugin({ slug })` is wired in.
+
+### Customize where the switcher navigates
+
+When slug-based routing is enabled, clicking an organization in `<OrganizationSwitcher />` navigates to `/organization/<slug>/settings` by default, and clicking the personal account navigates to `/settings/account`.
+
+If you'd rather land on, say, `/<slug>/dashboard` (or any other per-org surface), pass the `setActive` prop to take over navigation entirely. The plugin's default navigation is skipped — you receive the picked `Organization` (or `null` for personal) and own what happens next:
+
+<Tabs defaultValue="tanstack-start">
+<TabsList>
+<TabsTrigger value="tanstack-start"><TanStackStart />TanStack Start</TabsTrigger>
+<TabsTrigger value="next.js"><NextJS />Next.js</TabsTrigger>
+</TabsList>
+<Tab value="tanstack-start">
+
+```tsx title="components/header.tsx"
+import { useNavigate } from "@tanstack/react-router"
+
+import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+
+export function Header() {
+  const navigate = useNavigate()
+
+  return (
+    <OrganizationSwitcher
+      setActive={(organization) => {
+        navigate({
+          to: organization ? `/${organization.slug}/dashboard` : "/dashboard"
+        })
+      }}
+    />
+  )
+}
+```
+
+</Tab>
+<Tab value="next.js">
+
+```tsx title="components/header.tsx"
+"use client"
+
+import { useRouter } from "next/navigation"
+
+import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+
+export function Header() {
+  const router = useRouter()
+
+  return (
+    <OrganizationSwitcher
+      setActive={(organization) => {
+        router.push(
+          organization ? `/${organization.slug}/dashboard` : "/dashboard"
+        )
+      }}
+    />
+  )
+}
+```
+
+</Tab>
+</Tabs>
+
+`setActive` also works without slug-based routing — in that mode the default behavior is `authClient.organization.setActive`, and passing `setActive` lets you intercept the picker (for example, to also persist a per-org preference somewhere else).
+
+## Options
+
+```ts
+organizationPlugin({
+  // Disable the slug-availability check that runs while typing a slug.
+  checkSlug: false,
+  // Override path segments (defaults shown).
+  viewPaths: {
+    settings: { organizations: "organizations" },
+    organization: { settings: "settings", people: "people" }
+  },
+  // Disable logo upload, or customize the resize / size.
+  logo: { enabled: false },
+  // Replace the default role labels.
+  roles: { owner: "Owner", admin: "Admin", member: "Member" },
+  // Add labels for custom server roles without redefining built-ins.
+  additionalRoles: { billing: "Billing" }
+})
+```
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/organization/organization-plugin.ts" name="OrganizationPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/organization/organization-localization.ts" name="OrganizationLocalization" />
+
+Read these inside custom slot components via `useAuthPlugin(organizationPlugin).localization`.
+
+## React Hooks
+
+### Queries
+
+- `useActiveOrganization()` — Full organization for the active session (or the URL slug when `organizationPlugin({ slug })` is set)
+- `useListOrganizations()` — All organizations the signed-in user belongs to
+- `useListOrganizationMembers()` — Members of the active organization
+- `useListOrganizationInvitations()` — Pending invitations for the active organization
+- `useListUserInvitations()` — Pending invitations addressed to the signed-in user
+- `useHasPermission({ permissions })` — Check the current member's permission against the active organization
+
+### Mutations
+
+- `useCreateOrganization()` — Create a new organization
+- `useUpdateOrganization()` — Update name / slug / logo of the active organization
+- `useDeleteOrganization()` — Delete an organization
+- `useSetActiveOrganization()` — Switch the active organization (server-side, persists on session)
+- `useLeaveOrganization()` — Leave an organization
+- `useInviteMember()` — Invite a member by email
+- `useRemoveMember()` — Remove a member
+- `useUpdateMemberRole()` — Update a member's role
+- `useCancelInvitation()` — Cancel a pending invitation
+- `useAcceptInvitation()` — Accept an invitation
+- `useRejectInvitation()` — Reject an invitation
+- `useCheckSlug()` — Check whether an organization slug is available
+
+## Components
+
+### `<OrganizationSwitcher />`
+
+Dropdown that shows the active organization, lets the user switch between organizations, and exposes a "Create organization" entry. Drop it in your app shell — typically next to `<UserButton />`.
+
+```tsx
+import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+
+<OrganizationSwitcher />
+```
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-switcher.tsx" name="OrganizationSwitcherProps" />
+
+### `<Organization />`
+
+The full organization management shell mounted at `/organization/<path>`. Renders `settings` (profile + danger zone) and `people` (members + invitations) tabs for the active organization.
+
+```tsx
+import { Organization } from "@/components/auth/organization/organization"
+
+<Organization path={path} />
+```
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization.tsx" name="OrganizationProps" />
+
+### `<OrganizationSettings />`
+
+The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-contributed `organizationCards` (e.g. `<OrganizationApiKeys />` from the [api-key plugin](/docs/shadcn/plugins/api-key)), then `<OrganizationDangerZone />`.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-settings.tsx" name="OrganizationSettingsProps" />
+
+### `<OrganizationProfile />`
+
+Editable profile card for the active organization: logo, display name, and slug. Submits via `useUpdateOrganization`.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-profile.tsx" name="OrganizationProfileProps" />
+
+### `<OrganizationDangerZone />`
+
+Danger-zone card with `<LeaveOrganization />` and `<DeleteOrganization />` rows.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-danger-zone.tsx" name="OrganizationDangerZoneProps" />
+
+### `<OrganizationPeople />`
+
+The contents of the `people` tab — `<OrganizationMembers />` on top, `<OrganizationInvitations />` below.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-people.tsx" name="OrganizationPeopleProps" />
+
+### `<OrganizationMembers />`
+
+Searchable, sortable, filter-by-role table of the active organization's members with an invite control and per-row role / remove actions.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-members.tsx" name="OrganizationMembersProps" />
+
+### `<OrganizationInvitations />`
+
+Pending invitations for the active organization as a table aligned with `<OrganizationMembers />`. Includes role / status filters and a per-row cancel action.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organization-invitations.tsx" name="OrganizationInvitationsProps" />
+
+### `<OrganizationsSettings />`
+
+The user-level organizations panel rendered at `/settings/organizations`. Lists every organization the user belongs to (with a "Create organization" button and empty state) plus invitations addressed to the user.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organizations-settings.tsx" name="OrganizationsSettingsProps" />
+
+### `<Organizations />`
+
+List of organizations the user belongs to with a "Create organization" button and per-row Manage control. Embedded inside `<OrganizationsSettings />`.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/organizations.tsx" name="OrganizationsProps" />
+
+### `<UserInvitations />`
+
+Invitations addressed to the signed-in user across every organization, with Accept / Reject actions. Embedded inside `<OrganizationsSettings />`.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/user-invitations.tsx" name="UserInvitationsProps" />
+
+### `<CreateOrganizationDialog />`
+
+Modal dialog with the new-organization form. Owned by `<OrganizationSwitcher />` and `<Organizations />`; mount it directly when you want to open the create flow from your own surface.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/create-organization-dialog.tsx" name="CreateOrganizationDialogProps" />
+
+### `<InviteMemberDialog />`
+
+Modal dialog for inviting a new member by email. Owned by `<OrganizationMembers />` and `<OrganizationInvitations />`; mount it directly to drive the invite flow from a custom action.
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/invite-member-dialog.tsx" name="InviteMemberDialogProps" />
+
+### `<DeleteOrganizationDialog />`
+
+Confirmation dialog for deleting an organization (owner permission, server-side).
+
+<auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/delete-organization-dialog.tsx" name="DeleteOrganizationDialogProps" />
