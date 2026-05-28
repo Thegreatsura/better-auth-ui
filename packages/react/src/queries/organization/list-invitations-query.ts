@@ -112,7 +112,7 @@ export function useListOrganizationInvitations<
     queryClient
   )
 
-  const organizationId = query?.organizationId || activeOrganization?.id
+  const organizationId = query?.organizationId ?? activeOrganization?.id
 
   const baseOptions = listOrganizationInvitationsOptions(authClient, userId, {
     query: {

@@ -104,6 +104,7 @@ export function OrganizationSwitcher({
             variant={variant}
             className={cn("h-auto px-2 py-2 text-left", className)}
             isDisabled={!session || isPending}
+            aria-label={organizationLocalization.organization}
             {...props}
           >
             {isPending ? (

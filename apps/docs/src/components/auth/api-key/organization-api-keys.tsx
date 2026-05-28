@@ -33,13 +33,9 @@ export function OrganizationApiKeys({ className }: OrganizationApiKeysProps) {
     authClient as OrganizationAuthClient
   )
 
-  const memberRoles =
-    membersData?.members
-      .find((member) => member.userId === session?.user.id)
-      ?.role.split(",")
-      .map((role) => role.trim()) ?? []
-
-  const canManageApiKeys = memberRoles.includes("owner")
+  const canManageApiKeys = membersData?.members.some(
+    (member) => member.role === "owner" && member.userId === session?.user.id
+  )
 
   if (!canManageApiKeys) {
     return null
