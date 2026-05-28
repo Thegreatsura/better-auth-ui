@@ -25,12 +25,7 @@ export default defineConfig({
   },
   resolve: {
     tsconfigPaths: true,
-    noExternal: [...FumadocsDeps, "@gravity-ui/icons"],
-    // Resolve workspace `@better-auth-ui/*` packages to their `src/` entrypoints
-    // via the `src` export condition. `src` is a monorepo-private condition that
-    // no bundler matches by default, so it never leaks into external consumers'
-    // resolution.
-    conditions: ["src"]
+    noExternal: [...FumadocsDeps, "@gravity-ui/icons"]
   },
   plugins: [
     mdx(await import("./source.config")),
