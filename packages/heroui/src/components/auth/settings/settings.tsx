@@ -35,12 +35,12 @@ export function Settings({
   view,
   ...props
 }: SettingsProps & ComponentProps<"div">) {
-  const { authClient, basePaths, localization, viewPaths, plugins } = useAuth()
-  useAuthenticate(authClient)
-
   if (!view && !path) {
     throw new Error("[Better Auth UI] Either `view` or `path` must be provided")
   }
+
+  const { authClient, basePaths, localization, viewPaths, plugins } = useAuth()
+  useAuthenticate(authClient)
 
   // Built-ins first, then plugin segments
   const currentView = useMemo(() => {
