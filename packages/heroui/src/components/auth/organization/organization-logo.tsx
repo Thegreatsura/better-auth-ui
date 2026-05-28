@@ -13,7 +13,7 @@ export type OrganizationLogoProps = {
 
 /**
  * Renders an organization logo image, initials fallback, or a briefcase icon;
- * shows a circular skeleton while loading when `isOrganizationLoading` is set and `organization` is undefined.
+ * shows a circular skeleton while loading when `isPending` is set and `organization` is undefined.
  */
 export function OrganizationLogo({
   className,
