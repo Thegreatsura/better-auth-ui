@@ -1,6 +1,6 @@
 {
   "name": "@better-auth-ui/heroui",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "type": "module",
   "scripts": {
     "build": "tsc && bun run styles",
