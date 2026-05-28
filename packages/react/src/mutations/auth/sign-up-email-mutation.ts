@@ -1,13 +1,12 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import { sessionOptions } from "../../queries/auth/session-query"
 
 export type SignUpEmailParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["signUp"]["email"]
@@ -15,7 +14,7 @@ export type SignUpEmailParams<TAuthClient extends AuthClient> = Parameters<
 
 export type SignUpEmailOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof signUpEmailOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -47,28 +46,25 @@ export function signUpEmailOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for email/password sign-up.
  *
- * Wraps `authClient.signUp.email`, resets the session query on success so
- * the new session is refetched, and forwards React Query mutation options
- * such as `onSuccess`, `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the session
+ * query so the new session is refetched (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useSignUpEmail<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  options?: SignUpEmailOptions<TAuthClient>
+  options?: SignUpEmailOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    ...signUpEmailOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      queryClient.resetQueries({
-        queryKey: sessionOptions(authClient).queryKey
-      })
-
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...signUpEmailOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.session]
+      }
+    },
+    queryClient
+  )
 }

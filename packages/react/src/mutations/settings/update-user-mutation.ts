@@ -1,12 +1,12 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
 import {
   mutationOptions,
-  useMutation,
-  useQueryClient
+  type QueryClient,
+  useMutation
 } from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
+
 import type { AuthClient } from "../../lib/auth-client"
-import { sessionOptions, useSession } from "../../queries/auth/session-query"
 
 export type UpdateUserParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["updateUser"]
@@ -14,7 +14,7 @@ export type UpdateUserParams<TAuthClient extends AuthClient> = Parameters<
 
 export type UpdateUserOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof updateUserOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -46,37 +46,25 @@ export function updateUserOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for updating the authenticated user's profile.
  *
- * Wraps `authClient.updateUser`, optimistically patches the cached session
- * with the new fields, refetches the session, and forwards React Query
- * mutation options such as `onSuccess`, `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the session
+ * query so the updated user fields are reflected (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useUpdateUser<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  options?: UpdateUserOptions<TAuthClient>
+  options?: UpdateUserOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { data: session, refetch: refetchSession } = useSession(authClient, {
-    refetchOnMount: false
-  })
-
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    ...updateUserOptions(authClient),
-    ...options,
-    onSuccess: async (data, variables, ...rest) => {
-      if (session) {
-        queryClient.setQueryData(sessionOptions(authClient).queryKey, {
-          ...session,
-          user: { ...session.user, ...variables }
-        })
+  return useMutation(
+    {
+      ...updateUserOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.session]
       }
-
-      refetchSession()
-
-      await options?.onSuccess?.(data, variables, ...rest)
-    }
-  })
+    },
+    queryClient
+  )
 }

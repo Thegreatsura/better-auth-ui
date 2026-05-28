@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { passkeyQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
   type QueryClient,
@@ -40,7 +40,7 @@ export function listPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
   params?: ListPasskeysParams<TAuthClient>
 ) {
   type TData = ListPasskeysData<TAuthClient>
-  const queryKey = authQueryKeys.listPasskeys(userId, params?.query)
+  const queryKey = passkeyQueryKeys.list(userId, params?.query)
 
   const options = queryOptions<TData, BetterFetchError, TData, typeof queryKey>(
     {

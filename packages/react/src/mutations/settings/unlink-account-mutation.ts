@@ -1,9 +1,13 @@
-import { authMutationKeys } from "@better-auth-ui/core"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import { useListAccounts } from "../../queries/settings/list-accounts-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type UnlinkAccountParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["unlinkAccount"]
@@ -11,7 +15,7 @@ export type UnlinkAccountParams<TAuthClient extends AuthClient> = Parameters<
 
 export type UnlinkAccountOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof unlinkAccountOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -43,25 +47,28 @@ export function unlinkAccountOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for unlinking a social provider from the current user.
  *
- * Wraps `authClient.unlinkAccount`, refetches the linked accounts list on
- * success, and forwards React Query mutation options such as `onSuccess`,
- * `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the linked
+ * accounts list (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useUnlinkAccount<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  options?: UnlinkAccountOptions<TAuthClient>
+  options?: UnlinkAccountOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useListAccounts(authClient, { refetchOnMount: false })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...unlinkAccountOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...unlinkAccountOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.listAccounts(userId)]
+      }
+    },
+    queryClient
+  )
 }

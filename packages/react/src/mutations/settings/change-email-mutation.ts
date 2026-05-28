@@ -1,9 +1,12 @@
-import { authMutationKeys } from "@better-auth-ui/core"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import { useSession } from "../../queries/auth/session-query"
 
 export type ChangeEmailParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["changeEmail"]
@@ -11,7 +14,7 @@ export type ChangeEmailParams<TAuthClient extends AuthClient> = Parameters<
 
 export type ChangeEmailOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof changeEmailOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -43,25 +46,26 @@ export function changeEmailOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for changing the current user's email address.
  *
- * Wraps `authClient.changeEmail`, refetches the session on success to
- * surface the new email, and forwards React Query mutation options such
- * as `onSuccess`, `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the session
+ * query so the new email is reflected on the user object (see
+ * `meta.awaits`).
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useChangeEmail<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  options?: ChangeEmailOptions<TAuthClient>
+  options?: ChangeEmailOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch } = useSession(authClient, { refetchOnMount: false })
-
-  return useMutation({
-    ...changeEmailOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...changeEmailOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.session]
+      }
+    },
+    queryClient
+  )
 }

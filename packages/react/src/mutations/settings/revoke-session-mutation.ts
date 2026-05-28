@@ -1,9 +1,13 @@
-import { authMutationKeys } from "@better-auth-ui/core"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { AuthClient } from "../../lib/auth-client"
-import { useListSessions } from "../../queries/settings/list-sessions-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type RevokeSessionParams<TAuthClient extends AuthClient> = Parameters<
   TAuthClient["revokeSession"]
@@ -11,7 +15,7 @@ export type RevokeSessionParams<TAuthClient extends AuthClient> = Parameters<
 
 export type RevokeSessionOptions<TAuthClient extends AuthClient> = Omit<
   ReturnType<typeof revokeSessionOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -43,27 +47,28 @@ export function revokeSessionOptions<TAuthClient extends AuthClient>(
 /**
  * Create a mutation for revoking a user session.
  *
- * Wraps `authClient.revokeSession`, refetches the sessions list on success,
- * and forwards React Query mutation options such as `onSuccess`, `onError`,
- * and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the sessions
+ * list (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useRevokeSession<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
-  options?: RevokeSessionOptions<TAuthClient>
+  options?: RevokeSessionOptions<TAuthClient>,
+  queryClient?: QueryClient
 ) {
-  const { refetch: refetchSessions } = useListSessions(authClient, {
-    refetchOnMount: false
-  })
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...revokeSessionOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetchSessions()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...revokeSessionOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [authQueryKeys.listSessions(userId)]
+      }
+    },
+    queryClient
+  )
 }

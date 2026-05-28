@@ -1,9 +1,16 @@
-import { authMutationKeys } from "@better-auth-ui/core"
-import { mutationOptions, useMutation } from "@tanstack/react-query"
+import {
+  multiSessionMutationKeys,
+  multiSessionQueryKeys
+} from "@better-auth-ui/core/plugins"
+import {
+  mutationOptions,
+  type QueryClient,
+  useMutation
+} from "@tanstack/react-query"
 import type { BetterFetchError } from "better-auth/react"
 
 import type { MultiSessionAuthClient } from "../../lib/auth-client"
-import { useListDeviceSessions } from "../../queries/multi-session/list-device-sessions-query"
+import { useSession } from "../../queries/auth/session-query"
 
 export type RevokeMultiSessionParams<
   TAuthClient extends MultiSessionAuthClient
@@ -13,7 +20,7 @@ export type RevokeMultiSessionOptions<
   TAuthClient extends MultiSessionAuthClient
 > = Omit<
   ReturnType<typeof revokeMultiSessionOptions<TAuthClient>>,
-  "mutationKey" | "mutationFn"
+  "mutationKey" | "mutationFn" | "meta"
 >
 
 /**
@@ -24,7 +31,7 @@ export type RevokeMultiSessionOptions<
 export function revokeMultiSessionOptions<
   TAuthClient extends MultiSessionAuthClient
 >(authClient: TAuthClient) {
-  const mutationKey = authMutationKeys.multiSession.revoke
+  const mutationKey = multiSessionMutationKeys.revoke
 
   const mutationFn = (params: RevokeMultiSessionParams<TAuthClient>) =>
     authClient.multiSession.revoke({
@@ -45,26 +52,30 @@ export function revokeMultiSessionOptions<
 /**
  * Create a mutation for revoking a device session in multi-session mode.
  *
- * Wraps `authClient.multiSession.revoke`, refetches the device sessions list
- * on success, and forwards React Query mutation options such as `onSuccess`,
- * `onError`, and `retry`.
+ * On success, `MutationInvalidator` awaits invalidation of the device
+ * sessions list (see `meta.awaits`).
  *
  * @param authClient - The Better Auth client with the multi-session plugin.
  * @param options - React Query options forwarded to `useMutation`.
  */
 export function useRevokeMultiSession<
   TAuthClient extends MultiSessionAuthClient
->(authClient: TAuthClient, options?: RevokeMultiSessionOptions<TAuthClient>) {
-  const { refetch } = useListDeviceSessions(authClient, {
-    refetchOnMount: false
-  })
+>(
+  authClient: TAuthClient,
+  options?: RevokeMultiSessionOptions<TAuthClient>,
+  queryClient?: QueryClient
+) {
+  const { data: session } = useSession(authClient, undefined, queryClient)
+  const userId = session?.user.id
 
-  return useMutation({
-    ...revokeMultiSessionOptions(authClient),
-    ...options,
-    onSuccess: async (...args) => {
-      await refetch()
-      await options?.onSuccess?.(...args)
-    }
-  })
+  return useMutation(
+    {
+      ...revokeMultiSessionOptions(authClient),
+      ...options,
+      meta: {
+        awaits: [multiSessionQueryKeys.lists(userId)]
+      }
+    },
+    queryClient
+  )
 }

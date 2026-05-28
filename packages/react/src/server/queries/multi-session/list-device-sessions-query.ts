@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { multiSessionQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
   type QueryClient,
@@ -32,7 +32,7 @@ export function listDeviceSessionsOptions<TAuth extends MultiSessionAuthServer>(
   params: ListDeviceSessionsParams<TAuth>
 ) {
   type TData = ListDeviceSessionsData<TAuth>
-  const queryKey = authQueryKeys.listDeviceSessions(userId, params?.query)
+  const queryKey = multiSessionQueryKeys.list(userId, params?.query)
 
   const options = queryOptions<TData, APIError, TData, typeof queryKey>({
     queryKey,
