@@ -33,8 +33,12 @@ export default defineConfig({
       formats: ["es"]
     },
     rolldownOptions: {
-      // All bare module IDs (not starting with `.` or `/` or `C:\`)
-      external: /^[^./](?!:[/\\])/
+      // Externalize all bare module IDs (not starting with `.` or `/` or `C:\`),
+      // except `bowser`. Bowser ships a UMD `es5.js` via its `browser` field that
+      // does not expose a real ESM `default` export, so leaving it external breaks
+      // consumers using strict ESM resolvers (TanStack Start / Vite 7+ / Rolldown).
+      // Bundling it inline sidesteps the interop issue entirely.
+      external: (id) => id !== "bowser" && /^[^./](?!:[/\\])/.test(id)
     }
   }
 })
