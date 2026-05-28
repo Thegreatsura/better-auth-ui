@@ -1,5 +1,7 @@
-import { Organization } from "@better-auth-ui/heroui"
-import { organizationPlugin } from "@better-auth-ui/heroui/plugins"
+import {
+  Organization,
+  organizationPlugin
+} from "@better-auth-ui/heroui/plugins"
 import { ensureSession as ensureSessionClient } from "@better-auth-ui/react"
 import { ensureSession as ensureSessionServer } from "@better-auth-ui/react/server"
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router"
