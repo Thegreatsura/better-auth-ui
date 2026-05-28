@@ -7,7 +7,7 @@ import {
 } from "@gravity-ui/icons"
 import { Button, Chip, Spinner, toast } from "@heroui/react"
 import type { Session } from "better-auth"
-import Bowser from "bowser"
+import { parse as parseUserAgent } from "bowser"
 
 function timeAgo(date: Date) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
@@ -57,7 +57,7 @@ export function ActiveSession({ activeSession }: ActiveSessionProps) {
   )
 
   const isCurrentSession = activeSession.token === session?.session.token
-  const ua = Bowser.parse(activeSession.userAgent || "")
+  const ua = parseUserAgent(activeSession.userAgent || "")
   const isMobile =
     ua.platform.type === "mobile" || ua.platform.type === "tablet"
 
