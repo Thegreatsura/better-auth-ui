@@ -30,7 +30,7 @@ export function Providers({ children }: { children: ReactNode }) {
           usernamePlugin(),
           magicLinkPlugin(),
           passkeyPlugin(),
-          apiKeyPlugin(),
+          apiKeyPlugin({ organization: true }),
           themePlugin({ useTheme }),
           multiSessionPlugin(),
           deleteUserPlugin(),

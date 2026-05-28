@@ -63,7 +63,9 @@ export function CreateApiKeyDialog({
       name || organizationId
         ? {
             ...(name ? { name } : {}),
-            ...(organizationId ? { organizationId } : {})
+            ...(organizationId
+              ? { organizationId, configId: "organization" }
+              : {})
           }
         : undefined
 

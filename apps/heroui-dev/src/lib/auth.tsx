@@ -54,7 +54,10 @@ export const auth = betterAuth({
     multiSession(),
     passkey(),
     username(),
-    apiKey(),
+    apiKey([
+      { configId: "default", references: "user" },
+      { configId: "organization", references: "organization" }
+    ]),
     organization(),
     magicLink({
       expiresIn: MAGIC_LINK_EXPIRES_SECONDS,

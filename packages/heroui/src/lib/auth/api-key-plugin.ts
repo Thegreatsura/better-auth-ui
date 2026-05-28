@@ -9,9 +9,13 @@ import { OrganizationApiKeys } from "../../components/auth/api-key/organization-
 
 export const apiKeyPlugin = createAuthPlugin(
   coreApiKeyPlugin.id,
-  (options: ApiKeyPluginOptions = {}) => ({
-    ...coreApiKeyPlugin(options),
-    securityCards: [ApiKeys],
-    organizationCards: [OrganizationApiKeys]
-  })
+  (options: ApiKeyPluginOptions = {}) => {
+    const core = coreApiKeyPlugin(options)
+
+    return {
+      ...core,
+      securityCards: [ApiKeys],
+      ...(core.organization ? { organizationCards: [OrganizationApiKeys] } : {})
+    }
+  }
 )

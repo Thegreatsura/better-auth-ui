@@ -41,7 +41,9 @@ export function ApiKeys({
     authClient as ApiKeyAuthClient,
     {
       enabled: !isPendingProp,
-      ...(organizationId ? { query: { organizationId } } : {})
+      ...(organizationId
+        ? { query: { organizationId, configId: "organization" } }
+        : {})
     }
   )
 
@@ -84,7 +86,11 @@ export function ApiKeys({
                   <div className="border-b border-dashed -mx-4 my-4" />
                 )}
 
-                <ApiKey apiKey={key} hideDelete={hideDelete} />
+                <ApiKey
+                  apiKey={key}
+                  hideDelete={hideDelete}
+                  organizationId={organizationId}
+                />
               </div>
             ))
           )}
