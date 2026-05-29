@@ -60,6 +60,12 @@ export interface AuthConfig {
    */
   redirectTo: string
   /**
+   * Allow users to link multiple accounts from the same social provider.
+   * When false, providers already linked to the account are hidden from the available-to-link list.
+   * @default true
+   */
+  multipleAccountsPerProvider?: boolean
+  /**
    * List of enabled social authentication providers
    * @remarks `SocialProvider[]`
    */
