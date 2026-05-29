@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -175,9 +176,11 @@ export function UserButton({
       >
         {session && (
           <>
-            <DropdownMenuLabel className="text-sm font-normal">
-              <UserView />
-            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-sm font-normal">
+                <UserView />
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
           </>
