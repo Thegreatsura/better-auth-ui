@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { usernameMutationKeys } from "@better-auth-ui/core/plugins"
 import type { UsernameAuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
 
@@ -10,6 +10,6 @@ export function isUsernameAvailableOptions<
 >(authClient: TAuthClient) {
   return createAuthMutationOptions(
     authClient.isUsernameAvailable,
-    authMutationKeys.isUsernameAvailable
+    usernameMutationKeys.isUsernameAvailable
   )
 }

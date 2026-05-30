@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { usernameMutationKeys } from "@better-auth-ui/core/plugins"
 import type { UsernameAuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
 
@@ -10,6 +10,6 @@ export function signInUsernameOptions<TAuthClient extends UsernameAuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.signIn.username,
-    authMutationKeys.signIn.username
+    usernameMutationKeys.signIn
   )
 }

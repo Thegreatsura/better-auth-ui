@@ -42,5 +42,5 @@ export function resolveAuthConfig(
     mergedConfig.additionalFields
   )
 
-  return mergedConfig
+  return mergedConfig as AuthConfig
 }

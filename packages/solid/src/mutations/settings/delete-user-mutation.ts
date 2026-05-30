@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { deleteUserMutationKeys } from "@better-auth-ui/core/plugins"
 import type { AuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
 
@@ -11,6 +11,6 @@ export function deleteUserOptions<TAuthClient extends AuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.deleteUser,
-    authMutationKeys.deleteUser
+    deleteUserMutationKeys.deleteUser
   )
 }

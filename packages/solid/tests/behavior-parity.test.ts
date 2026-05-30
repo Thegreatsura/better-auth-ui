@@ -8,8 +8,14 @@ import {
 } from "@better-auth-ui/core"
 import {
   apiKeyMutationKeys,
+  apiKeyQueryKeys,
+  deleteUserMutationKeys,
   magicLinkMutationKeys,
-  passkeyMutationKeys
+  multiSessionMutationKeys,
+  multiSessionQueryKeys,
+  passkeyMutationKeys,
+  passkeyQueryKeys,
+  usernameMutationKeys
 } from "@better-auth-ui/core/plugins"
 import { afterEach, describe, expect, it, vi } from "vitest"
 import {
@@ -105,11 +111,11 @@ describe("Solid auth behavior parity", () => {
       authQueryKeys.accountInfo("user-1", { accountId: "acct-1" })
     )
     expect(listAccounts.queryKey).toEqual(authQueryKeys.listAccounts("user-1"))
-    expect(passkeys.queryKey).toEqual(authQueryKeys.listPasskeys("user-1"))
+    expect(passkeys.queryKey).toEqual(passkeyQueryKeys.list("user-1"))
     expect(deviceSessions.queryKey).toEqual(
-      authQueryKeys.listDeviceSessions("user-1")
+      multiSessionQueryKeys.list("user-1")
     )
-    expect(apiKeys.queryKey).toEqual(authQueryKeys.listApiKeys("user-1"))
+    expect(apiKeys.queryKey).toEqual(apiKeyQueryKeys.list("user-1"))
     await expect(accountInfo.queryFn?.({ signal } as never)).resolves.toEqual({
       data: "acct-1"
     })
@@ -223,13 +229,13 @@ describe("Solid auth behavior parity", () => {
       magicLinkMutationKeys.signIn
     )
     expect(signInUsernameOptions(authClient as never).mutationKey).toEqual(
-      authMutationKeys.signIn.username
+      usernameMutationKeys.signIn
     )
     expect(revokeMultiSessionOptions(authClient as never).mutationKey).toEqual(
-      authMutationKeys.multiSession.revoke
+      multiSessionMutationKeys.revoke
     )
     expect(setActiveSessionOptions(authClient as never).mutationKey).toEqual(
-      authMutationKeys.multiSession.setActive
+      multiSessionMutationKeys.setActive
     )
     expect(revokeSessionOptions(authClient as never).mutationKey).toEqual(
       authMutationKeys.revokeSession
@@ -241,7 +247,7 @@ describe("Solid auth behavior parity", () => {
       authMutationKeys.changePassword
     )
     expect(deleteUserOptions(authClient as never).mutationKey).toEqual(
-      authMutationKeys.deleteUser
+      deleteUserMutationKeys.deleteUser
     )
     expect(linkSocialOptions(authClient as never).mutationKey).toEqual(
       authMutationKeys.linkSocial
@@ -253,13 +259,13 @@ describe("Solid auth behavior parity", () => {
       authMutationKeys.updateUser
     )
     expect(isUsernameAvailableOptions(authClient as never).mutationKey).toEqual(
-      authMutationKeys.isUsernameAvailable
+      usernameMutationKeys.isUsernameAvailable
     )
     expect(createApiKeyOptions(authClient as never).mutationKey).toEqual(
-      apiKeyMutationKeys.createApiKey
+      apiKeyMutationKeys.create
     )
     expect(deleteApiKeyOptions(authClient as never).mutationKey).toEqual(
-      apiKeyMutationKeys.deleteApiKey
+      apiKeyMutationKeys.delete
     )
 
     await expect(

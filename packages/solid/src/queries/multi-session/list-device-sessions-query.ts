@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { multiSessionQueryKeys } from "@better-auth-ui/core/plugins"
 import type { QueryClient } from "@tanstack/solid-query"
 import type { InferData, MultiSessionAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
@@ -31,7 +31,7 @@ export function listDeviceSessionsOptions<
   params?: ListDeviceSessionsParams<TAuthClient>
 ) {
   return createUserScopedOptions(
-    authQueryKeys.listDeviceSessions(userId, params?.query),
+    multiSessionQueryKeys.list(userId, params?.query),
     authClient.multiSession.listDeviceSessions,
     params
   )
@@ -47,7 +47,7 @@ export const ensureListDeviceSessions = <
 ) =>
   ensureUserScopedQuery(
     queryClient,
-    authQueryKeys.listDeviceSessions(userId, params?.query),
+    multiSessionQueryKeys.list(userId, params?.query),
     authClient.multiSession.listDeviceSessions,
     params
   )
@@ -62,7 +62,7 @@ export const prefetchListDeviceSessions = <
 ) =>
   prefetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listDeviceSessions(userId, params?.query),
+    multiSessionQueryKeys.list(userId, params?.query),
     authClient.multiSession.listDeviceSessions,
     params
   )
@@ -77,7 +77,7 @@ export const fetchListDeviceSessions = <
 ) =>
   fetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listDeviceSessions(userId, params?.query),
+    multiSessionQueryKeys.list(userId, params?.query),
     authClient.multiSession.listDeviceSessions,
     params
   )
@@ -98,7 +98,7 @@ export function useListDeviceSessions<
   const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createUserScopedQuery(
-    () => authQueryKeys.listDeviceSessions(userId(), query),
+    () => multiSessionQueryKeys.list(userId(), query),
     authClient.multiSession.listDeviceSessions,
     () => ({ query, fetchOptions }) as ListDeviceSessionsParams<TAuthClient>,
     () => Boolean(userId()),

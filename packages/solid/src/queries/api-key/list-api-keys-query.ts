@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { apiKeyQueryKeys } from "@better-auth-ui/core/plugins"
 import type { QueryClient } from "@tanstack/solid-query"
 import type { ApiKeyAuthClient, InferData } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
@@ -27,7 +27,7 @@ export function listApiKeysOptions<TAuthClient extends ApiKeyAuthClient>(
   params?: ListApiKeysParams<TAuthClient>
 ) {
   return createUserScopedOptions(
-    authQueryKeys.listApiKeys(userId, params?.query),
+    apiKeyQueryKeys.list(userId, params?.query),
     authClient.apiKey.list,
     params
   )
@@ -41,7 +41,7 @@ export const ensureListApiKeys = <TAuthClient extends ApiKeyAuthClient>(
 ) =>
   ensureUserScopedQuery(
     queryClient,
-    authQueryKeys.listApiKeys(userId, params?.query),
+    apiKeyQueryKeys.list(userId, params?.query),
     authClient.apiKey.list,
     params
   )
@@ -54,7 +54,7 @@ export const prefetchListApiKeys = <TAuthClient extends ApiKeyAuthClient>(
 ) =>
   prefetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listApiKeys(userId, params?.query),
+    apiKeyQueryKeys.list(userId, params?.query),
     authClient.apiKey.list,
     params
   )
@@ -67,7 +67,7 @@ export const fetchListApiKeys = <TAuthClient extends ApiKeyAuthClient>(
 ) =>
   fetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listApiKeys(userId, params?.query),
+    apiKeyQueryKeys.list(userId, params?.query),
     authClient.apiKey.list,
     params
   )
@@ -84,7 +84,7 @@ export function useListApiKeys<TAuthClient extends ApiKeyAuthClient>(
   const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createUserScopedQuery(
-    () => authQueryKeys.listApiKeys(userId(), query),
+    () => apiKeyQueryKeys.list(userId(), query),
     authClient.apiKey.list,
     () => ({ query, fetchOptions }) as ListApiKeysParams<TAuthClient>,
     () => Boolean(userId()),

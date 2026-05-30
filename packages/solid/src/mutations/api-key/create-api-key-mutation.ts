@@ -10,6 +10,6 @@ export function createApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.apiKey.create,
-    apiKeyMutationKeys.createApiKey
+    apiKeyMutationKeys.create
   )
 }

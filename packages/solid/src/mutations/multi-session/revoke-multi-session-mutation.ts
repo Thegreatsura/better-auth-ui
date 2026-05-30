@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { multiSessionMutationKeys } from "@better-auth-ui/core/plugins"
 import type { MultiSessionAuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
 
@@ -11,6 +11,6 @@ export function revokeMultiSessionOptions<
 >(authClient: TAuthClient) {
   return createAuthMutationOptions(
     authClient.multiSession.revoke,
-    authMutationKeys.multiSession.revoke
+    multiSessionMutationKeys.revoke
   )
 }

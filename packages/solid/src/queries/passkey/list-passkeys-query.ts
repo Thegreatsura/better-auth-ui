@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { passkeyQueryKeys } from "@better-auth-ui/core/plugins"
 import type { QueryClient } from "@tanstack/solid-query"
 import type { InferData, PasskeyAuthClient } from "../../lib/auth-client"
 import { useSession } from "../auth/session-query"
@@ -27,7 +27,7 @@ export function listPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
   params?: ListPasskeysParams<TAuthClient>
 ) {
   return createUserScopedOptions(
-    authQueryKeys.listPasskeys(userId, params?.query),
+    passkeyQueryKeys.list(userId, params?.query),
     authClient.passkey.listUserPasskeys,
     params
   )
@@ -41,7 +41,7 @@ export const ensureListPasskeys = <TAuthClient extends PasskeyAuthClient>(
 ) =>
   ensureUserScopedQuery(
     queryClient,
-    authQueryKeys.listPasskeys(userId, params?.query),
+    passkeyQueryKeys.list(userId, params?.query),
     authClient.passkey.listUserPasskeys,
     params
   )
@@ -54,7 +54,7 @@ export const prefetchListPasskeys = <TAuthClient extends PasskeyAuthClient>(
 ) =>
   prefetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listPasskeys(userId, params?.query),
+    passkeyQueryKeys.list(userId, params?.query),
     authClient.passkey.listUserPasskeys,
     params
   )
@@ -67,7 +67,7 @@ export const fetchListPasskeys = <TAuthClient extends PasskeyAuthClient>(
 ) =>
   fetchUserScopedQuery(
     queryClient,
-    authQueryKeys.listPasskeys(userId, params?.query),
+    passkeyQueryKeys.list(userId, params?.query),
     authClient.passkey.listUserPasskeys,
     params
   )
@@ -84,7 +84,7 @@ export function useListPasskeys<TAuthClient extends PasskeyAuthClient>(
   const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createUserScopedQuery(
-    () => authQueryKeys.listPasskeys(userId(), query),
+    () => passkeyQueryKeys.list(userId(), query),
     authClient.passkey.listUserPasskeys,
     () => ({ query, fetchOptions }) as ListPasskeysParams<TAuthClient>,
     () => Boolean(userId()),

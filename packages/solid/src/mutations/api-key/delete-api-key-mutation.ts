@@ -10,6 +10,6 @@ export function deleteApiKeyOptions<TAuthClient extends ApiKeyAuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.apiKey.delete,
-    apiKeyMutationKeys.deleteApiKey
+    apiKeyMutationKeys.delete
   )
 }
