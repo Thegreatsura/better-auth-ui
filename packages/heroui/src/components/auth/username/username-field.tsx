@@ -76,6 +76,8 @@ export function UsernameField({
   const isCheckingAvailability =
     !!checkAvailability && !!value.trim() && value.trim() !== currentUsername
 
+  const { localization: authLocalization } = useAuth()
+
   return (
     <TextField
       name={name}
@@ -87,6 +89,19 @@ export function UsernameField({
       isReadOnly={field.readOnly}
       value={value}
       onChange={handleChange}
+      validate={(val) => {
+        if (field.required && !val) return authLocalization.auth.fieldRequired
+        if (minUsernameLength && val.length < minUsernameLength)
+          return authLocalization.auth.tooShort.replace(
+            "{{min}}",
+            String(minUsernameLength)
+          )
+        if (maxUsernameLength && val.length > maxUsernameLength)
+          return authLocalization.auth.tooLong.replace(
+            "{{max}}",
+            String(maxUsernameLength)
+          )
+      }}
     >
       <Label>{field.label}</Label>
 
