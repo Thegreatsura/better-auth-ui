@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
 import { createContext, type JSX, useContext } from "solid-js"
 import type { AuthClient } from "./auth-client"
 import { resolveAuthConfig, type SolidAuthConfigInput } from "./auth-config"
+import { MutationInvalidator } from "./mutation-invalidator"
 
 const AuthContext = createContext<AuthConfig>()
 let renderingAuthConfig: AuthConfig | undefined
@@ -28,13 +29,15 @@ const resolveProviderChildren = (children: AuthProviderProps["children"]) =>
 export function AuthProvider(props: AuthProviderProps) {
   const config = resolveAuthConfig(props as AuthProviderProps<AuthClient>)
   const previousRenderingAuthConfig = renderingAuthConfig
+  const queryClient = props.queryClient || fallbackQueryClient
 
   renderingAuthConfig = config
 
   try {
     return (
       <AuthContext.Provider value={config}>
-        <QueryClientProvider client={props.queryClient || fallbackQueryClient}>
+        <QueryClientProvider client={queryClient}>
+          <MutationInvalidator queryClient={queryClient} />
           {resolveProviderChildren(props.children)}
         </QueryClientProvider>
       </AuthContext.Provider>

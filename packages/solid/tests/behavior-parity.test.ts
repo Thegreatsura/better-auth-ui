@@ -13,6 +13,8 @@ import {
   magicLinkMutationKeys,
   multiSessionMutationKeys,
   multiSessionQueryKeys,
+  organizationMutationKeys,
+  organizationQueryKeys,
   passkeyMutationKeys,
   passkeyQueryKeys,
   usernameMutationKeys
@@ -24,14 +26,19 @@ import {
   changeEmailOptions,
   changePasswordOptions,
   createApiKeyOptions,
+  createOrganizationMeta,
+  createOrganizationOptions,
   deleteApiKeyOptions,
   deletePasskeyOptions,
   deleteUserOptions,
+  hasPermissionOptions,
   isUsernameAvailableOptions,
   linkSocialOptions,
   listAccountsOptions,
   listApiKeysOptions,
   listDeviceSessionsOptions,
+  listOrganizationMembersOptions,
+  listOrganizationsOptions,
   listPasskeysOptions,
   requestPasswordResetOptions,
   resetPasswordOptions,
@@ -50,6 +57,7 @@ import {
   unlinkAccountOptions,
   updateUserOptions
 } from "../src"
+import { invalidateAuthMutationMeta } from "../src/lib/mutation-invalidator"
 import { getSessionUserId } from "../src/queries/create-user-scoped-query"
 
 const signal = new AbortController().signal
@@ -278,5 +286,89 @@ describe("Solid auth behavior parity", () => {
       name: "CLI",
       fetchOptions: { credentials: "include", throw: true }
     })
+  })
+
+  it("creates organization query and mutation options with plugin-scoped keys", () => {
+    const authClient = {
+      organization: {
+        list: vi.fn(async () => ({ data: [] })),
+        listMembers: vi.fn(async () => ({ data: { members: [] } })),
+        hasPermission: vi.fn(async () => ({ data: { success: true } })),
+        create: vi.fn(async () => ({ data: { id: "org-1" } }))
+      }
+    }
+
+    const listOrganizations = listOrganizationsOptions(
+      authClient as never,
+      "user-1"
+    )
+    const listMembers = listOrganizationMembersOptions(
+      authClient as never,
+      "user-1",
+      { query: { organizationId: "org-1" } } as never
+    )
+    const permissions = hasPermissionOptions(authClient as never, "user-1", {
+      organizationId: "org-1",
+      permissions: { organization: ["update"] }
+    } as never)
+    const createOrganization = createOrganizationOptions(authClient as never)
+
+    expect(listOrganizations.queryKey).toEqual(
+      organizationQueryKeys.list("user-1")
+    )
+    expect(listMembers.queryKey).toEqual(
+      organizationQueryKeys.members.list("user-1", {
+        organizationId: "org-1"
+      })
+    )
+    expect(permissions.queryKey).toEqual(
+      organizationQueryKeys.permissions.has("user-1", {
+        organizationId: "org-1",
+        permissions: { organization: ["update"] }
+      })
+    )
+    expect(createOrganization.mutationKey).toEqual(
+      organizationMutationKeys.create
+    )
+    expect(createOrganizationMeta("user-1")).toEqual({
+      awaits: [organizationQueryKeys.lists("user-1")],
+      invalidates: [
+        organizationQueryKeys.fullDetails("user-1"),
+        organizationQueryKeys.activeOrganizations("user-1")
+      ]
+    })
+  })
+
+  it("invalidates auth mutation metadata by query prefix", async () => {
+    const invalidated: unknown[] = []
+    const queryClient = {
+      invalidateQueries: vi.fn(async (filters) => {
+        for (const queryKey of [
+          organizationQueryKeys.lists("user-1"),
+          organizationQueryKeys.fullDetail("user-1", {
+            organizationId: "org-1"
+          }),
+          ["unrelated"]
+        ]) {
+          if (filters.predicate({ queryKey })) {
+            invalidated.push(queryKey)
+          }
+        }
+      })
+    }
+
+    await invalidateAuthMutationMeta(queryClient as never, {
+      options: {
+        mutationKey: organizationMutationKeys.create,
+        meta: createOrganizationMeta("user-1")
+      }
+    })
+
+    expect(queryClient.invalidateQueries).toHaveBeenCalledTimes(2)
+    expect(invalidated).toContainEqual(organizationQueryKeys.lists("user-1"))
+    expect(invalidated).toContainEqual(
+      organizationQueryKeys.fullDetail("user-1", { organizationId: "org-1" })
+    )
+    expect(invalidated).not.toContainEqual(["unrelated"])
   })
 })

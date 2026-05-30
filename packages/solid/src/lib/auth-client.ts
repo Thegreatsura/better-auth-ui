@@ -3,6 +3,7 @@ import type { passkeyClient } from "@better-auth/passkey/client"
 import type {
   magicLinkClient,
   multiSessionClient,
+  organizationClient,
   usernameClient
 } from "better-auth/client/plugins"
 import type { createAuthClient } from "better-auth/solid"
@@ -27,6 +28,12 @@ export type ApiKeyAuthClient = ReturnType<
 
 export type UsernameAuthClient = ReturnType<
   typeof createAuthClient<{ plugins: [ReturnType<typeof usernameClient>] }>
+>
+
+export type OrganizationAuthClient = ReturnType<
+  typeof createAuthClient<{
+    plugins: [ReturnType<typeof organizationClient<object>>]
+  }>
 >
 
 export type InferData<TMethod> = TMethod extends (
