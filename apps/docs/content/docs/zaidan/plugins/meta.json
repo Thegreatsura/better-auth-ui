@@ -6,6 +6,7 @@
     "delete-user",
     "magic-link",
     "multi-session",
+    "organization",
     "passkey",
     "theme",
     "username"

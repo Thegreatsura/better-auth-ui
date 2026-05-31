@@ -8,8 +8,15 @@ const shadcnRoot = resolve(__dirname, "../../start-shadcn-example")
 const readExampleFile = (path: string) =>
   readFileSync(resolve(exampleRoot, path), "utf8")
 
-const readShadcnFile = (path: string) =>
-  readFileSync(resolve(shadcnRoot, path), "utf8")
+const readShadcnFile = (path: string) => {
+  const preferred = resolve(shadcnRoot, path)
+  if (existsSync(preferred)) return readFileSync(preferred, "utf8")
+
+  return readFileSync(
+    resolve(shadcnRoot, path.replace(/\.ts$/, ".tsx")),
+    "utf8"
+  )
+}
 
 const readJson = <T>(path: string) =>
   JSON.parse(readFileSync(resolve(exampleRoot, path), "utf8")) as T
@@ -32,6 +39,7 @@ describe("Solid auth database parity", () => {
     expect(solidAuth).toContain("passkey()")
     expect(solidAuth).toContain("username()")
     expect(solidAuth).toContain("apiKey()")
+    expect(solidAuth).toContain("organization()")
 
     expect(shadcnAuth).toContain("drizzleAdapter(db")
     expect(shadcnAuth).toContain('provider: "pg"')

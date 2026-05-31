@@ -1,0 +1,38 @@
+---
+title: <Organization />
+description: Solid/Zaidan organization route shell.
+---
+
+`Organization` is the minimal route shell for `/organization/$slug/$path`. It resolves the active organization for the slug and renders settings or people panels that point to the Solid organization APIs.
+
+## Usage
+
+```tsx
+import { Organization } from "@/components/auth/organization/organization"
+
+<Organization path="settings" slug="acme" />
+```
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/organization.json
+```
+
+## Props
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organization.tsx" name="OrganizationProps" />
+
+## Installed files
+
+- `src/lib/auth/organization-plugin.tsx`
+- `src/components/auth/organization/organization.tsx`
+- `src/components/auth/organization/organizations-settings.tsx`
+- `src/components/auth/organization/organization-switcher.tsx`
+- `src/routes/organization/$slug/$path.tsx`
+
+## Deferred UI
+
+After install, wire `organization()` on the server, `organizationClient()` on the client, and the local `organizationPlugin()` in your provider before exposing the route.
+
+The route shell is intentionally small. Full profile forms, member tables, invitation tables, logo upload, and destructive dialogs are deferred in this PR slice and should be built from the Solid organization query/mutation APIs.

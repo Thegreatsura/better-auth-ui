@@ -538,9 +538,9 @@ describe("Solid auth route component selection", () => {
     )
 
     expect(settingsRoute).toContain("viewPaths.settings")
-    expect(settingsRoute).toContain(
-      "if (!Object.values(viewPaths.settings).includes(path))"
-    )
+    expect(settingsRoute).toContain("validSettingsPaths")
+    expect(settingsRoute).toContain("organizationPlugin().viewPaths.settings")
+    expect(settingsRoute).toContain("if (!validSettingsPaths.includes(path))")
     expect(settingsRoute).toContain("throw notFound()")
     expect(settingsRoute).toContain("async beforeLoad")
     expect(settingsRoute).toContain("createIsomorphicFn()")
@@ -1737,7 +1737,7 @@ describe("Solid auth route component selection", () => {
     expect(activeSession).toContain("auth.localization.settings.currentSession")
     expect(activeSession).toContain("auth.localization.auth.signOut")
     expect(securitySettings).toContain("auth.plugins.flatMap")
-    expect(securitySettings).toContain("plugin.securityCards")
+    expect(securitySettings).toContain("securityCards")
     expect(settingsComponents).not.toContain("Plugin security cards")
     expect(settingsComponents).not.toContain("API keys are not available")
     expect(settingsComponents).not.toContain("Passkeys are not available")

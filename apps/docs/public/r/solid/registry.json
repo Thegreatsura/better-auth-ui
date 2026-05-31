@@ -1129,7 +1129,8 @@
       ],
       "registryDependencies": [
         "solid/account-settings",
-        "solid/security-settings"
+        "solid/security-settings",
+        "solid/organization"
       ],
       "files": [
         {
@@ -1550,6 +1551,106 @@
         },
         {
           "path": "src/components/auth/multi-session/manage-accounts.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/item.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/skeleton.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "organization",
+      "type": "registry:component",
+      "title": "Solid Organization",
+      "description": "Solid organization setup with settings tab, organization switcher, and slug route shell.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/solid-query",
+        "better-auth",
+        "lucide-solid",
+        "solid-sonner",
+        "solid-js",
+        "@kobalte/core",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "solid/auth-provider"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/organization-plugin.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/components/auth/organization/organizations-settings.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organizations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-switcher.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/routes/organization/$slug/$path.tsx",
           "type": "registry:component"
         },
         {

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs"
+import { readdirSync, readFileSync, statSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
@@ -7,6 +7,17 @@ const sourceFile = join(import.meta.dirname, "../src/lib/source.tsx")
 
 function readDocsFile(...segments: string[]) {
   return readFileSync(join(docsRoot, ...segments), "utf8")
+}
+
+function listFilesRecursive(root: string, prefix = ""): string[] {
+  const current = join(root, prefix)
+
+  return readdirSync(current).flatMap((entry) => {
+    const rel = join(prefix, entry)
+    const abs = join(root, rel)
+
+    return statSync(abs).isDirectory() ? listFilesRecursive(root, rel) : [rel]
+  })
 }
 
 describe("Solid docs navigation", () => {
@@ -57,7 +68,15 @@ describe("Solid docs navigation", () => {
         "list-sessions",
         "list-device-sessions",
         "list-passkeys",
-        "list-api-keys"
+        "list-api-keys",
+        "---Organization---",
+        "active-organization",
+        "full-organization",
+        "list-organizations",
+        "list-members",
+        "list-invitations",
+        "list-user-invitations",
+        "has-permission"
       ]
     })
     expect(solidMutationsMeta).toMatchObject({
@@ -89,68 +108,89 @@ describe("Solid docs navigation", () => {
         "revoke-multi-session",
         "set-active-session",
         "create-api-key",
-        "delete-api-key"
+        "delete-api-key",
+        "---Organization---",
+        "create-organization",
+        "update-organization",
+        "delete-organization",
+        "set-active-organization",
+        "invite-member",
+        "remove-member",
+        "update-member-role",
+        "leave-organization",
+        "accept-invitation",
+        "cancel-invitation",
+        "reject-invitation",
+        "check-organization-slug"
       ]
     })
   })
 
   it("documents only the Solid runtime/package track", () => {
-    const requiredPages = [
+    const expectedPages = [
       "index.mdx",
-      "queries/index.mdx",
-      "queries/session.mdx",
-      "queries/user.mdx",
-      "queries/authenticate.mdx",
-      "queries/list-accounts.mdx",
-      "queries/account-info.mdx",
-      "queries/list-sessions.mdx",
-      "queries/list-device-sessions.mdx",
-      "queries/list-passkeys.mdx",
-      "queries/list-api-keys.mdx",
+      "mutations/accept-invitation.mdx",
+      "mutations/add-passkey.mdx",
+      "mutations/cancel-invitation.mdx",
+      "mutations/change-email.mdx",
+      "mutations/change-password.mdx",
+      "mutations/check-organization-slug.mdx",
+      "mutations/create-api-key.mdx",
+      "mutations/create-organization.mdx",
+      "mutations/delete-api-key.mdx",
+      "mutations/delete-organization.mdx",
+      "mutations/delete-passkey.mdx",
+      "mutations/delete-user.mdx",
       "mutations/index.mdx",
+      "mutations/invite-member.mdx",
+      "mutations/is-username-available.mdx",
+      "mutations/leave-organization.mdx",
+      "mutations/link-social.mdx",
+      "mutations/reject-invitation.mdx",
+      "mutations/remove-member.mdx",
+      "mutations/request-password-reset.mdx",
+      "mutations/reset-password.mdx",
+      "mutations/revoke-multi-session.mdx",
+      "mutations/revoke-session.mdx",
+      "mutations/send-verification-email.mdx",
+      "mutations/set-active-organization.mdx",
+      "mutations/set-active-session.mdx",
       "mutations/sign-in-email.mdx",
-      "mutations/sign-in-username.mdx",
       "mutations/sign-in-magic-link.mdx",
       "mutations/sign-in-passkey.mdx",
       "mutations/sign-in-social.mdx",
-      "mutations/sign-up-email.mdx",
+      "mutations/sign-in-username.mdx",
       "mutations/sign-out.mdx",
-      "mutations/request-password-reset.mdx",
-      "mutations/reset-password.mdx",
-      "mutations/send-verification-email.mdx",
-      "mutations/is-username-available.mdx",
-      "mutations/update-user.mdx",
-      "mutations/change-email.mdx",
-      "mutations/change-password.mdx",
-      "mutations/delete-user.mdx",
-      "mutations/link-social.mdx",
+      "mutations/sign-up-email.mdx",
       "mutations/unlink-account.mdx",
-      "mutations/add-passkey.mdx",
-      "mutations/delete-passkey.mdx",
-      "mutations/revoke-session.mdx",
-      "mutations/revoke-multi-session.mdx",
-      "mutations/set-active-session.mdx",
-      "mutations/create-api-key.mdx",
-      "mutations/delete-api-key.mdx",
+      "mutations/update-member-role.mdx",
+      "mutations/update-organization.mdx",
+      "mutations/update-user.mdx",
+      "queries/account-info.mdx",
+      "queries/active-organization.mdx",
+      "queries/authenticate.mdx",
+      "queries/full-organization.mdx",
+      "queries/has-permission.mdx",
+      "queries/index.mdx",
+      "queries/list-accounts.mdx",
+      "queries/list-api-keys.mdx",
+      "queries/list-device-sessions.mdx",
+      "queries/list-invitations.mdx",
+      "queries/list-members.mdx",
+      "queries/list-organizations.mdx",
+      "queries/list-passkeys.mdx",
+      "queries/list-sessions.mdx",
+      "queries/list-user-invitations.mdx",
+      "queries/session.mdx",
+      "queries/user.mdx",
       "ssr.mdx"
     ]
-    const removedPages = [
-      "integrations.mdx",
-      "plugins.mdx",
-      "registry.mdx",
-      "server.mdx",
-      "gaps.mdx",
-      "queries.mdx",
-      "mutations.mdx"
-    ]
 
-    for (const page of requiredPages) {
-      expect(existsSync(join(docsRoot, "solid", page))).toBe(true)
-    }
+    const actualPages = listFilesRecursive(join(docsRoot, "solid"))
+      .filter((page) => page.endsWith(".mdx"))
+      .sort()
 
-    for (const page of removedPages) {
-      expect(existsSync(join(docsRoot, "solid", page))).toBe(false)
-    }
+    expect(actualPages).toEqual([...expectedPages].sort())
 
     const index = readDocsFile("solid", "index.mdx")
     const ssr = readDocsFile("solid", "ssr.mdx")

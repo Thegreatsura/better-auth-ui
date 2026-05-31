@@ -5,7 +5,7 @@ description: Solid mutation factories for Better Auth write endpoints.
 
 Solid mutations expose `@tanstack/solid-query` mutation options for Better Auth write endpoints. They preserve shared mutation keys and pass `throw: true` so failures surface through standard Solid Query error handling.
 
-Unlike React, Solid package mutations are currently **options factories**, not purpose-built `use*` mutation hooks. Use the factory with `createMutation`, or use the generic `useAuthMutation` escape hatch for endpoints without a named factory.
+Unlike React, Solid package mutations are **options factories**, not purpose-built `use*` mutation hooks. Use the factory with `createMutation`, or use the generic `useAuthMutation` escape hatch for endpoints without a named factory.
 
 ```tsx
 import { signInEmailOptions } from "@better-auth-ui/solid"
@@ -20,7 +20,7 @@ Every named factory wires `throw: true` into `fetchOptions`, so the mutation rej
 
 ## Cache side effects
 
-Solid factories intentionally do not attach React-style hook side effects. Invalidate or refetch explicitly with the shared keys after a successful mutation.
+Core auth factories stay explicit: invalidate or refetch with shared keys after a successful mutation. Organization hook mutations additionally attach `meta.invalidates` / `meta.awaits`, and `AuthProvider` installs the Solid mutation invalidator that consumes that metadata.
 
 ```ts
 import { authQueryKeys } from "@better-auth-ui/core"
@@ -70,4 +70,21 @@ The Solid package does not render toast UI. Attach success/error handling in you
   <Card title="setActiveSessionOptions" href="/docs/solid/mutations/set-active-session" />
   <Card title="createApiKeyOptions" href="/docs/solid/mutations/create-api-key" />
   <Card title="deleteApiKeyOptions" href="/docs/solid/mutations/delete-api-key" />
+</Cards>
+
+### Organization
+
+<Cards>
+  <Card title="createOrganizationOptions" href="/docs/solid/mutations/create-organization" />
+  <Card title="updateOrganizationOptions" href="/docs/solid/mutations/update-organization" />
+  <Card title="deleteOrganizationOptions" href="/docs/solid/mutations/delete-organization" />
+  <Card title="setActiveOrganizationOptions" href="/docs/solid/mutations/set-active-organization" />
+  <Card title="inviteMemberOptions" href="/docs/solid/mutations/invite-member" />
+  <Card title="removeMemberOptions" href="/docs/solid/mutations/remove-member" />
+  <Card title="updateMemberRoleOptions" href="/docs/solid/mutations/update-member-role" />
+  <Card title="leaveOrganizationOptions" href="/docs/solid/mutations/leave-organization" />
+  <Card title="acceptInvitationOptions" href="/docs/solid/mutations/accept-invitation" />
+  <Card title="cancelInvitationOptions" href="/docs/solid/mutations/cancel-invitation" />
+  <Card title="rejectInvitationOptions" href="/docs/solid/mutations/reject-invitation" />
+  <Card title="checkOrganizationSlugOptions" href="/docs/solid/mutations/check-organization-slug" />
 </Cards>

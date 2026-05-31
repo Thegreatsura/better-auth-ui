@@ -5,6 +5,7 @@ import { createAuthClient } from "@better-auth-ui/solid"
 import {
   magicLinkClient,
   multiSessionClient,
+  organizationClient,
   usernameClient
 } from "better-auth/client/plugins"
 
@@ -25,6 +26,7 @@ export const authClient: AuthClient = createAuthClient({
     apiKeyClient(),
     passkeyClient(),
     usernameClient(),
-    magicLinkClient()
+    magicLinkClient(),
+    organizationClient()
   ]
 })

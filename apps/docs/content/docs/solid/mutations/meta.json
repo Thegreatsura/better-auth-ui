@@ -28,6 +28,19 @@
     "revoke-multi-session",
     "set-active-session",
     "create-api-key",
-    "delete-api-key"
+    "delete-api-key",
+    "---Organization---",
+    "create-organization",
+    "update-organization",
+    "delete-organization",
+    "set-active-organization",
+    "invite-member",
+    "remove-member",
+    "update-member-role",
+    "leave-organization",
+    "accept-invitation",
+    "cancel-invitation",
+    "reject-invitation",
+    "check-organization-slug"
   ]
 }

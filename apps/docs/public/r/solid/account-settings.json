@@ -26,7 +26,7 @@
     {
       "path": "src/components/auth/settings/account/account-settings.tsx",
       "type": "registry:component",
-      "content": "import { ManageAccounts } from \"@/components/auth/multi-session/manage-accounts\"\nimport { ChangeEmail } from \"@/components/auth/settings/account/change-email\"\nimport { UserProfile } from \"@/components/auth/settings/account/user-profile\"\nimport { AppearanceSettings } from \"@/components/auth/theme/appearance\"\n\nexport function AccountSettings() {\n  return (\n    <div class=\"flex w-full flex-col gap-4 md:gap-6\">\n      <UserProfile />\n\n      <ChangeEmail />\n\n      <AppearanceSettings />\n\n      <ManageAccounts />\n    </div>\n  )\n}\n"
+      "content": "import { ManageAccounts } from \"@/components/auth/multi-session/manage-accounts\"\nimport { ChangeEmail } from \"@/components/auth/settings/account/change-email\"\nimport { UserProfile } from \"@/components/auth/settings/account/user-profile\"\nimport { AppearanceSettings } from \"@/components/auth/theme/appearance\"\nimport { cn } from \"@/lib/utils\"\n\nexport type AccountSettingsProps = {\n  class?: string\n}\n\nexport function AccountSettings(props: AccountSettingsProps = {}) {\n  return (\n    <div class={cn(\"flex w-full flex-col gap-4 md:gap-6\", props.class)}>\n      <UserProfile />\n\n      <ChangeEmail />\n\n      <AppearanceSettings />\n\n      <ManageAccounts />\n    </div>\n  )\n}\n"
     },
     {
       "path": "src/components/auth/settings/account/manage-account-row.tsx",

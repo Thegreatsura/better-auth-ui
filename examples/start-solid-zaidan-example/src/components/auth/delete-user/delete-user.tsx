@@ -49,12 +49,12 @@ export function DeleteUser() {
 
     return {
       deleteUser:
-        pluginLocalization?.deleteUser ??
-        deleteUserLocalization.deleteUser ??
+        pluginLocalization?.deleteAccount ??
+        deleteUserLocalization.deleteAccount ??
         defaultDeleteUserLabel,
       deleteUserDescription:
-        pluginLocalization?.deleteUserDescription ??
-        deleteUserLocalization.deleteUserDescription,
+        pluginLocalization?.deleteAccountDescription ??
+        deleteUserLocalization.deleteAccountDescription,
       deleteUserSuccess:
         pluginLocalization?.deleteUserSuccess ??
         deleteUserLocalization.deleteUserSuccess,

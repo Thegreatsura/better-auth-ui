@@ -1,6 +1,7 @@
 import type { SettingsView } from "@better-auth-ui/core"
 import { useAuth, useSession } from "@better-auth-ui/solid"
-import { createMemo, Show } from "solid-js"
+import type { Component } from "solid-js"
+import { createMemo, For, Show } from "solid-js"
 import { AccountSettings } from "@/components/auth/settings/account/account-settings"
 import { SecuritySettings } from "@/components/auth/settings/security/security-settings"
 import type {
@@ -13,28 +14,54 @@ import { cn } from "@/lib/utils"
 export { AccountSettings } from "@/components/auth/settings/account/account-settings"
 export { SecuritySettings } from "@/components/auth/settings/security/security-settings"
 
+type SettingsTabPlugin = {
+  settingsTabs?: {
+    view: string
+    tabLabel: Component
+    component: Component
+  }[]
+}
+
 export type SettingsProps = {
   class?: string
   path?: string
-  view?: SettingsView
+  view?: SettingsView | string
   hideNav?: boolean
 }
 
 const settingsPathViews = () => {
   const auth = useAuth()
 
-  return Object.fromEntries(
-    Object.entries(auth.viewPaths.settings).map(([view, path]) => [path, view])
-  ) as SettingsPathViews
+  const pluginEntries = (auth.plugins as SettingsTabPlugin[]).flatMap(
+    (plugin) =>
+      plugin.settingsTabs?.map((tab) => [tab.view, tab.view] as const) ?? []
+  )
+
+  return Object.fromEntries([
+    ...Object.entries(auth.viewPaths.settings).map(([view, path]) => [
+      path,
+      view
+    ]),
+    ...pluginEntries
+  ]) as SettingsPathViews
 }
 
-export function resolveSettingsRoute(path: string): SettingsRouteResolution {
+export function resolveSettingsRoute(
+  path: string,
+  pluginTabs: SettingsTabPlugin["settingsTabs"] = []
+): SettingsRouteResolution {
   if (path === "account") {
     return { component: AccountSettings, title: "Account" }
   }
 
   if (path === "security") {
     return { component: SecuritySettings, title: "Security" }
+  }
+
+  const pluginTab = pluginTabs.find((tab) => tab.view === path)
+
+  if (pluginTab) {
+    return { component: pluginTab.component, title: pluginTab.view }
   }
 
   return { redirectTo: "/" }
@@ -47,11 +74,7 @@ export function resolveSettingsView(
   const requestedView =
     props.view ?? (props.path ? pathViews[props.path] : undefined)
 
-  if (requestedView === "account" || requestedView === "security") {
-    return requestedView
-  }
-
-  return undefined
+  return requestedView
 }
 
 export function Settings(props: SettingsProps) {
@@ -59,16 +82,27 @@ export function Settings(props: SettingsProps) {
   const session = useSession(auth.authClient, {
     enabled: !import.meta.env.SSR
   })
+  const pluginTabs = createMemo(() =>
+    (auth.plugins as SettingsTabPlugin[]).flatMap(
+      (plugin) => plugin.settingsTabs ?? []
+    )
+  )
   const currentView = createMemo(
     () => resolveSettingsView(props, settingsPathViews()) ?? "account"
   )
-  const activeRoute = createMemo(() => resolveSettingsRoute(currentView()))
+  const activeRoute = createMemo(() =>
+    resolveSettingsRoute(currentView(), pluginTabs())
+  )
 
   const handleSettingsTabChange = (nextView: string) => {
-    if (nextView !== "account" && nextView !== "security") return
+    const path =
+      auth.viewPaths.settings[nextView as SettingsView] ??
+      pluginTabs().find((tab) => tab.view === nextView)?.view
+
+    if (!path) return
 
     auth.navigate({
-      to: `${auth.basePaths.settings}/${auth.viewPaths.settings[nextView]}`
+      to: `${auth.basePaths.settings}/${path}`
     })
   }
 
@@ -95,6 +129,13 @@ export function Settings(props: SettingsProps) {
                 <TabsTrigger value="security">
                   {auth.localization.settings.security}
                 </TabsTrigger>
+                <For each={pluginTabs()}>
+                  {(tab) => (
+                    <TabsTrigger value={tab.view}>
+                      <tab.tabLabel />
+                    </TabsTrigger>
+                  )}
+                </For>
               </TabsList>
             </div>
 
@@ -104,6 +145,13 @@ export function Settings(props: SettingsProps) {
             <TabsContent tabIndex={-1} value="security">
               <SecuritySettings />
             </TabsContent>
+            <For each={pluginTabs()}>
+              {(tab) => (
+                <TabsContent tabIndex={-1} value={tab.view}>
+                  <tab.component />
+                </TabsContent>
+              )}
+            </For>
           </Tabs>
         </Show>
       </Show>

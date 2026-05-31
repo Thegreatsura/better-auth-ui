@@ -1,0 +1,28 @@
+---
+title: <OrganizationsSettings />
+description: Solid/Zaidan settings panel for organization creation and switching.
+---
+
+`OrganizationsSettings` is mounted by the local `organizationPlugin()` in the `/settings/organizations` tab. It lists the current user's organizations and includes the minimal create-organization form used by the example.
+
+## Usage
+
+```tsx
+import { OrganizationsSettings } from "@/components/auth/organization/organizations-settings"
+
+<OrganizationsSettings />
+```
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/organization.json
+```
+
+## Props
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organizations-settings.tsx" name="OrganizationsSettingsProps" />
+
+## Parity classification
+
+This is a reviewable minimum, not full shadcn/HeroUI organization UI parity. It covers list, create, switch, and route entry. Member and invitation management UI is deferred while the Solid package APIs remain available.

@@ -3,7 +3,12 @@ import { passkey } from "@better-auth/passkey"
 import type { AuthServer } from "@better-auth-ui/solid/server"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { magicLink, multiSession, username } from "better-auth/plugins"
+import {
+  magicLink,
+  multiSession,
+  organization,
+  username
+} from "better-auth/plugins"
 import { db } from "./db"
 import * as schema from "./schema"
 
@@ -55,6 +60,7 @@ const authOptions = {
     passkey(),
     username(),
     apiKey(),
+    organization(),
     magicLink({
       sendMagicLink: sendMagicLinkEmail
     })

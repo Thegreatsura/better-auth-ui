@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/solid-router"
 
+import { OrganizationSwitcher } from "./auth/organization/organization-switcher"
 import { UserButton } from "./auth/user/user-button"
 import { Logo } from "./logo"
 
@@ -13,7 +14,10 @@ export function Header() {
           <h1 class="text-base">BETTER-AUTH. UI</h1>
         </Link>
 
-        <UserButton size="icon" align="end" />
+        <div class="flex items-center gap-2">
+          <OrganizationSwitcher />
+          <UserButton size="icon" align="end" />
+        </div>
       </div>
     </header>
   )

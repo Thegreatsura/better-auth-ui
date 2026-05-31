@@ -112,6 +112,7 @@ const expectedSolidRegistryPayloadNames = [
   "change-email",
   "delete-user",
   "multi-session",
+  "organization",
   "theme"
 ]
 
@@ -1707,7 +1708,15 @@ describe("Solid registry isolation", () => {
       "list-sessions",
       "list-device-sessions",
       "list-passkeys",
-      "list-api-keys"
+      "list-api-keys",
+      "---Organization---",
+      "active-organization",
+      "full-organization",
+      "list-organizations",
+      "list-members",
+      "list-invitations",
+      "list-user-invitations",
+      "has-permission"
     ])
     expect(solidMutationsMeta.pages).toEqual([
       "index",
@@ -1736,7 +1745,20 @@ describe("Solid registry isolation", () => {
       "revoke-multi-session",
       "set-active-session",
       "create-api-key",
-      "delete-api-key"
+      "delete-api-key",
+      "---Organization---",
+      "create-organization",
+      "update-organization",
+      "delete-organization",
+      "set-active-organization",
+      "invite-member",
+      "remove-member",
+      "update-member-role",
+      "leave-organization",
+      "accept-invitation",
+      "cancel-invitation",
+      "reject-invitation",
+      "check-organization-slug"
     ])
     expect(zaidanMeta).toMatchObject({
       title: "Zaidan",
@@ -1755,6 +1777,7 @@ describe("Solid registry isolation", () => {
       "delete-user",
       "magic-link",
       "multi-session",
+      "organization",
       "passkey",
       "theme",
       "username"
@@ -1781,7 +1804,11 @@ describe("Solid registry isolation", () => {
       "security-settings",
       "active-sessions",
       "linked-accounts",
-      "change-password"
+      "change-password",
+      "---Organization---",
+      "organizations-settings",
+      "organization-switcher",
+      "organization"
     ])
     expect(zaidanConceptsMeta.pages).toEqual(["additional-fields"])
     expect(zaidanIntegrationsMeta.pages).toEqual(["tanstack-start"])

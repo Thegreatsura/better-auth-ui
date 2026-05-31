@@ -44,7 +44,7 @@ export function SecuritySettings(props: SecuritySettingsProps = {}) {
       </Show>
 
       {auth.plugins.flatMap((plugin) => {
-        const securityCards = plugin.securityCards as
+        const securityCards = (plugin as SecurityCardsPlugin).securityCards as
           | SecurityCardsPlugin["securityCards"]
           | undefined
 

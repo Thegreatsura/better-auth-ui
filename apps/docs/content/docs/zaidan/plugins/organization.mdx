@@ -1,0 +1,73 @@
+---
+title: Organization
+description: Install the Solid/Zaidan organization integration.
+---
+
+The organization payload wires Better Auth's organization plugin into the Solid/Zaidan example. This slice provides a coherent minimum: organization setup, `/settings/organizations`, a header switcher, and a slug route shell at `/organization/$slug/$path`.
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/organization.json
+```
+
+## Runtime prerequisites
+
+```ts title="src/lib/auth.ts"
+import { organization } from "better-auth/plugins"
+
+export const auth = betterAuth({
+  plugins: [organization()]
+})
+```
+
+```ts title="src/lib/auth-client.ts"
+import { organizationClient } from "better-auth/client/plugins"
+
+export const authClient = createAuthClient({
+  plugins: [organizationClient()]
+})
+```
+
+## TanStack Start routes
+
+Allow the plugin settings path in `/settings/$path`:
+
+```tsx
+import { viewPaths } from "@better-auth-ui/core"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validSettingsPaths = [
+  ...Object.values(viewPaths.settings),
+  ...Object.values(organizationPlugin().viewPaths.settings ?? {})
+]
+```
+
+Add an organization route shell for slug-based organization pages:
+
+```tsx title="src/routes/organization/$slug/$path.tsx"
+import { Organization } from "@/components/auth/organization/organization"
+
+function OrganizationPage() {
+  const params = Route.useParams()
+
+  return <Organization path={params().path} slug={params().slug} />
+}
+```
+
+## Installed surface
+
+- `src/lib/auth/organization-plugin.tsx`
+- `src/components/auth/organization/organizations-settings.tsx`
+- `src/components/auth/organization/organizations.tsx`
+- `src/components/auth/organization/organization-row.tsx`
+- `src/components/auth/organization/organization-switcher.tsx`
+- `src/components/auth/organization/organization.tsx`
+- `src/routes/organization/$slug/$path.tsx`
+
+## Deferred UI parity
+
+Full shadcn/HeroUI organization UI includes member tables, invitation tables, role editing, logo upload, delete/leave dialogs, and organization-scoped API key cards. The Solid package APIs for those flows exist, but this Zaidan slice intentionally defers the larger copied UI to keep PR #393 reviewable. Use the Solid organization query and mutation docs to build those forms incrementally.
+
+## Related APIs
+
+- [Solid organization queries](/docs/solid/queries/active-organization)
+- [Solid organization mutations](/docs/solid/mutations/create-organization)

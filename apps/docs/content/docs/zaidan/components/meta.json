@@ -23,6 +23,10 @@
     "security-settings",
     "active-sessions",
     "linked-accounts",
-    "change-password"
+    "change-password",
+    "---Organization---",
+    "organizations-settings",
+    "organization-switcher",
+    "organization"
   ]
 }

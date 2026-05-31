@@ -1,0 +1,30 @@
+---
+title: <OrganizationSwitcher />
+description: Solid/Zaidan header dropdown for organization navigation.
+---
+
+`OrganizationSwitcher` reads the current user's organizations, lets them switch the active organization, and navigates to `/organization/$slug/settings`.
+
+## Usage
+
+```tsx
+import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
+
+<header>
+  <OrganizationSwitcher />
+</header>
+```
+
+## Installation
+
+```bash
+zaidan add https://better-auth-ui.com/r/solid/organization.json
+```
+
+## Props
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-switcher.tsx" name="OrganizationSwitcherProps" />
+
+## Notes
+
+The switcher uses `useListOrganizations`, `useActiveOrganization`, and `useSetActiveOrganization` from `@better-auth-ui/solid`. Full create-dialog parity is deferred; users can create organizations from `/settings/organizations`.

@@ -355,7 +355,8 @@ export const solidRegistryManifest = {
         "Solid settings shell combining account and security sections.",
       registryDependencies: [
         "solid/account-settings",
-        "solid/security-settings"
+        "solid/security-settings",
+        "solid/organization"
       ],
       files: [
         componentFile("src/components/auth/settings/settings.tsx"),
@@ -434,6 +435,27 @@ export const solidRegistryManifest = {
       files: [
         componentFile("src/components/auth/multi-session/manage-account.tsx"),
         componentFile("src/components/auth/multi-session/manage-accounts.tsx"),
+        ...zaidanInteractiveUiFiles
+      ]
+    }),
+    item({
+      name: "organization",
+      type: "registry:component",
+      title: "Solid Organization",
+      description:
+        "Solid organization setup with settings tab, organization switcher, and slug route shell.",
+      files: [
+        libFile("src/lib/auth/organization-plugin.tsx"),
+        componentFile(
+          "src/components/auth/organization/organizations-settings.tsx"
+        ),
+        componentFile("src/components/auth/organization/organizations.tsx"),
+        componentFile("src/components/auth/organization/organization-row.tsx"),
+        componentFile(
+          "src/components/auth/organization/organization-switcher.tsx"
+        ),
+        componentFile("src/components/auth/organization/organization.tsx"),
+        componentFile("src/routes/organization/$slug/$path.tsx"),
         ...zaidanInteractiveUiFiles
       ]
     }),

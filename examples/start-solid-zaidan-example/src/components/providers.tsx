@@ -8,6 +8,7 @@ import type { QueryClient } from "@tanstack/solid-query"
 import { useNavigate } from "@tanstack/solid-router"
 import type { JSX } from "solid-js"
 import { onCleanup, onMount } from "solid-js"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { authClient } from "@/lib/auth-client"
 import { syncDocumentThemePreference } from "@/lib/theme"
@@ -44,7 +45,8 @@ export function Providers(props: ProvidersProps) {
         apiKeyPlugin(),
         passkeyPlugin(),
         deleteUserPlugin(),
-        usernamePlugin()
+        usernamePlugin(),
+        organizationPlugin()
       ]}
     >
       {() => (

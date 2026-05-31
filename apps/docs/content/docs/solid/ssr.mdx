@@ -13,6 +13,7 @@ description: Server-side helpers and SSR boundaries for the Solid package.
 
 ```ts
 import { ensureSession } from "@better-auth-ui/solid/server"
+import { auth } from "~/lib/auth" // your configured Better Auth instance
 
 export const beforeLoad = async ({ context }) => {
   const session = await ensureSession(context.queryClient, auth, {
