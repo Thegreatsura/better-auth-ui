@@ -90,7 +90,10 @@ export function UsernameField({
       value={value}
       onChange={handleChange}
       validate={(val) => {
-        if (field.required && !val) return authLocalization.auth.fieldRequired
+        if (!val) {
+          if (field.required) return authLocalization.auth.fieldRequired
+          return
+        }
         if (minUsernameLength && val.length < minUsernameLength)
           return authLocalization.auth.tooShort.replace(
             "{{min}}",
