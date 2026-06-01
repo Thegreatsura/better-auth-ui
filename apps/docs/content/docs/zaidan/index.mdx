@@ -28,8 +28,8 @@ Before installing payloads, make sure your app has:
 
 Install `auth-provider` first so feature payloads can share `AuthProvider`, the error toaster, the theme helper, and Solid Query wiring.
 
-```bash
-zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
 ```
 </Step>
 <Step>
@@ -37,9 +37,9 @@ zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
 
 Add the auth surfaces you want to expose in your app.
 
-```bash
-zaidan add https://better-auth-ui.com/r/solid/sign-up.json
-zaidan add https://better-auth-ui.com/r/solid/sign-in.json
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/sign-up.json
+npx zaidan add https://better-auth-ui.com/r/solid/sign-in.json
 ```
 </Step>
 <Step>
@@ -47,9 +47,9 @@ zaidan add https://better-auth-ui.com/r/solid/sign-in.json
 
 Install larger surfaces only when your app needs them. Copied files are app-owned after install, so review and customize them like normal application code.
 
-```bash
-zaidan add https://better-auth-ui.com/r/solid/settings.json
-zaidan add https://better-auth-ui.com/r/solid/passkey.json
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/settings.json
+npx zaidan add https://better-auth-ui.com/r/solid/passkey.json
 ```
 </Step>
 </Steps>
@@ -68,6 +68,16 @@ Follow the framework setup first, then use the component and plugin pages as ref
   </Card>
   <Card title="Additional Fields" href="/docs/zaidan/concepts/additional-fields">
     Render custom Better Auth user fields in copied Solid forms.
+  </Card>
+</Cards>
+
+## Solid Reference
+
+Every Zaidan payload is built on the shared `@better-auth-ui/solid` data layer. Dive into the Solid package APIs when you need to read, mutate, or extend auth state directly.
+
+<Cards>
+  <Card icon={<Solid />} title="Solid Reference" href="/docs/solid">
+    Queries, mutations, and server helpers for Solid apps.
   </Card>
 </Cards>
 

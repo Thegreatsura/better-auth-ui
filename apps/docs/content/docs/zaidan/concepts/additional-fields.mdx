@@ -15,10 +15,10 @@ description: Render custom user fields in copied Zaidan auth and profile forms.
 2. Install auth/profile payloads that render additional fields.
 3. Customize the copied renderer if your app needs richer Solid controls.
 
-```bash
-zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
-zaidan add https://better-auth-ui.com/r/solid/sign-up.json
-zaidan add https://better-auth-ui.com/r/solid/user-profile.json
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
+npx zaidan add https://better-auth-ui.com/r/solid/sign-up.json
+npx zaidan add https://better-auth-ui.com/r/solid/user-profile.json
 ```
 
 ## Configure fields
@@ -60,8 +60,8 @@ The additional field payload copies:
 - `src/components/auth/additional-field.tsx`
 - local button, input, and label primitives used by the renderer
 
-```bash
-zaidan add https://better-auth-ui.com/r/solid/additional-field.json
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/additional-field.json
 ```
 
 After install, adapt validation messages, Solid `class` styling, and field layouts in your app-owned copy.
