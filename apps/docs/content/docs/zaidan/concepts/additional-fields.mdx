@@ -12,13 +12,11 @@ description: Render custom user fields in copied Zaidan auth and profile forms.
 ## Quick path
 
 1. Configure `additionalFields` on the copied `AuthProvider` shell.
-2. Install auth/profile payloads that render additional fields.
+2. Install the composed auth payload and the profile payload that render additional fields.
 3. Customize the copied renderer if your app needs richer Solid controls.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
-npx zaidan add https://better-auth-ui.com/r/solid/sign-up.json
-npx zaidan add https://better-auth-ui.com/r/solid/user-profile.json
+npx zaidan add https://better-auth-ui.com/r/solid/auth.json https://better-auth-ui.com/r/solid/user-profile.json
 ```
 
 ## Configure fields

@@ -667,7 +667,12 @@
         "tailwind-merge"
       ],
       "registryDependencies": [
-        "solid/auth-provider"
+        "solid/auth-provider",
+        "solid/sign-in",
+        "solid/sign-up",
+        "solid/forgot-password",
+        "solid/reset-password",
+        "solid/sign-out"
       ],
       "files": [
         {
@@ -695,7 +700,7 @@
         "tailwind-merge"
       ],
       "registryDependencies": [
-        "solid/auth-provider",
+        "solid/user-view",
         "solid/theme"
       ],
       "files": [
@@ -1129,8 +1134,7 @@
       ],
       "registryDependencies": [
         "solid/account-settings",
-        "solid/security-settings",
-        "solid/organization"
+        "solid/security-settings"
       ],
       "files": [
         {

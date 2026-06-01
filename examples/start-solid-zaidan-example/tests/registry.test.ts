@@ -1324,6 +1324,49 @@ describe("Solid registry isolation", () => {
       expectedSolidRegistryPayloadNames
     )
 
+    const auth = readJson<{
+      files: Array<{ content: string; path: string }>
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/auth.json"))
+    expect(auth.name).toBe("auth")
+    expect(auth.registryDependencies).toEqual([
+      "solid/auth-provider",
+      "solid/sign-in",
+      "solid/sign-up",
+      "solid/forgot-password",
+      "solid/reset-password",
+      "solid/sign-out"
+    ])
+    expect(auth.files).toEqual([
+      expect.objectContaining({
+        content: expect.stringContaining("export function Auth"),
+        path: "src/components/auth/auth.tsx"
+      })
+    ])
+
+    const settings = readJson<{
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/settings.json"))
+    expect(settings.name).toBe("settings")
+    expect(settings.registryDependencies).toEqual([
+      "solid/account-settings",
+      "solid/security-settings"
+    ])
+    expect(settings.registryDependencies).not.toContain("solid/organization")
+
+    const userButton = readJson<{
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/user-button.json"))
+    expect(userButton.name).toBe("user-button")
+    expect(userButton.registryDependencies).toEqual([
+      "solid/user-view",
+      "solid/theme"
+    ])
+    expect(userButton.registryDependencies).not.toContain("solid/auth-provider")
+
     const signIn = readJson<{
       dependencies: string[]
       files: Array<{ content: string; path: string }>
@@ -1820,7 +1863,10 @@ describe("Solid registry isolation", () => {
     expect(solidOverview).not.toContain("Zaidan registry entry points")
     expect(zaidanOverview).toContain("title: Quick Start")
     expect(zaidanOverview).toContain(
-      "zaidan add https://better-auth-ui.com/r/solid/sign-up.json"
+      "npx zaidan add https://better-auth-ui.com/r/solid/auth.json"
+    )
+    expect(zaidanOverview).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
     )
     expect(zaidanOverview).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(zaidanOverview).not.toContain("title: Overview")
@@ -2049,10 +2095,13 @@ describe("Solid registry isolation", () => {
     expect(quickStart).toContain("## Prerequisites")
     expect(quickStart).toContain("## Installation")
     expect(quickStart).toContain(
-      "zaidan add https://better-auth-ui.com/r/solid/auth-provider.json"
+      "npx zaidan add https://better-auth-ui.com/r/solid/auth.json"
     )
     expect(quickStart).toContain(
-      "zaidan add https://better-auth-ui.com/r/solid/sign-in.json"
+      "npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
+    )
+    expect(quickStart).not.toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json"
     )
     expect(quickStart).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(quickStart).not.toContain("title: Overview")

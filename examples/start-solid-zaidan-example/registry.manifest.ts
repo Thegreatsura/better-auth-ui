@@ -243,6 +243,14 @@ export const solidRegistryManifest = {
       title: "Solid Auth",
       description:
         "Solid auth router surface that selects the active auth view.",
+      registryDependencies: [
+        "solid/auth-provider",
+        "solid/sign-in",
+        "solid/sign-up",
+        "solid/forgot-password",
+        "solid/reset-password",
+        "solid/sign-out"
+      ],
       files: [componentFile("src/components/auth/auth.tsx")]
     }),
     item({
@@ -251,7 +259,7 @@ export const solidRegistryManifest = {
       title: "Solid User Button",
       description:
         "Solid user menu trigger with account, settings, theme, and auth links.",
-      registryDependencies: ["solid/auth-provider", "solid/theme"],
+      registryDependencies: ["solid/user-view", "solid/theme"],
       files: [
         componentFile("src/components/auth/user-button.tsx"),
         componentFile("src/components/auth/user/user-button.tsx"),
@@ -355,8 +363,7 @@ export const solidRegistryManifest = {
         "Solid settings shell combining account and security sections.",
       registryDependencies: [
         "solid/account-settings",
-        "solid/security-settings",
-        "solid/organization"
+        "solid/security-settings"
       ],
       files: [
         componentFile("src/components/auth/settings/settings.tsx"),

@@ -17,7 +17,7 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/auth-provider",
+    "solid/user-view",
     "solid/theme"
   ],
   "files": [

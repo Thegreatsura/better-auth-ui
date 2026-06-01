@@ -6,7 +6,7 @@ icon: TanStackStart
 
 Make sure you've completed the [Quick Start](/docs/zaidan) guide first.
 
-Zaidan payloads assume a Solid app that already has Better Auth UI runtime wiring. Use this setup before installing registry payloads from `/r/solid`.
+Zaidan payloads assume a Solid app that already has Better Auth UI runtime wiring. Use this setup before installing composed registry payloads such as `solid/auth.json`, `solid/settings.json`, and `solid/user-button.json` from `/r/solid`.
 
 ## Quick path
 
@@ -14,7 +14,7 @@ Zaidan payloads assume a Solid app that already has Better Auth UI runtime wirin
 2. Add `@better-auth-ui/solid`, `@tanstack/solid-query`, `better-auth`, `solid-sonner`, and the UI dependencies copied by Zaidan payloads.
 3. Load Tailwind v4 from `src/styles/globals.css` and import it from `src/routes/__root.tsx`.
 4. Configure `components.json` aliases so copied files resolve `@/components`, `@/lib`, `@/hooks`, and `@/components/ui`.
-5. Install `auth-provider` before feature payloads.
+5. Install composed payloads such as `solid/auth.json` first, then add optional settings, user-button, and plugin payloads.
 
 ## Setup checklist
 
@@ -47,7 +47,7 @@ Zaidan payloads assume a Solid app that already has Better Auth UI runtime wirin
 
 ## Provider boundary
 
-Installable files expect an app-owned provider like `examples/start-solid-zaidan-example/src/components/providers.tsx`. Keep `createAuthClient`, `QueryClient`, router navigation, and `AuthProvider` wiring there.
+The composed `solid/auth.json` payload installs the provider dependency for the auth surface, but your app still owns runtime wiring like `examples/start-solid-zaidan-example/src/components/providers.tsx`. Keep `createAuthClient`, `QueryClient`, router navigation, and `AuthProvider` configuration there.
 
 ## Reference app
 

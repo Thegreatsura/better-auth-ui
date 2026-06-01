@@ -18,8 +18,7 @@
   ],
   "registryDependencies": [
     "solid/account-settings",
-    "solid/security-settings",
-    "solid/organization"
+    "solid/security-settings"
   ],
   "files": [
     {

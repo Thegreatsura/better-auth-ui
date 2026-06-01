@@ -7,7 +7,7 @@ icon: Rocket
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 import { Cards, Card } from 'fumadocs-ui/components/card'
 
-Zaidan installs Solid-owned Better Auth UI component files into your app. Use this page for the happy path: prepare a TanStack Start app, install the provider payload, then add the auth or settings surfaces you need.
+Zaidan installs Solid-owned Better Auth UI component files into your app. Use this page for the happy path: prepare a TanStack Start app, install the composed auth payload, then add settings or user surfaces when you need them.
 
 Use [Solid](/docs/solid) for `@better-auth-ui/solid` package/runtime APIs.
 
@@ -24,31 +24,31 @@ Before installing payloads, make sure your app has:
 
 <Steps>
 <Step>
-### Install the provider payload
+### Install the auth components
 
-Install `auth-provider` first so feature payloads can share `AuthProvider`, the error toaster, the theme helper, and Solid Query wiring.
+Install the composed auth route surface using the Zaidan CLI.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
+npx zaidan add https://better-auth-ui.com/r/solid/auth.json
+```
+
+This installs the `<Auth />` component and its views: sign-in, sign-up, forgot-password, reset-password, and sign-out.
+</Step>
+<Step>
+### Install settings and user button (optional)
+
+If you need the settings page and user button, install them separately.
+
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json
 ```
 </Step>
 <Step>
-### Install auth components
+### Install plugin surfaces as needed
 
-Add the auth surfaces you want to expose in your app.
-
-```npm
-npx zaidan add https://better-auth-ui.com/r/solid/sign-up.json
-npx zaidan add https://better-auth-ui.com/r/solid/sign-in.json
-```
-</Step>
-<Step>
-### Install settings or plugin surfaces as needed
-
-Install larger surfaces only when your app needs them. Copied files are app-owned after install, so review and customize them like normal application code.
+Plugin payloads stay optional. Add them when your app enables the matching Better Auth plugin.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/settings.json
 npx zaidan add https://better-auth-ui.com/r/solid/passkey.json
 ```
 </Step>
