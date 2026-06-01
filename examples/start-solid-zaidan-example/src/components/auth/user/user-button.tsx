@@ -108,7 +108,7 @@ function renderUserLink(link: UserButtonLink | JSX.Element) {
   )
 }
 
-export function UserButton(rawProps: UserButtonProps = {}) {
+function MountedUserButton(rawProps: UserButtonProps = {}) {
   const props = mergeProps(
     {
       align: "center" as const,
@@ -347,4 +347,59 @@ export function UserButton(rawProps: UserButtonProps = {}) {
       </DropdownMenu>
     </Show>
   )
+}
+
+function UserButtonHydrationFallback(rawProps: UserButtonProps = {}) {
+  const props = mergeProps(
+    {
+      align: "center" as const,
+      size: "default" as const,
+      variant: "ghost" as const
+    },
+    rawProps
+  )
+  const size = () => props.size
+  const triggerClass = () =>
+    cn(
+      buttonVariants({
+        size: size() === "icon" ? "icon" : "lg",
+        variant: props.variant
+      }),
+      size() === "icon"
+        ? "rounded-full! border-0! p-0"
+        : "py-2.5 h-auto font-normal justify-between gap-3 rounded-full",
+      props.class
+    )
+
+  return (
+    <div aria-hidden="true" class={triggerClass()}>
+      <Show
+        when={size() === "icon"}
+        fallback={
+          <>
+            <UserButtonPendingView />
+            <ChevronsUpDown class="size-4 text-muted-foreground" />
+          </>
+        }
+      >
+        <Skeleton class="size-8 rounded-full" />
+      </Show>
+    </div>
+  )
+}
+
+export function UserButton(props: UserButtonProps = {}) {
+  const [isMounted, setIsMounted] = createSignal(false)
+
+  onMount(() => setIsMounted(true))
+
+  const content = createMemo(() =>
+    isMounted() ? (
+      <MountedUserButton {...props} />
+    ) : (
+      <UserButtonHydrationFallback {...props} />
+    )
+  )
+
+  return <>{content()}</>
 }

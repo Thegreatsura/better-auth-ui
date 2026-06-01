@@ -7,7 +7,7 @@ import {
 import { useNavigate } from "@tanstack/solid-router"
 import type { Organization } from "better-auth/client"
 import { BriefcaseBusiness, ChevronsUpDown } from "lucide-solid"
-import { For, Show } from "solid-js"
+import { createMemo, createSignal, For, onMount, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -23,7 +23,17 @@ export type OrganizationSwitcherProps = {
   class?: string
 }
 
-export function OrganizationSwitcher(props: OrganizationSwitcherProps = {}) {
+function OrganizationSwitcherTrigger(props: OrganizationSwitcherProps = {}) {
+  return (
+    <Button class={props.class} disabled variant="ghost">
+      <BriefcaseBusiness class="size-4 text-muted-foreground" />
+      <span class="hidden max-w-36 truncate sm:inline">Organization</span>
+      <ChevronsUpDown class="size-4 text-muted-foreground" />
+    </Button>
+  )
+}
+
+function MountedOrganizationSwitcher(props: OrganizationSwitcherProps = {}) {
   const client = authClient as OrganizationAuthClient
   const navigate = useNavigate()
   const activeOrganization = useActiveOrganization(client)
@@ -98,4 +108,20 @@ export function OrganizationSwitcher(props: OrganizationSwitcherProps = {}) {
       </DropdownMenuContent>
     </DropdownMenu>
   )
+}
+
+export function OrganizationSwitcher(props: OrganizationSwitcherProps = {}) {
+  const [isMounted, setIsMounted] = createSignal(false)
+
+  onMount(() => setIsMounted(true))
+
+  const content = createMemo(() =>
+    isMounted() ? (
+      <MountedOrganizationSwitcher {...props} />
+    ) : (
+      <OrganizationSwitcherTrigger {...props} />
+    )
+  )
+
+  return <>{content()}</>
 }

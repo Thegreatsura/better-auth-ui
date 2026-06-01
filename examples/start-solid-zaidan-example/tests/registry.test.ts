@@ -1119,6 +1119,13 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/components/header.tsx"),
       "utf8"
     )
+    const organizationSwitcher = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-switcher.tsx"
+      ),
+      "utf8"
+    )
     const rootRoute = readFileSync(
       resolve(__dirname, "../src/routes/__root.tsx"),
       "utf8"
@@ -1235,9 +1242,12 @@ describe("Solid registry isolation", () => {
     expect(themeToggleItem).toContain('[role="tab"][data-selected]')
     expect(themeToggleItem).toContain("focusActiveTab")
     expect(themeToggleItem).toContain("onFocus")
-    expect(userButton).toContain("isUserButtonHydrated")
-    expect(userButton).toContain("setIsUserButtonHydrated(true)")
-    expect(userButton).toContain("when={isUserButtonHydrated()}")
+    expect(userButton).toContain("function MountedUserButton")
+    expect(userButton).toContain("function UserButtonHydrationFallback")
+    expect(userButton).toContain("export function UserButton")
+    expect(userButton).toContain("setIsMounted(true)")
+    expect(userButton).toContain("<MountedUserButton {...props} />")
+    expect(userButton).toContain("<UserButtonHydrationFallback {...props} />")
     expect(userButton).toContain("<UserButtonPendingView")
     expect(userButton).toContain("useSession(auth.authClient, {")
     expect(userButton).toContain("enabled: !import.meta.env.SSR")
@@ -1273,6 +1283,24 @@ describe("Solid registry isolation", () => {
 
     expect(header).toContain('from "./auth/user/user-button"')
     expect(header).toContain('<UserButton size="icon" align="end" />')
+    expect(header).toContain('from "./auth/organization/organization-switcher"')
+    expect(header).toContain("<OrganizationSwitcher />")
+    expect(organizationSwitcher).toContain(
+      "function MountedOrganizationSwitcher"
+    )
+    expect(organizationSwitcher).toContain(
+      "function OrganizationSwitcherTrigger"
+    )
+    expect(organizationSwitcher).toContain(
+      "export function OrganizationSwitcher"
+    )
+    expect(organizationSwitcher).toContain("setIsMounted(true)")
+    expect(organizationSwitcher).toContain(
+      "<MountedOrganizationSwitcher {...props} />"
+    )
+    expect(organizationSwitcher).toContain(
+      "<OrganizationSwitcherTrigger {...props} />"
+    )
 
     expect(theme).toContain("export const themeStorageKey")
     expect(theme).toContain('"start-solid-zaidan-theme"')
