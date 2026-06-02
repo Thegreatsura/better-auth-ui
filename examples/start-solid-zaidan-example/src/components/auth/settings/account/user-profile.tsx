@@ -1,7 +1,12 @@
+import {
+  type AdditionalFieldValue,
+  parseAdditionalFieldValue
+} from "@better-auth-ui/core"
 import { updateUserOptions, useAuth, useSession } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
-import { createSignal } from "solid-js"
+import { createSignal, For } from "solid-js"
 import { toast } from "solid-sonner"
+import { AdditionalField } from "@/components/auth/additional-field"
 import { ChangeAvatar } from "@/components/auth/settings/account/change-avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -29,16 +34,43 @@ export function UserProfile(props: UserProfileProps = {}) {
   const username = () => getUsername(session)
   const isProfilePending = () => updateUser.isPending
 
-  const submitProfile = (event: SubmitEvent) => {
+  const profileFields = () =>
+    auth.additionalFields?.filter((field) => field.profile !== false) ?? []
+
+  const submitProfile = async (event: SubmitEvent) => {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget as HTMLFormElement)
     const name = String(formData.get("name") ?? "")
     const usernameValue = String(formData.get("username") ?? "")
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of auth.additionalFields ?? []) {
+      if (field.profile === false || field.readOnly) continue
+
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
 
     updateUser.mutate({
       name,
-      ...(username() ? { username: usernameValue } : {})
+      ...(username() ? { username: usernameValue } : {}),
+      ...additionalFieldValues
     } as Parameters<typeof updateUser.mutate>[0])
   }
 
@@ -75,6 +107,26 @@ export function UserProfile(props: UserProfileProps = {}) {
                 value={username()}
               />
             </div>
+
+            <For each={profileFields()}>
+              {(field) => {
+                const value = () =>
+                  (session.data?.user as Record<string, unknown> | undefined)?.[
+                    field.name
+                  ]
+
+                return (
+                  <AdditionalField
+                    field={{
+                      ...field,
+                      defaultValue: value() as AdditionalFieldValue | null
+                    }}
+                    isPending={isProfilePending() || !session.data}
+                    name={field.name}
+                  />
+                )
+              }}
+            </For>
           </CardContent>
           <CardFooter>
             <Button

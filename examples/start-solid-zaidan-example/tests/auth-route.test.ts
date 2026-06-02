@@ -396,9 +396,7 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(signUp).toContain(
-      'import { authQueryKeys } from "@better-auth-ui/core"'
-    )
+    expect(signUp).toContain("authQueryKeys")
     expect(signUp).toContain("useQueryClient")
     expect(signUp).toContain(
       "if (auth.emailAndPassword.requireEmailVerification)"
@@ -1212,6 +1210,42 @@ describe("Solid auth route component selection", () => {
     expect(signUp).toContain('socialPosition() === "bottom"')
     expect(signUp).toContain(
       '<ProviderButtons socialLayout={props.socialLayout} view="signUp" />'
+    )
+  })
+
+  it("wires additional fields into Solid sign-up and profile submissions", () => {
+    const signUp = readFileSync(
+      resolve(__dirname, "../src/components/auth/sign-up.tsx"),
+      "utf8"
+    )
+    const userProfile = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/account/user-profile.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(signUp).toContain("parseAdditionalFieldValue")
+    expect(signUp).toContain('field.signUp === "above"')
+    expect(signUp).toContain('field.signUp && field.signUp !== "above"')
+    expect(signUp).toContain("<AdditionalField")
+    expect(signUp).toContain("if (!field.signUp || field.readOnly) continue")
+    expect(signUp).toContain("await field.validate(value)")
+    expect(signUp).toContain("additionalFieldValues[field.name] = value")
+    expect(signUp).toContain("...additionalFieldValues")
+
+    expect(userProfile).toContain("parseAdditionalFieldValue")
+    expect(userProfile).toContain("field.profile !== false")
+    expect(userProfile).toContain("<AdditionalField")
+    expect(userProfile).toContain(
+      "if (field.profile === false || field.readOnly) continue"
+    )
+    expect(userProfile).toContain("await field.validate(value)")
+    expect(userProfile).toContain("additionalFieldValues[field.name] = value")
+    expect(userProfile).toContain("...additionalFieldValues")
+    expect(userProfile).toContain(
+      "defaultValue: value() as AdditionalFieldValue | null"
     )
   })
 

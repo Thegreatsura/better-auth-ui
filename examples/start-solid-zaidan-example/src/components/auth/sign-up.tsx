@@ -1,4 +1,4 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import { authQueryKeys, parseAdditionalFieldValue } from "@better-auth-ui/core"
 import {
   type UsernameLocalization,
   usernameLocalization
@@ -7,12 +7,14 @@ import { signUpEmailOptions, useAuth } from "@better-auth-ui/solid"
 import { createMutation, useQueryClient } from "@tanstack/solid-query"
 import { Link } from "@tanstack/solid-router"
 import { Eye, EyeOff } from "lucide-solid"
-import { createSignal, Show } from "solid-js"
+import { createSignal, For, Show } from "solid-js"
+import { toast } from "solid-sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { AdditionalField } from "./additional-field"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
 export type SignUpProps = {
@@ -63,7 +65,14 @@ export function SignUp(props: SignUpProps) {
   const showSeparator = () =>
     Boolean(auth.emailAndPassword?.enabled && auth.socialProviders?.length)
 
-  const submitSignUp = (event: SubmitEvent) => {
+  const signUpFieldsAbove = () =>
+    auth.additionalFields?.filter((field) => field.signUp === "above") ?? []
+  const signUpFieldsBelow = () =>
+    auth.additionalFields?.filter(
+      (field) => field.signUp && field.signUp !== "above"
+    ) ?? []
+
+  const submitSignUp = async (event: SubmitEvent) => {
     event.preventDefault()
 
     setConfirmPasswordError(undefined)
@@ -76,12 +85,38 @@ export function SignUp(props: SignUpProps) {
       return
     }
 
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
+    const additionalFieldValues: Record<string, unknown> = {}
+
+    for (const field of auth.additionalFields ?? []) {
+      if (!field.signUp || field.readOnly) continue
+
+      const value = parseAdditionalFieldValue(
+        field,
+        formData.get(field.name) as string | null
+      )
+
+      if (field.validate) {
+        try {
+          await field.validate(value)
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : String(error))
+          return
+        }
+      }
+
+      if (value !== undefined) {
+        additionalFieldValues[field.name] = value
+      }
+    }
+
     signUp.mutate({
       email: email(),
       name: name(),
       password: password(),
-      ...(usernameAuth ? { username: username() } : {})
-    })
+      ...(usernameAuth ? { username: username() } : {}),
+      ...additionalFieldValues
+    } as Parameters<typeof signUp.mutate>[0])
   }
 
   return (
@@ -197,6 +232,15 @@ export function SignUp(props: SignUpProps) {
                 )}
               </Show>
             </div>
+            <For each={signUpFieldsAbove()}>
+              {(field) => (
+                <AdditionalField
+                  field={field}
+                  isPending={signUp.isPending}
+                  name={field.name}
+                />
+              )}
+            </For>
             <div class="grid gap-3">
               <Label for="sign-up-password">
                 {auth.localization.auth.password}
@@ -326,6 +370,15 @@ export function SignUp(props: SignUpProps) {
                 </Show>
               </div>
             </Show>
+            <For each={signUpFieldsBelow()}>
+              {(field) => (
+                <AdditionalField
+                  field={field}
+                  isPending={signUp.isPending}
+                  name={field.name}
+                />
+              )}
+            </For>
             <Button disabled={signUp.isPending} type="submit">
               {signUp.isPending
                 ? `${auth.localization.auth.signUp}…`

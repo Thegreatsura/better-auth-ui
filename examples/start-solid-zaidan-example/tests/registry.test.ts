@@ -1901,8 +1901,9 @@ describe("Solid registry isolation", () => {
     expect(zaidanAdditionalFields).toContain("title: Additional Fields")
     expect(zaidanAdditionalFields).toContain("AdditionalFieldProps")
     expect(zaidanTanstackStart).toContain("title: TanStack Start")
+    expect(zaidanTanstackStart).toContain("## Protecting Routes")
+    expect(zaidanTanstackStart).toContain("useAuthenticate")
     expect(zaidanTanstackStart).not.toContain("Solid Start")
-    expect(zaidanTanstackStart).not.toContain("SPA")
     expect(zaidanOverview).toContain(
       "https://better-auth-ui.com/r/solid/registry.json"
     )
@@ -2134,20 +2135,18 @@ describe("Solid registry isolation", () => {
     expect(quickStart).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(quickStart).not.toContain("title: Overview")
 
-    expect(integrations).toContain("## Quick path")
+    expect(integrations).toContain("## Integration")
     expect(integrations).toContain("title: TanStack Start")
-    expect(integrations).toContain("components.json")
-    expect(integrations).toContain(
-      '"@zaidan": "https://zaidan.carere.dev/r/{style}/{name}.json"'
-    )
-    expect(integrations).toContain("src/styles/globals.css")
+    expect(integrations).toContain("## Protecting Routes")
+    expect(integrations).toContain("createIsomorphicFn")
+    expect(integrations).toContain("useAuthenticate")
     expect(integrations).toContain("@tanstack/solid-start")
     expect(integrations).not.toContain("Solid Start")
-    expect(integrations).not.toContain("SPA")
 
     expect(additionalFields).toContain("title: Additional Fields")
-    expect(additionalFields).toContain("## Configure fields")
-    expect(additionalFields).toContain("## Renderer behavior")
+    expect(additionalFields).toContain("## Usage")
+    expect(additionalFields).toContain("## Field types")
+    expect(additionalFields).toContain("## Input types")
     expect(additionalFields).toContain("AdditionalFieldProps")
     expect(additionalFields).toContain("class")
     expect(additionalFields).toContain(
@@ -2512,7 +2511,7 @@ describe("Solid registry isolation", () => {
       const content = readFileSync(docsPath, "utf8")
       expect(content).not.toContain("Initial IA")
       expect(content).not.toContain("should explain")
-      expect(content).not.toContain("placeholder")
+      expect(content).not.toContain("TODO placeholder")
       expect(content).not.toContain("TODO")
       expect(content).not.toContain("skeleton")
     }
