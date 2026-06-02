@@ -30,10 +30,15 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils"
 
 const defaultDeleteUserLabel = "Delete user"
 
-export function DeleteUser() {
+export type DeleteUserProps = {
+  class?: string
+}
+
+export function DeleteUser(props: DeleteUserProps = {}) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const queryClient = useQueryClient()
@@ -114,7 +119,7 @@ export function DeleteUser() {
   }
 
   return (
-    <Card class="border-destructive p-0">
+    <Card class={cn("border-destructive p-0", props.class)}>
       <CardContent class="flex flex-col gap-6 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="font-medium text-sm leading-tight">

@@ -2226,6 +2226,11 @@ describe("Solid registry isolation", () => {
         expect(page, "api-key should keep copied files inside setup").toContain(
           "This drops the following into your codebase:"
         )
+      } else if (name === "delete-user") {
+        expect(
+          page,
+          "delete-user should keep setup-driven structure"
+        ).toContain("## Setup")
       } else {
         expect(page, `plugin ${name} should state prerequisites`).toContain(
           "## Runtime prerequisites"
@@ -2235,9 +2240,11 @@ describe("Solid registry isolation", () => {
         )
       }
 
-      expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
-        "/docs/solid"
-      )
+      if (name !== "delete-user") {
+        expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
+          "/docs/solid"
+        )
+      }
       expect(page).not.toContain("/docs/solid/plugins")
     }
 
@@ -2277,6 +2284,52 @@ describe("Solid registry isolation", () => {
         `${name} should publish captcha header forwarding`
       ).toContain("fetchOptions: fetchOptions()")
     }
+
+    const deleteUserPluginDoc = pluginDoc("delete-user")
+    const deleteUserRegistryEntry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/public/r/solid/delete-user.json"),
+      "utf8"
+    )
+
+    expect(deleteUserPluginDoc).toContain("## Setup")
+    expect(deleteUserPluginDoc).toContain("## Components")
+    expect(deleteUserPluginDoc).toContain("## Options")
+    expect(deleteUserPluginDoc).toContain("## Localization")
+    expect(deleteUserPluginDoc).toContain("<ZaidanStory")
+    expect(deleteUserPluginDoc).toContain(
+      'storyId="zaidan-plugins-delete-user--danger-zone-preview"'
+    )
+    expect(deleteUserPluginDoc).toContain("user: {")
+    expect(deleteUserPluginDoc).toContain("deleteUser: {")
+    expect(deleteUserPluginDoc).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/delete-user.json"
+    )
+    expect(deleteUserPluginDoc).toContain(
+      'import { deleteUserPlugin } from "@better-auth-ui/core/plugins"'
+    )
+    expect(deleteUserPluginDoc).toContain("plugins={[deleteUserPlugin()]}")
+    expect(deleteUserPluginDoc).toContain('name="DangerZoneProps"')
+    expect(deleteUserPluginDoc).toContain('name="DeleteUserProps"')
+    expect(deleteUserPluginDoc).toContain('name="DeleteUserPluginOptions"')
+    expect(deleteUserPluginDoc).toContain('name="DeleteUserLocalization"')
+    expect(deleteUserPluginDoc).not.toContain("## Runtime prerequisites")
+    expect(deleteUserPluginDoc).not.toContain("## Runtime API references")
+    expect(deleteUserPluginDoc).not.toContain('name="DeleteUserParams"')
+    expect(deleteUserPluginDoc).not.toContain("payload")
+    expect(deleteUserPluginDoc).not.toContain("@/lib/auth/delete-user-plugin")
+    expect(deleteUserPluginDoc).not.toContain(
+      "src/lib/auth/delete-user-plugin.ts"
+    )
+    expect(deleteUserPluginDoc).not.toContain("className")
+    expect(deleteUserPluginDoc).not.toContain("ComponentPreview")
+    expect(deleteUserRegistryEntry).toContain("export type DangerZoneProps")
+    expect(deleteUserRegistryEntry).toContain("export type DeleteUserProps")
+    expect(deleteUserRegistryEntry).toContain(
+      'class={cn(\\"flex w-full flex-col\\", props.class)}'
+    )
+    expect(deleteUserRegistryEntry).toContain(
+      'class={cn(\\"border-destructive p-0\\", props.class)}'
+    )
 
     expect(pluginDoc("magic-link")).toContain("real email provider")
     expect(pluginDoc("passkey")).toContain("WebAuthn origin")

@@ -2455,6 +2455,10 @@ describe("Solid auth route component selection", () => {
       resolve(__dirname, "../src/components/auth/delete-user/delete-user.tsx"),
       "utf8"
     )
+    const deleteUserStory = readFileSync(
+      resolve(__dirname, "../src/stories/delete-user.stories.tsx"),
+      "utf8"
+    )
 
     expect(securitySettings).toContain(
       'from "@/components/auth/delete-user/danger-zone"'
@@ -2471,8 +2475,28 @@ describe("Solid auth route component selection", () => {
     expect(securitySettings).toContain("<DangerZone />")
     expect(settingsComponents).not.toContain("dangerZone: DangerZone")
     expect(settingsComponents).not.toContain("function DeleteUserSettings")
+    expect(dangerZone).toContain("export type DangerZoneProps = {")
+    expect(dangerZone).toContain("class?: string")
+    expect(dangerZone).toContain('import { cn } from "@/lib/utils"')
+    expect(dangerZone).toContain(
+      "export function DangerZone(props: DangerZoneProps = {})"
+    )
+    expect(dangerZone).toContain(
+      'class={cn("flex w-full flex-col", props.class)}'
+    )
+    expect(dangerZone).not.toContain("className")
     expect(dangerZone).toContain("auth.localization.settings.dangerZone")
     expect(dangerZone).toContain("<DeleteUser />")
+    expect(deleteUser).toContain("export type DeleteUserProps = {")
+    expect(deleteUser).toContain("class?: string")
+    expect(deleteUser).toContain('import { cn } from "@/lib/utils"')
+    expect(deleteUser).toContain(
+      "export function DeleteUser(props: DeleteUserProps = {})"
+    )
+    expect(deleteUser).toContain(
+      'class={cn("border-destructive p-0", props.class)}'
+    )
+    expect(deleteUser).not.toContain("className")
     expect(deleteUser).toContain("const accounts = createQuery")
     expect(deleteUser).toContain(
       "...listAccountsOptions(auth.authClient, userId())"
@@ -2498,5 +2522,11 @@ describe("Solid auth route component selection", () => {
     expect(deleteUser).not.toMatch(
       /<Button disabled size="sm" type="button" variant="destructive">\s*Delete user/
     )
+    expect(deleteUserStory).toContain('title: "Zaidan/Plugins/Delete User"')
+    expect(deleteUserStory).toContain("function DeleteUserStory()")
+    expect(deleteUserStory).toContain("<DangerZone />")
+    expect(deleteUserStory).toContain("plugins={[deleteUserPlugin()]}")
+    expect(deleteUserStory).toContain("queryClient={queryClient}")
+    expect(deleteUserStory).not.toContain("as unknown as AuthClient")
   })
 })

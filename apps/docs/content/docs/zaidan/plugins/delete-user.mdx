@@ -1,24 +1,108 @@
 ---
-title: Delete user
-description: Install the Solid delete-user UI registry entry.
+title: Delete User
+description: Add account deletion with a confirmation dialog to your Solid/Zaidan authentication flow.
 ---
 
-The delete-user components installs the danger-zone card and confirmation dialog from `/r/solid/delete-user.json`.
+import { Step, Steps } from "fumadocs-ui/components/steps"
+
+The copied Solid/Zaidan delete-user components render the danger-zone account deletion UI for Better Auth's built-in [account deletion](https://www.better-auth.com/docs/concepts/users-accounts#delete-user) capability. Register the UI plugin directly from `@better-auth-ui/core/plugins` to show `<DangerZone />` in the copied security settings surface.
+
+## Setup
+
+<Steps>
+<Step>
+### Enable account deletion in Better Auth
+
+Enable Better Auth account deletion in your server config:
+
+```ts title="src/lib/auth.ts"
+import { betterAuth } from "better-auth"
+
+export const auth = betterAuth({
+  // ...
+  user: {
+    deleteUser: {
+      enabled: true
+    }
+  }
+})
+```
+
+For OAuth users or any flow that should confirm deletion by email, configure the related Better Auth options in the [delete-user docs](https://www.better-auth.com/docs/concepts/users-accounts#delete-user).
+
+</Step>
+<Step>
+### Install the Solid/Zaidan components
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/delete-user.json
 ```
 
-## Runtime prerequisites
-
-- Server: enable account deletion according to your Better Auth policy.
-- Runtime API: delete-user mutation behavior from [Solid mutations](/docs/solid/mutations).
-- Product: decide whether deletion is immediate, delayed, or disabled for your app.
-
-## Copied files
+This copies the following files into your project:
 
 - `src/components/auth/delete-user/danger-zone.tsx`
 - `src/components/auth/delete-user/delete-user.tsx`
-- Local dialog and button primitives under `src/components/ui/**`
+- local dialog, button, card, input, and label primitives under `src/components/ui/**`
 
-After install, adjust confirmation copy and account-retention policy text locally.
+</Step>
+<Step>
+### Register the UI plugin
+
+Import `deleteUserPlugin()` directly from `@better-auth-ui/core/plugins` and register it with your copied Solid auth provider:
+
+```tsx title="src/components/providers.tsx"
+import { deleteUserPlugin } from "@better-auth-ui/core/plugins"
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[deleteUserPlugin()]}
+>
+  {children}
+</AuthProvider>
+```
+
+When the plugin is registered, the copied `<SecuritySettings />` surface renders `<DangerZone />` automatically.
+
+</Step>
+</Steps>
+
+## Components
+
+### `<DangerZone />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-delete-user--danger-zone-preview"
+  title="Zaidan Delete User Danger Zone preview"
+  height={420}
+/>
+
+`<DangerZone />` is the primary security card wrapper. It renders the localized danger-zone heading and composes `<DeleteUser />` below it.
+
+```tsx
+import { DangerZone } from "@/components/auth/delete-user/danger-zone"
+
+<DangerZone />
+```
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/delete-user/danger-zone.tsx" name="DangerZoneProps" />
+
+### `<DeleteUser />`
+
+`<DeleteUser />` is the lower-level delete account card used inside `<DangerZone />`. You can also import it directly for custom settings layouts.
+
+```tsx
+import { DeleteUser } from "@/components/auth/delete-user/delete-user"
+
+<DeleteUser />
+```
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/delete-user/delete-user.tsx" name="DeleteUserProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/delete-user/delete-user-plugin.ts" name="DeleteUserPluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/delete-user/delete-user-localization.ts" name="DeleteUserLocalization" />

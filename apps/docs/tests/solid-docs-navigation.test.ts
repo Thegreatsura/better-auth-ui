@@ -213,11 +213,26 @@ describe("Solid docs navigation", () => {
       join(sourceRoot, "components/zaidan-story.tsx"),
       "utf8"
     )
+    const storybookIframeRoute = readFileSync(
+      join(sourceRoot, "routes/storybook.zaidan.iframe[.]html.ts"),
+      "utf8"
+    )
+    const storybookAssetRoute = readFileSync(
+      join(sourceRoot, "routes/storybook.zaidan.$.ts"),
+      "utf8"
+    )
 
     expect(mdxComponents).toContain("ZaidanStory")
     expect(zaidanStory).toContain("/storybook/zaidan")
     expect(zaidanStory).toContain("iframe.html?id=")
     expect(zaidanStory).toContain("encodeURIComponent")
+    expect(storybookIframeRoute).toContain(
+      'createFileRoute("/storybook/zaidan/iframe.html")'
+    )
+    expect(storybookAssetRoute).toContain(
+      'createFileRoute("/storybook/zaidan/$")'
+    )
+    expect(storybookAssetRoute).toContain("public/storybook/zaidan")
   })
 
   it("surfaces explicit non-goals without coupling Solid docs to React runtime execution", () => {
