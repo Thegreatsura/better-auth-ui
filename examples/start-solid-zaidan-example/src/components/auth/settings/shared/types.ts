@@ -20,6 +20,11 @@ export type SecurityCardsPlugin = {
   securityCards?: Component[]
 }
 
+export type OrganizationCardsPlugin = {
+  id: string
+  organizationCards?: Component[]
+}
+
 export type ChangePasswordFieldErrors = {
   confirmPassword?: string
   currentPassword?: string

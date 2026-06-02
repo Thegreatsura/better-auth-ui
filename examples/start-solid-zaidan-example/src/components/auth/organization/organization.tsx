@@ -1,6 +1,7 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
-import { useActiveOrganization } from "@better-auth-ui/solid"
-import { Show } from "solid-js"
+import { useActiveOrganization, useAuth } from "@better-auth-ui/solid"
+import { For, Show } from "solid-js"
+import type { OrganizationCardsPlugin } from "@/components/auth/settings/shared/types"
 import {
   Card,
   CardContent,
@@ -17,10 +18,15 @@ export type OrganizationProps = {
 }
 
 export function Organization(props: OrganizationProps) {
+  const auth = useAuth()
   const activeOrganization = useActiveOrganization(
     authClient as OrganizationAuthClient,
     props.slug ? { query: { organizationSlug: props.slug } } : {}
   )
+  const organizationCards = () =>
+    (auth.plugins as OrganizationCardsPlugin[]).flatMap(
+      (plugin) => plugin.organizationCards ?? []
+    )
 
   return (
     <Tabs value={props.path} class="w-full gap-4 md:gap-6">
@@ -30,27 +36,34 @@ export function Organization(props: OrganizationProps) {
       </TabsList>
 
       <TabsContent value="settings" tabIndex={-1}>
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              <Show when={activeOrganization.data} fallback="Organization">
-                {(organization) => organization().name}
-              </Show>
-            </CardTitle>
-            <CardDescription>
-              Organization profile management is intentionally minimal in the
-              Solid/Zaidan example for this slice. Use the package-level
-              organization mutations to build custom name, slug, and logo forms.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-muted-foreground">
-              Implemented runtime coverage: active organization lookup, list,
-              create, and switch. Deferred UI coverage: members, invitations,
-              role editing, logo upload, delete, and leave dialogs.
-            </p>
-          </CardContent>
-        </Card>
+        <div class="grid gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <Show when={activeOrganization.data} fallback="Organization">
+                  {(organization) => organization().name}
+                </Show>
+              </CardTitle>
+              <CardDescription>
+                Organization profile management is intentionally minimal in the
+                Solid/Zaidan example for this slice. Use the package-level
+                organization mutations to build custom name, slug, and logo
+                forms.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p class="text-sm text-muted-foreground">
+                Implemented runtime coverage: active organization lookup, list,
+                create, and switch. Deferred UI coverage: members, invitations,
+                role editing, logo upload, delete, and leave dialogs.
+              </p>
+            </CardContent>
+          </Card>
+
+          <For each={organizationCards()}>
+            {(OrganizationCard) => <OrganizationCard />}
+          </For>
+        </div>
       </TabsContent>
 
       <TabsContent value="people" tabIndex={-1}>

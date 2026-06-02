@@ -1,24 +1,24 @@
 ---
 title: Quick Start
-description: Getting started with Better Auth UI for Zaidan Solid payloads.
+description: Getting started with Better Auth UI for Solid/Zaidan components.
 icon: Rocket
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 import { Cards, Card } from 'fumadocs-ui/components/card'
 
-Zaidan installs Solid-owned Better Auth UI component files into your app. Use this page for the happy path: prepare a TanStack Start app, install the composed auth payload, then add settings or user surfaces when you need them.
+Zaidan installs Solid-owned Better Auth UI component files into your app. Use this page for the happy path: prepare a TanStack Start app, install the composed auth registry entry, then add settings or user surfaces when you need them.
 
 Use [Solid](/docs/solid) for `@better-auth-ui/solid` package/runtime APIs.
 
 ## Prerequisites
 
-Before installing payloads, make sure your app has:
+Before installing registry entries, make sure your app has:
 
 - [Better Auth](https://www.better-auth.com/docs/installation)
 - [TanStack Start for Solid](/docs/zaidan/integrations/tanstack-start)
 - `@better-auth-ui/solid` and `@tanstack/solid-query`
-- Tailwind v4 and the local UI primitives copied by Zaidan payloads
+- Tailwind v4 and the local UI primitives copied by Solid/Zaidan components
 
 ## Installation
 
@@ -46,7 +46,7 @@ npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-a
 <Step>
 ### Install plugin surfaces as needed
 
-Plugin payloads stay optional. Add them when your app enables the matching Better Auth plugin.
+Plugin registry entries stay optional. Add them when your app enables the matching Better Auth plugin.
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/passkey.json
@@ -54,7 +54,7 @@ npx zaidan add https://better-auth-ui.com/r/solid/passkey.json
 </Step>
 </Steps>
 
-The payloads are generated from `examples/start-solid-zaidan-example/registry.manifest.ts` and hosted under `apps/docs/public/r/solid/**`.
+The registry entries are generated from `examples/start-solid-zaidan-example/registry.manifest.ts` and hosted under `apps/docs/public/r/solid/**`.
 
 The generated registry index is available at `https://better-auth-ui.com/r/solid/registry.json`.
 
@@ -64,7 +64,7 @@ Follow the framework setup first, then use the component and plugin pages as ref
 
 <Cards>
   <Card icon={<TanStackStart />} title="TanStack Start" href="/docs/zaidan/integrations/tanstack-start">
-    Prepare a Solid app for Zaidan payloads.
+    Prepare a Solid app for Solid/Zaidan components.
   </Card>
   <Card title="Additional Fields" href="/docs/zaidan/concepts/additional-fields">
     Render custom Better Auth user fields in copied Solid forms.
@@ -73,7 +73,7 @@ Follow the framework setup first, then use the component and plugin pages as ref
 
 ## Solid Reference
 
-Every Zaidan payload is built on the shared `@better-auth-ui/solid` data layer. Dive into the Solid package APIs when you need to read, mutate, or extend auth state directly.
+Every Zaidan registry entry is built on the shared `@better-auth-ui/solid` data layer. Dive into the Solid package APIs when you need to read, mutate, or extend auth state directly.
 
 <Cards>
   <Card icon={<Solid />} title="Solid Reference" href="/docs/solid">
@@ -84,6 +84,6 @@ Every Zaidan payload is built on the shared `@better-auth-ui/solid` data layer. 
 ## Zaidan boundary
 
 - Installable auth, user, settings, and plugin component files.
-- Zaidan/Tailwind/Kobalte setup needed by those payloads.
+- Zaidan/Tailwind/Kobalte setup needed by those registry entries.
 - Links back to Solid runtime docs when an installed component needs package APIs.
-- Social/GitHub provider buttons are included by auth payloads when your Better Auth client enables those providers.
+- Social/GitHub provider buttons are included by auth registry entry when your Better Auth client enables those providers.

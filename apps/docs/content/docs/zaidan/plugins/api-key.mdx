@@ -1,17 +1,18 @@
 ---
 title: API Key
-description: Install the Solid/Zaidan API key management payload.
+description: Install Solid/Zaidan API key management with create, copy, and revoke flows.
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 
-The API key plugin adds programmatic API key management to your Solid/Zaidan authentication settings. Users can create, reveal once, copy, list, and revoke user-owned API keys from the security settings page.
+The API key plugin adds programmatic API key management to your Solid/Zaidan authentication settings. Users can create, reveal once, copy, list, and revoke API keys from security and organization settings.
 
 It contributes:
 
-- An `<ApiKeysSettings />` section rendered by the copied `SecuritySettings` component when the API Key plugin is enabled
+- An `<ApiKeys />` card rendered by the copied `SecuritySettings` component when the API Key plugin is enabled
+- An `<OrganizationApiKeys />` card for organization-owned keys when `apiKeyPlugin({ organization: true })` is registered
 - Solid query and mutation wiring through `listApiKeysOptions`, `createApiKeyOptions`, and `deleteApiKeyOptions`
-- App-owned API key cards, empty state, skeleton, create dialog, new-key reveal dialog, and delete confirmation dialog
+- App-owned API key cards, empty state, loading placeholder, create dialog, new-key reveal dialog, and delete confirmation dialog
 
 ## Setup
 
@@ -52,108 +53,127 @@ export const authClient = createAuthClient({
 
 </Step>
 <Step>
-### Install the Zaidan UI payload
+### Install the Solid/Zaidan components
 
-Run the Zaidan CLI to copy the Solid API key components into your app:
+Run the Zaidan CLI to install the Solid API key components and the `apiKeyPlugin()` factory into your project:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/api-key.json
 ```
 
-This copies the API key feature files and the interactive UI primitives they use.
+This drops the following into your codebase:
+
+- `src/lib/auth/api-key-plugin.ts` — local `apiKeyPlugin()` factory
+- `src/components/auth/api-key/api-keys.tsx` — the API keys security card
+- `src/components/auth/api-key/api-key.tsx` — individual API key row with delete control
+- `src/components/auth/api-key/api-keys-empty.tsx` — empty state shown when no keys exist
+- `src/components/auth/api-key/api-key-skeleton.tsx` — loading placeholder shown while keys are loading
+- `src/components/auth/api-key/create-api-key-dialog.tsx` — dialog for creating a new key
+- `src/components/auth/api-key/new-api-key-dialog.tsx` — dialog showing the newly created key with copy button
+- `src/components/auth/api-key/delete-api-key-dialog.tsx` — confirmation dialog for revoking a key
+- `src/components/auth/api-key/organization-api-keys.tsx` — owner-gated wrapper that renders `<ApiKeys />` scoped to the active organization
+
+</Step>
+<Step>
+### Register the UI plugin
+
+For user-owned keys, the copied `SecuritySettings` component renders `<ApiKeys />` whenever the API Key plugin is enabled. For organization-owned keys, register the copied UI plugin with `{ organization: true }`:
+
+```tsx title="src/components/providers.tsx"
+import { apiKeyPlugin } from "@/lib/auth/api-key-plugin" // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    apiKeyPlugin({ organization: true }) // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
 
 </Step>
 </Steps>
 
-## Copied files
-
-The Solid registry payload currently installs these API key files:
-
-- `src/components/auth/api-key/api-keys.tsx` — security settings section that loads and renders the user's keys
-- `src/components/auth/api-key/api-key.tsx` — individual API key row with masked preview and delete control
-- `src/components/auth/api-key/api-keys-empty.tsx` — empty state with a create action
-- `src/components/auth/api-key/api-key-skeleton.tsx` — loading skeleton while keys are fetched
-- `src/components/auth/api-key/create-api-key-dialog.tsx` — dialog for naming and creating a key
-- `src/components/auth/api-key/new-api-key-dialog.tsx` — one-time secret reveal dialog with copy action
-- `src/components/auth/api-key/delete-api-key-dialog.tsx` — confirmation dialog for revoking a key
-
-The payload also includes the local interactive UI primitives used by those components, such as button, card, dialog, input, item, label, and skeleton primitives.
-
-## Runtime integration
-
-The copied `SecuritySettings` component renders API keys automatically when the API Key plugin is present in your auth config:
-
-```tsx title="src/components/auth/settings/security/security-settings.tsx"
-import { ApiKeysSettings } from "@/components/auth/api-key/api-keys"
-import { hasAuthPlugin } from "@/components/auth/settings/shared/helpers"
-
-<Show when={hasAuthPlugin(auth.plugins, "apiKey")}>
-  <ApiKeysSettings />
-</Show>
-```
-
-The API key section uses the Solid runtime APIs from `@better-auth-ui/solid`:
-
-- `listApiKeysOptions(authClient, userId)` for the list query
-- `createApiKeyOptions(authClient)` for create mutations
-- `deleteApiKeyOptions(authClient)` for revoke mutations
-- `ApiKeyAuthClient` for the typed auth client capability
-
 ## Components
+
+### `<ApiKeys />`
 
 <ZaidanStory
   storyId="zaidan-plugins-api-key--default"
-  title="Zaidan API Key Storybook preview"
+  title="Zaidan API Key preview"
   height={560}
 />
 
-This Storybook embed renders the copied Zaidan API key row and empty-state components with mock user-owned key data. The full `<ApiKeysSettings />` component still uses the runtime session, query, and mutation wiring described below when it is mounted in your app.
-
-### `<ApiKeysSettings />`
-
-`<ApiKeysSettings />` is the user-owned API key section rendered in security settings. It reads the current session, lists keys for the signed-in user, opens the create dialog, and renders either skeleton, empty, or key-row states.
+The `<ApiKeys />` security card is rendered on the security settings page when your settings layout includes the copied `SecuritySettings` component and the API Key plugin is enabled. It uses the [Solid runtime APIs](/docs/solid) from `@better-auth-ui/solid` to list, create, and revoke keys.
 
 **Usage**
 
 ```tsx
-import { ApiKeysSettings } from "@/components/auth/api-key/api-keys"
+import { ApiKeys } from "@/components/auth/api-key/api-keys"
 
-<ApiKeysSettings />
+<ApiKeys />
 ```
 
 This component is normally mounted by `SecuritySettings`; render it manually only if you are building a custom settings layout.
 
-### `<ApiKey />`
+**Props**
 
-`<ApiKey />` renders one masked API key row and opens the delete confirmation dialog.
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/api-key/api-keys.tsx" name="ApiKeysProps" />
 
-```tsx
-import { ApiKey } from "@/components/auth/api-key/api-key"
+### `<OrganizationApiKeys />`
 
-<ApiKey apiKey={apiKey} />
+A thin wrapper around `<ApiKeys />` that resolves the active organization with `useActiveOrganization`, checks the current user with `useListOrganizationMembers`, and renders nothing unless the user is an organization owner.
+
+To enable, opt in on the copied UI plugin and add a matching API key configuration to your Better Auth server config. The organization API key config uses a fixed `configId` of `"organization"`, so the server entry **must** be `{ configId: "organization", references: "organization" }`:
+
+```tsx title="src/components/providers.tsx"
+import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    apiKeyPlugin({ organization: true }) // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
 ```
 
-### Dialogs
+```ts title="src/lib/auth.ts"
+import { apiKey } from "@better-auth/api-key"
+import { betterAuth } from "better-auth"
+import { organization } from "better-auth/plugins"
 
-The copied dialogs are app-owned and can be styled or moved locally:
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    organization(),
+    apiKey([
+      { configId: "default", references: "user" },
+      { configId: "organization", references: "organization" } // [!code highlight]
+    ])
+  ]
+})
+```
 
-- `<CreateApiKeyDialog />` creates a key and opens the new-key reveal dialog after success.
-- `<NewApiKeyDialog />` shows the secret once and exposes a copy button.
-- `<DeleteApiKeyDialog />` revokes an existing key.
+See the [Better Auth docs](https://www.better-auth.com/docs/plugins/api-key/advanced#organization-owned-api-keys) for role-based permissions on organization-owned keys.
 
-## Organization API keys
+**Usage**
 
-The shadcn API Key plugin also ships an organization-scoped `<OrganizationApiKeys />` wrapper and a UI plugin factory option for `apiKeyPlugin({ organization: true })`.
+```tsx
+import { OrganizationApiKeys } from "@/components/auth/api-key/organization-api-keys"
 
-Zaidan does **not** ship that organization-specific API key UI or registry entry yet. The Solid runtime query accepts API key list params, and Better Auth supports organization-owned keys when the server is configured for them, but the copied Solid/Zaidan payload currently provides only the user-owned security settings section.
+<OrganizationApiKeys />
+```
 
-If you need organization-owned keys today, treat this as a custom extension:
+**Props**
 
-1. Configure Better Auth with the organization plugin and an organization API key config.
-2. Build an organization wrapper that resolves the active organization id.
-3. Reuse or adapt the copied API key components so list/create/delete calls include the organization scope expected by your server config.
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/api-key/organization-api-keys.tsx" name="OrganizationApiKeysProps" />
 
-This parity gap is intentionally documented instead of overclaiming shadcn behavior.
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/api-key/api-key-plugin.ts" name="ApiKeyPluginOptions" />
 
 ## Runtime API references
 

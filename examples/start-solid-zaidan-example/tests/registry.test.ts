@@ -9,7 +9,10 @@ import {
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { solidRegistryManifest } from "../registry.manifest"
+import {
+  type SolidRegistryManifest,
+  solidRegistryManifest
+} from "../registry.manifest"
 import {
   buildSolidRegistry,
   verifySolidRegistryCoherence
@@ -1076,7 +1079,11 @@ describe("Solid registry isolation", () => {
     expect(authConfig).toContain("multiSession()")
     expect(authConfig).toContain("passkey()")
     expect(authConfig).toContain("username()")
-    expect(authConfig).toContain("apiKey()")
+    expect(authConfig).toContain("apiKey([")
+    expect(authConfig).toContain('{ configId: "default", references: "user" }')
+    expect(authConfig).toContain(
+      '{ configId: "organization", references: "organization" }'
+    )
     expect(authConfig).toContain("magicLink({")
 
     expect(authClient).toContain('from "@better-auth/api-key/client"')
@@ -1573,7 +1580,7 @@ describe("Solid registry isolation", () => {
     expect(() =>
       buildSolidRegistry({
         exampleRoot: resolve(__dirname, ".."),
-        manifest: unsafeManifest,
+        manifest: unsafeManifest as SolidRegistryManifest,
         outputRoot
       })
     ).toThrow("outside the Solid example src directory")
@@ -1833,7 +1840,7 @@ describe("Solid registry isolation", () => {
     ])
     expect(zaidanMeta).toMatchObject({
       title: "Zaidan",
-      description: "Solid registry components and installable payloads",
+      description: "Solid/Zaidan components and installable registry entries",
       root: true
     })
     expect(zaidanMeta.pages).toEqual([
@@ -2213,15 +2220,23 @@ describe("Solid registry isolation", () => {
     for (const name of pluginPayloadNames) {
       const page = pluginDoc(name)
 
-      expect(page, `plugin ${name} should link its payload`).toContain(
+      expect(page, `plugin ${name} should link its registry entry`).toContain(
         `/r/solid/${name}.json`
       )
-      expect(page, `plugin ${name} should state prerequisites`).toContain(
-        "## Runtime prerequisites"
-      )
-      expect(page, `plugin ${name} should state copied files`).toContain(
-        "## Copied files"
-      )
+
+      if (name === "api-key") {
+        expect(page, "api-key should keep copied files inside setup").toContain(
+          "This drops the following into your codebase:"
+        )
+      } else {
+        expect(page, `plugin ${name} should state prerequisites`).toContain(
+          "## Runtime prerequisites"
+        )
+        expect(page, `plugin ${name} should state copied files`).toContain(
+          "## Copied files"
+        )
+      }
+
       expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
         "/docs/solid"
       )
@@ -2513,7 +2528,9 @@ describe("Solid registry isolation", () => {
       expect(content).not.toContain("should explain")
       expect(content).not.toContain("TODO placeholder")
       expect(content).not.toContain("TODO")
-      expect(content).not.toContain("skeleton")
+      expect(content.replaceAll("api-key-skeleton.tsx", "")).not.toContain(
+        "skeleton"
+      )
     }
   })
 

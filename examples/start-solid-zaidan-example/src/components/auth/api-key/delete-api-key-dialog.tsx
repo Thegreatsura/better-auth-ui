@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label"
 
 export function DeleteApiKeyDialog(props: {
   apiKey: ListedApiKey
+  organizationId?: string
   onOpenChange: (open: boolean) => void
 }) {
   const auth = useAuth()
@@ -33,7 +34,8 @@ export function DeleteApiKeyDialog(props: {
 
   const deleteKey = () => {
     deleteApiKey.mutate({
-      keyId: props.apiKey.id
+      keyId: props.apiKey.id,
+      ...(props.organizationId ? { configId: "organization" } : {})
     } as Parameters<typeof deleteApiKey.mutate>[0])
   }
 

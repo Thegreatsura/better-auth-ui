@@ -5,7 +5,7 @@ description: Provides AuthConfig and Solid Query context to installed Solid auth
 
 ## Usage
 
-Install the provider payload, then wrap your application shell before rendering auth components such as `<SignIn />`, `<UserButton />`, or settings pages.
+Install the provider components, then wrap your application shell before rendering auth components such as `<SignIn />`, `<UserButton />`, or settings pages.
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json
@@ -70,7 +70,7 @@ The Zaidan wrapper re-exports `AuthProviderProps` from `@better-auth-ui/solid`.
 | `navigate` | `(options) => unknown` | Optional navigation adapter, usually from `useNavigate()`, used by auth flows that redirect after actions. |
 | `redirectTo` | `string` | Optional default post-auth destination, for example `/settings/account`. |
 | `socialProviders` | `string[]` | Optional enabled social providers shown by copied auth surfaces, such as `github`. |
-| `plugins` | `AuthPlugin[]` | Optional Better Auth UI plugin descriptors for installed plugin payloads such as username, passkey, multi-session, API key, delete-user, or theme. |
+| `plugins` | `AuthPlugin[]` | Optional Better Auth UI plugin descriptors for installed plugin registry entries such as username, passkey, multi-session, API key, delete-user, or theme. |
 
 ## Installed files
 

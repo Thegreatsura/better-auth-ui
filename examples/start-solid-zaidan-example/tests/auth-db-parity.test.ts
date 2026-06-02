@@ -38,8 +38,12 @@ describe("Solid auth database parity", () => {
     expect(solidAuth).toContain("multiSession()")
     expect(solidAuth).toContain("passkey()")
     expect(solidAuth).toContain("username()")
-    expect(solidAuth).toContain("apiKey()")
     expect(solidAuth).toContain("organization()")
+    expect(solidAuth).toContain("apiKey([")
+    expect(solidAuth).toContain('{ configId: "default", references: "user" }')
+    expect(solidAuth).toContain(
+      '{ configId: "organization", references: "organization" }'
+    )
 
     expect(shadcnAuth).toContain("drizzleAdapter(db")
     expect(shadcnAuth).toContain('provider: "pg"')

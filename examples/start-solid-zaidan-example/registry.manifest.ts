@@ -196,9 +196,11 @@ export const solidRegistryManifest = {
       description: "Solid API key management cards and dialogs.",
       dependencies: [...solidAuthDependencies, "@better-auth/api-key"],
       files: [
+        libFile("src/lib/auth/api-key-plugin.ts"),
         componentFile("src/components/auth/api-key/api-keys.tsx"),
         componentFile("src/components/auth/api-key/api-key.tsx"),
         componentFile("src/components/auth/api-key/api-keys-empty.tsx"),
+        componentFile("src/components/auth/api-key/organization-api-keys.tsx"),
         componentFile("src/components/auth/api-key/api-key-skeleton.tsx"),
         componentFile("src/components/auth/api-key/create-api-key-dialog.tsx"),
         componentFile("src/components/auth/api-key/delete-api-key-dialog.tsx"),

@@ -17,50 +17,81 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
 
-export function ApiKeysSettings() {
+export type ApiKeysProps = {
+  class?: string
+  organizationId?: string
+  isPending?: boolean
+  hideCreate?: boolean
+  hideDelete?: boolean
+}
+
+export function ApiKeys(props: ApiKeysProps = {}) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
   const [isCreateDialogOpen, setIsCreateDialogOpen] = createSignal(false)
+  const listParams = () =>
+    props.organizationId
+      ? {
+          query: {
+            organizationId: props.organizationId,
+            configId: "organization" as const
+          }
+        }
+      : undefined
   const apiKeys = createQuery(() => ({
-    ...listApiKeysOptions(auth.authClient as ApiKeyAuthClient, userId()),
-    enabled: shouldLoadDeviceSessions({
-      isSsr: import.meta.env.SSR,
-      userId: userId()
-    })
+    ...listApiKeysOptions(
+      auth.authClient as ApiKeyAuthClient,
+      userId(),
+      listParams() as Parameters<typeof listApiKeysOptions<ApiKeyAuthClient>>[2]
+    ),
+    enabled:
+      !props.isPending &&
+      shouldLoadDeviceSessions({
+        isSsr: import.meta.env.SSR,
+        userId: userId()
+      })
   }))
   const keys = () => apiKeys.data?.apiKeys ?? []
+  const pending = () => Boolean(props.isPending || apiKeys.isPending)
 
   return (
-    <div class="flex flex-col gap-3">
+    <div class={cn("flex flex-col gap-3", props.class)}>
       <div class="flex items-end justify-between gap-3">
         <h2 class="truncate text-sm font-semibold">
           {apiKeyLocalization.apiKeys}
         </h2>
-        <Dialog
-          open={isCreateDialogOpen()}
-          onOpenChange={setIsCreateDialogOpen}
-        >
-          <DialogTrigger
-            as={Button}
-            class="shrink-0"
-            disabled={apiKeys.isPending}
-            size="sm"
+        <Show when={!props.hideCreate}>
+          <Dialog
+            open={isCreateDialogOpen()}
+            onOpenChange={setIsCreateDialogOpen}
           >
-            {apiKeyLocalization.createApiKey}
-          </DialogTrigger>
-          <CreateApiKeyDialog onOpenChange={setIsCreateDialogOpen} />
-        </Dialog>
+            <DialogTrigger
+              as={Button}
+              class="shrink-0"
+              disabled={pending()}
+              size="sm"
+            >
+              {apiKeyLocalization.createApiKey}
+            </DialogTrigger>
+            <CreateApiKeyDialog
+              organizationId={props.organizationId}
+              onOpenChange={setIsCreateDialogOpen}
+            />
+          </Dialog>
+        </Show>
       </div>
 
       <Card class="p-0">
         <CardContent class="p-0">
-          <Show when={!apiKeys.isPending} fallback={<ApiKeySkeleton />}>
+          <Show when={!pending()} fallback={<ApiKeySkeleton />}>
             <Show
               when={keys().length > 0}
               fallback={
                 <ApiKeysEmpty
+                  hideCreate={props.hideCreate}
                   onCreatePress={() => setIsCreateDialogOpen(true)}
                 />
               }
@@ -71,7 +102,11 @@ export function ApiKeysSettings() {
                     <Show when={index() > 0}>
                       <ItemSeparator />
                     </Show>
-                    <ApiKey apiKey={apiKey as ListedApiKey} />
+                    <ApiKey
+                      apiKey={apiKey as ListedApiKey}
+                      hideDelete={props.hideDelete}
+                      organizationId={props.organizationId}
+                    />
                   </>
                 )}
               </For>
@@ -82,3 +117,5 @@ export function ApiKeysSettings() {
     </div>
   )
 }
+
+export const ApiKeysSettings = ApiKeys

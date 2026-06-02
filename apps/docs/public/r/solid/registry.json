@@ -451,6 +451,10 @@
       ],
       "files": [
         {
+          "path": "src/lib/auth/api-key-plugin.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/components/auth/api-key/api-keys.tsx",
           "type": "registry:component"
         },
@@ -460,6 +464,10 @@
         },
         {
           "path": "src/components/auth/api-key/api-keys-empty.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/api-key/organization-api-keys.tsx",
           "type": "registry:component"
         },
         {

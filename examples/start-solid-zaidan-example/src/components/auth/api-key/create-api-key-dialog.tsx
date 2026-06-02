@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function CreateApiKeyDialog(props: {
+  organizationId?: string
   onOpenChange: (open: boolean) => void
 }) {
   const auth = useAuth()
@@ -45,9 +46,17 @@ export function CreateApiKeyDialog(props: {
 
     const formData = new FormData(event.currentTarget as HTMLFormElement)
     const name = String(formData.get("name") ?? "").trim()
+    const payload = {
+      ...(name ? { name } : {}),
+      ...(props.organizationId
+        ? { organizationId: props.organizationId, configId: "organization" }
+        : {})
+    }
 
     createApiKey.mutate(
-      (name ? { name } : undefined) as Parameters<typeof createApiKey.mutate>[0]
+      (Object.keys(payload).length > 0 ? payload : undefined) as Parameters<
+        typeof createApiKey.mutate
+      >[0]
     )
   }
 

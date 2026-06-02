@@ -13,7 +13,7 @@ Zaidan copies the Solid `<AdditionalField />` renderer into your app, so the hap
 
 ## Usage
 
-Install the composed auth payload and the profile payload that render additional fields:
+Install the composed auth registry entry and the profile registry entry that render additional fields:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/auth.json https://better-auth-ui.com/r/solid/user-profile.json
@@ -52,13 +52,13 @@ Fields default to rendering on the user profile only. Set `signUp: true` to also
 
 ## Install model
 
-The composed auth/profile payloads include the additional field renderer when those forms need it. If you're building a smaller custom install, you can install the renderer by itself:
+The composed auth/profile registry entries include the additional field renderer when those forms need it. If you're building a smaller custom install, you can install the renderer by itself:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/additional-field.json
 ```
 
-The payload copies:
+The registry entry copies:
 
 - `src/components/auth/additional-field.tsx`
 - local button, input, and label primitives used by the renderer
@@ -78,7 +78,7 @@ The `type` controls the data type of the field. The default `inputType` is infer
 
 ## Input types
 
-Override the visual rendering with `inputType`. The current Zaidan renderer favors semantic native controls instead of inventing shadcn-only primitives that the Solid payload does not ship yet.
+Override the visual rendering with `inputType`. The current Zaidan renderer favors semantic native controls instead of inventing shadcn-only primitives that the Solid registry entry does not ship yet.
 
 | `inputType`   | Zaidan rendering behavior                                      |
 | ------------- | -------------------------------------------------------------- |
@@ -131,7 +131,7 @@ Use `min`, `max`, and `step` to bound the native value:
 
 ### Slider
 
-The shared config supports `inputType: "slider"`, but the current Zaidan payload does not ship a Solid slider primitive. The copied renderer falls back to a native number control for number fields. Replace that branch in `src/components/auth/additional-field.tsx` when your app has a Solid slider component.
+The shared config supports `inputType: "slider"`, but the current Zaidan registry entry does not ship a Solid slider primitive. The copied renderer falls back to a native number control for number fields. Replace that branch in `src/components/auth/additional-field.tsx` when your app has a Solid slider component.
 
 ```ts
 {
@@ -149,7 +149,7 @@ The shared config supports `inputType: "slider"`, but the current Zaidan payload
 
 ### Select / Combobox
 
-Both accept an `options` array of `{ label, value }` objects. Zaidan currently renders both as a native `<select>` so the copied payload stays dependency-light.
+Both accept an `options` array of `{ label, value }` objects. Zaidan currently renders both as a native `<select>` so the copied registry entry stays dependency-light.
 
 ```ts
 {

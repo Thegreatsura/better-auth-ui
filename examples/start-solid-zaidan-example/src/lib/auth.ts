@@ -59,8 +59,11 @@ const authOptions = {
     multiSession(),
     passkey(),
     username(),
-    apiKey(),
     organization(),
+    apiKey([
+      { configId: "default", references: "user" },
+      { configId: "organization", references: "organization" }
+    ]),
     magicLink({
       sendMagicLink: sendMagicLinkEmail
     })

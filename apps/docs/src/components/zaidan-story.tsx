@@ -1,4 +1,12 @@
-import type { ComponentPropsWithoutRef, CSSProperties } from "react"
+"use client"
+
+import {
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef
+} from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -33,8 +41,10 @@ export function ZaidanStory({
   className,
   containerClassName,
   loading = "lazy",
+  onLoad,
   ...props
 }: ZaidanStoryProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const normalizedBasePath = normalizeBasePath(basePath)
   const src = `${normalizedBasePath}/iframe.html?id=${encodeURIComponent(
     storyId
@@ -42,6 +52,35 @@ export function ZaidanStory({
   const style = {
     "--zaidan-story-height": formatHeight(height)
   } as CSSProperties
+
+  const syncTheme = useCallback(() => {
+    try {
+      const iframeDocument = iframeRef.current?.contentDocument
+
+      if (!iframeDocument) return
+
+      const dark = document.documentElement.classList.contains("dark")
+      const root = iframeDocument.documentElement
+
+      root.classList.toggle("dark", dark)
+      root.setAttribute("data-theme", dark ? "dark" : "light")
+    } catch {
+      // Cross-origin embeds cannot be themed by mutating the iframe document.
+    }
+  }, [])
+
+  useEffect(() => {
+    syncTheme()
+
+    const observer = new MutationObserver(syncTheme)
+
+    observer.observe(document.documentElement, {
+      attributeFilter: ["class", "data-theme"],
+      attributes: true
+    })
+
+    return () => observer.disconnect()
+  }, [syncTheme])
 
   return (
     <div
@@ -58,6 +97,14 @@ export function ZaidanStory({
           className
         )}
         loading={loading}
+        onLoad={(event) => {
+          syncTheme()
+          window.setTimeout(syncTheme, 0)
+          window.setTimeout(syncTheme, 100)
+          window.setTimeout(syncTheme, 500)
+          onLoad?.(event)
+        }}
+        ref={iframeRef}
         src={src}
         title={title ?? `Zaidan story: ${storyId}`}
         {...props}

@@ -130,8 +130,9 @@ describe("Solid auth route component selection", () => {
     expect(providers).toContain("navigate={navigate}")
     expect(providers).toContain('socialProviders={["github"]}')
     expect(providers).toContain("multiSessionPlugin()")
-    expect(providers).toContain("apiKeyPlugin()")
+    expect(providers).toContain("apiKeyPlugin({ organization: true })")
     expect(providers).toContain("passkeyPlugin()")
+    expect(providers).toContain('from "@/lib/auth/api-key-plugin"')
     expect(providers).toContain('from "@/lib/auth/passkey-plugin"')
     expect(providers).toContain("deleteUserPlugin()")
     expect(providers).toContain("usernamePlugin()")
@@ -2029,7 +2030,8 @@ describe("Solid auth route component selection", () => {
       "api-keys-empty.tsx",
       "create-api-key-dialog.tsx",
       "new-api-key-dialog.tsx",
-      "delete-api-key-dialog.tsx"
+      "delete-api-key-dialog.tsx",
+      "organization-api-keys.tsx"
     ]
     const passkeyFiles = [
       "passkeys.tsx",
@@ -2101,6 +2103,21 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const organizationApiKeys = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/api-key/organization-api-keys.tsx"
+      ),
+      "utf8"
+    )
+    const apiKeyPlugin = readFileSync(
+      resolve(__dirname, "../src/lib/auth/api-key-plugin.ts"),
+      "utf8"
+    )
+    const authServer = readFileSync(
+      resolve(__dirname, "../src/lib/auth.ts"),
+      "utf8"
+    )
     const passkeys = readFileSync(
       resolve(__dirname, "../src/components/auth/passkey/passkeys.tsx"),
       "utf8"
@@ -2151,12 +2168,28 @@ describe("Solid auth route component selection", () => {
     expect(apiKeys).toContain("<ApiKey")
     expect(apiKeys).toContain("<ApiKeySkeleton")
     expect(apiKeys).toContain("<ApiKeysEmpty")
+    expect(apiKeys).toContain('configId: "organization"')
+    expect(apiKeys).toContain("organizationId={props.organizationId}")
+    expect(apiKeys).toContain("hideDelete={props.hideDelete}")
     expect(apiKey).toContain("apiKeyLocalization.deleteApiKey")
     expect(apiKey).toContain("<DeleteApiKeyDialog")
     expect(createApiKeyDialog).toContain("createApiKeyOptions")
+    expect(createApiKeyDialog).toContain('configId: "organization"')
+    expect(createApiKeyDialog).toContain("organizationId: props.organizationId")
     expect(createApiKeyDialog).toContain("<NewApiKeyDialog")
     expect(newApiKeyDialog).toContain("apiKeyLocalization.newApiKey")
     expect(deleteApiKeyDialog).toContain("deleteApiKeyOptions")
+    expect(deleteApiKeyDialog).toContain('configId: "organization"')
+    expect(organizationApiKeys).toContain("useActiveOrganization")
+    expect(organizationApiKeys).toContain("useListOrganizationMembers")
+    expect(organizationApiKeys).toContain('member.role === "owner"')
+    expect(organizationApiKeys).toContain("<ApiKeys")
+    expect(apiKeyPlugin).toContain("coreApiKeyPlugin")
+    expect(apiKeyPlugin).toContain("organizationCards: [OrganizationApiKeys]")
+    expect(authServer).toContain('{ configId: "default", references: "user" }')
+    expect(authServer).toContain(
+      '{ configId: "organization", references: "organization" }'
+    )
     expect(securitySettings).toContain(
       'from "@/components/auth/passkey/passkeys"'
     )
