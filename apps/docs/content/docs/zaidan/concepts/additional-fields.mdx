@@ -3,25 +3,23 @@ title: Additional Fields
 description: Render custom user fields in copied Zaidan auth and profile forms.
 ---
 
-`additionalFields` is an `AuthProvider` config option from the Solid runtime. Zaidan payloads copy the Solid `<AdditionalField />` renderer so sign-up and profile forms can render those fields inside your app-owned files.
+`additionalFields` is an `AuthProvider` config option that declares extra user fields to render on the sign-up form and user profile. Each field describes its data type, label, and optional UI rendering. Better Auth UI then handles rendering, parsing, and submitting the value through `signUp.email` (sign-up) and `updateUser` (profile).
+
+Zaidan copies the Solid `<AdditionalField />` renderer into your app, so the happy path matches the shadcn API while the UI remains app-owned and customizable.
 
 <Callout type="info">
-  Define the same fields in your Better Auth server config under `user.additionalFields`. Zaidan only copies the UI renderer — the server still owns persistence and validation.
+  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission — the server still owns persistence and validation.
 </Callout>
 
-## Quick path
+## Usage
 
-1. Configure `additionalFields` on the copied `AuthProvider` shell.
-2. Install the composed auth payload and the profile payload that render additional fields.
-3. Customize the copied renderer if your app needs richer Solid controls.
+Install the composed auth payload and the profile payload that render additional fields:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/auth.json https://better-auth-ui.com/r/solid/user-profile.json
 ```
 
-## Configure fields
-
-Pass field definitions to `<AuthProvider>`:
+Pass an array of field configurations to the copied `<AuthProvider>` shell:
 
 ```tsx
 import { AuthProvider } from "@/components/auth/auth-provider"
@@ -34,7 +32,8 @@ import { AuthProvider } from "@/components/auth/auth-provider"
       name: "bio",
       type: "string",
       label: "Bio",
-      inputType: "textarea"
+      inputType: "textarea",
+      placeholder: "Tell us a bit about yourself"
     },
     {
       name: "birthday",
@@ -49,33 +48,219 @@ import { AuthProvider } from "@/components/auth/auth-provider"
 </AuthProvider>
 ```
 
-Fields render on the user profile by default. Set `signUp: true` to also render them on the sign-up form.
+Fields default to rendering on the user profile only. Set `signUp: true` to also render the field on the sign-up form.
 
 ## Install model
 
-The additional field payload copies:
-
-- `src/components/auth/additional-field.tsx`
-- local button, input, and label primitives used by the renderer
+The composed auth/profile payloads include the additional field renderer when those forms need it. If you're building a smaller custom install, you can install the renderer by itself:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/additional-field.json
 ```
 
+The payload copies:
+
+- `src/components/auth/additional-field.tsx`
+- local button, input, and label primitives used by the renderer
+
 After install, adapt validation messages, Solid `class` styling, and field layouts in your app-owned copy.
 
-## Renderer behavior
+## Field types
 
-The Solid renderer supports native controls for the current Zaidan payload set:
+The `type` controls the data type of the field. The default `inputType` is inferred from `type`, but you can override it for a different look.
 
-| Input type | Rendering behavior |
-| --- | --- |
-| `input`, `number`, `date`, `datetime`, `hidden` | native input variants |
-| `textarea` | native textarea with Zaidan classes |
-| `select`, `combobox` | native select from `options` |
-| `switch`, `checkbox` | native checkbox |
+| `type`      | Default `inputType` | Submitted as              |
+| ----------- | ------------------- | ------------------------- |
+| `"string"`  | `"input"`           | `string`                  |
+| `"number"`  | `"number"`          | `number`                  |
+| `"boolean"` | `"switch"`          | `boolean`                 |
+| `"date"`    | `"date"`            | `Date`                    |
 
-Advanced shadcn-only field primitives such as calendar, slider, or combobox widgets are intentionally not invented in the Solid payload. Customize the copied renderer when your app has those primitives.
+## Input types
+
+Override the visual rendering with `inputType`. The current Zaidan renderer favors semantic native controls instead of inventing shadcn-only primitives that the Solid payload does not ship yet.
+
+| `inputType`   | Zaidan rendering behavior                                      |
+| ------------- | -------------------------------------------------------------- |
+| `"input"`     | Single-line native input using the copied Zaidan `Input`       |
+| `"textarea"`  | Native textarea with Zaidan classes                            |
+| `"number"`    | Native number input with `min`, `max`, and `step`              |
+| `"slider"`    | Native number fallback; customize the copied renderer for a slider |
+| `"switch"`    | Native checkbox fallback                                       |
+| `"checkbox"`  | Native checkbox                                                |
+| `"select"`    | Native select from `options`                                   |
+| `"combobox"`  | Native select fallback from `options`; customize for search UI |
+| `"date"`      | Native date input                                              |
+| `"datetime"`  | Native `datetime-local` input                                  |
+| `"hidden"`    | Hidden input (submitted but not rendered)                      |
+
+## Examples
+
+### Numeric formatting
+
+`number` fields can declare `Intl.NumberFormatOptions` via `formatOptions`, matching the shared field config. The current Zaidan renderer keeps the control native, so use `formatOptions` as metadata or customize the copied renderer if you need formatted display text.
+
+```ts
+{
+  name: "hourlyRate",
+  type: "number",
+  label: "Hourly rate",
+  formatOptions: { style: "currency", currency: "USD" }
+}
+
+{
+  name: "commissionRate",
+  type: "number",
+  label: "Commission rate",
+  formatOptions: { style: "percent", maximumFractionDigits: 2 }
+}
+```
+
+Use `min`, `max`, and `step` to bound the native value:
+
+```ts
+{
+  name: "yearsExperience",
+  type: "number",
+  label: "Years of experience",
+  min: 0,
+  max: 50,
+  step: 1
+}
+```
+
+### Slider
+
+The shared config supports `inputType: "slider"`, but the current Zaidan payload does not ship a Solid slider primitive. The copied renderer falls back to a native number control for number fields. Replace that branch in `src/components/auth/additional-field.tsx` when your app has a Solid slider component.
+
+```ts
+{
+  name: "budget",
+  type: "number",
+  label: "Budget",
+  inputType: "slider",
+  min: 0,
+  max: 5000,
+  step: 50,
+  defaultValue: 1000,
+  formatOptions: { style: "currency", currency: "USD" }
+}
+```
+
+### Select / Combobox
+
+Both accept an `options` array of `{ label, value }` objects. Zaidan currently renders both as a native `<select>` so the copied payload stays dependency-light.
+
+```ts
+{
+  name: "country",
+  type: "string",
+  label: "Country",
+  inputType: "select",
+  options: [
+    { label: "United States", value: "us" },
+    { label: "Canada", value: "ca" },
+    { label: "United Kingdom", value: "gb" }
+  ]
+}
+```
+
+Use `inputType: "combobox"` for the same data shape when you plan to replace the native select with your own searchable Solid control.
+
+### Prefix / suffix
+
+String and number inputs render inline prefix and suffix text when `prefix` or `suffix` is set:
+
+```ts
+{
+  name: "website",
+  type: "string",
+  label: "Website",
+  prefix: "https://",
+  suffix: ".com"
+}
+```
+
+The current Zaidan renderer uses simple text wrappers next to the input. If your app needs grouped styling, customize the copied renderer with your preferred input-group primitive.
+
+### Copy button
+
+Set `copyable: true` to render a copy-to-clipboard button next to the input. The button copies the input's current value, so it works on editable fields too — though it's most commonly paired with `readOnly: true` for fields like `id`:
+
+```ts
+{
+  name: "id",
+  type: "string",
+  label: "User ID",
+  readOnly: true,
+  copyable: true
+}
+```
+
+### Hidden value
+
+`inputType: "hidden"` submits a value without rendering anything visible. Combine with `defaultValue` to attach a server-side preset:
+
+```ts
+{
+  name: "referralSource",
+  type: "string",
+  label: "Referral source",
+  inputType: "hidden",
+  defaultValue: "demo-app",
+  signUp: true
+}
+```
+
+### Custom rendering
+
+Use `render` when the native Zaidan renderer is not enough. The function receives the same props as the copied `<AdditionalField />` component, so you can keep the same field config while swapping the control.
+
+```tsx
+{
+  name: "timezone",
+  type: "string",
+  label: "Timezone",
+  render: ({ name, field, isPending }) => (
+    <div class="grid gap-2">
+      <label for={name}>{field.label}</label>
+      <select id={name} name={name} disabled={isPending} class="z-input">
+        <option value="America/New_York">Eastern Time</option>
+        <option value="America/Los_Angeles">Pacific Time</option>
+      </select>
+    </div>
+  )
+}
+```
+
+### Custom validation
+
+Provide a `validate` callback to run client-side checks before submission. Throw an `Error` to reject — the message is shown to the user via toast:
+
+```ts
+{
+  name: "nickname",
+  type: "string",
+  label: "Nickname",
+  signUp: true,
+  required: true,
+  validate: (value) => {
+    if (typeof value === "string" && !/^[a-zA-Z0-9_]+$/.test(value)) {
+      throw new Error(
+        "Nickname must only contain letters, numbers, and underscores"
+      )
+    }
+  }
+}
+```
+
+## Where fields render
+
+| Flag             | Default | Effect                                              |
+| ---------------- | ------- | --------------------------------------------------- |
+| `signUp: true`   | `false` | Render on the sign-up form                          |
+| `profile: false` | `true`  | Hide on the user profile                            |
+| `readOnly: true` | `false` | Render but exclude the value from submission        |
 
 ## Type reference
 
