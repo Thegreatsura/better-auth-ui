@@ -31,40 +31,42 @@ const apiKeys = [
 function ApiKeyStory() {
   return (
     <AuthProvider authClient={mockAuthClient}>
-      <main class="mx-auto flex min-h-[420px] w-full max-w-xl items-center justify-center bg-background p-6 text-foreground">
-        <div class="flex w-full flex-col gap-6">
-          <section class="flex flex-col gap-3">
-            <div class="flex items-end justify-between gap-3">
-              <div>
-                <h2 class="font-semibold text-sm">API Keys</h2>
-                <p class="text-muted-foreground text-xs">
-                  User-owned keys rendered with copied Zaidan components.
-                </p>
+      {() => (
+        <main class="mx-auto flex min-h-[420px] w-full max-w-xl items-center justify-center bg-background p-6 text-foreground">
+          <div class="flex w-full flex-col gap-6">
+            <section class="flex flex-col gap-3">
+              <div class="flex items-end justify-between gap-3">
+                <div>
+                  <h2 class="font-semibold text-sm">API Keys</h2>
+                  <p class="text-muted-foreground text-xs">
+                    User-owned keys rendered with copied Zaidan components.
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <Card class="p-0">
-              <CardContent class="p-0">
-                {apiKeys.map((apiKey, index) => (
-                  <>
-                    {index > 0 ? <ItemSeparator /> : null}
-                    <ApiKey apiKey={apiKey} />
-                  </>
-                ))}
-              </CardContent>
-            </Card>
-          </section>
+              <Card class="p-0">
+                <CardContent class="p-0">
+                  {apiKeys.map((apiKey, index) => (
+                    <>
+                      {index > 0 ? <ItemSeparator /> : null}
+                      <ApiKey apiKey={apiKey} />
+                    </>
+                  ))}
+                </CardContent>
+              </Card>
+            </section>
 
-          <section class="flex flex-col gap-3">
-            <h2 class="font-semibold text-sm">Empty state</h2>
-            <Card class="p-0">
-              <CardContent class="p-0">
-                <ApiKeysEmpty onCreatePress={() => undefined} />
-              </CardContent>
-            </Card>
-          </section>
-        </div>
-      </main>
+            <section class="flex flex-col gap-3">
+              <h2 class="font-semibold text-sm">Empty state</h2>
+              <Card class="p-0">
+                <CardContent class="p-0">
+                  <ApiKeysEmpty onCreatePress={() => undefined} />
+                </CardContent>
+              </Card>
+            </section>
+          </div>
+        </main>
+      )}
     </AuthProvider>
   )
 }
