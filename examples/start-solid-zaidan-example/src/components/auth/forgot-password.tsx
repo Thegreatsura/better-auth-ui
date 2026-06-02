@@ -1,4 +1,9 @@
-import { requestPasswordResetOptions, useAuth } from "@better-auth-ui/solid"
+import {
+  requestPasswordResetOptions,
+  useAuth,
+  useFetchOptions
+} from "@better-auth-ui/solid"
+import type { AuthPlugin } from "@better-auth-ui/solid/plugins"
 import { createMutation } from "@tanstack/solid-query"
 import { Link } from "@tanstack/solid-router"
 import { createSignal, Show } from "solid-js"
@@ -15,19 +20,28 @@ export type ForgotPasswordProps = {
 
 export function ForgotPassword(props: ForgotPasswordProps) {
   const auth = useAuth()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
   const [email, setEmail] = createSignal("")
   const [emailError, setEmailError] = createSignal<string>()
-  const requestReset = createMutation(() =>
-    requestPasswordResetOptions(auth.authClient)
-  )
+  const requestReset = createMutation(() => ({
+    ...requestPasswordResetOptions(auth.authClient),
+    onError: () => {
+      resetFetchOptions()
+    }
+  }))
+
+  const captchaComponent = () =>
+    (auth.plugins as AuthPlugin[]).find((plugin) => plugin.captchaComponent)
+      ?.captchaComponent
 
   const submitPasswordReset = (event: SubmitEvent) => {
     event.preventDefault()
 
     requestReset.mutate({
       email: email(),
+      fetchOptions: fetchOptions(),
       redirectTo: props.redirectTo
-    })
+    } as Parameters<typeof requestReset.mutate>[0])
   }
 
   return (
@@ -71,6 +85,9 @@ export function ForgotPassword(props: ForgotPasswordProps) {
                 )}
               </Show>
             </div>
+            <Show when={captchaComponent()} keyed>
+              {(Captcha) => <Captcha />}
+            </Show>
             <Button disabled={requestReset.isPending} type="submit">
               {requestReset.isPending
                 ? `${auth.localization.auth.sendResetLink}…`

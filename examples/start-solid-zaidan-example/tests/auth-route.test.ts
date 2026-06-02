@@ -1214,6 +1214,38 @@ describe("Solid auth route component selection", () => {
     )
   })
 
+  it("wires captcha slots and fetch options into protected Solid auth forms", () => {
+    const signUp = readFileSync(
+      resolve(__dirname, "../src/components/auth/sign-up.tsx"),
+      "utf8"
+    )
+    const signInUsername = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/username/sign-in-username.tsx"
+      ),
+      "utf8"
+    )
+    const forgotPassword = readFileSync(
+      resolve(__dirname, "../src/components/auth/forgot-password.tsx"),
+      "utf8"
+    )
+
+    for (const source of [signUp, signInUsername, forgotPassword]) {
+      expect(source).toContain("useFetchOptions")
+      expect(source).toContain("fetchOptions: fetchOptions()")
+      expect(source).toContain("resetFetchOptions()")
+      expect(source).toContain("captchaComponent")
+      expect(source).toContain("<Show when={captchaComponent()} keyed>")
+      expect(source).toContain("{(Captcha) => <Captcha />}")
+    }
+
+    expect(signUp).toContain("signUpEmailOptions")
+    expect(signInUsername).toContain("signInEmailOptions")
+    expect(signInUsername).toContain("signInUsernameOptions")
+    expect(forgotPassword).toContain("requestPasswordResetOptions")
+  })
+
   it("wires additional fields into Solid sign-up and profile submissions", () => {
     const signUp = readFileSync(
       resolve(__dirname, "../src/components/auth/sign-up.tsx"),

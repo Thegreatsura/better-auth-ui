@@ -7,8 +7,10 @@ import {
   signInEmailOptions,
   signInUsernameOptions,
   type UsernameAuthClient,
-  useAuth
+  useAuth,
+  useFetchOptions
 } from "@better-auth-ui/solid"
+import type { AuthPlugin } from "@better-auth-ui/solid/plugins"
 import { createMutation, useQueryClient } from "@tanstack/solid-query"
 import { Link } from "@tanstack/solid-router"
 import { Eye, EyeOff } from "lucide-solid"
@@ -37,6 +39,7 @@ type AuthPluginWithButtons = {
 
 export function SignInUsername(props: SignInUsernameProps) {
   const auth = useAuth()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
   const queryClient = useQueryClient()
   const [identifier, setIdentifier] = createSignal("")
   const [identifierError, setIdentifierError] = createSignal<string>()
@@ -49,10 +52,16 @@ export function SignInUsername(props: SignInUsernameProps) {
   }
   const signIn = createMutation(() => ({
     ...signInEmailOptions(auth.authClient),
+    onError: () => {
+      resetFetchOptions()
+    },
     onSuccess: onSignInSuccess
   }))
   const signInUsername = createMutation(() => ({
     ...signInUsernameOptions(auth.authClient as UsernameAuthClient),
+    onError: () => {
+      resetFetchOptions()
+    },
     onSuccess: onSignInSuccess
   }))
   const usernamePlugin = auth.plugins.find((plugin) => plugin.id === "username")
@@ -63,6 +72,9 @@ export function SignInUsername(props: SignInUsernameProps) {
       | Partial<UsernameLocalization>
       | undefined)
   }
+  const captchaComponent = () =>
+    (auth.plugins as AuthPlugin[]).find((plugin) => plugin.captchaComponent)
+      ?.captchaComponent
   const socialPosition = () => props.socialPosition ?? "bottom"
   const showSeparator = () =>
     Boolean(auth.emailAndPassword?.enabled && auth.socialProviders?.length)
@@ -84,16 +96,18 @@ export function SignInUsername(props: SignInUsernameProps) {
 
     if (signInPath.kind === "username") {
       signInUsername.mutate({
+        fetchOptions: fetchOptions(),
         password: submittedPassword,
         username: signInPath.username
-      })
+      } as Parameters<typeof signInUsername.mutate>[0])
       return
     }
 
     signIn.mutate({
       email: signInPath.email,
+      fetchOptions: fetchOptions(),
       password: submittedPassword
-    })
+    } as Parameters<typeof signIn.mutate>[0])
   }
 
   return (
@@ -216,6 +230,10 @@ export function SignInUsername(props: SignInUsernameProps) {
                 )}
               </Show>
             </div>
+
+            <Show when={captchaComponent()} keyed>
+              {(Captcha) => <Captcha />}
+            </Show>
 
             <Button
               disabled={signIn.isPending || signInUsername.isPending}

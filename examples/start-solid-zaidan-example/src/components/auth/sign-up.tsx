@@ -3,7 +3,12 @@ import {
   type UsernameLocalization,
   usernameLocalization
 } from "@better-auth-ui/core/plugins"
-import { signUpEmailOptions, useAuth } from "@better-auth-ui/solid"
+import {
+  signUpEmailOptions,
+  useAuth,
+  useFetchOptions
+} from "@better-auth-ui/solid"
+import type { AuthPlugin } from "@better-auth-ui/solid/plugins"
 import { createMutation, useQueryClient } from "@tanstack/solid-query"
 import { Link } from "@tanstack/solid-router"
 import { Eye, EyeOff } from "lucide-solid"
@@ -25,6 +30,7 @@ export type SignUpProps = {
 
 export function SignUp(props: SignUpProps) {
   const auth = useAuth()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
   const queryClient = useQueryClient()
   const [email, setEmail] = createSignal("")
   const [emailError, setEmailError] = createSignal<string>()
@@ -41,6 +47,9 @@ export function SignUp(props: SignUpProps) {
     createSignal(false)
   const signUp = createMutation(() => ({
     ...signUpEmailOptions(auth.authClient),
+    onError: () => {
+      resetFetchOptions()
+    },
     onSuccess: () => {
       if (auth.emailAndPassword.requireEmailVerification) {
         auth.navigate({
@@ -61,6 +70,9 @@ export function SignUp(props: SignUpProps) {
       | Partial<UsernameLocalization>
       | undefined)
   }
+  const captchaComponent = () =>
+    (auth.plugins as AuthPlugin[]).find((plugin) => plugin.captchaComponent)
+      ?.captchaComponent
   const socialPosition = () => props.socialPosition ?? "bottom"
   const showSeparator = () =>
     Boolean(auth.emailAndPassword?.enabled && auth.socialProviders?.length)
@@ -112,6 +124,7 @@ export function SignUp(props: SignUpProps) {
 
     signUp.mutate({
       email: email(),
+      fetchOptions: fetchOptions(),
       name: name(),
       password: password(),
       ...(usernameAuth ? { username: username() } : {}),
@@ -379,6 +392,9 @@ export function SignUp(props: SignUpProps) {
                 />
               )}
             </For>
+            <Show when={captchaComponent()} keyed>
+              {(Captcha) => <Captcha />}
+            </Show>
             <Button disabled={signUp.isPending} type="submit">
               {signUp.isPending
                 ? `${auth.localization.auth.signUp}…`
