@@ -7,6 +7,7 @@
     "build": "vite build",
     "storybook": "storybook dev --config-dir .storybook --port 6007",
     "storybook:build": "storybook build --config-dir .storybook --output-dir storybook-static",
+    "storybook:docs:build": "bun scripts/build-docs-storybook.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "registry": "bun run registry:build",
