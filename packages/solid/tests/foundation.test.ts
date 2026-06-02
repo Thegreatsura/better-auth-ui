@@ -39,7 +39,7 @@ describe("@better-auth-ui/solid foundation", () => {
     expect(peers).toMatchObject({
       "@better-auth-ui/core": "*",
       "@tanstack/solid-query": ">=5.100.9",
-      "better-auth": ">=1.6.10",
+      "better-auth": ">=1.6.11",
       "solid-js": ">=1.9.12"
     })
   })

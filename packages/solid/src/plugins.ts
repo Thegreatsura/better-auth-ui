@@ -1,1 +1,2 @@
-export type { AuthPlugin } from "@better-auth-ui/core"
+export type { AuthPlugin } from "./lib/auth-plugin"
+export * from "./plugins/captcha-plugin"

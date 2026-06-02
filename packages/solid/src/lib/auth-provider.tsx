@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
 import { createContext, type JSX, useContext } from "solid-js"
 import type { AuthClient } from "./auth-client"
 import { resolveAuthConfig, type SolidAuthConfigInput } from "./auth-config"
+import { FetchOptionsProvider } from "./fetch-options-provider"
 import { MutationInvalidator } from "./mutation-invalidator"
 
 const AuthContext = createContext<AuthConfig>()
@@ -37,8 +38,10 @@ export function AuthProvider(props: AuthProviderProps) {
     return (
       <AuthContext.Provider value={config}>
         <QueryClientProvider client={queryClient}>
-          <MutationInvalidator queryClient={queryClient} />
-          {resolveProviderChildren(props.children)}
+          <FetchOptionsProvider>
+            <MutationInvalidator queryClient={queryClient} />
+            {resolveProviderChildren(props.children)}
+          </FetchOptionsProvider>
         </QueryClientProvider>
       </AuthContext.Provider>
     )
