@@ -3,7 +3,8 @@ import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
 const docsRoot = join(import.meta.dirname, "../content/docs")
-const sourceFile = join(import.meta.dirname, "../src/lib/source.tsx")
+const sourceRoot = join(import.meta.dirname, "../src")
+const sourceFile = join(sourceRoot, "lib/source.tsx")
 
 function readDocsFile(...segments: string[]) {
   return readFileSync(join(docsRoot, ...segments), "utf8")
@@ -201,6 +202,22 @@ describe("Solid docs navigation", () => {
     expect(index).not.toContain("Solid Start")
     expect(ssr).toContain("@better-auth-ui/solid/server")
     expect(ssr).toContain("does not create routes")
+  })
+
+  it("registers the Zaidan Storybook iframe embed for MDX docs", () => {
+    const mdxComponents = readFileSync(
+      join(sourceRoot, "lib/mdx-components.tsx"),
+      "utf8"
+    )
+    const zaidanStory = readFileSync(
+      join(sourceRoot, "components/zaidan-story.tsx"),
+      "utf8"
+    )
+
+    expect(mdxComponents).toContain("ZaidanStory")
+    expect(zaidanStory).toContain("/storybook/zaidan")
+    expect(zaidanStory).toContain("iframe.html?id=")
+    expect(zaidanStory).toContain("encodeURIComponent")
   })
 
   it("surfaces explicit non-goals without coupling Solid docs to React runtime execution", () => {
