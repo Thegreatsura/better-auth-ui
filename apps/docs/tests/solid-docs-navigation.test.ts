@@ -40,12 +40,22 @@ describe("Solid docs navigation", () => {
       root: boolean
       pages: string[]
     }
+    const zaidanMeta = JSON.parse(readDocsFile("zaidan", "meta.json")) as {
+      title: string
+      icon: string
+      root: boolean
+    }
 
     expect(solidMeta).toMatchObject({
       title: "Solid",
       icon: "Solid",
       root: true,
       pages: ["index", "queries", "mutations", "ssr"]
+    })
+    expect(zaidanMeta).toMatchObject({
+      title: "Zaidan",
+      icon: "Zaidan",
+      root: true
     })
 
     const solidQueriesMeta = JSON.parse(

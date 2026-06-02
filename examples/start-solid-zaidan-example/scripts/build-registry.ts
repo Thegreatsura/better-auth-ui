@@ -185,7 +185,7 @@ export const verifySolidRegistryCoherence = ({
         registryDependencies.some((dependency) =>
           dependency.startsWith(`${manifest.namespace}/`)
         )
-          ? `root registry item ${index} depends on Solid registry payloads`
+          ? `root registry item ${index} depends on Solid registry`
           : undefined
       ]
     })

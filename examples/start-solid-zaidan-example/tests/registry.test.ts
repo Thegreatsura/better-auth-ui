@@ -1840,7 +1840,7 @@ describe("Solid registry isolation", () => {
     ])
     expect(zaidanMeta).toMatchObject({
       title: "Zaidan",
-      description: "Solid/Zaidan components and installable registry entries",
+      description: "Solid/Zaidan components",
       root: true
     })
     expect(zaidanMeta.pages).toEqual([

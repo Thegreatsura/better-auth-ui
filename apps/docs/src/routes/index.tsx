@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { Solid } from "@/components/icons/solid"
+import { Zaidan } from "@/components/icons/zaidan"
 import { baseOptions } from "@/lib/layout.shared"
 import appCss from "@/styles/app.css?url"
 
@@ -248,23 +249,41 @@ function Home() {
                 </div>
               </Link>
 
-              {/* SolidJS Option */}
+              {/* Zaidan Screenshot */}
               <Link
                 to="/docs/$"
-                params={{ _splat: "solid" }}
+                params={{ _splat: "zaidan" }}
                 className="group relative w-full max-w-sm sm:w-auto sm:max-w-none lg:translate-y-6"
               >
-                <div className="absolute -inset-1 rounded-3xl bg-linear-to-br from-sky-400 to-cyan-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-50 dark:from-sky-500 dark:to-cyan-700" />
-                <div className="relative flex min-h-64 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50 sm:w-80 lg:w-96">
-                  <div className="flex w-full flex-col items-center justify-center gap-4 bg-linear-to-br from-sky-50 via-white to-cyan-50 p-8 dark:from-sky-950/30 dark:via-neutral-900 dark:to-cyan-950/30">
-                    <Solid className="h-16 w-16 text-sky-500" />
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                        SolidJS
-                      </p>
-                      <p className="mt-1 text-xl font-semibold text-neutral-900 dark:text-white">
-                        Runtime APIs + Zaidan payloads
-                      </p>
+                <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-sky-400 via-indigo-400 to-cyan-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-50 dark:from-sky-500 dark:via-indigo-500 dark:to-cyan-700" />
+                <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
+                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                    <span className="ml-3 text-xs text-neutral-500">
+                      Zaidan
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <img
+                      src="/screenshots/shadcn-sign-in-light.png"
+                      alt="Zaidan Sign In Component"
+                      className="w-full dark:hidden sm:w-80 lg:w-96"
+                      draggable={false}
+                    />
+                    <img
+                      src="/screenshots/shadcn-sign-in-dark.png"
+                      alt="Zaidan Sign In Component"
+                      className="hidden w-full dark:block sm:w-80 lg:w-96"
+                      draggable={false}
+                    />
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-[1px] dark:bg-neutral-950/20">
+                      <div className="flex items-center gap-4 rounded-2xl border border-white/60 bg-white/70 px-5 py-4 shadow-2xl shadow-neutral-900/20 ring-1 ring-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10">
+                        <Solid className="h-12 w-12" />
+                        <div className="h-10 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                        <Zaidan className="h-12 w-14" />
+                      </div>
                     </div>
                   </div>
                 </div>
