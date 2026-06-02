@@ -432,7 +432,7 @@ export const solidRegistryManifest = {
         "Solid delete-user danger-zone card and confirmation dialog.",
       files: [
         componentFile("src/components/auth/delete-user/danger-zone.tsx"),
-        componentFile("src/components/auth/delete-user/delete-user.tsx"),
+        componentFile("src/components/auth/delete-user/delete-account.tsx"),
         ...zaidanInteractiveUiFiles
       ]
     }),

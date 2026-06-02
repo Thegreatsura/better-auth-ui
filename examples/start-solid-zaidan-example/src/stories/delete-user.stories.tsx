@@ -48,7 +48,7 @@ queryClient.setQueryData(authQueryKeys.listAccounts(userId), [
   }
 ])
 
-function DeleteUserStory() {
+function DeleteAccountStory() {
   return (
     <AuthProvider
       authClient={mockAuthClient}
@@ -66,12 +66,12 @@ function DeleteUserStory() {
 
 const meta = {
   title: "Zaidan/Plugins/Delete User",
-  component: DeleteUserStory,
+  component: DeleteAccountStory,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen"
   }
-} satisfies Meta<typeof DeleteUserStory>
+} satisfies Meta<typeof DeleteAccountStory>
 
 export default meta
 

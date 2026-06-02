@@ -32,13 +32,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
-const defaultDeleteUserLabel = "Delete user"
+const defaultDeleteAccountLabel = "Delete account"
 
-export type DeleteUserProps = {
+export type DeleteAccountProps = {
   class?: string
 }
 
-export function DeleteUser(props: DeleteUserProps = {}) {
+export function DeleteAccount(props: DeleteAccountProps = {}) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const queryClient = useQueryClient()
@@ -56,7 +56,7 @@ export function DeleteUser(props: DeleteUserProps = {}) {
       deleteUser:
         pluginLocalization?.deleteAccount ??
         deleteUserLocalization.deleteAccount ??
-        defaultDeleteUserLabel,
+        defaultDeleteAccountLabel,
       deleteUserDescription:
         pluginLocalization?.deleteAccountDescription ??
         deleteUserLocalization.deleteAccountDescription,

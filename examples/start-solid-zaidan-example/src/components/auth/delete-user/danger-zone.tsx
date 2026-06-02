@@ -1,6 +1,6 @@
 import { useAuth } from "@better-auth-ui/solid"
 import { cn } from "@/lib/utils"
-import { DeleteUser } from "./delete-user"
+import { DeleteAccount } from "./delete-account"
 
 const defaultDangerZoneTitle = "Danger zone"
 
@@ -19,7 +19,7 @@ export function DangerZone(props: DangerZoneProps = {}) {
         {dangerZoneTitle()}
       </h2>
 
-      <DeleteUser />
+      <DeleteAccount />
     </div>
   )
 }

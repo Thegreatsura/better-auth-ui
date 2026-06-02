@@ -41,7 +41,7 @@ npx zaidan add https://better-auth-ui.com/r/solid/delete-user.json
 This copies the following files into your project:
 
 - `src/components/auth/delete-user/danger-zone.tsx`
-- `src/components/auth/delete-user/delete-user.tsx`
+- `src/components/auth/delete-user/delete-account.tsx`
 - local dialog, button, card, input, and label primitives under `src/components/ui/**`
 
 </Step>
@@ -77,7 +77,7 @@ When the plugin is registered, the copied `<SecuritySettings />` surface renders
   height={420}
 />
 
-`<DangerZone />` is the primary security card wrapper. It renders the localized danger-zone heading and composes `<DeleteUser />` below it.
+`<DangerZone />` is the primary security card wrapper. It renders the localized danger-zone heading and composes `<DeleteAccount />` below it.
 
 ```tsx
 import { DangerZone } from "@/components/auth/delete-user/danger-zone"
@@ -87,17 +87,17 @@ import { DangerZone } from "@/components/auth/delete-user/danger-zone"
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/delete-user/danger-zone.tsx" name="DangerZoneProps" />
 
-### `<DeleteUser />`
+### `<DeleteAccount />`
 
-`<DeleteUser />` is the lower-level delete account card used inside `<DangerZone />`. You can also import it directly for custom settings layouts.
+`<DeleteAccount />` is the lower-level delete account card used inside `<DangerZone />`. You can also import it directly for custom settings layouts.
 
 ```tsx
-import { DeleteUser } from "@/components/auth/delete-user/delete-user"
+import { DeleteAccount } from "@/components/auth/delete-user/delete-account"
 
-<DeleteUser />
+<DeleteAccount />
 ```
 
-<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/delete-user/delete-user.tsx" name="DeleteUserProps" />
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/delete-user/delete-account.tsx" name="DeleteAccountProps" />
 
 ## Options
 

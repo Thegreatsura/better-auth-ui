@@ -2309,7 +2309,7 @@ describe("Solid registry isolation", () => {
     )
     expect(deleteUserPluginDoc).toContain("plugins={[deleteUserPlugin()]}")
     expect(deleteUserPluginDoc).toContain('name="DangerZoneProps"')
-    expect(deleteUserPluginDoc).toContain('name="DeleteUserProps"')
+    expect(deleteUserPluginDoc).toContain('name="DeleteAccountProps"')
     expect(deleteUserPluginDoc).toContain('name="DeleteUserPluginOptions"')
     expect(deleteUserPluginDoc).toContain('name="DeleteUserLocalization"')
     expect(deleteUserPluginDoc).not.toContain("## Runtime prerequisites")
@@ -2323,7 +2323,7 @@ describe("Solid registry isolation", () => {
     expect(deleteUserPluginDoc).not.toContain("className")
     expect(deleteUserPluginDoc).not.toContain("ComponentPreview")
     expect(deleteUserRegistryEntry).toContain("export type DangerZoneProps")
-    expect(deleteUserRegistryEntry).toContain("export type DeleteUserProps")
+    expect(deleteUserRegistryEntry).toContain("export type DeleteAccountProps")
     expect(deleteUserRegistryEntry).toContain(
       'class={cn(\\"flex w-full flex-col\\", props.class)}'
     )
