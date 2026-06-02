@@ -1852,6 +1852,7 @@ describe("Solid registry isolation", () => {
     ])
     expect(zaidanPluginsMeta.pages).toEqual([
       "api-key",
+      "captcha",
       "delete-user",
       "magic-link",
       "multi-session",
@@ -2069,10 +2070,6 @@ describe("Solid registry isolation", () => {
       ).not.toContain("live Solid preview")
       expect(
         content,
-        `${docsPath} should not claim captcha UI support`
-      ).not.toContain("Captcha is supported")
-      expect(
-        content,
         `${docsPath} should not keep stale pending claims`
       ).not.toContain("Not shown in the current Solid registry")
       expect(
@@ -2123,6 +2120,7 @@ describe("Solid registry isolation", () => {
       "magic-link",
       "theme"
     ]
+    const runtimeOnlyPluginNames = ["captcha"]
     const componentPayloadNames = solidRegistryManifest.items
       .map((item) => item.name)
       .filter((name) => !pluginPayloadNames.includes(name))
@@ -2243,9 +2241,56 @@ describe("Solid registry isolation", () => {
       expect(page).not.toContain("/docs/solid/plugins")
     }
 
+    for (const name of runtimeOnlyPluginNames) {
+      const page = pluginDoc(name)
+
+      expect(
+        page,
+        `runtime-only plugin ${name} should not require registry`
+      ).not.toContain(`/r/solid/${name}.json`)
+      expect(
+        page,
+        `runtime-only plugin ${name} should link Solid runtime`
+      ).toContain("@better-auth-ui/solid/plugins")
+      expect(
+        page,
+        `runtime-only plugin ${name} should explain setup`
+      ).toContain("## Setup")
+    }
+
+    for (const name of ["sign-in", "sign-up", "forgot-password"]) {
+      const registryEntry = readFileSync(
+        resolve(__dirname, `../../../apps/docs/public/r/solid/${name}.json`),
+        "utf8"
+      )
+
+      expect(
+        registryEntry,
+        `${name} should publish captcha slot support`
+      ).toContain("useFetchOptions")
+      expect(
+        registryEntry,
+        `${name} should publish captcha slot support`
+      ).toContain("captchaComponent")
+      expect(
+        registryEntry,
+        `${name} should publish captcha header forwarding`
+      ).toContain("fetchOptions: fetchOptions()")
+    }
+
     expect(pluginDoc("magic-link")).toContain("real email provider")
     expect(pluginDoc("passkey")).toContain("WebAuthn origin")
     expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
+    expect(pluginDoc("captcha")).toContain("captchaPlugin")
+    expect(pluginDoc("captcha")).toContain("better-auth/plugins")
+    expect(pluginDoc("captcha")).toContain("x-captcha-response")
+    expect(pluginDoc("captcha")).toContain("## Providers")
+    expect(pluginDoc("captcha")).toContain("@better-captcha/solidjs")
+    expect(pluginDoc("captcha")).toContain("@marsidev/react-turnstile")
+    expect(pluginDoc("captcha")).toContain(
+      "@better-captcha/solidjs/provider/turnstile"
+    )
+    expect(pluginDoc("captcha")).not.toContain("Captcha is supported")
     expect(pluginDoc("theme")).toContain("src/lib/theme.ts")
     expect(componentDoc("sign-in")).toContain("username-aware")
     expect(componentDoc("user-button")).toContain("theme")

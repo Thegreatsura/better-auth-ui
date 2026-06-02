@@ -1,0 +1,272 @@
+---
+title: Captcha
+description: Add bot protection to Solid/Zaidan sign-up, sign-in, and password reset forms.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The captcha plugin renders a captcha widget on the copied Solid/Zaidan sign-in, sign-up, and forgot-password forms and forwards the resolved token to Better Auth as the `x-captcha-response` header. It's provider-agnostic — you bring your own Solid-compatible captcha library (Cloudflare Turnstile, hCaptcha, CaptchaFox, reCAPTCHA) and pass a `render` component that wires the provider's callbacks to `setToken`, `clearToken`, and `setReset`.
+
+It contributes:
+
+- A captcha widget rendered above the submit button on sign-in, sign-up, and forgot-password forms
+- Automatic header management — the resolved token is attached to the next Better Auth request and cleared on error, expiry, or unmount
+- Automatic widget refresh after a failed submission — captcha tokens are single-use, so retries (wrong password, email already taken, etc.) need a fresh token
+
+## Setup
+
+The captcha plugin requires no additional Zaidan registry entry — the widget slot is built into the `<SignIn />`, `<SignUp />`, and `<ForgotPassword />` forms. You only need to configure the Better Auth server plugin and register the Solid UI plugin with your captcha widget.
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Add the [`captcha`](https://www.better-auth.com/docs/plugins/captcha) plugin to your Better Auth server config and choose a provider:
+
+```ts title="src/lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { captcha } from "better-auth/plugins" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    captcha({ // [!code highlight]
+      provider: "cloudflare-turnstile", // or "hcaptcha", "captchafox", "google-recaptcha" // [!code highlight]
+      secretKey: process.env.TURNSTILE_SECRET_KEY as string // [!code highlight]
+    }) // [!code highlight]
+  ]
+})
+```
+
+Better Auth protects `/sign-up/email`, `/sign-in/email`, and `/request-password-reset` by default. If your app enables the username plugin and protects username sign-in too, include that endpoint explicitly:
+
+```ts title="src/lib/auth.ts"
+captcha({
+  provider: "cloudflare-turnstile",
+  secretKey: process.env.TURNSTILE_SECRET_KEY as string,
+  endpoints: [ // [!code highlight]
+    "/sign-up/email", // [!code highlight]
+    "/sign-in/email", // [!code highlight]
+    "/sign-in/username", // [!code highlight]
+    "/request-password-reset" // [!code highlight]
+  ] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the Solid UI plugin
+
+Pass `captchaPlugin({ render })` to `<AuthProvider>`. `render` is a Solid component that receives `setToken`, `clearToken`, and `setReset` and is responsible for mounting your provider widget.
+
+```tsx title="src/components/providers.tsx"
+import { captchaPlugin } from "@better-auth-ui/solid/plugins" // [!code highlight]
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { authClient } from "@/lib/auth-client"
+
+import { CaptchaWidget } from "@/components/captcha-widget" // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    captchaPlugin({ render: CaptchaWidget }) // [!code highlight]
+  ]}
+>
+  {children}
+</AuthProvider>
+```
+
+The `render` component is mounted as a real Solid component, so Solid primitives and context work inside it. See the [Providers](#providers) section below for ready-to-use widget patterns.
+
+</Step>
+</Steps>
+
+## Providers
+
+The examples below use [`@better-captcha/solidjs`](https://www.better-captcha.dev/docs/frameworks/solidjs), which supports the providers Better Auth can verify. You can use any Solid-compatible widget as long as it calls `setToken` on success, `clearToken` on error/expiry, and registers a reset function with `setReset`.
+
+The server-side Better Auth provider names are the same as shadcn. Only the client-side widget package changes from React to Solid:
+
+| Provider | Better Auth `provider` | shadcn React widget | Solid/Zaidan widget |
+| --- | --- | --- | --- |
+| Cloudflare Turnstile | `"cloudflare-turnstile"` | `@marsidev/react-turnstile` | `@better-captcha/solidjs/provider/turnstile` |
+| hCaptcha | `"hcaptcha"` | `@hcaptcha/react-hcaptcha` | `@better-captcha/solidjs/provider/hcaptcha` |
+| CaptchaFox | `"captchafox"` | `@captchafox/react` | `@better-captcha/solidjs/provider/captcha-fox` |
+
+### Cloudflare Turnstile
+
+```package-install
+@better-captcha/solidjs
+```
+
+```tsx title="src/components/turnstile-widget.tsx"
+import type { CaptchaRenderProps } from "@better-auth-ui/solid/plugins"
+import {
+  createCaptchaController,
+  Turnstile,
+  type TurnstileHandle
+} from "@better-captcha/solidjs/provider/turnstile"
+import { onCleanup, onMount } from "solid-js"
+
+export function TurnstileWidget({
+  setToken,
+  clearToken,
+  setReset
+}: CaptchaRenderProps) {
+  const controller = createCaptchaController<TurnstileHandle>()
+
+  onMount(() => {
+    setReset(() => controller.handle()?.reset())
+  })
+
+  onCleanup(() => setReset(null))
+
+  return (
+    <Turnstile
+      sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+      controller={controller}
+      onSolve={setToken}
+      onError={clearToken}
+      options={{ size: "flexible" }}
+    />
+  )
+}
+```
+
+```tsx title="src/components/providers.tsx"
+import { captchaPlugin } from "@better-auth-ui/solid/plugins"
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+import { TurnstileWidget } from "@/components/turnstile-widget"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[captchaPlugin({ render: TurnstileWidget })]}
+>
+  {children}
+</AuthProvider>
+```
+
+### hCaptcha
+
+```package-install
+@better-captcha/solidjs
+```
+
+```tsx title="src/components/hcaptcha-widget.tsx"
+import type { CaptchaRenderProps } from "@better-auth-ui/solid/plugins"
+import {
+  createCaptchaController,
+  HCaptcha,
+  type HCaptchaHandle
+} from "@better-captcha/solidjs/provider/hcaptcha"
+import { onCleanup, onMount } from "solid-js"
+
+export function HCaptchaWidget({
+  setToken,
+  clearToken,
+  setReset
+}: CaptchaRenderProps) {
+  const controller = createCaptchaController<HCaptchaHandle>()
+
+  onMount(() => {
+    setReset(() => controller.handle()?.reset())
+  })
+
+  onCleanup(() => setReset(null))
+
+  return (
+    <HCaptcha
+      sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
+      controller={controller}
+      onSolve={setToken}
+      onError={clearToken}
+      options={{ theme: "auto" }}
+    />
+  )
+}
+```
+
+```tsx title="src/components/providers.tsx"
+import { captchaPlugin } from "@better-auth-ui/solid/plugins"
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+import { HCaptchaWidget } from "@/components/hcaptcha-widget"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[captchaPlugin({ render: HCaptchaWidget })]}
+>
+  {children}
+</AuthProvider>
+```
+
+### CaptchaFox
+
+```package-install
+@better-captcha/solidjs
+```
+
+```tsx title="src/components/captchafox-widget.tsx"
+import type { CaptchaRenderProps } from "@better-auth-ui/solid/plugins"
+import {
+  CaptchaFox,
+  type CaptchaFoxHandle,
+  createCaptchaController
+} from "@better-captcha/solidjs/provider/captcha-fox"
+import { onCleanup, onMount } from "solid-js"
+
+export function CaptchaFoxWidget({
+  setToken,
+  clearToken,
+  setReset
+}: CaptchaRenderProps) {
+  const controller = createCaptchaController<CaptchaFoxHandle>()
+
+  onMount(() => {
+    setReset(() => controller.handle()?.reset())
+  })
+
+  onCleanup(() => setReset(null))
+
+  return (
+    <CaptchaFox
+      sitekey={import.meta.env.VITE_CAPTCHAFOX_SITE_KEY}
+      controller={controller}
+      onSolve={setToken}
+      onError={clearToken}
+      options={{ theme: "auto" }}
+    />
+  )
+}
+```
+
+```tsx title="src/components/providers.tsx"
+import { captchaPlugin } from "@better-auth-ui/solid/plugins"
+import { AuthProvider } from "@/components/auth/auth-provider"
+
+import { CaptchaFoxWidget } from "@/components/captchafox-widget"
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[captchaPlugin({ render: CaptchaFoxWidget })]}
+>
+  {children}
+</AuthProvider>
+```
+
+## Options
+
+<auto-type-table path="../../../../../../packages/solid/src/plugins/captcha-plugin.tsx" name="CaptchaPluginOptions" />
+
+## Render props
+
+The `render` component receives:
+
+<auto-type-table path="../../../../../../packages/solid/src/plugins/captcha-plugin.tsx" name="CaptchaRenderProps" />
+
+- Wire your provider's success callback to `setToken` — it sets the `x-captcha-response` header on the next Better Auth request.
+- Wire error / expire callbacks to `clearToken` — it removes the header so a stale token isn't sent.
+- Wire your widget's `reset()` to `setReset` — Better Auth's captcha middleware consumes the token via `/siteverify` even when the auth handler later rejects the request (wrong password, email already taken, etc.), so retries with the same token would be rejected. Each captcha-protected form calls the registered `reset()` from its `onError`, and the consumed token is cleared automatically.
+
+The header is also cleared automatically on unmount, so you don't need to handle that manually.
