@@ -1,13 +1,20 @@
-import type { OrganizationAuthClient } from "@better-auth-ui/solid"
+import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
+import type {
+  OrganizationAuthClient,
+  UpdateMemberRoleParams
+} from "@better-auth-ui/solid"
 import {
   useAuth,
   useCancelInvitation,
   useHasPermission,
   useListOrganizationInvitations,
-  useListOrganizationMembers
+  useListOrganizationMembers,
+  useSession,
+  useUpdateMemberRole
 } from "@better-auth-ui/solid"
-import { PlusCircle, X } from "lucide-solid"
-import { createSignal, For, Show } from "solid-js"
+import { Pencil, PlusCircle, X } from "lucide-solid"
+import { createMemo, createSignal, For, Show } from "solid-js"
+import { toast } from "solid-sonner"
 import { UserView } from "@/components/auth/user/user-view"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,7 +24,14 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { cn } from "@/lib/utils"
 import { InviteMemberDialog } from "./invite-member-dialog"
 
@@ -28,11 +42,31 @@ export type OrganizationPeopleProps = {
 type OrganizationMember = {
   id: string
   role?: string | null
+  userId?: string | null
   user?: {
     email?: string | null
     image?: string | null
     name?: string | null
   } | null
+}
+
+type RoleMap = Record<string, string>
+
+const fallbackLocalization = {
+  changeMemberRole: "Change member role",
+  memberRoleUpdated: "Member role updated",
+  member: "Member",
+  admin: "Admin",
+  owner: "Owner"
+} satisfies Pick<
+  OrganizationLocalization,
+  "changeMemberRole" | "memberRoleUpdated" | "member" | "admin" | "owner"
+>
+
+const fallbackRoles: RoleMap = {
+  owner: fallbackLocalization.owner,
+  admin: fallbackLocalization.admin,
+  member: fallbackLocalization.member
 }
 
 type OrganizationInvitation = {
@@ -68,8 +102,33 @@ function formatInvitationDate(createdAt?: Date | string | null) {
   })
 }
 
-function OrganizationMemberRow(props: { member: OrganizationMember }) {
+function OrganizationMemberRow(props: {
+  isOwner: boolean
+  localization: Pick<
+    OrganizationLocalization,
+    "changeMemberRole" | "memberRoleUpdated"
+  >
+  member: OrganizationMember
+  roles: RoleMap
+}) {
+  const auth = useAuth()
   const user = () => props.member.user
+  const permission = useHasPermission(
+    auth.authClient as OrganizationAuthClient,
+    {
+      permissions: { member: ["update"] }
+    }
+  )
+  const updateMemberRole = useUpdateMemberRole(
+    auth.authClient as OrganizationAuthClient,
+    {
+      onSuccess: () => toast.success(props.localization.memberRoleUpdated)
+    }
+  )
+  const assignableRoles = () =>
+    Object.entries(props.roles).filter(
+      ([key]) => props.isOwner || key !== "owner"
+    )
 
   return (
     <div class="flex items-center justify-between gap-4 rounded-md border p-3">
@@ -78,9 +137,44 @@ function OrganizationMemberRow(props: { member: OrganizationMember }) {
         label={user()?.name ?? user()?.email ?? "Member"}
         secondaryLabel={user()?.email}
       />
-      <span class="shrink-0 rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-        {formatRole(props.member.role)}
-      </span>
+      <div class="flex shrink-0 items-center gap-2">
+        <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+          {props.roles[props.member.role ?? ""] ??
+            formatRole(props.member.role)}
+        </span>
+        <Show when={permission.data?.success}>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              as={Button}
+              aria-label={props.localization.changeMemberRole}
+              class=""
+              disabled={updateMemberRole.isPending}
+              size="icon-sm"
+              type="button"
+              variant="outline"
+            >
+              <Pencil class="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <For each={assignableRoles()}>
+                {([role, label]) => (
+                  <DropdownMenuItem
+                    disabled={props.member.role === role}
+                    onSelect={() =>
+                      updateMemberRole.mutate({
+                        memberId: props.member.id,
+                        role: role as UpdateMemberRoleParams["role"]
+                      })
+                    }
+                  >
+                    {label}
+                  </DropdownMenuItem>
+                )}
+              </For>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Show>
+      </div>
     </div>
   )
 }
@@ -168,6 +262,7 @@ function OrganizationInvitationRowSkeleton() {
 export function OrganizationPeople(props: OrganizationPeopleProps) {
   const auth = useAuth()
   const [inviteOpen, setInviteOpen] = createSignal(false)
+  const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
   )
@@ -177,6 +272,26 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   const memberRows = () => (members.data?.members ?? []) as OrganizationMember[]
   const invitationRows = () =>
     (invitations.data ?? []) as OrganizationInvitation[]
+  const organizationPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
+      | {
+          localization?: Pick<
+            OrganizationLocalization,
+            "changeMemberRole" | "memberRoleUpdated"
+          >
+          roles?: RoleMap
+        }
+      | undefined
+  const localization = () =>
+    organizationPluginConfig()?.localization ?? fallbackLocalization
+  const roles = createMemo(
+    () => organizationPluginConfig()?.roles ?? fallbackRoles
+  )
+  const isOwner = () =>
+    memberRows().some(
+      (member) =>
+        member.role === "owner" && member.userId === session.data?.user.id
+    )
 
   return (
     <div class={cn("grid gap-4 md:gap-6", props.class)}>
@@ -213,7 +328,14 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
             >
               <div class="grid gap-2">
                 <For each={memberRows()}>
-                  {(member) => <OrganizationMemberRow member={member} />}
+                  {(member) => (
+                    <OrganizationMemberRow
+                      isOwner={isOwner()}
+                      localization={localization()}
+                      member={member}
+                      roles={roles()}
+                    />
+                  )}
                 </For>
               </div>
             </Show>

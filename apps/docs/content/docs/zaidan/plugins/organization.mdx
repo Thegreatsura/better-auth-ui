@@ -3,7 +3,7 @@ title: Organization
 description: Install the Solid/Zaidan organization integration.
 ---
 
-The organization components wire Better Auth's organization plugin into the Solid/Zaidan example. This slice provides slug-driven runtime, profile/settings, and People list/invite/cancel parity with shadcn for organization routes: `/settings/organizations`, a header switcher, organization-scoped cards, organization profile editing, logo upload, the People shell with basic members and invitations lists, member invite dialog, cancel invitation action, and the route shell at `/organization/$slug/$path` all share the same plugin slug context.
+The organization components wire Better Auth's organization plugin into the Solid/Zaidan example. This slice provides slug-driven runtime, profile/settings, and People list/invite/cancel/role-edit parity with shadcn for organization routes: `/settings/organizations`, a header switcher, organization-scoped cards, organization profile editing, logo upload, the People shell with basic members and invitations lists, member role editing, member invite dialog, cancel invitation action, and the route shell at `/organization/$slug/$path` all share the same plugin slug context.
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/organization.json
@@ -103,7 +103,7 @@ With this setup, `useActiveOrganization` and plugin-contributed organization car
 
 ## Deferred UI parity
 
-This runtime, create-dialog, profile/settings, and People list/invite/cancel slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes advanced members tables, advanced invitations tables, role editing, delete dialogs, and leave dialogs. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
+This runtime, create-dialog, profile/settings, and People list/invite/cancel/role-edit slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes advanced members tables, advanced invitations tables, delete dialogs, and leave dialogs. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
 
 ## Related APIs
 

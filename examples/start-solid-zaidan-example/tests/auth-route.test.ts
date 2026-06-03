@@ -2896,12 +2896,27 @@ describe("Solid auth route component selection", () => {
       "disabled={cancelInvitation.isPending}"
     )
     expect(organizationPeople).toContain('aria-label="Cancel invitation"')
-    expect(organizationPeople).not.toContain("useUpdateMemberRole")
+    expect(organizationPeople).toContain("useUpdateMemberRole")
+    expect(organizationPeople).toContain('permissions: { member: ["update"] }')
+    expect(organizationPeople).toContain("memberRoleUpdated")
+    expect(organizationPeople).toContain("changeMemberRole")
+    expect(organizationPeople).toContain("DropdownMenu")
+    expect(organizationPeople).toContain("DropdownMenuItem")
+    expect(organizationPeople).toContain("updateMemberRole.mutate")
+    expect(organizationPeople).toContain("memberId: props.member.id")
+    expect(organizationPeople).toContain(
+      'role as UpdateMemberRoleParams["role"]'
+    )
+    expect(organizationPeople).toContain('key !== "owner"')
+    expect(organizationPeople).toContain("useSession")
+    expect(organizationPeople).toContain("session.data?.user.id")
     expect(organizationPeople).not.toContain("RemoveMemberDialog")
+    expect(organizationPeople).not.toContain("useRemoveMember")
     expect(organizationPeople).toContain("InviteMemberDialog")
     expect(organizationPeople).toContain("const [inviteOpen, setInviteOpen]")
     expect(organizationPeople).toContain("setInviteOpen(true)")
     expect(organizationPeople).not.toContain("LeaveOrganizationDialog")
+    expect(organizationPeople).not.toContain("useLeaveOrganization")
     expect(inviteMemberDialog).toContain("InviteMemberDialogProps")
     expect(inviteMemberDialog).toContain("open: boolean")
     expect(inviteMemberDialog).toContain(
