@@ -2858,11 +2858,21 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain("class?: string")
     expect(organizationPeople).toContain("Members")
     expect(organizationPeople).toContain("Invitations")
+    expect(organizationPeople).toContain("useListOrganizationMembers")
+    expect(organizationPeople).toContain("OrganizationAuthClient")
+    expect(organizationPeople).toContain("members.data?.members")
+    expect(organizationPeople).toContain("OrganizationMemberRow")
+    expect(organizationPeople).toContain("OrganizationMemberRowSkeleton")
+    expect(organizationPeople).toContain("member.role")
+    expect(organizationPeople).toContain("No members")
     expect(organizationPeople).toContain(
-      "members and invitations table UI is deferred"
+      "invitations table UI remains deferred"
     )
-    expect(organizationPeople).not.toContain("useListOrganizationMembers")
     expect(organizationPeople).not.toContain("useListOrganizationInvitations")
+    expect(organizationPeople).not.toContain("useUpdateMemberRole")
+    expect(organizationPeople).not.toContain("RemoveMemberDialog")
+    expect(organizationPeople).not.toContain("LeaveOrganizationDialog")
+    expect(organizationPeople).not.toContain("InviteMemberDialog")
   })
 
   it("aligns OrganizationSwitcher focused API and behavior with shadcn", () => {
