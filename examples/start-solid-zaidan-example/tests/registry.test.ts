@@ -2606,7 +2606,12 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain("Deferred UI parity")
     expect(organizationPluginDoc).toContain("members")
     expect(organizationPluginDoc).toContain("invitations")
-    expect(organizationPluginDoc).toContain("profile")
+    expect(organizationPluginDoc).toContain("profile/settings")
+    expect(organizationPluginDoc).toContain("organization-profile.tsx")
+    expect(organizationPluginDoc).toContain("change-organization-logo.tsx")
+    expect(organizationPluginDoc).not.toContain(
+      "profile, role editing, logo upload"
+    )
     expect(organizationPluginDoc).not.toContain("full Organization UI parity")
     expect(organizationPluginDoc).not.toContain(
       "organization API keys are deferred"
@@ -2638,6 +2643,14 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("CreateOrganizationDialog")
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
+    expect(organizationRegistry).toContain("organization-settings.tsx")
+    expect(organizationRegistry).toContain("organization-profile.tsx")
+    expect(organizationRegistry).toContain("organization-logo.tsx")
+    expect(organizationRegistry).toContain("change-organization-logo.tsx")
+    expect(organizationRegistry).toContain("useUpdateOrganization")
+    expect(organizationRegistry).toContain(
+      "data: { name: name(), slug: slug() }"
+    )
     expect(organizationRegistry).toContain("organization.tsx")
     expect(organizationRegistry).toContain("plugin.slug !== undefined")
     expect(solidRegistry).toContain('"name": "organization"')

@@ -3,7 +3,7 @@ title: <Organization />
 description: Solid/Zaidan organization route shell.
 ---
 
-`Organization` is the minimal route shell for `/organization/$slug/$path`. It resolves the active organization for the slug and renders settings or people panels that point to the Solid organization APIs.
+`Organization` is the slug-aware route shell for `/organization/$slug/$path`. It resolves the active organization for the slug, renders profile/settings UI for the `settings` route, preserves plugin-contributed organization cards, and reserves the `people` route for the members/invitations slice.
 
 ## Usage
 
@@ -27,12 +27,16 @@ npx zaidan add https://better-auth-ui.com/r/solid/organization.json
 
 - `src/lib/auth/organization-plugin.tsx`
 - `src/components/auth/organization/organization.tsx`
+- `src/components/auth/organization/organization-settings.tsx`
+- `src/components/auth/organization/organization-profile.tsx`
+- `src/components/auth/organization/change-organization-logo.tsx`
+- `src/components/auth/organization/organization-logo.tsx`
 - `src/components/auth/organization/organizations-settings.tsx`
 - `src/components/auth/organization/organization-switcher.tsx`
 - `src/routes/organization/$slug/$path.tsx`
 
-## Deferred UI
+## Notes
 
 After install, wire `organization()` on the server, `organizationClient()` on the client, and the local `organizationPlugin()` in your provider before exposing the route.
 
-The route shell is intentionally small. Full profile forms, member tables, invitation tables, logo upload, and destructive dialogs are deferred in this PR slice and should be built from the Solid organization query/mutation APIs.
+The settings route includes organization profile editing, slug editing, logo upload/delete, and plugin-contributed `organizationCards`. Members, invitations, roles, and destructive dialogs remain follow-up slices.

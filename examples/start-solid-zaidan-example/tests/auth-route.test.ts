@@ -2751,10 +2751,8 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(organization).toContain("useActiveOrganization(")
-    expect(organization).toContain("authClient as OrganizationAuthClient")
+    expect(organization).toContain("OrganizationSettings")
     expect(organization).not.toContain("organizationSlug: props.slug")
-    expect(organization).toContain("organizationCards")
     expect(organization).toContain("/organization/$slug/$path")
 
     for (const source of [organizationSwitcher, organizationRow]) {
@@ -2773,6 +2771,67 @@ describe("Solid auth route component selection", () => {
     expect(activeOrganizationQuery).toContain("slug === null")
     expect(activeOrganizationQuery).toContain("async () => null")
     expect(listMembersQuery).toContain("activeOrganization.data?.id")
+  })
+
+  it("adds Solid/Zaidan Organization profile settings parity", () => {
+    const organization = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization.tsx"
+      ),
+      "utf8"
+    )
+    const organizationSettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-settings.tsx"
+      ),
+      "utf8"
+    )
+    const organizationProfile = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-profile.tsx"
+      ),
+      "utf8"
+    )
+    const changeLogo = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/change-organization-logo.tsx"
+      ),
+      "utf8"
+    )
+    const organizationLogo = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-logo.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(organization).toContain("OrganizationSettings")
+    expect(organization).not.toContain(
+      "Organization profile management is intentionally minimal"
+    )
+    expect(organizationSettings).toContain("OrganizationProfile")
+    expect(organizationSettings).toContain("organizationCards")
+    expect(organizationSettings).not.toContain("OrganizationDangerZone")
+    expect(organizationProfile).toContain("useActiveOrganization")
+    expect(organizationProfile).toContain("useUpdateOrganization")
+    expect(organizationProfile).toContain("ChangeOrganizationLogo")
+    expect(organizationProfile).toContain("SlugField")
+    expect(organizationProfile).toContain(
+      "data: { name: name(), slug: slug() }"
+    )
+    expect(changeLogo).toContain("OrganizationLogo")
+    expect(changeLogo).toContain("logo().enabled")
+    expect(changeLogo).toContain("useUpdateOrganization")
+    expect(changeLogo).toContain("logo: image")
+    expect(changeLogo).toContain('logo: ""')
+    expect(organizationLogo).toContain("OrganizationLogoSize")
+    expect(organizationLogo).toContain("organization?.logo?.trim()")
+    expect(organizationLogo).toContain("Skeleton")
   })
 
   it("aligns OrganizationSwitcher focused API and behavior with shadcn", () => {

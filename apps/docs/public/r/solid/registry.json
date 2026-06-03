@@ -1679,6 +1679,22 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/organization/organization-settings.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-profile.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-logo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/change-organization-logo.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/auth/organization/organization-row.tsx",
           "type": "registry:component"
         },
