@@ -2963,7 +2963,41 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const organizationMembers = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-members.tsx"
+      ),
+      "utf8"
+    )
+    const organizationMemberRow = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-member-row.tsx"
+      ),
+      "utf8"
+    )
+    const organizationMemberRowSkeleton = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-member-row-skeleton.tsx"
+      ),
+      "utf8"
+    )
+    const table = readFileSync(
+      resolve(__dirname, "../src/components/ui/table.tsx"),
+      "utf8"
+    )
 
+    expect(table).toContain('data-slot="table-container"')
+    expect(table).toContain('data-slot="table"')
+    expect(table).toContain("TableHeader")
+    expect(table).toContain("TableBody")
+    expect(table).toContain("TableHead")
+    expect(table).toContain("TableCell")
+    expect(table).toContain("splitProps")
+    expect(table).toContain("local.class")
+    expect(table).not.toContain("className")
     expect(organization).toContain("OrganizationPeople")
     expect(organization).not.toContain(
       "Member and invitation APIs are available"
@@ -2972,38 +3006,45 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain("class?: string")
     expect(organizationPeople).toContain("Members")
     expect(organizationPeople).toContain("Invitations")
-    expect(organizationPeople).toContain("useListOrganizationMembers")
-    expect(organizationPeople).toContain("OrganizationAuthClient")
-    expect(organizationPeople).toContain("members.data?.members")
-    expect(organizationPeople).toContain("OrganizationMemberRow")
-    expect(organizationPeople).toContain("OrganizationMemberRowSkeleton")
-    expect(organizationPeople).toContain("member.role")
-    expect(organizationPeople).toContain("No members")
-    expect(organizationPeople).toContain("Input")
+    expect(organizationPeople).toContain("OrganizationMembers")
+    expect(organizationMembers).toContain("OrganizationMembersProps")
+    expect(organizationMembers).toContain("useListOrganizationMembers")
+    expect(organizationMembers).toContain("OrganizationAuthClient")
+    expect(organizationMembers).toContain("members.data?.members")
+    expect(organizationMembers).toContain("OrganizationMemberRow")
+    expect(organizationMembers).toContain("OrganizationMemberRowSkeleton")
+    expect(organizationMembers).toContain("Table")
+    expect(organizationMembers).toContain("TableHeader")
+    expect(organizationMembers).toContain("TableBody")
+    expect(organizationMembers).toContain("TableHead")
+    expect(organizationMembers).toContain("TableRow")
+    expect(organizationMembers).toContain("TableCell")
+    expect(organizationMembers).toContain("member.role")
+    expect(organizationMembers).toContain("No members")
+    expect(organizationMembers).toContain("Input")
     expect(organizationPeople).toContain("Search")
     expect(organizationPeople).toContain("Filter")
     expect(organizationPeople).toContain("DropdownMenuRadioGroup")
     expect(organizationPeople).toContain("DropdownMenuRadioItem")
-    expect(organizationPeople).toContain("memberSearch")
-    expect(organizationPeople).toContain("memberRoleFilter")
-    expect(organizationPeople).toContain("memberSort")
-    expect(organizationPeople).toContain("filteredMemberRows")
-    expect(organizationPeople).toContain("sortedMemberRows")
-    expect(organizationPeople).toContain("member.user?.name")
-    expect(organizationPeople).toContain("member.user?.email")
-    expect(organizationPeople).toContain("toLowerCase()")
-    expect(organizationPeople).toContain('memberRoleFilter() === "all"')
-    expect(organizationPeople).toContain("localization().search")
-    expect(organizationPeople).toContain("localization().clear")
-    expect(organizationPeople).toContain("sortMembers")
-    expect(organizationPeople).toContain('memberSort() === "name"')
-    expect(organizationPeople).toContain('memberSort() === "email"')
-    expect(organizationPeople).toContain('memberSort() === "role"')
-    expect(organizationPeople).not.toContain("SortableTableHead")
-    expect(organizationPeople).not.toContain("sortDescriptor")
-    expect(organizationPeople).not.toContain("<Table")
-    expect(organizationPeople).not.toContain("InputGroup")
-    expect(organizationPeople).not.toContain("Badge")
+    expect(organizationMembers).toContain("memberSearch")
+    expect(organizationMembers).toContain("memberRoleFilter")
+    expect(organizationMembers).toContain("memberSort")
+    expect(organizationMembers).toContain("filteredMemberRows")
+    expect(organizationMembers).toContain("sortedMemberRows")
+    expect(organizationMembers).toContain("member.user?.name")
+    expect(organizationMembers).toContain("member.user?.email")
+    expect(organizationMembers).toContain("toLowerCase()")
+    expect(organizationMembers).toContain('memberRoleFilter() === "all"')
+    expect(organizationMembers).toContain("localization().search")
+    expect(organizationMembers).toContain("localization().clear")
+    expect(organizationMembers).toContain("sortMembers")
+    expect(organizationMembers).toContain('memberSort() === "name"')
+    expect(organizationMembers).toContain('memberSort() === "email"')
+    expect(organizationMembers).toContain('memberSort() === "role"')
+    expect(organizationMembers).not.toContain("SortableTableHead")
+    expect(organizationMembers).not.toContain("sortDescriptor")
+    expect(organizationMembers).not.toContain("InputGroup")
+    expect(organizationMembers).not.toContain("Badge")
     expect(organizationPeople).toContain("useListOrganizationInvitations")
     expect(organizationPeople).toContain("invitations.data ?? []")
     expect(organizationPeople).toContain("OrganizationInvitationRow")
@@ -3053,59 +3094,65 @@ describe("Solid auth route component selection", () => {
       "disabled={cancelInvitation.isPending}"
     )
     expect(organizationPeople).toContain('aria-label="Cancel invitation"')
-    expect(organizationPeople).toContain("useUpdateMemberRole")
-    expect(organizationPeople).toContain('permissions: { member: ["update"] }')
-    expect(organizationPeople).toContain("memberRoleUpdated")
-    expect(organizationPeople).toContain("changeMemberRole")
-    expect(organizationPeople).toContain("DropdownMenu")
-    expect(organizationPeople).toContain("DropdownMenuItem")
-    expect(organizationPeople).toContain("updateMemberRole.mutate")
-    expect(organizationPeople).toContain("memberId: props.member.id")
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain("useUpdateMemberRole")
+    expect(organizationMemberRow).toContain(
+      'permissions: { member: ["update"] }'
+    )
+    expect(organizationMemberRow).toContain("memberRoleUpdated")
+    expect(organizationMemberRow).toContain("changeMemberRole")
+    expect(organizationMemberRow).toContain("DropdownMenu")
+    expect(organizationMemberRow).toContain("DropdownMenuItem")
+    expect(organizationMemberRow).toContain("updateMemberRole.mutate")
+    expect(organizationMemberRow).toContain("memberId: props.member.id")
+    expect(organizationMemberRow).toContain(
       'role as UpdateMemberRoleParams["role"]'
     )
-    expect(organizationPeople).toContain('key !== "owner"')
-    expect(organizationPeople).toContain("useSession")
-    expect(organizationPeople).toContain("session.data?.user.id")
-    expect(organizationPeople).toContain("RemoveMemberDialog")
-    expect(organizationPeople).toContain("useRemoveMember")
-    expect(organizationPeople).toContain('permissions: { member: ["delete"] }')
-    expect(organizationPeople).toContain("removeMember.mutate")
-    expect(organizationPeople).toContain("memberIdOrEmail: props.member.id")
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain('key !== "owner"')
+    expect(organizationMemberRow).toContain("useSession")
+    expect(organizationMemberRow).toContain("session.data?.user.id")
+    expect(organizationMemberRow).toContain("RemoveMemberDialog")
+    expect(organizationMemberRow).toContain("useRemoveMember")
+    expect(organizationMemberRow).toContain(
+      'permissions: { member: ["delete"] }'
+    )
+    expect(organizationMemberRow).toContain("removeMember.mutate")
+    expect(organizationMemberRow).toContain("memberIdOrEmail: props.member.id")
+    expect(organizationMemberRow).toContain(
       "organizationId: props.member.organizationId"
     )
-    expect(organizationPeople).toContain("memberRemoved")
-    expect(organizationPeople).toContain("removeMemberWarning")
-    expect(organizationPeople).toContain("disabled={removeMember.isPending}")
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain("memberRemoved")
+    expect(organizationMemberRow).toContain("removeMemberWarning")
+    expect(organizationMemberRow).toContain("disabled={removeMember.isPending}")
+    expect(organizationMemberRow).toContain(
       "props.member.userId !== session.data?.user.id"
     )
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain(
       "aria-label={props.localization.removeMember}"
     )
-    expect(organizationPeople).toContain("LeaveOrganizationDialog")
-    expect(organizationPeople).toContain("useLeaveOrganization")
-    expect(organizationPeople).toContain("useActiveOrganization")
-    expect(organizationPeople).toContain("leaveOrganization.mutate")
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain("LeaveOrganizationDialog")
+    expect(organizationMemberRow).toContain("useLeaveOrganization")
+    expect(organizationMemberRow).toContain("useActiveOrganization")
+    expect(organizationMemberRow).toContain("leaveOrganization.mutate")
+    expect(organizationMemberRow).toContain(
       "organizationId: activeOrganization.data.id"
     )
-    expect(organizationPeople).toContain("leftOrganization")
-    expect(organizationPeople).toContain("leaveOrganizationDescription")
-    expect(organizationPeople).toContain("auth.navigate")
-    expect(organizationPeople).toContain("auth.basePaths.settings")
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain("leftOrganization")
+    expect(organizationMemberRow).toContain("leaveOrganizationDescription")
+    expect(organizationMemberRow).toContain("auth.navigate")
+    expect(organizationMemberRow).toContain("auth.basePaths.settings")
+    expect(organizationMemberRow).toContain(
       "props.member.userId === session.data?.user.id"
     )
-    expect(organizationPeople).toContain(
+    expect(organizationMemberRow).toContain(
       "aria-label={props.localization.leaveOrganization}"
     )
-    expect(organizationPeople).toContain("InviteMemberDialog")
-    expect(organizationPeople).toContain("const [inviteOpen, setInviteOpen]")
-    expect(organizationPeople).toContain("setInviteOpen(true)")
-    expect(organizationPeople).toContain("LeaveOrganizationDialog")
-    expect(organizationPeople).toContain("useLeaveOrganization")
+    expect(organizationMemberRowSkeleton).toContain("TableRow")
+    expect(organizationMemberRowSkeleton).toContain("TableCell")
+    expect(organizationMembers).toContain("InviteMemberDialog")
+    expect(organizationMembers).toContain("const [inviteOpen, setInviteOpen]")
+    expect(organizationMembers).toContain("setInviteOpen(true)")
+    expect(organizationMemberRow).toContain("LeaveOrganizationDialog")
+    expect(organizationMemberRow).toContain("useLeaveOrganization")
     expect(inviteMemberDialog).toContain("InviteMemberDialogProps")
     expect(inviteMemberDialog).toContain("open: boolean")
     expect(inviteMemberDialog).toContain(

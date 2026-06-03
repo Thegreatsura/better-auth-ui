@@ -2634,7 +2634,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("OrganizationPeople")
     expect(organizationPeopleDoc).toContain("Members")
     expect(organizationPeopleDoc).toContain("Invitations")
-    expect(organizationPeopleDoc).toContain("basic members list")
+    expect(organizationPeopleDoc).toContain("members table")
     expect(organizationPeopleDoc).toContain(
       "search, filter by role, and sort members"
     )
@@ -2647,7 +2647,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
     expect(organizationPeopleDoc).toContain("remove non-current members")
     expect(organizationPeopleDoc).toContain("leave the active organization")
-    expect(organizationPeopleDoc).toContain("Full members table layout")
+    expect(organizationPeopleDoc).not.toContain("Full members table layout")
     expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, remove member, and leave organization"
     )
@@ -2686,6 +2686,18 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("CreateOrganizationDialog")
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
+    expect(organizationRegistry).toContain("src/components/ui/table.tsx")
+    expect(organizationRegistry).toContain('data-slot=\\"table-container\\"')
+    expect(organizationRegistry).toContain('data-slot=\\"table\\"')
+    expect(organizationRegistry).toContain("TableHeader")
+    expect(organizationRegistry).toContain("TableBody")
+    expect(organizationRegistry).toContain("TableHead")
+    expect(organizationRegistry).toContain("TableCell")
+    expect(organizationRegistry).toContain("organization-members.tsx")
+    expect(organizationRegistry).toContain("organization-member-row.tsx")
+    expect(organizationRegistry).toContain(
+      "organization-member-row-skeleton.tsx"
+    )
     expect(organizationRegistry).toContain("organization-settings.tsx")
     expect(organizationRegistry).toContain("user-invitations.tsx")
     expect(organizationRegistry).toContain("user-invitation-row.tsx")
@@ -2713,6 +2725,7 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("invite-member-dialog.tsx")
     expect(organizationRegistry).toContain("organization-people.tsx")
     expect(organizationRegistry).toContain("OrganizationPeopleProps")
+    expect(organizationRegistry).toContain("OrganizationMembersProps")
     expect(organizationRegistry).toContain("useListOrganizationMembers")
     expect(organizationRegistry).toContain("OrganizationMemberRow")
     expect(organizationRegistry).toContain("OrganizationMemberRowSkeleton")

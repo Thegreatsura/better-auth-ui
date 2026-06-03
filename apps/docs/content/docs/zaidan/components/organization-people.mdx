@@ -3,7 +3,7 @@ title: <OrganizationPeople />
 description: Solid/Zaidan organization people route shell.
 ---
 
-`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations` with client-side search, filtering, and sorting.
+`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a members table backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations` with client-side search, filtering, and sorting.
 
 ## Usage
 
@@ -25,7 +25,7 @@ npx zaidan add https://better-auth-ui.com/r/solid/organization.json
 
 ## Members
 
-The members section renders a basic members list with loading and empty states. It can search, filter by role, and sort members, opens `InviteMemberDialog` so admins can invite a member with a selected role, lets permitted users update member roles, lets permitted users remove non-current members, and lets the current user leave the active organization. Full members table layout remains deferred as a follow-up slice.
+The members section renders a members table with loading and empty states. It can search, filter by role, and sort members, opens `InviteMemberDialog` so admins can invite a member with a selected role, lets permitted users update member roles, lets permitted users remove non-current members, and lets the current user leave the active organization.
 
 ## Invitations
 
@@ -33,4 +33,4 @@ The invitations section renders a basic invitations list with loading and empty 
 
 ## Notes
 
-The People shell exists and is installed with the Organization registry entry. Advanced members table layout plus invitations table layout and advanced status actions remain deferred to follow-up slices.
+The People shell exists and is installed with the Organization registry entry. Invitations table layout and advanced status actions remain deferred to follow-up slices.

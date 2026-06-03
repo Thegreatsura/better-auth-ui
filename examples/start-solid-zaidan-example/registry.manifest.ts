@@ -466,6 +466,7 @@ export const solidRegistryManifest = {
         "Solid organization setup with settings tab, organization switcher, and slug route shell.",
       files: [
         libFile("src/lib/auth/organization-plugin.tsx"),
+        uiFile("src/components/ui/table.tsx"),
         componentFile(
           "src/components/auth/organization/organizations-settings.tsx"
         ),
@@ -505,6 +506,15 @@ export const solidRegistryManifest = {
         ),
         componentFile(
           "src/components/auth/organization/organization-people.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-members.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-member-row.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-member-row-skeleton.tsx"
         ),
         componentFile(
           "src/components/auth/organization/invite-member-dialog.tsx"

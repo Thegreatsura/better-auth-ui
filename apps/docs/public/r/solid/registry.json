@@ -1663,6 +1663,10 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/components/ui/table.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/components/auth/organization/organizations-settings.tsx",
           "type": "registry:component"
         },
@@ -1724,6 +1728,18 @@
         },
         {
           "path": "src/components/auth/organization/organization-people.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-members.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-member-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-member-row-skeleton.tsx",
           "type": "registry:component"
         },
         {
