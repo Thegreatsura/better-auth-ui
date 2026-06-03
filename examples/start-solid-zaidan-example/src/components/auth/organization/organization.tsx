@@ -1,12 +1,6 @@
 import { useNavigate } from "@tanstack/solid-router"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { OrganizationPeople } from "./organization-people"
 import { OrganizationSettings } from "./organization-settings"
 
 export type OrganizationProps = {
@@ -42,25 +36,7 @@ export function Organization(props: OrganizationProps) {
       </TabsContent>
 
       <TabsContent value="people" tabIndex={-1}>
-        <Card>
-          <CardHeader>
-            <CardTitle>People</CardTitle>
-            <CardDescription>
-              Member and invitation APIs are available from
-              <code class="mx-1 rounded bg-muted px-1 py-0.5 text-xs">
-                @better-auth-ui/solid
-              </code>
-              .
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p class="text-sm text-muted-foreground">
-              The full members and invitations table UI is deferred to keep PR
-              #393 reviewable. This page reserves the route and documents the
-              extension point.
-            </p>
-          </CardContent>
-        </Card>
+        <OrganizationPeople />
       </TabsContent>
     </Tabs>
   )

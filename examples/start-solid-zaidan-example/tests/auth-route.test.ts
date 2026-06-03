@@ -2834,6 +2834,37 @@ describe("Solid auth route component selection", () => {
     expect(organizationLogo).toContain("Skeleton")
   })
 
+  it("adds Solid/Zaidan Organization people shell parity", () => {
+    const organization = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization.tsx"
+      ),
+      "utf8"
+    )
+    const organizationPeople = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-people.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(organization).toContain("OrganizationPeople")
+    expect(organization).not.toContain(
+      "Member and invitation APIs are available"
+    )
+    expect(organizationPeople).toContain("OrganizationPeopleProps")
+    expect(organizationPeople).toContain("class?: string")
+    expect(organizationPeople).toContain("Members")
+    expect(organizationPeople).toContain("Invitations")
+    expect(organizationPeople).toContain(
+      "members and invitations table UI is deferred"
+    )
+    expect(organizationPeople).not.toContain("useListOrganizationMembers")
+    expect(organizationPeople).not.toContain("useListOrganizationInvitations")
+  })
+
   it("aligns OrganizationSwitcher focused API and behavior with shadcn", () => {
     const organizationSwitcher = readFileSync(
       resolve(

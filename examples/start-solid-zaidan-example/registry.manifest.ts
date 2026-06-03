@@ -484,6 +484,9 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/organization/change-organization-logo.tsx"
         ),
+        componentFile(
+          "src/components/auth/organization/organization-people.tsx"
+        ),
         componentFile("src/components/auth/organization/organization-row.tsx"),
         componentFile(
           "src/components/auth/organization/organization-switcher.tsx"

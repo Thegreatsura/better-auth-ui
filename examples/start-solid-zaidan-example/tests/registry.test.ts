@@ -2038,7 +2038,8 @@ describe("Solid registry isolation", () => {
       "---Organization---",
       "organizations-settings",
       "organization-switcher",
-      "organization"
+      "organization",
+      "organization-people"
     ])
     expect(zaidanConceptsMeta.pages).toEqual(["additional-fields"])
     expect(zaidanIntegrationsMeta.pages).toEqual(["tanstack-start"])
@@ -2609,6 +2610,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain("profile/settings")
     expect(organizationPluginDoc).toContain("organization-profile.tsx")
     expect(organizationPluginDoc).toContain("change-organization-logo.tsx")
+    expect(organizationPluginDoc).toContain("organization-people.tsx")
     expect(organizationPluginDoc).not.toContain(
       "profile, role editing, logo upload"
     )
@@ -2616,8 +2618,18 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).not.toContain(
       "organization API keys are deferred"
     )
+    const organizationPeopleDoc = componentDoc("organization-people")
+    const organizationDoc = componentDoc("organization")
     const organizationSwitcherDoc = componentDoc("organization-switcher")
 
+    expect(organizationPeopleDoc).toContain("OrganizationPeople")
+    expect(organizationPeopleDoc).toContain("Members")
+    expect(organizationPeopleDoc).toContain("Invitations")
+    expect(organizationPeopleDoc).toContain(
+      "tables and actions remain deferred"
+    )
+    expect(organizationDoc).toContain("People shell")
+    expect(organizationDoc).not.toContain("reserves the `people` route")
     expect(organizationSwitcherDoc).toContain("setActive")
     expect(organizationSwitcherDoc).toContain("hidePersonal")
     expect(organizationSwitcherDoc).toContain("hideSettings")
@@ -2647,6 +2659,8 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("organization-profile.tsx")
     expect(organizationRegistry).toContain("organization-logo.tsx")
     expect(organizationRegistry).toContain("change-organization-logo.tsx")
+    expect(organizationRegistry).toContain("organization-people.tsx")
+    expect(organizationRegistry).toContain("OrganizationPeopleProps")
     expect(organizationRegistry).toContain("useUpdateOrganization")
     expect(organizationRegistry).toContain(
       "data: { name: name(), slug: slug() }"
