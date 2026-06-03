@@ -1087,6 +1087,13 @@ describe("Solid auth route component selection", () => {
     expect(magicLinkButton).toContain(
       "coreMagicLinkPlugin().viewPaths.auth.magicLink"
     )
+    expect(magicLinkButton).toContain("authMutationKeys")
+    expect(magicLinkButton).toContain("useIsMutating")
+    expect(magicLinkButton).toContain(
+      "mutationKey: authMutationKeys.signIn.all"
+    )
+    expect(magicLinkButton).toContain("aria-disabled")
+    expect(magicLinkButton).toContain("event.preventDefault()")
     expect(magicLinkButton).toContain("magicLinkLabels().magicLink")
     expect(magicLinkButton).not.toContain('"Magic Link"')
     expect(magicLinkButton).not.toContain("className")

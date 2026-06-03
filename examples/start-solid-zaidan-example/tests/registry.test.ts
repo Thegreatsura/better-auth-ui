@@ -1463,6 +1463,12 @@ describe("Solid registry isolation", () => {
     expect(generatedMagicLinkButtonSource).toContain(
       "magicLinkLabels().magicLink"
     )
+    expect(generatedMagicLinkButtonSource).toContain("useIsMutating")
+    expect(generatedMagicLinkButtonSource).toContain(
+      "authMutationKeys.signIn.all"
+    )
+    expect(generatedMagicLinkButtonSource).toContain("aria-disabled")
+    expect(generatedMagicLinkButtonSource).toContain("event.preventDefault()")
     expect(generatedMagicLinkButtonSource).not.toContain('"Magic Link"')
 
     const signOut = readJson<{
