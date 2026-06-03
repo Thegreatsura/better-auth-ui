@@ -1,6 +1,7 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type {
   OrganizationAuthClient,
+  RemoveMemberParams,
   UpdateMemberRoleParams
 } from "@better-auth-ui/solid"
 import {
@@ -9,10 +10,11 @@ import {
   useHasPermission,
   useListOrganizationInvitations,
   useListOrganizationMembers,
+  useRemoveMember,
   useSession,
   useUpdateMemberRole
 } from "@better-auth-ui/solid"
-import { Pencil, PlusCircle, X } from "lucide-solid"
+import { Pencil, PlusCircle, Trash2, X } from "lucide-solid"
 import { createMemo, createSignal, For, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import { UserView } from "@/components/auth/user/user-view"
@@ -24,6 +26,15 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +52,7 @@ export type OrganizationPeopleProps = {
 
 type OrganizationMember = {
   id: string
+  organizationId: string
   role?: string | null
   userId?: string | null
   user?: {
@@ -55,12 +67,23 @@ type RoleMap = Record<string, string>
 const fallbackLocalization = {
   changeMemberRole: "Change member role",
   memberRoleUpdated: "Member role updated",
+  removeMember: "Remove member",
+  removeMemberWarning:
+    "Are you sure you want to remove this member from the organization? They will lose access immediately.",
+  memberRemoved: "Member removed",
   member: "Member",
   admin: "Admin",
   owner: "Owner"
 } satisfies Pick<
   OrganizationLocalization,
-  "changeMemberRole" | "memberRoleUpdated" | "member" | "admin" | "owner"
+  | "changeMemberRole"
+  | "memberRoleUpdated"
+  | "removeMember"
+  | "removeMemberWarning"
+  | "memberRemoved"
+  | "member"
+  | "admin"
+  | "owner"
 >
 
 const fallbackRoles: RoleMap = {
@@ -102,21 +125,90 @@ function formatInvitationDate(createdAt?: Date | string | null) {
   })
 }
 
+function RemoveMemberDialog(props: {
+  localization: Pick<
+    OrganizationLocalization,
+    "removeMember" | "removeMemberWarning" | "memberRemoved"
+  >
+  member: OrganizationMember
+  onOpenChange: (open: boolean) => void
+  open: boolean
+}) {
+  const auth = useAuth()
+  const removeMember = useRemoveMember(
+    auth.authClient as OrganizationAuthClient,
+    {
+      onSuccess: () => {
+        props.onOpenChange(false)
+        toast.success(props.localization.memberRemoved)
+      }
+    }
+  )
+
+  return (
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{props.localization.removeMember}</DialogTitle>
+          <DialogDescription>
+            {props.localization.removeMemberWarning}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose
+            as={Button}
+            disabled={removeMember.isPending}
+            type="button"
+            variant="outline"
+          >
+            {auth.localization.settings.cancel}
+          </DialogClose>
+          <Button
+            disabled={removeMember.isPending}
+            onClick={() =>
+              removeMember.mutate({
+                memberIdOrEmail: props.member.id,
+                organizationId: props.member.organizationId
+              } satisfies RemoveMemberParams)
+            }
+            type="button"
+            variant="destructive"
+          >
+            {props.localization.removeMember}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function OrganizationMemberRow(props: {
   isOwner: boolean
   localization: Pick<
     OrganizationLocalization,
-    "changeMemberRole" | "memberRoleUpdated"
+    | "changeMemberRole"
+    | "memberRoleUpdated"
+    | "removeMember"
+    | "removeMemberWarning"
+    | "memberRemoved"
   >
   member: OrganizationMember
   roles: RoleMap
 }) {
   const auth = useAuth()
+  const [removeOpen, setRemoveOpen] = createSignal(false)
+  const session = useSession(auth.authClient)
   const user = () => props.member.user
   const permission = useHasPermission(
     auth.authClient as OrganizationAuthClient,
     {
       permissions: { member: ["update"] }
+    }
+  )
+  const deletePermission = useHasPermission(
+    auth.authClient as OrganizationAuthClient,
+    {
+      permissions: { member: ["delete"] }
     }
   )
   const updateMemberRole = useUpdateMemberRole(
@@ -174,7 +266,29 @@ function OrganizationMemberRow(props: {
             </DropdownMenuContent>
           </DropdownMenu>
         </Show>
+        <Show
+          when={
+            deletePermission.data?.success &&
+            props.member.userId !== session.data?.user.id
+          }
+        >
+          <Button
+            aria-label={props.localization.removeMember}
+            onClick={() => setRemoveOpen(true)}
+            size="icon-sm"
+            type="button"
+            variant="outline"
+          >
+            <Trash2 class="size-4 text-destructive" />
+          </Button>
+        </Show>
       </div>
+      <RemoveMemberDialog
+        localization={props.localization}
+        member={props.member}
+        onOpenChange={setRemoveOpen}
+        open={removeOpen()}
+      />
     </div>
   )
 }
@@ -277,7 +391,11 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
       | {
           localization?: Pick<
             OrganizationLocalization,
-            "changeMemberRole" | "memberRoleUpdated"
+            | "changeMemberRole"
+            | "memberRoleUpdated"
+            | "removeMember"
+            | "removeMemberWarning"
+            | "memberRemoved"
           >
           roles?: RoleMap
         }

@@ -2910,8 +2910,23 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain('key !== "owner"')
     expect(organizationPeople).toContain("useSession")
     expect(organizationPeople).toContain("session.data?.user.id")
-    expect(organizationPeople).not.toContain("RemoveMemberDialog")
-    expect(organizationPeople).not.toContain("useRemoveMember")
+    expect(organizationPeople).toContain("RemoveMemberDialog")
+    expect(organizationPeople).toContain("useRemoveMember")
+    expect(organizationPeople).toContain('permissions: { member: ["delete"] }')
+    expect(organizationPeople).toContain("removeMember.mutate")
+    expect(organizationPeople).toContain("memberIdOrEmail: props.member.id")
+    expect(organizationPeople).toContain(
+      "organizationId: props.member.organizationId"
+    )
+    expect(organizationPeople).toContain("memberRemoved")
+    expect(organizationPeople).toContain("removeMemberWarning")
+    expect(organizationPeople).toContain("disabled={removeMember.isPending}")
+    expect(organizationPeople).toContain(
+      "props.member.userId !== session.data?.user.id"
+    )
+    expect(organizationPeople).toContain(
+      "aria-label={props.localization.removeMember}"
+    )
     expect(organizationPeople).toContain("InviteMemberDialog")
     expect(organizationPeople).toContain("const [inviteOpen, setInviteOpen]")
     expect(organizationPeople).toContain("setInviteOpen(true)")

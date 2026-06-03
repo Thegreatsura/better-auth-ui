@@ -2630,7 +2630,11 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("basic invitations list")
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
+    expect(organizationPeopleDoc).toContain("remove non-current members")
     expect(organizationPeopleDoc).toContain(
+      "search, filters, sorting, and leave organization"
+    )
+    expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, remove member, and leave organization"
     )
     expect(organizationPeopleDoc).toContain(
@@ -2683,6 +2687,13 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("permissions: { member:")
     expect(organizationRegistry).toContain("changeMemberRole")
     expect(organizationRegistry).toContain("memberRoleUpdated")
+    expect(organizationRegistry).toContain("useRemoveMember")
+    expect(organizationRegistry).toContain("memberIdOrEmail: props.member.id")
+    expect(organizationRegistry).toContain(
+      "organizationId: props.member.organizationId"
+    )
+    expect(organizationRegistry).toContain("memberRemoved")
+    expect(organizationRegistry).toContain("removeMemberWarning")
     expect(organizationRegistry).toContain("InviteMemberDialogProps")
     expect(organizationRegistry).toContain("useInviteMember")
     expect(organizationRegistry).toContain("pickDefaultRole")
