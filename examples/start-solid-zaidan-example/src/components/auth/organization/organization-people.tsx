@@ -95,6 +95,11 @@ const fallbackLocalization = {
   clear: "Clear",
   all: "All",
   role: "Role",
+  status: "Status",
+  pending: "Pending",
+  accepted: "Accepted",
+  rejected: "Rejected",
+  canceled: "Canceled",
   member: "Member",
   admin: "Admin",
   owner: "Owner"
@@ -112,10 +117,22 @@ const fallbackLocalization = {
   | "clear"
   | "all"
   | "role"
+  | "status"
+  | "pending"
+  | "accepted"
+  | "rejected"
+  | "canceled"
   | "member"
   | "admin"
   | "owner"
 >
+
+const invitationStatuses = [
+  "pending",
+  "accepted",
+  "rejected",
+  "canceled"
+] as const
 
 const fallbackRoles: RoleMap = {
   owner: fallbackLocalization.owner,
@@ -498,6 +515,10 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   const [memberSearch, setMemberSearch] = createSignal("")
   const [memberRoleFilter, setMemberRoleFilter] = createSignal("all")
   const [memberSort, setMemberSort] = createSignal<MemberSort>("name")
+  const [invitationSearch, setInvitationSearch] = createSignal("")
+  const [invitationRoleFilter, setInvitationRoleFilter] = createSignal("all")
+  const [invitationStatusFilter, setInvitationStatusFilter] =
+    createSignal("all")
   const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
@@ -525,6 +546,11 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
             | "clear"
             | "all"
             | "role"
+            | "status"
+            | "pending"
+            | "accepted"
+            | "rejected"
+            | "canceled"
           >
           roles?: RoleMap
         }
@@ -582,6 +608,28 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
     return 0
   }
   const sortedMemberRows = () => [...filteredMemberRows()].sort(sortMembers)
+  const normalizedInvitationSearch = () =>
+    invitationSearch().trim().toLowerCase()
+  const filteredInvitationRows = () =>
+    invitationRows().filter((invitation) => {
+      const roleMatches =
+        invitationRoleFilter() === "all" ||
+        invitation.role === invitationRoleFilter()
+      const statusMatches =
+        invitationStatusFilter() === "all" ||
+        invitation.status === invitationStatusFilter()
+      const search = normalizedInvitationSearch()
+
+      if (!search) return roleMatches && statusMatches
+
+      return (
+        roleMatches &&
+        statusMatches &&
+        (invitation.email?.toLowerCase().includes(search) ?? false)
+      )
+    })
+  const invitationStatusLabel = (status: (typeof invitationStatuses)[number]) =>
+    localization()[status] ?? formatStatus(status)
   const isOwner = () =>
     memberRows().some(
       (member) =>
@@ -757,12 +805,112 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                 </p>
               }
             >
-              <div class="grid gap-2">
-                <For each={invitationRows()}>
-                  {(invitation) => (
-                    <OrganizationInvitationRow invitation={invitation} />
-                  )}
-                </For>
+              <div class="grid gap-4">
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <div class="relative min-w-0 flex-1">
+                    <Search class="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
+                    <Input
+                      aria-label={localization().search}
+                      class="pl-9"
+                      onInput={(event) =>
+                        setInvitationSearch(event.currentTarget.value)
+                      }
+                      placeholder={localization().search}
+                      value={invitationSearch()}
+                    />
+                  </div>
+                  <div class="flex gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        as={Button}
+                        class=""
+                        variant="outline"
+                      >
+                        <Filter class="size-4" />
+                        {localization().role}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuRadioGroup
+                          onChange={setInvitationRoleFilter}
+                          value={invitationRoleFilter()}
+                        >
+                          <DropdownMenuRadioItem value="all">
+                            {localization().all}
+                          </DropdownMenuRadioItem>
+                          <For each={Object.entries(roles())}>
+                            {([role, label]) => (
+                              <DropdownMenuRadioItem value={role}>
+                                {label}
+                              </DropdownMenuRadioItem>
+                            )}
+                          </For>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        as={Button}
+                        class=""
+                        variant="outline"
+                      >
+                        <Filter class="size-4" />
+                        {localization().status}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuRadioGroup
+                          onChange={setInvitationStatusFilter}
+                          value={invitationStatusFilter()}
+                        >
+                          <DropdownMenuRadioItem value="all">
+                            {localization().all}
+                          </DropdownMenuRadioItem>
+                          <For each={invitationStatuses}>
+                            {(status) => (
+                              <DropdownMenuRadioItem value={status}>
+                                {invitationStatusLabel(status)}
+                              </DropdownMenuRadioItem>
+                            )}
+                          </For>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Show
+                      when={
+                        invitationSearch() ||
+                        invitationRoleFilter() !== "all" ||
+                        invitationStatusFilter() !== "all"
+                      }
+                    >
+                      <Button
+                        onClick={() => {
+                          setInvitationSearch("")
+                          setInvitationRoleFilter("all")
+                          setInvitationStatusFilter("all")
+                        }}
+                        type="button"
+                        variant="ghost"
+                      >
+                        {localization().clear}
+                      </Button>
+                    </Show>
+                  </div>
+                </div>
+                <Show
+                  when={filteredInvitationRows().length > 0}
+                  fallback={
+                    <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+                      No invitations match the current filters.
+                    </p>
+                  }
+                >
+                  <div class="grid gap-2">
+                    <For each={filteredInvitationRows()}>
+                      {(invitation) => (
+                        <OrganizationInvitationRow invitation={invitation} />
+                      )}
+                    </For>
+                  </div>
+                </Show>
               </div>
             </Show>
           </Show>

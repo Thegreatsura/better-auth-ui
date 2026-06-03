@@ -2631,6 +2631,9 @@ describe("Solid registry isolation", () => {
     )
     expect(organizationPeopleDoc).toContain("update member roles")
     expect(organizationPeopleDoc).toContain("basic invitations list")
+    expect(organizationPeopleDoc).toContain(
+      "search invitations and filter them by role or status"
+    )
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
     expect(organizationPeopleDoc).toContain("remove non-current members")
@@ -2639,8 +2642,11 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, remove member, and leave organization"
     )
-    expect(organizationPeopleDoc).toContain(
+    expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, and advanced status actions"
+    )
+    expect(organizationPeopleDoc).toContain(
+      "invitations sorting, table layout, and advanced status actions"
     )
     expect(organizationDoc).toContain("People shell")
     expect(organizationDoc).toContain("OrganizationDangerZone")
@@ -2704,6 +2710,12 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useListOrganizationInvitations")
     expect(organizationRegistry).toContain("OrganizationInvitationRow")
     expect(organizationRegistry).toContain("OrganizationInvitationRowSkeleton")
+    expect(organizationRegistry).toContain("invitationSearch")
+    expect(organizationRegistry).toContain("invitationRoleFilter")
+    expect(organizationRegistry).toContain("invitationStatusFilter")
+    expect(organizationRegistry).toContain("filteredInvitationRows")
+    expect(organizationRegistry).toContain("normalizedInvitationSearch")
+    expect(organizationRegistry).toContain("localization().status")
     expect(organizationRegistry).toContain("useCancelInvitation")
     expect(organizationRegistry).toContain("useHasPermission")
     expect(organizationRegistry).toContain("permissions: { invitation:")
