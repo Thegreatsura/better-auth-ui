@@ -1,11 +1,17 @@
 import {
+  magicLinkPlugin as coreMagicLinkPlugin,
+  type MagicLinkLocalization,
+  magicLinkLocalization
+} from "@better-auth-ui/core/plugins"
+import {
   type MagicLinkAuthClient,
   signInMagicLinkOptions,
   useAuth
 } from "@better-auth-ui/solid"
+import type { AuthPlugin } from "@better-auth-ui/solid/plugins"
 import { createMutation } from "@tanstack/solid-query"
 import { Link } from "@tanstack/solid-router"
-import { createSignal, Show } from "solid-js"
+import { type Component, createSignal, For, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import {
   ProviderButtons,
@@ -18,38 +24,51 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
 export type MagicLinkProps = {
-  className?: string
+  class?: string
   socialLayout?: SocialLayout
   socialPosition?: "bottom" | "top"
+}
+
+type AuthButtonComponent = Component<{ view?: string }>
+
+type AuthPluginWithButtons = AuthPlugin & {
+  authButtons?: AuthButtonComponent[]
 }
 
 export function MagicLink(props: MagicLinkProps) {
   const auth = useAuth()
   const [email, setEmail] = createSignal("")
   const [emailError, setEmailError] = createSignal<string>()
-  const magicLinkLocalization = () =>
-    (auth.plugins.find((plugin) => plugin.id === "magicLink")?.localization as
-      | { magicLinkSent?: string; sendMagicLink?: string }
-      | undefined) ?? {}
+  const magicLinkPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === coreMagicLinkPlugin.id)
+  const magicLinkLabels = (): MagicLinkLocalization => ({
+    ...magicLinkLocalization,
+    ...(magicLinkPluginConfig()?.localization as
+      | Partial<MagicLinkLocalization>
+      | undefined)
+  })
   const signInMagicLink = createMutation(() => ({
     ...signInMagicLinkOptions(auth.authClient as MagicLinkAuthClient),
     onSuccess: () => {
       setEmail("")
-      toast.success(magicLinkLocalization().magicLinkSent ?? "Magic link sent")
+      toast.success(magicLinkLabels().magicLinkSent)
     }
   }))
   const showSeparator = () => Boolean(auth.socialProviders?.length)
   const socialPosition = () => props.socialPosition ?? "bottom"
 
-  const submitMagicLink = (event: SubmitEvent) => {
+  const submitMagicLink = (
+    event: SubmitEvent & { currentTarget: HTMLFormElement }
+  ) => {
     event.preventDefault()
     signInMagicLink.mutate({
       callbackURL: `${auth.baseURL}${auth.redirectTo}`,
       email: email()
     } as Parameters<typeof signInMagicLink.mutate>[0])
   }
+
   return (
-    <Card class={cn("w-full max-w-sm", props.className)}>
+    <Card class={cn("w-full max-w-sm", props.class)}>
       <CardHeader>
         <CardTitle class="text-xl font-semibold">
           {auth.localization.auth.signIn}
@@ -94,9 +113,22 @@ export function MagicLink(props: MagicLinkProps) {
               <Show when={emailError()}>
                 {(message) => <p role="alert">{message()}</p>}
               </Show>
-              <Button disabled={signInMagicLink.isPending} type="submit">
-                {magicLinkLocalization().sendMagicLink ?? "Send magic link"}
-              </Button>
+              <div class="flex flex-col gap-3">
+                <Button disabled={signInMagicLink.isPending} type="submit">
+                  {magicLinkLabels().sendMagicLink}
+                </Button>
+
+                <For
+                  each={(auth.plugins as AuthPluginWithButtons[]).flatMap(
+                    (plugin) =>
+                      (plugin.authButtons ?? []).map((AuthButton) => ({
+                        AuthButton
+                      }))
+                  )}
+                >
+                  {({ AuthButton }) => <AuthButton view="magicLink" />}
+                </For>
+              </div>
             </div>
           </form>
           <Show

@@ -1429,6 +1429,42 @@ describe("Solid registry isolation", () => {
       'from "./username/sign-in-username"'
     )
 
+    const magicLink = readJson<{
+      description: string
+      files: Array<{ content: string; path: string }>
+      name: string
+    }>(join(outputRoot, "solid/magic-link.json"))
+    expect(magicLink.name).toBe("magic-link")
+    expect(magicLink.description).toContain("magic-link sign-in")
+    expect(magicLink.files).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: "src/lib/auth/magic-link-plugin.ts"
+        }),
+        expect.objectContaining({ path: "src/components/auth/magic-link.tsx" }),
+        expect.objectContaining({
+          path: "src/components/auth/magic-link-button.tsx"
+        })
+      ])
+    )
+    const generatedMagicLinkSource = magicLink.files.find(
+      (file) => file.path === "src/components/auth/magic-link.tsx"
+    )?.content
+    const generatedMagicLinkButtonSource = magicLink.files.find(
+      (file) => file.path === "src/components/auth/magic-link-button.tsx"
+    )?.content
+    expect(generatedMagicLinkSource).toContain("class?: string")
+    expect(generatedMagicLinkSource).not.toContain("className?: string")
+    expect(generatedMagicLinkSource).toContain("magicLinkLocalization")
+    expect(generatedMagicLinkSource).toContain('view="magicLink"')
+    expect(generatedMagicLinkButtonSource).toContain(
+      "coreMagicLinkPlugin().viewPaths.auth.magicLink"
+    )
+    expect(generatedMagicLinkButtonSource).toContain(
+      "magicLinkLabels().magicLink"
+    )
+    expect(generatedMagicLinkButtonSource).not.toContain('"Magic Link"')
+
     const signOut = readJson<{
       files: Array<{ content: string; path: string }>
       name: string

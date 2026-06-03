@@ -150,7 +150,8 @@ export const solidRegistryManifest = {
       name: "magic-link",
       type: "registry:component",
       title: "Solid Magic Link",
-      description: "Solid magic-link sign-in form and toggle button.",
+      description:
+        "Solid/Zaidan passwordless magic-link sign-in view, toggle button, and UI plugin factory.",
       files: [
         libFile("src/lib/auth/magic-link-plugin.ts"),
         componentFile("src/components/auth/magic-link.tsx"),
