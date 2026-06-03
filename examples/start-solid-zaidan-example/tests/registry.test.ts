@@ -2378,7 +2378,11 @@ describe("Solid registry isolation", () => {
         expect(page, "api-key should keep copied files inside setup").toContain(
           "This drops the following into your codebase:"
         )
-      } else if (name === "delete-user" || name === "magic-link") {
+      } else if (
+        name === "delete-user" ||
+        name === "magic-link" ||
+        name === "multi-session"
+      ) {
         expect(page, `${name} should keep setup-driven structure`).toContain(
           "## Setup"
         )
@@ -2483,6 +2487,11 @@ describe("Solid registry isolation", () => {
     )
 
     const magicLinkPluginDoc = pluginDoc("magic-link")
+    const multiSessionPluginDoc = pluginDoc("multi-session")
+    const multiSessionStory = readFileSync(
+      resolve(__dirname, "../src/stories/multi-session.stories.tsx"),
+      "utf8"
+    )
 
     expect(magicLinkPluginDoc).toContain("## Setup")
     expect(magicLinkPluginDoc).toContain("## Components")
@@ -2522,6 +2531,64 @@ describe("Solid registry isolation", () => {
     expect(magicLinkPluginDoc).not.toContain("better-auth/react")
     expect(magicLinkPluginDoc).not.toContain("@tanstack/react-router")
     expect(magicLinkPluginDoc).not.toContain("useAuthPlugin")
+    expect(multiSessionPluginDoc).toContain("## Setup")
+    expect(multiSessionPluginDoc).toContain("## Components")
+    expect(multiSessionPluginDoc).toContain("## Options")
+    expect(multiSessionPluginDoc).toContain("## Localization")
+    expect(multiSessionPluginDoc).toContain("## Session management")
+    expect(multiSessionPluginDoc).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/multi-session.json"
+    )
+    expect(multiSessionPluginDoc).toContain("multiSession()")
+    expect(multiSessionPluginDoc).toContain("multiSessionClient()")
+    expect(multiSessionPluginDoc).toContain(
+      'import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"'
+    )
+    expect(multiSessionPluginDoc).toContain("plugins={[multiSessionPlugin()]}")
+    expect(multiSessionPluginDoc).toContain(
+      "src/lib/auth/multi-session-plugin.ts"
+    )
+    expect(multiSessionPluginDoc).toContain(
+      "src/components/auth/multi-session/manage-account.tsx"
+    )
+    expect(multiSessionPluginDoc).toContain(
+      "src/components/auth/multi-session/manage-accounts.tsx"
+    )
+    expect(multiSessionPluginDoc).toContain(
+      "src/components/auth/multi-session/switch-account-submenu.tsx"
+    )
+    expect(multiSessionPluginDoc).toContain(
+      "src/components/auth/multi-session/switch-account-submenu-content.tsx"
+    )
+    expect(multiSessionPluginDoc).toContain(
+      "src/components/auth/multi-session/switch-account-submenu-item.tsx"
+    )
+    expect(multiSessionPluginDoc).toContain("<ZaidanStory")
+    expect(multiSessionPluginDoc).toContain(
+      'storyId="zaidan-plugins-multi-session--manage-accounts-preview"'
+    )
+    expect(multiSessionPluginDoc).toContain(
+      'storyId="zaidan-plugins-multi-session--switch-account-preview"'
+    )
+    expect(multiSessionPluginDoc).toContain('name="ManageAccountsProps"')
+    expect(multiSessionPluginDoc).toContain('name="SwitchAccountSubmenuProps"')
+    expect(multiSessionPluginDoc).toContain('name="MultiSessionPluginOptions"')
+    expect(multiSessionPluginDoc).toContain('name="MultiSessionLocalization"')
+    expect(multiSessionPluginDoc).toContain("listDeviceSessionsOptions")
+    expect(multiSessionPluginDoc).toContain("setActiveSessionOptions")
+    expect(multiSessionPluginDoc).toContain("revokeMultiSessionOptions")
+    expect(multiSessionPluginDoc).not.toContain("payload")
+    expect(multiSessionPluginDoc).not.toContain("ComponentPreview")
+    expect(multiSessionPluginDoc).not.toContain("className")
+    expect(multiSessionPluginDoc).not.toContain("better-auth/react")
+    expect(multiSessionPluginDoc).not.toContain("@tanstack/react-router")
+    expect(multiSessionStory).toContain('title: "Zaidan/Plugins/Multi Session"')
+    expect(multiSessionStory).toContain("export const ManageAccountsPreview")
+    expect(multiSessionStory).toContain("export const SwitchAccountPreview")
+    expect(multiSessionStory).toContain("plugins={[multiSessionPlugin()]}")
+    expect(multiSessionStory).toContain("multiSessionQueryKeys.list")
+    expect(multiSessionStory).toContain("RouterProvider")
+    expect(multiSessionStory).toContain("createMemoryHistory")
     expect(pluginDoc("passkey")).toContain("WebAuthn origin")
     expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
     expect(pluginDoc("captcha")).toContain("captchaPlugin")
@@ -2537,6 +2604,10 @@ describe("Solid registry isolation", () => {
     expect(pluginDoc("theme")).toContain("src/lib/theme.ts")
     expect(componentDoc("sign-in")).toContain("username-aware")
     expect(componentDoc("user-button")).toContain("theme")
+    expect(componentDoc("user-button")).toContain("plugin-contributed")
+    expect(componentDoc("user-button")).toContain("multi-session submenu")
+    expect(componentDoc("account-settings")).toContain("plugin-contributed")
+    expect(componentDoc("account-settings")).toContain("accountCards")
     expect(componentDoc("security-settings")).toContain("passkey")
 
     const authProviderDoc = componentDoc("auth-provider")

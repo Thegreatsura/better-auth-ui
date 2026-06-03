@@ -1,4 +1,8 @@
-import { multiSessionLocalization } from "@better-auth-ui/core/plugins"
+import {
+  multiSessionPlugin as coreMultiSessionPlugin,
+  type MultiSessionLocalization,
+  multiSessionLocalization
+} from "@better-auth-ui/core/plugins"
 import { useAuth } from "@better-auth-ui/solid"
 import { ArrowLeftRight, LogOut, MoreHorizontal } from "lucide-solid"
 import { Show } from "solid-js"
@@ -36,6 +40,14 @@ export function ManageAccountRow(props: {
 }) {
   const auth = useAuth()
   const label = () => resolveUserLabel(props.name, props.email)
+  const multiSessionPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === coreMultiSessionPlugin.id)
+  const multiSessionLabels = (): MultiSessionLocalization => ({
+    ...multiSessionLocalization,
+    ...(multiSessionPluginConfig()?.localization as
+      | Partial<MultiSessionLocalization>
+      | undefined)
+  })
 
   return (
     <Item class="rounded-none p-0">
@@ -72,7 +84,7 @@ export function ManageAccountRow(props: {
               <DropdownMenuContent class="min-w-fit">
                 <DropdownMenuItem onSelect={props.onSwitch}>
                   <ArrowLeftRight class="text-muted-foreground" />
-                  {multiSessionLocalization.switchAccount}
+                  {multiSessionLabels().switchAccount}
                 </DropdownMenuItem>
                 <DropdownMenuItem onSelect={props.onSignOut}>
                   <LogOut class="text-muted-foreground" />

@@ -1,6 +1,6 @@
 ---
 title: <AccountSettings />
-description: A Solid account settings stack for profile, email, appearance, and multi-session account management.
+description: A Solid account settings stack for profile, email, appearance, and plugin-contributed account cards.
 ---
 
 ## Usage
@@ -15,7 +15,7 @@ export function AccountTab() {
 }
 ```
 
-The component composes the account cards shipped by the Solid registry entries: profile, email, theme appearance, and multi-session account switching.
+The component composes the base account cards shipped by the Solid registry entries—profile, email, and theme appearance—and then renders plugin-contributed `accountCards`. With Multi Session enabled, that means `<ManageAccounts />` is injected by the registered plugin instead of being hardcoded into the settings stack.
 
 ## Installation
 
@@ -34,13 +34,12 @@ Zaidan exposes the wrapper styling hook as Solid `class`, adapting the shadcn `c
 ## Plugin gates
 
 - `theme` powers the appearance card.
-- `multi-session` powers account switching through `ManageAccounts`.
+- `multi-session` can inject account switching through plugin-contributed `accountCards`.
 - `delete-user` is a related account/security registry entry; expose the danger-zone UI only when the Better Auth delete-user plugin is configured.
 
 ## Installed files
 
 - `src/components/auth/settings/account/account-settings.tsx`
-- `src/components/auth/settings/account/manage-account-row.tsx`
 - `src/components/auth/settings/account/appearance-settings.tsx`
 
-After install, pair it with `user-profile`, `change-email`, `theme`, `multi-session`, and any account danger-zone registry entries you expose.
+After install, pair it with `user-profile`, `change-email`, `theme`, and whichever plugins contribute extra account cards in your app.

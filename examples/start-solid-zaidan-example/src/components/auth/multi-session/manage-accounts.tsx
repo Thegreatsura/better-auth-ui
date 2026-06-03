@@ -1,4 +1,8 @@
-import { multiSessionLocalization } from "@better-auth-ui/core/plugins"
+import {
+  multiSessionPlugin as coreMultiSessionPlugin,
+  type MultiSessionLocalization,
+  multiSessionLocalization
+} from "@better-auth-ui/core/plugins"
 import {
   listDeviceSessionsOptions,
   type MultiSessionAuthClient,
@@ -21,11 +25,24 @@ import {
 import type { DeviceSession } from "@/components/auth/settings/shared/types"
 import { Card, CardContent } from "@/components/ui/card"
 import { ItemGroup, ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
 
-export function ManageAccounts() {
+export type ManageAccountsProps = {
+  class?: string
+}
+
+export function ManageAccounts(props: ManageAccountsProps = {}) {
   const auth = useAuth()
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
+  const multiSessionPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === coreMultiSessionPlugin.id)
+  const multiSessionLabels = (): MultiSessionLocalization => ({
+    ...multiSessionLocalization,
+    ...(multiSessionPluginConfig()?.localization as
+      | Partial<MultiSessionLocalization>
+      | undefined)
+  })
   const deviceSessions = createQuery(() => ({
     ...listDeviceSessionsOptions(
       auth.authClient as MultiSessionAuthClient,
@@ -70,9 +87,9 @@ export function ManageAccounts() {
   }
 
   return (
-    <div>
+    <div class={cn("w-full", props.class)}>
       <h2 class="mb-3 text-sm font-semibold">
-        {multiSessionLocalization.manageAccounts}
+        {multiSessionLabels().manageAccounts}
       </h2>
       <Card class="p-0">
         <CardContent class="p-0">

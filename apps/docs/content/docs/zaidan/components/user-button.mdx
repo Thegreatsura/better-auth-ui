@@ -1,11 +1,11 @@
 ---
 title: <UserButton />
-description: Renders the Solid account trigger with session-aware menu items, settings links, sign out, and theme controls.
+description: Renders the Solid account trigger with session-aware menu items, settings links, sign out, theme controls, and plugin-contributed user menu items.
 ---
 
 ## Usage
 
-Install `user-button` when you need the signed-in account menu in a Solid route or header. It reads the active session from `AuthProvider`, shows sign-in/sign-up actions when unauthenticated, and renders the settings, theme, and sign-out entries when a user is signed in.
+Install `user-button` when you need the signed-in account menu in a Solid route or header. It reads the active session from `AuthProvider`, shows sign-in/sign-up actions when unauthenticated, and renders settings, plugin-contributed user menu items, theme, and sign-out entries when a user is signed in.
 
 ```tsx
 import { UserButton } from "@/components/auth/user/user-button"
@@ -25,7 +25,7 @@ export function AccountMenu() {
 }
 ```
 
-The menu uses the copied theme item from the Zaidan registry entry and the route paths from your `AuthProvider` config. It displays the current Better Auth session only; if your app enables multi-session, keep account switching in the multi-session/settings registry entry and use this button as the current-session entry point.
+The menu uses the copied theme item from the Zaidan registry entry and the route paths from your `AuthProvider` config. When a plugin contributes `userMenuItems`, `UserButton` renders them in the authenticated dropdown. With Multi Session enabled, that means the user menu can inject the multi-session submenu without replacing the built-in settings, theme, or sign-out actions.
 
 ## Installation
 
@@ -49,4 +49,4 @@ npx zaidan add https://better-auth-ui.com/r/solid/user-button.json
 - `src/components/auth/user/user-view.tsx`
 - `src/components/auth/theme/theme-toggle-item.tsx`
 
-After install, point the auth and settings links at your TanStack Router paths and decide whether the header should render the icon or full account row.
+After install, point the auth and settings links at your TanStack Router paths, then decide whether to keep the icon trigger or the full account row and which plugins should contribute extra authenticated user menu items.

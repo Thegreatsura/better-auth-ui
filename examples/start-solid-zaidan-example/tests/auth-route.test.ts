@@ -1671,7 +1671,7 @@ describe("Solid auth route component selection", () => {
     expect(appearanceSettings).toContain("Light")
     expect(appearanceSettings).toContain("Dark")
     expect(accountSettings).toContain("plugin.accountCards")
-    expect(manageAccounts).toContain("multiSessionLocalization.manageAccounts")
+    expect(manageAccounts).toContain("multiSessionLabels().manageAccounts")
     expect(manageAccounts).toContain("<ItemGroup")
     expect(manageAccountRow).toContain("<ItemMedia")
     expect(manageAccountRow).toContain("<ItemContent")
@@ -1679,7 +1679,7 @@ describe("Solid auth route component selection", () => {
     expect(manageAccountRow).toContain("<ItemDescription")
     expect(manageAccountRow).toContain("<ItemActions")
     expect(manageAccounts).toContain("<ItemSeparator")
-    expect(manageAccountRow).toContain("multiSessionLocalization.switchAccount")
+    expect(manageAccountRow).toContain("multiSessionLabels().switchAccount")
     expect(manageAccountRow).toContain("auth.localization.auth.signOut")
     expect(userProfile).toContain("Save changes")
     expect(userProfile).toContain("disabled")
@@ -1738,7 +1738,7 @@ describe("Solid auth route component selection", () => {
     expect(manageAccountRow).toContain("DropdownMenuItem")
     expect(manageAccountRow).toContain("auth.localization.auth.signOut")
     expect(manageAccounts).not.toContain(
-      "Multi-session switch and sign-out actions are shown but disabled until"
+      "Multi Session switch and sign-out actions are shown but disabled until"
     )
     expect(manageAccounts).not.toMatch(
       /<Button disabled size="sm" type="button" variant="secondary">\s*Switch account/
