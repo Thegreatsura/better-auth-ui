@@ -1471,6 +1471,116 @@ describe("Solid registry isolation", () => {
     expect(generatedMagicLinkButtonSource).toContain("event.preventDefault()")
     expect(generatedMagicLinkButtonSource).not.toContain('"Magic Link"')
 
+    const multiSession = readJson<{
+      files: Array<{ content: string; path: string }>
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/multi-session.json"))
+    expect(multiSession.name).toBe("multi-session")
+    expect(multiSession.registryDependencies).toEqual([
+      "solid/auth-provider",
+      "solid/user-view"
+    ])
+    expect(multiSession.files).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: "src/lib/auth/multi-session-plugin.ts"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/multi-session/manage-account.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/multi-session/manage-accounts.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/multi-session/switch-account-submenu.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/multi-session/switch-account-submenu-content.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/multi-session/switch-account-submenu-item.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/settings/shared/helpers.ts"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/settings/shared/types.ts"
+        })
+      ])
+    )
+    const generatedMultiSessionWrapperSource = multiSession.files.find(
+      (file) => file.path === "src/lib/auth/multi-session-plugin.ts"
+    )?.content
+    const generatedSwitchAccountSubmenuSource = multiSession.files.find(
+      (file) =>
+        file.path ===
+        "src/components/auth/multi-session/switch-account-submenu.tsx"
+    )?.content
+    const generatedSwitchAccountSubmenuContentSource = multiSession.files.find(
+      (file) =>
+        file.path ===
+        "src/components/auth/multi-session/switch-account-submenu-content.tsx"
+    )?.content
+    const generatedSwitchAccountSubmenuItemSource = multiSession.files.find(
+      (file) =>
+        file.path ===
+        "src/components/auth/multi-session/switch-account-submenu-item.tsx"
+    )?.content
+    expect(generatedMultiSessionWrapperSource).toContain(
+      "accountCards: [ManageAccounts]"
+    )
+    expect(generatedMultiSessionWrapperSource).toContain(
+      "userMenuItems: [SwitchAccountSubmenu]"
+    )
+    expect(generatedSwitchAccountSubmenuSource).toContain(
+      'from "./switch-account-submenu-content"'
+    )
+    expect(generatedSwitchAccountSubmenuContentSource).toContain(
+      'from "@/components/auth/settings/shared/helpers"'
+    )
+    expect(generatedSwitchAccountSubmenuContentSource).toContain(
+      'from "@/components/auth/user/user-view"'
+    )
+    expect(generatedSwitchAccountSubmenuItemSource).toContain(
+      'from "@/components/auth/user/user-view"'
+    )
+
+    const accountSettingsRegistry = readJson<{
+      files: Array<{ content: string; path: string }>
+      name: string
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/account-settings.json"))
+    expect(accountSettingsRegistry.name).toBe("account-settings")
+    expect(accountSettingsRegistry.registryDependencies).toEqual([
+      "solid/user-profile",
+      "solid/change-email",
+      "solid/delete-user",
+      "solid/theme"
+    ])
+    expect(accountSettingsRegistry.files).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: "src/components/auth/settings/account/manage-account-row.tsx"
+        })
+      ])
+    )
+    const generatedAccountSettingsSource = accountSettingsRegistry.files.find(
+      (file) =>
+        file.path ===
+        "src/components/auth/settings/account/account-settings.tsx"
+    )?.content
+    expect(generatedAccountSettingsSource).toContain("plugin.accountCards")
+    expect(generatedAccountSettingsSource).not.toContain(
+      'from "@/components/auth/multi-session/manage-accounts"'
+    )
+
+    const generatedUserButtonSource = userButton.files.find(
+      (file) => file.path === "src/components/auth/user/user-button.tsx"
+    )?.content
+    expect(generatedUserButtonSource).toContain("pluginUserMenuItems")
+    expect(generatedUserButtonSource).toContain("plugin.userMenuItems")
+
     const signOut = readJson<{
       files: Array<{ content: string; path: string }>
       name: string

@@ -26,12 +26,7 @@
     {
       "path": "src/components/auth/settings/account/account-settings.tsx",
       "type": "registry:component",
-      "content": "import { ManageAccounts } from \"@/components/auth/multi-session/manage-accounts\"\nimport { ChangeEmail } from \"@/components/auth/settings/account/change-email\"\nimport { UserProfile } from \"@/components/auth/settings/account/user-profile\"\nimport { AppearanceSettings } from \"@/components/auth/theme/appearance\"\nimport { cn } from \"@/lib/utils\"\n\nexport type AccountSettingsProps = {\n  class?: string\n}\n\nexport function AccountSettings(props: AccountSettingsProps = {}) {\n  return (\n    <div class={cn(\"flex w-full flex-col gap-4 md:gap-6\", props.class)}>\n      <UserProfile />\n\n      <ChangeEmail />\n\n      <AppearanceSettings />\n\n      <ManageAccounts />\n    </div>\n  )\n}\n"
-    },
-    {
-      "path": "src/components/auth/settings/account/manage-account-row.tsx",
-      "type": "registry:component",
-      "content": "export {\n  ManageAccountRow,\n  ManageAccountRowSkeleton\n} from \"../../multi-session/manage-account\"\n"
+      "content": "import { useAuth } from \"@better-auth-ui/solid\"\nimport type { Component } from \"solid-js\"\nimport { For } from \"solid-js\"\nimport { Dynamic } from \"solid-js/web\"\nimport { ChangeEmail } from \"@/components/auth/settings/account/change-email\"\nimport { UserProfile } from \"@/components/auth/settings/account/user-profile\"\nimport { AppearanceSettings } from \"@/components/auth/theme/appearance\"\nimport { cn } from \"@/lib/utils\"\n\nexport type AccountSettingsProps = {\n  class?: string\n}\n\ntype AccountCardPlugin = {\n  id: string\n  accountCards?: Component[]\n}\n\nexport function AccountSettings(props: AccountSettingsProps = {}) {\n  const auth = useAuth()\n  const pluginAccountCards = () =>\n    (auth.plugins as AccountCardPlugin[]).flatMap((plugin) =>\n      (plugin.accountCards ?? []).map((AccountCard, index) => ({\n        AccountCard,\n        id: `${plugin.id}-${index.toString()}`\n      }))\n    )\n\n  return (\n    <div class={cn(\"flex w-full flex-col gap-4 md:gap-6\", props.class)}>\n      <UserProfile />\n\n      <ChangeEmail />\n\n      <AppearanceSettings />\n\n      <For each={pluginAccountCards()}>\n        {(item) => <Dynamic component={item.AccountCard} />}\n      </For>\n    </div>\n  )\n}\n"
     },
     {
       "path": "src/components/auth/settings/account/appearance-settings.tsx",

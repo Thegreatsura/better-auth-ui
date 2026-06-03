@@ -977,10 +977,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/auth/settings/account/manage-account-row.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/auth/settings/account/appearance-settings.tsx",
           "type": "registry:component"
         },
@@ -1554,15 +1550,40 @@
         "tailwind-merge"
       ],
       "registryDependencies": [
-        "solid/auth-provider"
+        "solid/auth-provider",
+        "solid/user-view"
       ],
       "files": [
+        {
+          "path": "src/lib/auth/multi-session-plugin.ts",
+          "type": "registry:lib"
+        },
         {
           "path": "src/components/auth/multi-session/manage-account.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/components/auth/multi-session/manage-accounts.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu-content.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/multi-session/switch-account-submenu-item.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/shared/helpers.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/shared/types.ts",
           "type": "registry:component"
         },
         {

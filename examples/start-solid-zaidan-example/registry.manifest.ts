@@ -328,9 +328,6 @@ export const solidRegistryManifest = {
           "src/components/auth/settings/account/account-settings.tsx"
         ),
         componentFile(
-          "src/components/auth/settings/account/manage-account-row.tsx"
-        ),
-        componentFile(
           "src/components/auth/settings/account/appearance-settings.tsx"
         ),
         ...zaidanInteractiveUiFiles
@@ -442,9 +439,22 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid Multi Session",
       description: "Solid multi-session account switcher components.",
+      registryDependencies: ["solid/auth-provider", "solid/user-view"],
       files: [
+        libFile("src/lib/auth/multi-session-plugin.ts"),
         componentFile("src/components/auth/multi-session/manage-account.tsx"),
         componentFile("src/components/auth/multi-session/manage-accounts.tsx"),
+        componentFile(
+          "src/components/auth/multi-session/switch-account-submenu.tsx"
+        ),
+        componentFile(
+          "src/components/auth/multi-session/switch-account-submenu-content.tsx"
+        ),
+        componentFile(
+          "src/components/auth/multi-session/switch-account-submenu-item.tsx"
+        ),
+        componentFile("src/components/auth/settings/shared/helpers.ts"),
+        componentFile("src/components/auth/settings/shared/types.ts"),
         ...zaidanInteractiveUiFiles
       ]
     }),
