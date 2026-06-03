@@ -18,6 +18,7 @@ import {
   useUpdateMemberRole
 } from "@better-auth-ui/solid"
 import {
+  ArrowUpDown,
   Filter,
   LogOut,
   Pencil,
@@ -77,6 +78,7 @@ type OrganizationMember = {
 }
 
 type RoleMap = Record<string, string>
+type MemberSort = "name" | "email" | "role"
 
 const fallbackLocalization = {
   changeMemberRole: "Change member role",
@@ -495,6 +497,7 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   const [inviteOpen, setInviteOpen] = createSignal(false)
   const [memberSearch, setMemberSearch] = createSignal("")
   const [memberRoleFilter, setMemberRoleFilter] = createSignal("all")
+  const [memberSort, setMemberSort] = createSignal<MemberSort>("name")
   const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
@@ -551,6 +554,34 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
 
       return roleMatches && searchableMember.includes(search)
     })
+  const sortMembers = (
+    first: OrganizationMember,
+    second: OrganizationMember
+  ) => {
+    if (memberSort() === "role") {
+      const firstRole = roles()[first.role ?? ""] ?? first.role ?? ""
+      const secondRole = roles()[second.role ?? ""] ?? second.role ?? ""
+
+      return firstRole.localeCompare(secondRole)
+    }
+
+    if (memberSort() === "email") {
+      const firstEmail = first.user?.email ?? first.user?.name ?? ""
+      const secondEmail = second.user?.email ?? second.user?.name ?? ""
+
+      return firstEmail.localeCompare(secondEmail)
+    }
+
+    if (memberSort() === "name") {
+      const firstName = first.user?.name ?? first.user?.email ?? ""
+      const secondName = second.user?.name ?? second.user?.email ?? ""
+
+      return firstName.localeCompare(secondName)
+    }
+
+    return 0
+  }
+  const sortedMemberRows = () => [...filteredMemberRows()].sort(sortMembers)
   const isOwner = () =>
     memberRows().some(
       (member) =>
@@ -632,6 +663,34 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        as={Button}
+                        class=""
+                        variant="outline"
+                      >
+                        <ArrowUpDown class="size-4" />
+                        Sort
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuRadioGroup
+                          onChange={(value) =>
+                            setMemberSort(value as MemberSort)
+                          }
+                          value={memberSort()}
+                        >
+                          <DropdownMenuRadioItem value="name">
+                            Name
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="email">
+                            Email
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="role">
+                            {localization().role}
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <Show when={memberSearch() || memberRoleFilter() !== "all"}>
                       <Button
                         onClick={() => {
@@ -655,7 +714,7 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                   }
                 >
                   <div class="grid gap-2">
-                    <For each={filteredMemberRows()}>
+                    <For each={sortedMemberRows()}>
                       {(member) => (
                         <OrganizationMemberRow
                           isOwner={isOwner()}

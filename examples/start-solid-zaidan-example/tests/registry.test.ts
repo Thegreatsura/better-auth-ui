@@ -2626,14 +2626,16 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("Members")
     expect(organizationPeopleDoc).toContain("Invitations")
     expect(organizationPeopleDoc).toContain("basic members list")
-    expect(organizationPeopleDoc).toContain("search and filter members")
+    expect(organizationPeopleDoc).toContain(
+      "search, filter by role, and sort members"
+    )
     expect(organizationPeopleDoc).toContain("update member roles")
     expect(organizationPeopleDoc).toContain("basic invitations list")
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
     expect(organizationPeopleDoc).toContain("remove non-current members")
     expect(organizationPeopleDoc).toContain("leave the active organization")
-    expect(organizationPeopleDoc).toContain("sorting and table layout")
+    expect(organizationPeopleDoc).toContain("Full members table layout")
     expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, remove member, and leave organization"
     )
@@ -2692,6 +2694,9 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("memberSearch")
     expect(organizationRegistry).toContain("memberRoleFilter")
     expect(organizationRegistry).toContain("filteredMemberRows")
+    expect(organizationRegistry).toContain("sortedMemberRows")
+    expect(organizationRegistry).toContain("memberSort")
+    expect(organizationRegistry).toContain("sortMembers")
     expect(organizationRegistry).toContain("DropdownMenuRadioGroup")
     expect(organizationRegistry).toContain("DropdownMenuRadioItem")
     expect(organizationRegistry).toContain("localization().search")
