@@ -2927,11 +2927,28 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain(
       "aria-label={props.localization.removeMember}"
     )
+    expect(organizationPeople).toContain("LeaveOrganizationDialog")
+    expect(organizationPeople).toContain("useLeaveOrganization")
+    expect(organizationPeople).toContain("useActiveOrganization")
+    expect(organizationPeople).toContain("leaveOrganization.mutate")
+    expect(organizationPeople).toContain(
+      "organizationId: activeOrganization.data.id"
+    )
+    expect(organizationPeople).toContain("leftOrganization")
+    expect(organizationPeople).toContain("leaveOrganizationDescription")
+    expect(organizationPeople).toContain("auth.navigate")
+    expect(organizationPeople).toContain("auth.basePaths.settings")
+    expect(organizationPeople).toContain(
+      "props.member.userId === session.data?.user.id"
+    )
+    expect(organizationPeople).toContain(
+      "aria-label={props.localization.leaveOrganization}"
+    )
     expect(organizationPeople).toContain("InviteMemberDialog")
     expect(organizationPeople).toContain("const [inviteOpen, setInviteOpen]")
     expect(organizationPeople).toContain("setInviteOpen(true)")
-    expect(organizationPeople).not.toContain("LeaveOrganizationDialog")
-    expect(organizationPeople).not.toContain("useLeaveOrganization")
+    expect(organizationPeople).toContain("LeaveOrganizationDialog")
+    expect(organizationPeople).toContain("useLeaveOrganization")
     expect(inviteMemberDialog).toContain("InviteMemberDialogProps")
     expect(inviteMemberDialog).toContain("open: boolean")
     expect(inviteMemberDialog).toContain(

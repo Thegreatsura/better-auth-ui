@@ -2631,9 +2631,8 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
     expect(organizationPeopleDoc).toContain("remove non-current members")
-    expect(organizationPeopleDoc).toContain(
-      "search, filters, sorting, and leave organization"
-    )
+    expect(organizationPeopleDoc).toContain("leave the active organization")
+    expect(organizationPeopleDoc).toContain("search, filters, and sorting")
     expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, remove member, and leave organization"
     )
@@ -2694,6 +2693,11 @@ describe("Solid registry isolation", () => {
     )
     expect(organizationRegistry).toContain("memberRemoved")
     expect(organizationRegistry).toContain("removeMemberWarning")
+    expect(organizationRegistry).toContain("useLeaveOrganization")
+    expect(organizationRegistry).toContain("useActiveOrganization")
+    expect(organizationRegistry).toContain("leftOrganization")
+    expect(organizationRegistry).toContain("leaveOrganizationDescription")
+    expect(organizationRegistry).toContain("auth.basePaths.settings")
     expect(organizationRegistry).toContain("InviteMemberDialogProps")
     expect(organizationRegistry).toContain("useInviteMember")
     expect(organizationRegistry).toContain("pickDefaultRole")

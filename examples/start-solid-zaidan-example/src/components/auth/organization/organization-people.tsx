@@ -1,20 +1,23 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type {
+  LeaveOrganizationParams,
   OrganizationAuthClient,
   RemoveMemberParams,
   UpdateMemberRoleParams
 } from "@better-auth-ui/solid"
 import {
+  useActiveOrganization,
   useAuth,
   useCancelInvitation,
   useHasPermission,
+  useLeaveOrganization,
   useListOrganizationInvitations,
   useListOrganizationMembers,
   useRemoveMember,
   useSession,
   useUpdateMemberRole
 } from "@better-auth-ui/solid"
-import { Pencil, PlusCircle, Trash2, X } from "lucide-solid"
+import { LogOut, Pencil, PlusCircle, Trash2, X } from "lucide-solid"
 import { createMemo, createSignal, For, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import { UserView } from "@/components/auth/user/user-view"
@@ -71,6 +74,10 @@ const fallbackLocalization = {
   removeMemberWarning:
     "Are you sure you want to remove this member from the organization? They will lose access immediately.",
   memberRemoved: "Member removed",
+  leaveOrganization: "Leave organization",
+  leaveOrganizationDescription:
+    "Leave this organization and lose access to its data and resources. You'll need a new invitation to rejoin.",
+  leftOrganization: "You left the organization",
   member: "Member",
   admin: "Admin",
   owner: "Owner"
@@ -81,6 +88,9 @@ const fallbackLocalization = {
   | "removeMember"
   | "removeMemberWarning"
   | "memberRemoved"
+  | "leaveOrganization"
+  | "leaveOrganizationDescription"
+  | "leftOrganization"
   | "member"
   | "admin"
   | "owner"
@@ -182,6 +192,74 @@ function RemoveMemberDialog(props: {
   )
 }
 
+function LeaveOrganizationDialog(props: {
+  localization: Pick<
+    OrganizationLocalization,
+    "leaveOrganization" | "leaveOrganizationDescription" | "leftOrganization"
+  >
+  onOpenChange: (open: boolean) => void
+  open: boolean
+}) {
+  const auth = useAuth()
+  const activeOrganization = useActiveOrganization(
+    auth.authClient as OrganizationAuthClient
+  )
+  const organizationSettingsPath =
+    organizationPlugin().viewPaths.settings?.organizations ?? "organizations"
+  const leaveOrganization = useLeaveOrganization(
+    auth.authClient as OrganizationAuthClient,
+    {
+      onSuccess: () => {
+        props.onOpenChange(false)
+        toast.success(props.localization.leftOrganization)
+        auth.navigate({
+          replace: true,
+          to: `${auth.basePaths.settings}/${organizationSettingsPath}`
+        })
+      }
+    }
+  )
+
+  const handleLeave = () => {
+    if (!activeOrganization.data) return
+
+    leaveOrganization.mutate({
+      organizationId: activeOrganization.data.id
+    } satisfies LeaveOrganizationParams)
+  }
+
+  return (
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{props.localization.leaveOrganization}</DialogTitle>
+          <DialogDescription>
+            {props.localization.leaveOrganizationDescription}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose
+            as={Button}
+            disabled={leaveOrganization.isPending}
+            type="button"
+            variant="outline"
+          >
+            {auth.localization.settings.cancel}
+          </DialogClose>
+          <Button
+            disabled={leaveOrganization.isPending || !activeOrganization.data}
+            onClick={handleLeave}
+            type="button"
+            variant="destructive"
+          >
+            {props.localization.leaveOrganization}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function OrganizationMemberRow(props: {
   isOwner: boolean
   localization: Pick<
@@ -191,12 +269,16 @@ function OrganizationMemberRow(props: {
     | "removeMember"
     | "removeMemberWarning"
     | "memberRemoved"
+    | "leaveOrganization"
+    | "leaveOrganizationDescription"
+    | "leftOrganization"
   >
   member: OrganizationMember
   roles: RoleMap
 }) {
   const auth = useAuth()
   const [removeOpen, setRemoveOpen] = createSignal(false)
+  const [leaveOpen, setLeaveOpen] = createSignal(false)
   const session = useSession(auth.authClient)
   const user = () => props.member.user
   const permission = useHasPermission(
@@ -282,12 +364,28 @@ function OrganizationMemberRow(props: {
             <Trash2 class="size-4 text-destructive" />
           </Button>
         </Show>
+        <Show when={props.member.userId === session.data?.user.id}>
+          <Button
+            aria-label={props.localization.leaveOrganization}
+            onClick={() => setLeaveOpen(true)}
+            size="icon-sm"
+            type="button"
+            variant="outline"
+          >
+            <LogOut class="size-4 text-destructive" />
+          </Button>
+        </Show>
       </div>
       <RemoveMemberDialog
         localization={props.localization}
         member={props.member}
         onOpenChange={setRemoveOpen}
         open={removeOpen()}
+      />
+      <LeaveOrganizationDialog
+        localization={props.localization}
+        onOpenChange={setLeaveOpen}
+        open={leaveOpen()}
       />
     </div>
   )
@@ -396,6 +494,9 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
             | "removeMember"
             | "removeMemberWarning"
             | "memberRemoved"
+            | "leaveOrganization"
+            | "leaveOrganizationDescription"
+            | "leftOrganization"
           >
           roles?: RoleMap
         }
