@@ -17,9 +17,9 @@ import {
   FieldGroup
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import { Label } from "../ui/label"
 
 export type ForgotPasswordProps = {
   className?: string
@@ -105,10 +105,14 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
                 }}
                 onInvalid={(e) => {
                   e.preventDefault()
+                  const el = e.target as HTMLInputElement
+                  const msg = el.validity.valueMissing
+                    ? localization.auth.fieldRequired
+                    : localization.auth.invalidEmail
 
                   setFieldErrors((prev) => ({
                     ...prev,
-                    email: (e.target as HTMLInputElement).validationMessage
+                    email: msg
                   }))
                 }}
                 aria-invalid={!!fieldErrors.email}

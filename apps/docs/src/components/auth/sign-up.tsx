@@ -25,9 +25,9 @@ import {
   InputGroupButton,
   InputGroupInput
 } from "@/components/ui/input-group"
+import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-import { Label } from "../ui/label"
 import { AdditionalField } from "./additional-field"
 import { ProviderButtons, type SocialLayout } from "./provider-buttons"
 
