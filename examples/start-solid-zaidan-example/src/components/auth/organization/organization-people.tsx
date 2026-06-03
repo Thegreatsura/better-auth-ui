@@ -17,7 +17,15 @@ import {
   useSession,
   useUpdateMemberRole
 } from "@better-auth-ui/solid"
-import { LogOut, Pencil, PlusCircle, Trash2, X } from "lucide-solid"
+import {
+  Filter,
+  LogOut,
+  Pencil,
+  PlusCircle,
+  Search,
+  Trash2,
+  X
+} from "lucide-solid"
 import { createMemo, createSignal, For, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import { UserView } from "@/components/auth/user/user-view"
@@ -42,8 +50,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { cn } from "@/lib/utils"
@@ -78,6 +89,10 @@ const fallbackLocalization = {
   leaveOrganizationDescription:
     "Leave this organization and lose access to its data and resources. You'll need a new invitation to rejoin.",
   leftOrganization: "You left the organization",
+  search: "Search...",
+  clear: "Clear",
+  all: "All",
+  role: "Role",
   member: "Member",
   admin: "Admin",
   owner: "Owner"
@@ -91,6 +106,10 @@ const fallbackLocalization = {
   | "leaveOrganization"
   | "leaveOrganizationDescription"
   | "leftOrganization"
+  | "search"
+  | "clear"
+  | "all"
+  | "role"
   | "member"
   | "admin"
   | "owner"
@@ -474,6 +493,8 @@ function OrganizationInvitationRowSkeleton() {
 export function OrganizationPeople(props: OrganizationPeopleProps) {
   const auth = useAuth()
   const [inviteOpen, setInviteOpen] = createSignal(false)
+  const [memberSearch, setMemberSearch] = createSignal("")
+  const [memberRoleFilter, setMemberRoleFilter] = createSignal("all")
   const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
@@ -497,6 +518,10 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
             | "leaveOrganization"
             | "leaveOrganizationDescription"
             | "leftOrganization"
+            | "search"
+            | "clear"
+            | "all"
+            | "role"
           >
           roles?: RoleMap
         }
@@ -506,6 +531,26 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   const roles = createMemo(
     () => organizationPluginConfig()?.roles ?? fallbackRoles
   )
+  const normalizedMemberSearch = () => memberSearch().trim().toLowerCase()
+  const filteredMemberRows = () =>
+    memberRows().filter((member) => {
+      const roleMatches =
+        memberRoleFilter() === "all" || member.role === memberRoleFilter()
+      const search = normalizedMemberSearch()
+
+      if (!search) return roleMatches
+
+      const searchableMember = [
+        member.user?.name,
+        member.user?.email,
+        member.role
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+
+      return roleMatches && searchableMember.includes(search)
+    })
   const isOwner = () =>
     memberRows().some(
       (member) =>
@@ -545,17 +590,83 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                 </p>
               }
             >
-              <div class="grid gap-2">
-                <For each={memberRows()}>
-                  {(member) => (
-                    <OrganizationMemberRow
-                      isOwner={isOwner()}
-                      localization={localization()}
-                      member={member}
-                      roles={roles()}
+              <div class="grid gap-4">
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <div class="relative min-w-0 flex-1">
+                    <Search class="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
+                    <Input
+                      aria-label={localization().search}
+                      class="pl-9"
+                      onInput={(event) =>
+                        setMemberSearch(event.currentTarget.value)
+                      }
+                      placeholder={localization().search}
+                      value={memberSearch()}
                     />
-                  )}
-                </For>
+                  </div>
+                  <div class="flex gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        as={Button}
+                        class=""
+                        variant="outline"
+                      >
+                        <Filter class="size-4" />
+                        {localization().role}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuRadioGroup
+                          onChange={setMemberRoleFilter}
+                          value={memberRoleFilter()}
+                        >
+                          <DropdownMenuRadioItem value="all">
+                            {localization().all}
+                          </DropdownMenuRadioItem>
+                          <For each={Object.entries(roles())}>
+                            {([role, label]) => (
+                              <DropdownMenuRadioItem value={role}>
+                                {label}
+                              </DropdownMenuRadioItem>
+                            )}
+                          </For>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Show when={memberSearch() || memberRoleFilter() !== "all"}>
+                      <Button
+                        onClick={() => {
+                          setMemberSearch("")
+                          setMemberRoleFilter("all")
+                        }}
+                        type="button"
+                        variant="ghost"
+                      >
+                        {localization().clear}
+                      </Button>
+                    </Show>
+                  </div>
+                </div>
+                <Show
+                  when={filteredMemberRows().length > 0}
+                  fallback={
+                    <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+                      No members match the current filters.
+                    </p>
+                  }
+                >
+                  <div class="grid gap-2">
+                    <For each={filteredMemberRows()}>
+                      {(member) => (
+                        <OrganizationMemberRow
+                          isOwner={isOwner()}
+                          localization={localization()}
+                          member={member}
+                          roles={roles()}
+                        />
+                      )}
+                    </For>
+                  </div>
+                </Show>
               </div>
             </Show>
           </Show>
