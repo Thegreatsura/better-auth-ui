@@ -3,7 +3,7 @@ title: <OrganizationPeople />
 description: Solid/Zaidan organization people route shell.
 ---
 
-`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations` with client-side search plus role and status filters.
+`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations` with client-side search, filtering, and sorting.
 
 ## Usage
 
@@ -29,8 +29,8 @@ The members section renders a basic members list with loading and empty states. 
 
 ## Invitations
 
-The invitations section renders a basic invitations list with loading and empty states. Users can search invitations and filter them by role or status. Users with permission can cancel pending invitations. Full invitations table layout, sorting, and advanced status actions remain deferred as follow-up slices.
+The invitations section renders a basic invitations list with loading and empty states. Users can search, filter, and sort invitations by email, invited date, role, or status. Users with permission can cancel pending invitations. Full invitations table layout and advanced status actions remain deferred as follow-up slices.
 
 ## Notes
 
-The People shell exists and is installed with the Organization registry entry. Advanced members table layout plus invitations sorting, table layout, and advanced status actions remain deferred to follow-up slices.
+The People shell exists and is installed with the Organization registry entry. Advanced members table layout plus invitations table layout and advanced status actions remain deferred to follow-up slices.

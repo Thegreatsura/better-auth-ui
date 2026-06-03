@@ -79,6 +79,7 @@ type OrganizationMember = {
 
 type RoleMap = Record<string, string>
 type MemberSort = "name" | "email" | "role"
+type InvitationSort = "none" | "email" | "createdAt" | "role" | "status"
 
 const fallbackLocalization = {
   changeMemberRole: "Change member role",
@@ -519,6 +520,8 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   const [invitationRoleFilter, setInvitationRoleFilter] = createSignal("all")
   const [invitationStatusFilter, setInvitationStatusFilter] =
     createSignal("all")
+  const [invitationSort, setInvitationSort] =
+    createSignal<InvitationSort>("none")
   const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
@@ -630,6 +633,46 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
     })
   const invitationStatusLabel = (status: (typeof invitationStatuses)[number]) =>
     localization()[status] ?? formatStatus(status)
+  const invitationDateTime = (invitation: OrganizationInvitation) => {
+    if (!invitation.createdAt) return Number.POSITIVE_INFINITY
+
+    const date =
+      invitation.createdAt instanceof Date
+        ? invitation.createdAt
+        : new Date(invitation.createdAt)
+    const time = date.getTime()
+
+    return Number.isNaN(time) ? Number.POSITIVE_INFINITY : time
+  }
+  const sortInvitations = (
+    first: OrganizationInvitation,
+    second: OrganizationInvitation
+  ) => {
+    if (invitationSort() === "email") {
+      return (first.email ?? "").localeCompare(second.email ?? "")
+    }
+
+    if (invitationSort() === "createdAt") {
+      return invitationDateTime(first) - invitationDateTime(second)
+    }
+
+    if (invitationSort() === "role") {
+      const firstRole = roles()[first.role ?? ""] ?? first.role ?? ""
+      const secondRole = roles()[second.role ?? ""] ?? second.role ?? ""
+
+      return firstRole.localeCompare(secondRole)
+    }
+
+    if (invitationSort() === "status") {
+      return formatStatus(first.status).localeCompare(
+        formatStatus(second.status)
+      )
+    }
+
+    return 0
+  }
+  const sortedInvitationRows = () =>
+    [...filteredInvitationRows()].sort(sortInvitations)
   const isOwner = () =>
     memberRows().some(
       (member) =>
@@ -874,6 +917,40 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        as={Button}
+                        class=""
+                        variant="outline"
+                      >
+                        <ArrowUpDown class="size-4" />
+                        Sort
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuRadioGroup
+                          onChange={(value) =>
+                            setInvitationSort(value as InvitationSort)
+                          }
+                          value={invitationSort()}
+                        >
+                          <DropdownMenuRadioItem value="none">
+                            {localization().all}
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="email">
+                            Email
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="createdAt">
+                            Invited
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="role">
+                            {localization().role}
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="status">
+                            {localization().status}
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <Show
                       when={
                         invitationSearch() ||
@@ -904,7 +981,7 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
                   }
                 >
                   <div class="grid gap-2">
-                    <For each={filteredInvitationRows()}>
+                    <For each={sortedInvitationRows()}>
                       {(invitation) => (
                         <OrganizationInvitationRow invitation={invitation} />
                       )}

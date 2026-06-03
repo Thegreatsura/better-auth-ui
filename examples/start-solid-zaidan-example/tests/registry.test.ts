@@ -2632,7 +2632,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("update member roles")
     expect(organizationPeopleDoc).toContain("basic invitations list")
     expect(organizationPeopleDoc).toContain(
-      "search invitations and filter them by role or status"
+      "search, filter, and sort invitations"
     )
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
@@ -2646,7 +2646,7 @@ describe("Solid registry isolation", () => {
       "search, filters, sorting, and advanced status actions"
     )
     expect(organizationPeopleDoc).toContain(
-      "invitations sorting, table layout, and advanced status actions"
+      "invitations table layout and advanced status actions"
     )
     expect(organizationDoc).toContain("People shell")
     expect(organizationDoc).toContain("OrganizationDangerZone")
@@ -2714,6 +2714,10 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("invitationRoleFilter")
     expect(organizationRegistry).toContain("invitationStatusFilter")
     expect(organizationRegistry).toContain("filteredInvitationRows")
+    expect(organizationRegistry).toContain("InvitationSort")
+    expect(organizationRegistry).toContain("invitationSort")
+    expect(organizationRegistry).toContain("sortInvitations")
+    expect(organizationRegistry).toContain("sortedInvitationRows")
     expect(organizationRegistry).toContain("normalizedInvitationSearch")
     expect(organizationRegistry).toContain("localization().status")
     expect(organizationRegistry).toContain("useCancelInvitation")
