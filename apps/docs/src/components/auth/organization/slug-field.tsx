@@ -8,7 +8,7 @@ import {
 } from "@better-auth-ui/react"
 import { useDebouncer } from "@tanstack/react-pacer"
 import { Check, X } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import { Field, FieldError } from "@/components/ui/field"
 import {
@@ -48,9 +48,11 @@ export function SlugField({
   disabled,
   id = "slug"
 }: SlugFieldProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization: authLocalization } = useAuth()
   const { localization, checkSlug: checkSlugEnabled } =
     useAuthPlugin(organizationPlugin)
+
+  const [slugError, setSlugError] = useState<string>()
 
   const {
     mutate: checkSlug,
@@ -77,7 +79,7 @@ export function SlugField({
   }, [checkSlugEnabled, value, debouncer.maybeExecute, resetCheckSlug])
 
   return (
-    <Field>
+    <Field data-invalid={!!slugError}>
       <Label htmlFor={id}>{localization.slug}</Label>
 
       <InputGroup>
@@ -85,7 +87,15 @@ export function SlugField({
           id={id}
           name="slug"
           value={value}
-          onChange={(e) => onChange(sanitizeSlug(e.target.value))}
+          onChange={(e) => {
+            onChange(sanitizeSlug(e.target.value))
+            setSlugError(undefined)
+          }}
+          onInvalid={(e) => {
+            e.preventDefault()
+            setSlugError(authLocalization.auth.fieldRequired)
+          }}
+          aria-invalid={!!slugError}
           placeholder={localization.slugPlaceholder}
           required
           disabled={disabled}
@@ -104,7 +114,7 @@ export function SlugField({
         )}
       </InputGroup>
 
-      <FieldError />
+      <FieldError>{slugError}</FieldError>
     </Field>
   )
 }

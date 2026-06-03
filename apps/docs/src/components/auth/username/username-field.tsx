@@ -31,7 +31,7 @@ export function UsernameField({
   field,
   isPending
 }: AdditionalFieldProps) {
-  const { authClient } = useAuth()
+  const { authClient, localization: authLocalization } = useAuth()
   const {
     localization,
     minUsernameLength,
@@ -97,7 +97,19 @@ export function UsernameField({
           onChange={(e) => handleChange(e.target.value)}
           onInvalid={(e) => {
             e.preventDefault()
-            setError((e.target as HTMLInputElement).validationMessage)
+            const el = e.target as HTMLInputElement
+            const msg = el.validity.valueMissing
+              ? authLocalization.auth.fieldRequired
+              : el.validity.tooShort
+                ? authLocalization.auth.tooShort.replace(
+                    "{{min}}",
+                    String(minUsernameLength)
+                  )
+                : authLocalization.auth.tooLong.replace(
+                    "{{max}}",
+                    String(maxUsernameLength)
+                  )
+            setError(msg)
           }}
           aria-invalid={!!error}
           placeholder={field.placeholder}
