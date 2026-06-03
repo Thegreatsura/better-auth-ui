@@ -64,7 +64,7 @@ export function ThemeToggleItem() {
 
   return (
     <DropdownMenuItem
-      class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+      class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
       closeOnSelect={false}
       onFocus={(event) => {
         if (event.target === event.currentTarget) focusActiveTab()

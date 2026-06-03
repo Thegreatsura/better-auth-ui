@@ -70,11 +70,13 @@ export function UserView(props: UserViewProps) {
         label={label()}
       />
 
-      <div class="grid min-w-0 flex-1 text-sm leading-tight">
-        <span class="truncate font-medium text-foreground">{label()}</span>
+      <div class="grid min-w-0 flex-1 gap-0.5 text-sm">
+        <span class="truncate font-medium leading-4 text-foreground">
+          {label()}
+        </span>
 
         <Show when={secondaryLabel()}>
-          <span class="truncate text-xs text-muted-foreground">
+          <span class="truncate text-xs leading-4 text-muted-foreground">
             {secondaryLabel()}
           </span>
         </Show>

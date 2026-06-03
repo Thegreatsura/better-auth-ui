@@ -50,7 +50,7 @@ export function ManageAccountRow(props: {
   })
 
   return (
-    <Item class="rounded-none p-0">
+    <Item class="rounded-none px-4 py-3">
       <ItemMedia class="rounded-full bg-transparent">
         <Avatar class="size-10 rounded-full bg-muted text-muted-foreground">
           <AvatarImage alt={label()} src={props.image ?? undefined} />
@@ -114,7 +114,7 @@ export function ManageAccountRow(props: {
 
 export function ManageAccountRowSkeleton() {
   return (
-    <Item class="rounded-none p-0">
+    <Item class="rounded-none px-4 py-3">
       <ItemMedia class="rounded-full bg-transparent">
         <Skeleton class="size-10 rounded-full" />
       </ItemMedia>

@@ -1262,9 +1262,8 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain('class="size-8 rounded-full"')
     expect(userButton).toContain('class="h-4 w-24"')
     expect(userButton).toContain('class="h-3 w-32"')
-    expect(userButton).toContain(
-      '"py-2.5 h-auto font-normal justify-between gap-3 rounded-full"'
-    )
+    expect(userButton).toContain("px-3.5 py-3")
+    expect(userButton).toContain("hover:bg-white/10 hover:text-foreground")
     expect(userButton).not.toContain("w-full max-w-sm")
     expect(userButton).toContain(
       '"w-[--kb-popper-anchor-width] min-w-40 md:min-w-56 max-w-[48svw] rounded-lg bg-popover p-1 text-popover-foreground shadow-md"'

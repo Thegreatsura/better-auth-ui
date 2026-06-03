@@ -110,10 +110,8 @@ function SwitchAccountPreviewContent() {
       queryClient={queryClient}
     >
       {() => (
-        <main class="mx-auto flex min-h-[420px] w-full max-w-xl items-start justify-center bg-background p-6 text-foreground">
-          <div class="flex w-full justify-end">
-            <UserButton />
-          </div>
+        <main class="mx-auto flex min-h-[420px] w-full max-w-xl items-center justify-center bg-background p-6 text-foreground">
+          <UserButton />
         </main>
       )}
     </AuthProvider>

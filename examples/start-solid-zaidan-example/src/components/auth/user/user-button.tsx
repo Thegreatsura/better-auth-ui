@@ -34,7 +34,7 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
-const menuLinkClass = "flex w-full items-center gap-1.5"
+const menuLinkClass = "flex w-full items-center gap-2"
 
 export type UserButtonLinkVisibility =
   | "authenticated"
@@ -110,7 +110,7 @@ function renderUserLink(link: UserButtonLink | JSX.Element) {
 
   return (
     <DropdownMenuItem
-      class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground"
+      class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
       variant={link.variant}
     >
       <a class={menuLinkClass} href={link.href}>
@@ -150,7 +150,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
       }),
       size() === "icon"
         ? "rounded-full! border-0! p-0"
-        : "py-2.5 h-auto font-normal justify-between gap-3 rounded-full",
+        : "h-auto rounded-full px-3.5 py-3 font-normal justify-between gap-3 hover:bg-white/10 hover:text-foreground aria-expanded:bg-white/10 aria-expanded:text-foreground",
       props.class
     )
 
@@ -296,7 +296,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
           <Show
             when={!session.isPending}
             fallback={
-              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm">
+              <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm">
                 <UserButtonPendingView />
               </DropdownMenuItem>
             }
@@ -307,7 +307,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                 <>
                   {userLinks()}
 
-                  <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                  <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                     <Link
                       class={menuLinkClass}
                       params={{ path: signInPath }}
@@ -318,7 +318,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                     </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                  <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                     <Link
                       class={menuLinkClass}
                       params={{ path: signUpPath }}
@@ -336,7 +336,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
               {userLinks()}
 
               <Show when={!props.hideSettings}>
-                <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+                <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                   <Link
                     class={menuLinkClass}
                     params={{ path: settingsPath }}
@@ -349,14 +349,19 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
               </Show>
 
               <For each={pluginUserMenuItems()}>
-                {(item) => <Dynamic component={item.UserMenuItem} />}
+                {(item) => (
+                  <Dynamic
+                    class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
+                    component={item.UserMenuItem}
+                  />
+                )}
               </For>
 
               <ThemeToggleItem />
 
               <DropdownMenuSeparator class="my-1 bg-border" />
 
-              <DropdownMenuItem class="gap-1.5 rounded-md px-1.5 py-1 text-sm focus:bg-accent focus:text-accent-foreground">
+              <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                 <Link
                   class={menuLinkClass}
                   params={{ path: signOutPath }}
@@ -391,8 +396,8 @@ function UserButtonHydrationFallback(rawProps: UserButtonProps = {}) {
         variant: props.variant
       }),
       size() === "icon"
-        ? "rounded-full! border-0! p-0"
-        : "py-2.5 h-auto font-normal justify-between gap-3 rounded-full",
+        ? "rounded-full! border-0! py-2.5"
+        : "h-auto rounded-full px-3.5 py-3 font-normal justify-between gap-3 hover:bg-white/10 hover:text-foreground aria-expanded:bg-white/10 aria-expanded:text-foreground",
       props.class
     )
 
