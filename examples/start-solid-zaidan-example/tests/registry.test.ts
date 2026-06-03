@@ -2628,8 +2628,9 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("basic members list")
     expect(organizationPeopleDoc).toContain("basic invitations list")
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
+    expect(organizationPeopleDoc).toContain("cancel pending invitations")
     expect(organizationPeopleDoc).toContain(
-      "cancel, search, filters, sorting, and status actions"
+      "search, filters, sorting, and advanced status actions"
     )
     expect(organizationDoc).toContain("People shell")
     expect(organizationDoc).not.toContain("reserves the `people` route")
@@ -2671,6 +2672,9 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useListOrganizationInvitations")
     expect(organizationRegistry).toContain("OrganizationInvitationRow")
     expect(organizationRegistry).toContain("OrganizationInvitationRowSkeleton")
+    expect(organizationRegistry).toContain("useCancelInvitation")
+    expect(organizationRegistry).toContain("useHasPermission")
+    expect(organizationRegistry).toContain("permissions: { invitation:")
     expect(organizationRegistry).toContain("InviteMemberDialogProps")
     expect(organizationRegistry).toContain("useInviteMember")
     expect(organizationRegistry).toContain("pickDefaultRole")

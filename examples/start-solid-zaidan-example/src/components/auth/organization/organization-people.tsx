@@ -1,10 +1,12 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import {
   useAuth,
+  useCancelInvitation,
+  useHasPermission,
   useListOrganizationInvitations,
   useListOrganizationMembers
 } from "@better-auth-ui/solid"
-import { PlusCircle } from "lucide-solid"
+import { PlusCircle, X } from "lucide-solid"
 import { createSignal, For, Show } from "solid-js"
 import { UserView } from "@/components/auth/user/user-view"
 import { Button } from "@/components/ui/button"
@@ -95,6 +97,17 @@ function OrganizationMemberRowSkeleton() {
 function OrganizationInvitationRow(props: {
   invitation: OrganizationInvitation
 }) {
+  const auth = useAuth()
+  const permission = useHasPermission(
+    auth.authClient as OrganizationAuthClient,
+    {
+      permissions: { invitation: ["cancel"] }
+    }
+  )
+  const cancelInvitation = useCancelInvitation(
+    auth.authClient as OrganizationAuthClient
+  )
+
   return (
     <div class="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_auto] sm:items-center">
       <div class="grid min-w-0 gap-1">
@@ -112,6 +125,26 @@ function OrganizationInvitationRow(props: {
         <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
           {formatStatus(props.invitation.status)}
         </span>
+        <Show
+          when={
+            permission.data?.success && props.invitation.status === "pending"
+          }
+        >
+          <Button
+            aria-label="Cancel invitation"
+            disabled={cancelInvitation.isPending}
+            onClick={() =>
+              cancelInvitation.mutate({
+                invitationId: props.invitation.id
+              })
+            }
+            size="icon-sm"
+            type="button"
+            variant="outline"
+          >
+            <X class="size-4 text-destructive" />
+          </Button>
+        </Show>
       </div>
     </div>
   )

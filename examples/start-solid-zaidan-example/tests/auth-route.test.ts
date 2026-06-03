@@ -2881,8 +2881,21 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain("invitation.role")
     expect(organizationPeople).toContain("invitation.status")
     expect(organizationPeople).toContain("No invitations")
-    expect(organizationPeople).not.toContain("useCancelInvitation")
-    expect(organizationPeople).not.toContain("useHasPermission")
+    expect(organizationPeople).toContain("useCancelInvitation")
+    expect(organizationPeople).toContain("useHasPermission")
+    expect(organizationPeople).toContain(
+      'permissions: { invitation: ["cancel"] }'
+    )
+    expect(organizationPeople).toContain("permission.data?.success")
+    expect(organizationPeople).toContain(
+      'props.invitation.status === "pending"'
+    )
+    expect(organizationPeople).toContain("cancelInvitation.mutate")
+    expect(organizationPeople).toContain("invitationId: props.invitation.id")
+    expect(organizationPeople).toContain(
+      "disabled={cancelInvitation.isPending}"
+    )
+    expect(organizationPeople).toContain('aria-label="Cancel invitation"')
     expect(organizationPeople).not.toContain("useUpdateMemberRole")
     expect(organizationPeople).not.toContain("RemoveMemberDialog")
     expect(organizationPeople).toContain("InviteMemberDialog")
