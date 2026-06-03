@@ -2849,6 +2849,13 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const inviteMemberDialog = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/invite-member-dialog.tsx"
+      ),
+      "utf8"
+    )
 
     expect(organization).toContain("OrganizationPeople")
     expect(organization).not.toContain(
@@ -2878,8 +2885,24 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).not.toContain("useHasPermission")
     expect(organizationPeople).not.toContain("useUpdateMemberRole")
     expect(organizationPeople).not.toContain("RemoveMemberDialog")
+    expect(organizationPeople).toContain("InviteMemberDialog")
+    expect(organizationPeople).toContain("const [inviteOpen, setInviteOpen]")
+    expect(organizationPeople).toContain("setInviteOpen(true)")
     expect(organizationPeople).not.toContain("LeaveOrganizationDialog")
-    expect(organizationPeople).not.toContain("InviteMemberDialog")
+    expect(inviteMemberDialog).toContain("InviteMemberDialogProps")
+    expect(inviteMemberDialog).toContain("open: boolean")
+    expect(inviteMemberDialog).toContain(
+      "onOpenChange: (open: boolean) => void"
+    )
+    expect(inviteMemberDialog).toContain("useInviteMember")
+    expect(inviteMemberDialog).toContain("useActiveOrganization")
+    expect(inviteMemberDialog).toContain("pickDefaultRole")
+    expect(inviteMemberDialog).toContain("inviteMemberSuccess")
+    expect(inviteMemberDialog).toContain(
+      "organizationId: activeOrganization.data?.id"
+    )
+    expect(inviteMemberDialog).toContain("email: email().trim()")
+    expect(inviteMemberDialog).not.toContain("useCancelInvitation")
   })
 
   it("aligns OrganizationSwitcher focused API and behavior with shadcn", () => {

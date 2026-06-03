@@ -2627,8 +2627,9 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("Invitations")
     expect(organizationPeopleDoc).toContain("basic members list")
     expect(organizationPeopleDoc).toContain("basic invitations list")
+    expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain(
-      "tables and actions remain deferred"
+      "cancel, search, filters, sorting, and status actions"
     )
     expect(organizationDoc).toContain("People shell")
     expect(organizationDoc).not.toContain("reserves the `people` route")
@@ -2661,6 +2662,7 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("organization-profile.tsx")
     expect(organizationRegistry).toContain("organization-logo.tsx")
     expect(organizationRegistry).toContain("change-organization-logo.tsx")
+    expect(organizationRegistry).toContain("invite-member-dialog.tsx")
     expect(organizationRegistry).toContain("organization-people.tsx")
     expect(organizationRegistry).toContain("OrganizationPeopleProps")
     expect(organizationRegistry).toContain("useListOrganizationMembers")
@@ -2669,6 +2671,10 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useListOrganizationInvitations")
     expect(organizationRegistry).toContain("OrganizationInvitationRow")
     expect(organizationRegistry).toContain("OrganizationInvitationRowSkeleton")
+    expect(organizationRegistry).toContain("InviteMemberDialogProps")
+    expect(organizationRegistry).toContain("useInviteMember")
+    expect(organizationRegistry).toContain("pickDefaultRole")
+    expect(organizationRegistry).toContain("inviteMemberSuccess")
     expect(organizationRegistry).toContain("useUpdateOrganization")
     expect(organizationRegistry).toContain(
       "data: { name: name(), slug: slug() }"

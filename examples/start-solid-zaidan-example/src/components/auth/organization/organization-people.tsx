@@ -4,8 +4,10 @@ import {
   useListOrganizationInvitations,
   useListOrganizationMembers
 } from "@better-auth-ui/solid"
-import { For, Show } from "solid-js"
+import { PlusCircle } from "lucide-solid"
+import { createSignal, For, Show } from "solid-js"
 import { UserView } from "@/components/auth/user/user-view"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -15,6 +17,7 @@ import {
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { InviteMemberDialog } from "./invite-member-dialog"
 
 export type OrganizationPeopleProps = {
   class?: string
@@ -131,6 +134,7 @@ function OrganizationInvitationRowSkeleton() {
 
 export function OrganizationPeople(props: OrganizationPeopleProps) {
   const auth = useAuth()
+  const [inviteOpen, setInviteOpen] = createSignal(false)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
   )
@@ -144,11 +148,17 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
   return (
     <div class={cn("grid gap-4 md:gap-6", props.class)}>
       <Card>
-        <CardHeader>
-          <CardTitle>Members</CardTitle>
-          <CardDescription>
-            View the members of the active organization.
-          </CardDescription>
+        <CardHeader class="gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="grid gap-1.5">
+            <CardTitle>Members</CardTitle>
+            <CardDescription>
+              View the members of the active organization.
+            </CardDescription>
+          </div>
+          <Button onClick={() => setInviteOpen(true)} size="sm" type="button">
+            <PlusCircle class="size-4" />
+            Invite member
+          </Button>
         </CardHeader>
         <CardContent>
           <Show
@@ -214,6 +224,8 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
           </Show>
         </CardContent>
       </Card>
+
+      <InviteMemberDialog open={inviteOpen()} onOpenChange={setInviteOpen} />
     </div>
   )
 }

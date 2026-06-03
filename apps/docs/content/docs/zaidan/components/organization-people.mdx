@@ -3,7 +3,7 @@ title: <OrganizationPeople />
 description: Solid/Zaidan organization people route shell.
 ---
 
-`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers` and a basic invitations list backed by `useListOrganizationInvitations`.
+`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers`, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations`.
 
 ## Usage
 
@@ -25,11 +25,11 @@ npx zaidan add https://better-auth-ui.com/r/solid/organization.json
 
 ## Members
 
-The members section renders a basic members list with loading and empty states. Full members tables and actions remain deferred: search, filters, role editing, remove member, and leave organization are follow-up slices.
+The members section renders a basic members list with loading and empty states. It also opens `InviteMemberDialog` so admins can invite a member with a selected role. Full members tables and actions remain deferred: search, filters, role editing, remove member, and leave organization are follow-up slices.
 
 ## Invitations
 
-The invitations section renders a basic invitations list with loading and empty states. Full invitations tables and actions remain deferred: invite, cancel, search, filters, sorting, and status actions are follow-up slices.
+The invitations section renders a basic invitations list with loading and empty states. Full invitations tables and actions remain deferred: cancel, search, filters, sorting, and status actions are follow-up slices.
 
 ## Notes
 
