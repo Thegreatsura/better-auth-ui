@@ -2588,6 +2588,38 @@ describe("Solid registry isolation", () => {
     expect(multiSessionStory).toContain("multiSessionQueryKeys.list")
     expect(multiSessionStory).toContain("RouterProvider")
     expect(multiSessionStory).toContain("createMemoryHistory")
+
+    const organizationPluginDoc = pluginDoc("organization")
+    const organizationRegistry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/public/r/solid/organization.json"),
+      "utf8"
+    )
+    const solidRegistry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/public/r/solid/registry.json"),
+      "utf8"
+    )
+
+    expect(organizationPluginDoc).toContain("useParams({ strict: false })")
+    expect(organizationPluginDoc).toContain("organizationPlugin({ slug")
+    expect(organizationPluginDoc).toContain("/organization/$slug/$path")
+    expect(organizationPluginDoc).toContain("non-slug routes pass `null`")
+    expect(organizationPluginDoc).toContain("Deferred UI parity")
+    expect(organizationPluginDoc).toContain("members")
+    expect(organizationPluginDoc).toContain("invitations")
+    expect(organizationPluginDoc).toContain("profile")
+    expect(organizationPluginDoc).not.toContain("full Organization UI parity")
+    expect(organizationPluginDoc).not.toContain(
+      "organization API keys are deferred"
+    )
+    expect(organizationRegistry).toContain("organization-switcher.tsx")
+    expect(organizationRegistry).toContain("organization-row.tsx")
+    expect(organizationRegistry).toContain("organization.tsx")
+    expect(organizationRegistry).toContain("plugin.slug !== undefined")
+    expect(solidRegistry).toContain('"name": "organization"')
+    expect(solidRegistry).toContain(
+      '"path": "src/lib/auth/organization-plugin.tsx"'
+    )
+
     expect(pluginDoc("passkey")).toContain("WebAuthn origin")
     expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
     expect(pluginDoc("captcha")).toContain("captchaPlugin")

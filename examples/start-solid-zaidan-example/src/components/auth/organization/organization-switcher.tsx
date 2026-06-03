@@ -1,6 +1,7 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import {
   useActiveOrganization,
+  useAuth,
   useListOrganizations,
   useSetActiveOrganization
 } from "@better-auth-ui/solid"
@@ -17,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { authClient } from "@/lib/auth-client"
 
 export type OrganizationSwitcherProps = {
@@ -34,23 +36,40 @@ function OrganizationSwitcherTrigger(props: OrganizationSwitcherProps = {}) {
 }
 
 function MountedOrganizationSwitcher(props: OrganizationSwitcherProps = {}) {
+  const auth = useAuth()
   const client = authClient as OrganizationAuthClient
   const navigate = useNavigate()
   const activeOrganization = useActiveOrganization(client)
   const organizations = useListOrganizations(client)
   const setActiveOrganization = useSetActiveOrganization(client)
+  const organizationPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
+      | { slug?: string | null }
+      | undefined
+  const isSlugMode = () => {
+    const plugin = organizationPluginConfig()
+
+    if (!plugin) return false
+
+    return plugin.slug !== undefined
+  }
+
+  const navigateToOrganization = (organization: Organization) => {
+    navigate({
+      to: "/organization/$slug/$path",
+      params: { slug: organization.slug, path: "settings" }
+    })
+  }
 
   const openOrganization = (organization: Organization) => {
+    if (isSlugMode()) {
+      navigateToOrganization(organization)
+      return
+    }
+
     setActiveOrganization.mutate(
       { organizationId: organization.id },
-      {
-        onSuccess: () => {
-          navigate({
-            to: "/organization/$slug/$path",
-            params: { slug: organization.slug, path: "settings" }
-          })
-        }
-      }
+      { onSuccess: () => navigateToOrganization(organization) }
     )
   }
 

@@ -1,5 +1,6 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useActiveOrganization, useAuth } from "@better-auth-ui/solid"
+import { useNavigate } from "@tanstack/solid-router"
 import { For, Show } from "solid-js"
 import type { OrganizationCardsPlugin } from "@/components/auth/settings/shared/types"
 import {
@@ -19,17 +20,30 @@ export type OrganizationProps = {
 
 export function Organization(props: OrganizationProps) {
   const auth = useAuth()
+  const navigate = useNavigate()
   const activeOrganization = useActiveOrganization(
-    authClient as OrganizationAuthClient,
-    props.slug ? { query: { organizationSlug: props.slug } } : {}
+    authClient as OrganizationAuthClient
   )
   const organizationCards = () =>
     (auth.plugins as OrganizationCardsPlugin[]).flatMap(
       (plugin) => plugin.organizationCards ?? []
     )
 
+  const handlePathChange = (path: string) => {
+    if (!props.slug) return
+
+    navigate({
+      to: "/organization/$slug/$path",
+      params: { slug: props.slug, path }
+    })
+  }
+
   return (
-    <Tabs value={props.path} class="w-full gap-4 md:gap-6">
+    <Tabs
+      value={props.path}
+      onChange={handlePathChange}
+      class="w-full gap-4 md:gap-6"
+    >
       <TabsList aria-label="Organization sections">
         <TabsTrigger value="settings">Settings</TabsTrigger>
         <TabsTrigger value="people">People</TabsTrigger>

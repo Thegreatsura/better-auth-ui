@@ -1,8 +1,8 @@
 import { deleteUserPlugin, usernamePlugin } from "@better-auth-ui/core/plugins"
 import type { QueryClient } from "@tanstack/solid-query"
-import { useNavigate } from "@tanstack/solid-router"
+import { useNavigate, useParams } from "@tanstack/solid-router"
 import type { JSX } from "solid-js"
-import { onCleanup, onMount } from "solid-js"
+import { onCleanup, onMount, Show } from "solid-js"
 import { apiKeyPlugin } from "@/lib/auth/api-key-plugin"
 import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
@@ -24,6 +24,14 @@ const resolveProviderChildren = (children: ProvidersProps["children"]) =>
 
 export function Providers(props: ProvidersProps) {
   const navigate = useNavigate()
+  const params = useParams({ strict: false })
+  const organizationSlug = () => {
+    const slug = params().slug
+
+    if (typeof slug === "string" && slug.length > 0) return slug
+
+    return null
+  }
 
   onMount(() => {
     const cleanup = syncDocumentThemePreference()
@@ -32,28 +40,30 @@ export function Providers(props: ProvidersProps) {
   })
 
   return (
-    <AuthProvider
-      authClient={authClient}
-      redirectTo="/settings/account"
-      navigate={navigate}
-      queryClient={props.queryClient}
-      socialProviders={["github"]}
-      plugins={[
-        multiSessionPlugin(),
-        apiKeyPlugin({ organization: true }),
-        usernamePlugin(),
-        magicLinkPlugin(),
-        passkeyPlugin(),
-        deleteUserPlugin(),
-        organizationPlugin()
-      ]}
-    >
-      {() => (
-        <>
-          {resolveProviderChildren(props.children)}
-          <Toaster />
-        </>
-      )}
-    </AuthProvider>
+    <Show keyed when={organizationSlug() ?? "personal"}>
+      <AuthProvider
+        authClient={authClient}
+        redirectTo="/settings/account"
+        navigate={navigate}
+        queryClient={props.queryClient}
+        socialProviders={["github"]}
+        plugins={[
+          multiSessionPlugin(),
+          apiKeyPlugin({ organization: true }),
+          usernamePlugin(),
+          magicLinkPlugin(),
+          passkeyPlugin(),
+          deleteUserPlugin(),
+          organizationPlugin({ slug: organizationSlug() })
+        ]}
+      >
+        {() => (
+          <>
+            {resolveProviderChildren(props.children)}
+            <Toaster />
+          </>
+        )}
+      </AuthProvider>
+    </Show>
   )
 }

@@ -120,9 +120,8 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(providers).toContain(
-      'import { useNavigate } from "@tanstack/solid-router"'
-    )
+    expect(providers).toContain("useNavigate")
+    expect(providers).toContain("@tanstack/solid-router")
     expect(providers).toContain(
       'import { AuthProvider } from "./auth/auth-provider"'
     )
@@ -161,6 +160,27 @@ describe("Solid auth route component selection", () => {
     expect(authServer).toContain('"http://localhost:3000"')
     expect(authProvider).not.toContain("useNavigate")
     expect(authProvider).not.toContain("createAuthClient")
+  })
+
+  it("drives the organization plugin from the current route slug", () => {
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
+      "utf8"
+    )
+
+    expect(providers).toContain(
+      'import { useNavigate, useParams } from "@tanstack/solid-router"'
+    )
+    expect(providers).toContain("useParams({ strict: false })")
+    expect(providers).toContain('typeof slug === "string"')
+    expect(providers).toContain("return null")
+    expect(providers).toContain(
+      "organizationPlugin({ slug: organizationSlug() })"
+    )
+    expect(providers).not.toContain("organizationPlugin()}")
+    expect(providers).toContain(
+      '<Show keyed when={organizationSlug() ?? "personal"}>'
+    )
   })
 
   it("loads the example-local env file into server-side auth config when Vite runs from the workspace", () => {
@@ -2685,6 +2705,74 @@ describe("Solid auth route component selection", () => {
     expect(deleteUserStory).toContain("plugins={[deleteUserPlugin()]}")
     expect(deleteUserStory).toContain("queryClient={queryClient}")
     expect(deleteUserStory).not.toContain("as unknown as AuthClient")
+  })
+
+  it("keeps organization slug routes coherent with plugin-provided organization cards", () => {
+    const organization = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization.tsx"
+      ),
+      "utf8"
+    )
+    const organizationSwitcher = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-switcher.tsx"
+      ),
+      "utf8"
+    )
+    const organizationRow = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-row.tsx"
+      ),
+      "utf8"
+    )
+    const organizationApiKeys = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/api-key/organization-api-keys.tsx"
+      ),
+      "utf8"
+    )
+    const activeOrganizationQuery = readFileSync(
+      resolve(
+        __dirname,
+        "../../../packages/solid/src/queries/organization/active-organization-query.ts"
+      ),
+      "utf8"
+    )
+    const listMembersQuery = readFileSync(
+      resolve(
+        __dirname,
+        "../../../packages/solid/src/queries/organization/list-members-query.ts"
+      ),
+      "utf8"
+    )
+
+    expect(organization).toContain("useActiveOrganization(")
+    expect(organization).toContain("authClient as OrganizationAuthClient")
+    expect(organization).not.toContain("organizationSlug: props.slug")
+    expect(organization).toContain("organizationCards")
+    expect(organization).toContain("/organization/$slug/$path")
+
+    for (const source of [organizationSwitcher, organizationRow]) {
+      expect(source).toContain("organizationPlugin.id")
+      expect(source).toContain("plugin.slug !== undefined")
+      expect(source).toContain('to: "/organization/$slug/$path"')
+      expect(source).toContain("setActiveOrganization.mutate")
+    }
+
+    expect(organizationApiKeys).toContain("useActiveOrganization")
+    expect(organizationApiKeys).toContain("useListOrganizationMembers")
+    expect(organizationApiKeys).not.toContain("organizationSlug")
+    expect(organizationApiKeys).toContain(
+      "organizationId={activeOrganization.data?.id}"
+    )
+    expect(activeOrganizationQuery).toContain("slug === null")
+    expect(activeOrganizationQuery).toContain("async () => null")
+    expect(listMembersQuery).toContain("activeOrganization.data?.id")
   })
 
   it("adds a Zaidan Magic Link Storybook preview story", () => {

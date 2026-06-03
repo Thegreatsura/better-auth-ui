@@ -1,9 +1,10 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
-import { useSetActiveOrganization } from "@better-auth-ui/solid"
+import { useAuth, useSetActiveOrganization } from "@better-auth-ui/solid"
 import { useNavigate } from "@tanstack/solid-router"
 import type { Organization } from "better-auth/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 export type OrganizationRowProps = {
   authClient: OrganizationAuthClient
@@ -11,18 +12,42 @@ export type OrganizationRowProps = {
 }
 
 export function OrganizationRow(props: OrganizationRowProps) {
+  const auth = useAuth()
   const navigate = useNavigate()
+  const organizationPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
+      | { slug?: string | null }
+      | undefined
+  const isSlugMode = () => {
+    const plugin = organizationPluginConfig()
+
+    if (!plugin) return false
+
+    return plugin.slug !== undefined
+  }
+  const navigateToOrganization = () => {
+    navigate({
+      to: "/organization/$slug/$path",
+      params: {
+        slug: props.organization.slug,
+        path: "settings"
+      }
+    })
+  }
   const setActiveOrganization = useSetActiveOrganization(props.authClient, {
-    onSuccess: () => {
-      navigate({
-        to: "/organization/$slug/$path",
-        params: {
-          slug: props.organization.slug,
-          path: "settings"
-        }
-      })
-    }
+    onSuccess: navigateToOrganization
   })
+
+  const openOrganization = () => {
+    if (isSlugMode()) {
+      navigateToOrganization()
+      return
+    }
+
+    setActiveOrganization.mutate({
+      organizationId: props.organization.id
+    })
+  }
 
   return (
     <Card size="sm">
@@ -37,11 +62,7 @@ export function OrganizationRow(props: OrganizationRowProps) {
           size="sm"
           variant="outline"
           disabled={setActiveOrganization.isPending}
-          onClick={() =>
-            setActiveOrganization.mutate({
-              organizationId: props.organization.id
-            })
-          }
+          onClick={openOrganization}
         >
           Open
         </Button>

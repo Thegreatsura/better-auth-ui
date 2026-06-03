@@ -3,7 +3,7 @@ title: Organization
 description: Install the Solid/Zaidan organization integration.
 ---
 
-The organization components wires Better Auth's organization plugin into the Solid/Zaidan example. This slice provides a coherent minimum: organization setup, `/settings/organizations`, a header switcher, and a slug route shell at `/organization/$slug/$path`.
+The organization components wire Better Auth's organization plugin into the Solid/Zaidan example. This slice provides slug-driven runtime parity with shadcn for organization routes: `/settings/organizations`, a header switcher, organization-scoped cards, and the route shell at `/organization/$slug/$path` all share the same plugin slug context.
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/organization.json
@@ -41,6 +41,34 @@ const validSettingsPaths = [
 ]
 ```
 
+Derive the optional route slug in your provider and pass it into the Zaidan organization plugin. Slug routes pass a string; non-slug routes pass `null`.
+
+```tsx title="src/components/providers.tsx"
+import { useNavigate, useParams } from "@tanstack/solid-router"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+export function Providers(props: ProvidersProps) {
+  const navigate = useNavigate()
+  const params = useParams({ strict: false })
+  const organizationSlug = () => {
+    const slug = params().slug
+
+    if (typeof slug === "string" && slug.length > 0) return slug
+
+    return null
+  }
+
+  return (
+    <AuthProvider
+      navigate={navigate}
+      plugins={[organizationPlugin({ slug: organizationSlug() })]}
+    >
+      {props.children}
+    </AuthProvider>
+  )
+}
+```
+
 Add an organization route shell for slug-based organization pages:
 
 ```tsx title="src/routes/organization/$slug/$path.tsx"
@@ -52,6 +80,8 @@ function OrganizationPage() {
   return <Organization path={params().path} slug={params().slug} />
 }
 ```
+
+With this setup, `useActiveOrganization` and plugin-contributed organization cards use the same slug-aware plugin context as the route. The switcher and organization rows navigate to `/organization/$slug/$path` in slug-aware mode instead of relying on stale session-active organization state.
 
 ## Installed surface
 
@@ -65,7 +95,7 @@ function OrganizationPage() {
 
 ## Deferred UI parity
 
-Full shadcn/HeroUI organization UI includes member tables, invitation tables, role editing, logo upload, delete/leave dialogs, and organization-scoped API key cards. The Solid package APIs for those flows exist, but this Zaidan slice intentionally defers the larger copied UI to keep PR #393 reviewable. Use the Solid organization query and mutation docs to build those forms incrementally.
+This runtime slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes members, invitations, profile, role editing, logo upload, delete dialogs, and leave dialogs. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
 
 ## Related APIs
 
