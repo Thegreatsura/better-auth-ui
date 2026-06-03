@@ -133,7 +133,11 @@ describe("Solid auth route component selection", () => {
     expect(providers).toContain('redirectTo="/settings/account"')
     expect(providers).toContain("navigate={navigate}")
     expect(providers).toContain('socialProviders={["github"]}')
+    expect(providers).toContain('from "@/lib/auth/multi-session-plugin"')
     expect(providers).toContain("multiSessionPlugin()")
+    expect(providers).not.toContain(
+      'multiSessionPlugin\n} from "@better-auth-ui/core/plugins"'
+    )
     expect(providers).toContain("apiKeyPlugin({ organization: true })")
     expect(providers).toContain("passkeyPlugin()")
     expect(providers).toContain('from "@/lib/auth/api-key-plugin"')
@@ -879,9 +883,7 @@ describe("Solid auth route component selection", () => {
     expect(accountSettings).toContain(
       'from "@/components/auth/theme/appearance"'
     )
-    expect(accountSettings).toContain(
-      'from "@/components/auth/multi-session/manage-accounts"'
-    )
+    expect(accountSettings).toContain("useAuth")
     expect(accountSettings).not.toContain("listDeviceSessionsOptions")
     expect(securitySettings).toContain(
       'from "@/components/auth/settings/security/active-sessions"'
@@ -911,6 +913,116 @@ describe("Solid auth route component selection", () => {
     expect(activeSessionsSettings).not.toContain("function ActiveSessionRow(")
     expect(linkedAccountsSettings).toContain('from "./linked-account"')
     expect(linkedAccountsSettings).not.toContain("function LinkedAccountRow(")
+  })
+
+  it("wires multi-session through a local Solid plugin wrapper and plugin account cards", () => {
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
+      "utf8"
+    )
+    const multiSessionPlugin = readFileSync(
+      resolve(__dirname, "../src/lib/auth/multi-session-plugin.ts"),
+      "utf8"
+    )
+    const accountSettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/account/account-settings.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(providers).toContain('from "@/lib/auth/multi-session-plugin"')
+    expect(multiSessionPlugin).toContain("createAuthPlugin")
+    expect(multiSessionPlugin).toContain("coreMultiSessionPlugin.id")
+    expect(multiSessionPlugin).toContain("accountCards: [ManageAccounts]")
+    expect(multiSessionPlugin).toContain(
+      "userMenuItems: [SwitchAccountSubmenu]"
+    )
+    expect(accountSettings).not.toContain(
+      'from "@/components/auth/multi-session/manage-accounts"'
+    )
+    expect(accountSettings).toContain("useAuth")
+    expect(accountSettings).toContain("auth.plugins")
+    expect(accountSettings).toContain("plugin.accountCards")
+    expect(accountSettings).not.toContain("<ManageAccounts />")
+  })
+
+  it("adds a real multi-session switch-account submenu and user-button plugin menu rendering", () => {
+    const switchAccountSubmenuPath = resolve(
+      __dirname,
+      "../src/components/auth/multi-session/switch-account-submenu.tsx"
+    )
+    const switchAccountSubmenuContentPath = resolve(
+      __dirname,
+      "../src/components/auth/multi-session/switch-account-submenu-content.tsx"
+    )
+    const switchAccountSubmenuItemPath = resolve(
+      __dirname,
+      "../src/components/auth/multi-session/switch-account-submenu-item.tsx"
+    )
+
+    expect(existsSync(switchAccountSubmenuPath)).toBe(true)
+    expect(existsSync(switchAccountSubmenuContentPath)).toBe(true)
+    expect(existsSync(switchAccountSubmenuItemPath)).toBe(true)
+
+    const switchAccountSubmenu = readFileSync(switchAccountSubmenuPath, "utf8")
+    const switchAccountSubmenuContent = readFileSync(
+      switchAccountSubmenuContentPath,
+      "utf8"
+    )
+    const switchAccountSubmenuItem = readFileSync(
+      switchAccountSubmenuItemPath,
+      "utf8"
+    )
+    const userButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
+      "utf8"
+    )
+
+    expect(switchAccountSubmenu).toContain(
+      "export type SwitchAccountSubmenuProps = {"
+    )
+    expect(switchAccountSubmenu).toContain("class?: string")
+    expect(switchAccountSubmenu).toContain("useAuth")
+    expect(switchAccountSubmenu).toContain("useSession")
+    expect(switchAccountSubmenu).toContain("coreMultiSessionPlugin.id")
+    expect(switchAccountSubmenu).toContain("multiSessionLocalization")
+    expect(switchAccountSubmenu).toContain("DropdownMenuSub")
+    expect(switchAccountSubmenu).toContain("DropdownMenuSubTrigger")
+    expect(switchAccountSubmenu).toContain("<SwitchAccountSubmenuContent />")
+    expect(switchAccountSubmenu).not.toContain("return null")
+    expect(switchAccountSubmenu).not.toContain(
+      "Placeholder for Multi Session submenu wiring"
+    )
+
+    expect(switchAccountSubmenuContent).toContain("listDeviceSessionsOptions")
+    expect(switchAccountSubmenuContent).toContain("createQuery")
+    expect(switchAccountSubmenuContent).toContain("shouldLoadDeviceSessions")
+    expect(switchAccountSubmenuContent).toContain("DropdownMenuSubContent")
+    expect(switchAccountSubmenuContent).toContain("SwitchAccountSubmenuItem")
+    expect(switchAccountSubmenuContent).toContain('to="/auth/$path"')
+    expect(switchAccountSubmenuContent).toContain("auth.viewPaths.auth.signIn")
+    expect(switchAccountSubmenuContent).toContain("CirclePlus")
+
+    expect(switchAccountSubmenuItem).toContain(
+      "export type SwitchAccountSubmenuItemProps = {"
+    )
+    expect(switchAccountSubmenuItem).toContain("deviceSession: DeviceSession")
+    expect(switchAccountSubmenuItem).toContain("setActiveSessionOptions")
+    expect(switchAccountSubmenuItem).toContain("createMutation")
+    expect(switchAccountSubmenuItem).toContain("window.scrollTo({ top: 0 })")
+    expect(switchAccountSubmenuItem).toContain(
+      "disabled={setActiveSession.isPending}"
+    )
+    expect(switchAccountSubmenuItem).toContain("LoaderCircle")
+
+    expect(userButton).toContain("pluginUserMenuItems")
+    expect(userButton).toContain("auth.plugins")
+    expect(userButton).toContain("plugin.userMenuItems")
+    expect(userButton).toContain("<Dynamic component={item.UserMenuItem} />")
+    expect(userButton).toContain("<ThemeToggleItem />")
+    expect(userButton).toContain("auth.localization.auth.signOut")
   })
 
   it("closes remaining shadcn-like Solid auth file parity with real implementations or documented guards", () => {
@@ -1558,7 +1670,7 @@ describe("Solid auth route component selection", () => {
     expect(appearanceSettings).toContain("System")
     expect(appearanceSettings).toContain("Light")
     expect(appearanceSettings).toContain("Dark")
-    expect(accountSettings).toContain("<ManageAccounts />")
+    expect(accountSettings).toContain("plugin.accountCards")
     expect(manageAccounts).toContain("multiSessionLocalization.manageAccounts")
     expect(manageAccounts).toContain("<ItemGroup")
     expect(manageAccountRow).toContain("<ItemMedia")
@@ -1604,7 +1716,7 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(accountSettings).toContain("<ManageAccounts />")
+    expect(accountSettings).toContain("plugin.accountCards")
     expect(manageAccounts).toContain("setActiveSessionOptions")
     expect(manageAccounts).toContain("revokeMultiSessionOptions")
     expect(manageAccounts).toContain("const setActiveSession = createMutation")

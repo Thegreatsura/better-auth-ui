@@ -8,8 +8,16 @@ import {
   User,
   UserPlus2
 } from "lucide-solid"
-import type { JSX } from "solid-js"
-import { createMemo, createSignal, mergeProps, onMount, Show } from "solid-js"
+import type { Component, JSX } from "solid-js"
+import {
+  createMemo,
+  createSignal,
+  For,
+  mergeProps,
+  onMount,
+  Show
+} from "solid-js"
+import { Dynamic } from "solid-js/web"
 import { ThemeToggleItem } from "@/components/auth/theme/theme-toggle-item"
 import { UserAvatar } from "@/components/auth/user/user-avatar"
 import { UserView } from "@/components/auth/user/user-view"
@@ -63,6 +71,11 @@ const resolveUserInitials = (
   name?: string | null,
   email?: string | null
 ) => resolveUserLabel(username, name, email).slice(0, 2).toUpperCase()
+
+type UserMenuItemPlugin = {
+  id: string
+  userMenuItems?: Component<{ class?: string }>[]
+}
 
 export type UserButtonProps = {
   class?: string
@@ -151,6 +164,14 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
 
       return [renderUserLink(link)]
     })
+  )
+  const pluginUserMenuItems = createMemo(() =>
+    (auth.plugins as UserMenuItemPlugin[]).flatMap((plugin) =>
+      (plugin.userMenuItems ?? []).map((UserMenuItem, index) => ({
+        UserMenuItem,
+        id: `${plugin.id}-${index.toString()}`
+      }))
+    )
   )
 
   onMount(() => setIsUserButtonHydrated(true))
@@ -326,6 +347,10 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                   </Link>
                 </DropdownMenuItem>
               </Show>
+
+              <For each={pluginUserMenuItems()}>
+                {(item) => <Dynamic component={item.UserMenuItem} />}
+              </For>
 
               <ThemeToggleItem />
 
