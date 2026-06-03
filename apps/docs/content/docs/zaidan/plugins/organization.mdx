@@ -3,7 +3,7 @@ title: Organization
 description: Install the Solid/Zaidan organization integration.
 ---
 
-The organization components wire Better Auth's organization plugin into the Solid/Zaidan example. This slice provides slug-driven runtime, profile/settings/delete, and People list/invite/cancel/role-edit/remove-member/leave parity with shadcn for organization routes: `/settings/organizations`, a header switcher, organization-scoped cards, organization profile editing, logo upload, the settings danger zone with delete organization support, the People shell with basic members and invitations lists, member role editing, member removal, leave organization, member invite dialog, cancel invitation action, and the route shell at `/organization/$slug/$path` all share the same plugin slug context.
+The organization components wire Better Auth's organization plugin into the Solid/Zaidan example. This slice provides slug-driven runtime, profile/settings/delete, user invitation accept/reject, and People list/invite/cancel/role-edit/remove-member/leave parity with shadcn for organization routes: `/settings/organizations`, a header switcher, organization-scoped cards, organization profile editing, logo upload, the settings danger zone with delete organization support, user invitations in settings so users can accept or reject invitations, the People shell with basic members and invitations lists, member role editing, member removal, leave organization, member invite dialog, cancel invitation action, and the route shell at `/organization/$slug/$path` all share the same plugin slug context.
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/organization.json
@@ -88,6 +88,10 @@ With this setup, `useActiveOrganization` and plugin-contributed organization car
 - `src/lib/auth/organization-plugin.tsx`
 - `src/components/auth/organization/organizations-settings.tsx`
 - `src/components/auth/organization/organizations.tsx`
+- `src/components/auth/organization/user-invitations.tsx`
+- `src/components/auth/organization/user-invitation-row.tsx`
+- `src/components/auth/organization/user-invitation-row-skeleton.tsx`
+- `src/components/auth/organization/user-invitations-empty.tsx`
 - `src/components/auth/organization/create-organization-dialog.tsx`
 - `src/components/auth/organization/slug-field.tsx`
 - `src/components/auth/organization/organization-settings.tsx`
@@ -106,7 +110,7 @@ With this setup, `useActiveOrganization` and plugin-contributed organization car
 
 ## Deferred UI parity
 
-This runtime, create-dialog, profile/settings/delete, and People list/invite/cancel/role-edit/remove-member/leave slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes advanced members tables and advanced invitations tables. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
+This runtime, create-dialog, profile/settings/delete, user invitation accept/reject, and People list/invite/cancel/role-edit/remove-member/leave slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes advanced members tables and advanced invitations tables. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
 
 ## Related APIs
 

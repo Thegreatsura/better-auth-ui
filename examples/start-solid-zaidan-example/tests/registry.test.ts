@@ -2611,6 +2611,8 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain("organization-profile.tsx")
     expect(organizationPluginDoc).toContain("change-organization-logo.tsx")
     expect(organizationPluginDoc).toContain("organization-people.tsx")
+    expect(organizationPluginDoc).toContain("user-invitations.tsx")
+    expect(organizationPluginDoc).toContain("accept or reject invitations")
     expect(organizationPluginDoc).not.toContain(
       "profile, role editing, logo upload"
     )
@@ -2618,10 +2620,17 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).not.toContain(
       "organization API keys are deferred"
     )
+    const organizationsSettingsDoc = componentDoc("organizations-settings")
     const organizationPeopleDoc = componentDoc("organization-people")
     const organizationDoc = componentDoc("organization")
     const organizationSwitcherDoc = componentDoc("organization-switcher")
 
+    expect(organizationsSettingsDoc).toContain("OrganizationsSettings")
+    expect(organizationsSettingsDoc).toContain("UserInvitations")
+    expect(organizationsSettingsDoc).toContain("accept or reject invitations")
+    expect(organizationsSettingsDoc).not.toContain(
+      "Member and invitation management UI is deferred"
+    )
     expect(organizationPeopleDoc).toContain("OrganizationPeople")
     expect(organizationPeopleDoc).toContain("Members")
     expect(organizationPeopleDoc).toContain("Invitations")
@@ -2678,6 +2687,16 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
     expect(organizationRegistry).toContain("organization-settings.tsx")
+    expect(organizationRegistry).toContain("user-invitations.tsx")
+    expect(organizationRegistry).toContain("user-invitation-row.tsx")
+    expect(organizationRegistry).toContain("user-invitation-row-skeleton.tsx")
+    expect(organizationRegistry).toContain("user-invitations-empty.tsx")
+    expect(organizationRegistry).toContain("UserInvitations")
+    expect(organizationRegistry).toContain("useListUserInvitations")
+    expect(organizationRegistry).toContain("useAcceptInvitation")
+    expect(organizationRegistry).toContain("useRejectInvitation")
+    expect(organizationRegistry).toContain("acceptInvitation.mutate")
+    expect(organizationRegistry).toContain("rejectInvitation.mutate")
     expect(organizationRegistry).toContain("organization-profile.tsx")
     expect(organizationRegistry).toContain("organization-logo.tsx")
     expect(organizationRegistry).toContain("change-organization-logo.tsx")
@@ -3052,9 +3071,11 @@ describe("Solid registry isolation", () => {
       expect(content).not.toContain("should explain")
       expect(content).not.toContain("TODO placeholder")
       expect(content).not.toContain("TODO")
-      expect(content.replaceAll("api-key-skeleton.tsx", "")).not.toContain(
-        "skeleton"
-      )
+      expect(
+        content
+          .replaceAll("api-key-skeleton.tsx", "")
+          .replaceAll("user-invitation-row-skeleton.tsx", "")
+      ).not.toContain("skeleton")
     }
   })
 

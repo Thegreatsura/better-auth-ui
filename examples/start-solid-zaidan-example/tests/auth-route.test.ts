@@ -2876,6 +2876,71 @@ describe("Solid auth route component selection", () => {
     expect(deleteOrganizationDialog).toContain("replace: true")
   })
 
+  it("adds Solid/Zaidan Organization user invitations settings parity", () => {
+    const organizationsSettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organizations-settings.tsx"
+      ),
+      "utf8"
+    )
+    const userInvitations = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/user-invitations.tsx"
+      ),
+      "utf8"
+    )
+    const userInvitationRow = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/user-invitation-row.tsx"
+      ),
+      "utf8"
+    )
+    const userInvitationRowSkeleton = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/user-invitation-row-skeleton.tsx"
+      ),
+      "utf8"
+    )
+    const userInvitationsEmpty = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/user-invitations-empty.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(organizationsSettings).toContain("UserInvitations")
+    expect(organizationsSettings).toContain("Organizations")
+    expect(userInvitations).toContain("UserInvitationsProps")
+    expect(userInvitations).toContain("useListUserInvitations")
+    expect(userInvitations).toContain("OrganizationAuthClient")
+    expect(userInvitations).toContain("UserInvitationRow")
+    expect(userInvitations).toContain("UserInvitationRowSkeleton")
+    expect(userInvitations).toContain("UserInvitationsEmpty")
+    expect(userInvitationRow).toContain("UserInvitationRowProps")
+    expect(userInvitationRow).toContain("useAcceptInvitation")
+    expect(userInvitationRow).toContain("useRejectInvitation")
+    expect(userInvitationRow).toContain("acceptInvitation.mutate")
+    expect(userInvitationRow).toContain("rejectInvitation.mutate")
+    expect(userInvitationRow).toContain("invitationId: props.invitation.id")
+    expect(userInvitationRow).toContain("organizationName")
+    expect(userInvitationRow).toContain("organizationLocalization().accept")
+    expect(userInvitationRow).toContain(
+      "organizationLocalization().rejectInvitation"
+    )
+    expect(userInvitationRow).not.toContain("Badge")
+    expect(userInvitationRow).not.toContain("Spinner")
+    expect(userInvitations).not.toContain("<Table")
+    expect(userInvitations).not.toContain("InputGroup")
+    expect(userInvitationRowSkeleton).toContain("Skeleton")
+    expect(userInvitationsEmpty).toContain("noInvitations")
+    expect(userInvitationsEmpty).toContain("userInvitationsEmptyDescription")
+  })
+
   it("adds Solid/Zaidan Organization people shell parity", () => {
     const organization = readFileSync(
       resolve(

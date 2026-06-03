@@ -470,6 +470,16 @@ export const solidRegistryManifest = {
           "src/components/auth/organization/organizations-settings.tsx"
         ),
         componentFile("src/components/auth/organization/organizations.tsx"),
+        componentFile("src/components/auth/organization/user-invitations.tsx"),
+        componentFile(
+          "src/components/auth/organization/user-invitation-row.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/user-invitation-row-skeleton.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/user-invitations-empty.tsx"
+        ),
         componentFile(
           "src/components/auth/organization/create-organization-dialog.tsx"
         ),

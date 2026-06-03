@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { Organizations } from "./organizations"
+import { UserInvitations } from "./user-invitations"
 
 export type OrganizationsSettingsProps = {
   class?: string
@@ -31,6 +32,7 @@ export function OrganizationsSettings(props: OrganizationsSettingsProps = {}) {
           <Organizations authClient={auth.authClient as never} />
         </CardContent>
       </Card>
+      <UserInvitations />
     </div>
   )
 }

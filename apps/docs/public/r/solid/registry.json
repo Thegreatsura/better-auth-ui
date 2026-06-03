@@ -1671,6 +1671,22 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/organization/user-invitations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitation-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitation-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/user-invitations-empty.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/auth/organization/create-organization-dialog.tsx",
           "type": "registry:component"
         },
