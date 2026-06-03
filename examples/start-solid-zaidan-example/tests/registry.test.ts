@@ -2262,11 +2262,10 @@ describe("Solid registry isolation", () => {
         expect(page, "api-key should keep copied files inside setup").toContain(
           "This drops the following into your codebase:"
         )
-      } else if (name === "delete-user") {
-        expect(
-          page,
-          "delete-user should keep setup-driven structure"
-        ).toContain("## Setup")
+      } else if (name === "delete-user" || name === "magic-link") {
+        expect(page, `${name} should keep setup-driven structure`).toContain(
+          "## Setup"
+        )
       } else {
         expect(page, `plugin ${name} should state prerequisites`).toContain(
           "## Runtime prerequisites"
@@ -2367,7 +2366,46 @@ describe("Solid registry isolation", () => {
       'class={cn(\\"border-destructive p-0\\", props.class)}'
     )
 
-    expect(pluginDoc("magic-link")).toContain("real email provider")
+    const magicLinkPluginDoc = pluginDoc("magic-link")
+
+    expect(magicLinkPluginDoc).toContain("## Setup")
+    expect(magicLinkPluginDoc).toContain("## Components")
+    expect(magicLinkPluginDoc).toContain("## Options")
+    expect(magicLinkPluginDoc).toContain("## Localization")
+    expect(magicLinkPluginDoc).toContain("## Email template")
+    expect(magicLinkPluginDoc).toContain("## Passwordless-only")
+    expect(magicLinkPluginDoc).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/magic-link.json"
+    )
+    expect(magicLinkPluginDoc).toContain("magicLink({")
+    expect(magicLinkPluginDoc).toContain("sendMagicLink")
+    expect(magicLinkPluginDoc).toContain("magicLinkClient()")
+    expect(magicLinkPluginDoc).toContain(
+      'import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"'
+    )
+    expect(magicLinkPluginDoc).toContain("plugins={[magicLinkPlugin()]}")
+    expect(magicLinkPluginDoc).toContain(
+      "Object.values(magicLinkPlugin().viewPaths.auth)"
+    )
+    expect(magicLinkPluginDoc).toContain("src/lib/auth/magic-link-plugin.ts")
+    expect(magicLinkPluginDoc).toContain("src/components/auth/magic-link.tsx")
+    expect(magicLinkPluginDoc).toContain(
+      "src/components/auth/magic-link-button.tsx"
+    )
+    expect(magicLinkPluginDoc).toContain("<ZaidanStory")
+    expect(magicLinkPluginDoc).toContain(
+      'storyId="zaidan-plugins-magic-link--preview"'
+    )
+    expect(magicLinkPluginDoc).toContain('name="MagicLinkProps"')
+    expect(magicLinkPluginDoc).toContain('name="MagicLinkPluginOptions"')
+    expect(magicLinkPluginDoc).toContain('name="MagicLinkLocalization"')
+    expect(magicLinkPluginDoc).toContain("real email provider")
+    expect(magicLinkPluginDoc).not.toContain("payload")
+    expect(magicLinkPluginDoc).not.toContain("ComponentPreview")
+    expect(magicLinkPluginDoc).not.toContain("className")
+    expect(magicLinkPluginDoc).not.toContain("better-auth/react")
+    expect(magicLinkPluginDoc).not.toContain("@tanstack/react-router")
+    expect(magicLinkPluginDoc).not.toContain("useAuthPlugin")
     expect(pluginDoc("passkey")).toContain("WebAuthn origin")
     expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
     expect(pluginDoc("captcha")).toContain("captchaPlugin")
