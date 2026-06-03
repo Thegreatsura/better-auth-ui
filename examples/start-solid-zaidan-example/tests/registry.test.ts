@@ -2611,7 +2611,27 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).not.toContain(
       "organization API keys are deferred"
     )
+    const organizationSwitcherDoc = componentDoc("organization-switcher")
+
+    expect(organizationSwitcherDoc).toContain("setActive")
+    expect(organizationSwitcherDoc).toContain("hidePersonal")
+    expect(organizationSwitcherDoc).toContain("hideSettings")
+    expect(organizationSwitcherDoc).toContain("hideSlug")
+    expect(organizationSwitcherDoc).toContain("custom trigger")
+    expect(organizationSwitcherDoc).toContain(
+      "create-dialog parity is deferred"
+    )
+    expect(organizationSwitcherDoc).not.toContain("hideCreate")
+    expect(organizationSwitcherDoc).not.toContain("className")
     expect(organizationRegistry).toContain("organization-switcher.tsx")
+    expect(organizationRegistry).toContain("trigger?: JSX.Element")
+    expect(organizationRegistry).toContain(
+      "setActive?: (organization: Organization | null) => void"
+    )
+    expect(organizationRegistry).toContain("hidePersonal?: boolean")
+    expect(organizationRegistry).toContain("hideSettings?: boolean")
+    expect(organizationRegistry).toContain("hideSlug?: boolean")
+    expect(organizationRegistry).not.toContain("hideCreate")
     expect(organizationRegistry).toContain("organization-row.tsx")
     expect(organizationRegistry).toContain("organization.tsx")
     expect(organizationRegistry).toContain("plugin.slug !== undefined")

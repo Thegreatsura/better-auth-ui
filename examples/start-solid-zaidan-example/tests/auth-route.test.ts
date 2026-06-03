@@ -2775,6 +2775,45 @@ describe("Solid auth route component selection", () => {
     expect(listMembersQuery).toContain("activeOrganization.data?.id")
   })
 
+  it("aligns OrganizationSwitcher focused API and behavior with shadcn", () => {
+    const organizationSwitcher = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-switcher.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(organizationSwitcher).toContain("import type { JSX }")
+    expect(organizationSwitcher).toContain("import { UserView }")
+    expect(organizationSwitcher).toContain("trigger?: JSX.Element")
+    expect(organizationSwitcher).toContain("hidePersonal?: boolean")
+    expect(organizationSwitcher).toContain("hideSettings?: boolean")
+    expect(organizationSwitcher).toContain("hideSlug?: boolean")
+    expect(organizationSwitcher).toContain(
+      "setActive?: (organization: Organization | null) => void"
+    )
+    expect(organizationSwitcher).toContain("class?: string")
+    expect(organizationSwitcher).not.toContain("className")
+    expect(organizationSwitcher).not.toContain("hideCreate")
+    expect(organizationSwitcher).toContain("hideSlug: true")
+    expect(organizationSwitcher).toContain("props.trigger")
+    expect(organizationSwitcher).toContain('as="span"')
+    expect(organizationSwitcher).toContain("props.setActive?.(organization)")
+    expect(organizationSwitcher).toContain("props.setActive?.(null)")
+    expect(organizationSwitcher).toContain("handleSetActive(null)")
+    expect(organizationSwitcher).toContain("!props.hidePersonal")
+    expect(organizationSwitcher).toContain("!props.hideSettings")
+    expect(organizationSwitcher).toContain("!props.hideSlug")
+    expect(organizationSwitcher).toContain(
+      "organization.id !== activeOrganization.data?.id"
+    )
+    expect(organizationSwitcher).toContain('params: { path: "account" }')
+    expect(organizationSwitcher).toContain('to: "/settings/$path"')
+    expect(organizationSwitcher).toContain('to: "/organization/$slug/$path"')
+    expect(organizationSwitcher).toContain("setActiveOrganization.mutate")
+  })
+
   it("adds a Zaidan Magic Link Storybook preview story", () => {
     const magicLinkStoryPath = resolve(
       __dirname,
