@@ -2790,15 +2790,19 @@ describe("Solid auth route component selection", () => {
     expect(organizationSwitcher).toContain("hidePersonal?: boolean")
     expect(organizationSwitcher).toContain("hideSettings?: boolean")
     expect(organizationSwitcher).toContain("hideSlug?: boolean")
+    expect(organizationSwitcher).toContain("hideCreate?: boolean")
     expect(organizationSwitcher).toContain(
       "setActive?: (organization: Organization | null) => void"
     )
     expect(organizationSwitcher).toContain("class?: string")
     expect(organizationSwitcher).not.toContain("className")
-    expect(organizationSwitcher).not.toContain("hideCreate")
     expect(organizationSwitcher).toContain("hideSlug: true")
     expect(organizationSwitcher).toContain("props.trigger")
     expect(organizationSwitcher).toContain('as="span"')
+    expect(organizationSwitcher).toContain("CreateOrganizationDialog")
+    expect(organizationSwitcher).toContain("const [createOpen, setCreateOpen]")
+    expect(organizationSwitcher).toContain("!props.hideCreate")
+    expect(organizationSwitcher).toContain("setCreateOpen(true)")
     expect(organizationSwitcher).toContain("props.setActive?.(organization)")
     expect(organizationSwitcher).toContain("props.setActive?.(null)")
     expect(organizationSwitcher).toContain("handleSetActive(null)")
@@ -2812,6 +2816,49 @@ describe("Solid auth route component selection", () => {
     expect(organizationSwitcher).toContain('to: "/settings/$path"')
     expect(organizationSwitcher).toContain('to: "/organization/$slug/$path"')
     expect(organizationSwitcher).toContain("setActiveOrganization.mutate")
+  })
+
+  it("adds Solid/Zaidan Organization create dialog and slug field parity", () => {
+    const createDialog = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/create-organization-dialog.tsx"
+      ),
+      "utf8"
+    )
+    const slugField = readFileSync(
+      resolve(__dirname, "../src/components/auth/organization/slug-field.tsx"),
+      "utf8"
+    )
+    const organizations = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organizations.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(createDialog).toContain("CreateOrganizationDialogProps")
+    expect(createDialog).toContain("open: boolean")
+    expect(createDialog).toContain("onOpenChange: (open: boolean) => void")
+    expect(createDialog).toContain("useCreateOrganization")
+    expect(createDialog).toContain("onSuccess: () => props.onOpenChange(false)")
+    expect(createDialog).toContain('setName("")')
+    expect(createDialog).toContain('setSlug("")')
+    expect(createDialog).toContain("setSlug(sanitizeSlug")
+    expect(createDialog).toContain("slug: slug()")
+    expect(createDialog).toContain("SlugField")
+    expect(createDialog).toContain('id="create-organization-slug"')
+    expect(slugField).toContain("export function sanitizeSlug")
+    expect(slugField).toContain('replace(/[^a-z0-9]+/g, "-")')
+    expect(slugField).toContain("useCheckOrganizationSlug")
+    expect(slugField).not.toContain("useCheckSlug")
+    expect(slugField).toContain("currentSlug")
+    expect(slugField).toContain("checkSlug")
+    expect(organizations).toContain("CreateOrganizationDialog")
+    expect(organizations).toContain("const [createOpen, setCreateOpen]")
+    expect(organizations).toContain("setCreateOpen(true)")
+    expect(organizations).not.toContain("const slugify")
   })
 
   it("adds a Zaidan Magic Link Storybook preview story", () => {

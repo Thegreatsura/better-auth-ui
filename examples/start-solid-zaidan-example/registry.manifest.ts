@@ -470,6 +470,10 @@ export const solidRegistryManifest = {
           "src/components/auth/organization/organizations-settings.tsx"
         ),
         componentFile("src/components/auth/organization/organizations.tsx"),
+        componentFile(
+          "src/components/auth/organization/create-organization-dialog.tsx"
+        ),
+        componentFile("src/components/auth/organization/slug-field.tsx"),
         componentFile("src/components/auth/organization/organization-row.tsx"),
         componentFile(
           "src/components/auth/organization/organization-switcher.tsx"

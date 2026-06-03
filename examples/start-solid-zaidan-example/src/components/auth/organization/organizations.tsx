@@ -1,66 +1,33 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
-import {
-  useCreateOrganization,
-  useListOrganizations
-} from "@better-auth-ui/solid"
+import { useListOrganizations } from "@better-auth-ui/solid"
+import { PlusCircle } from "lucide-solid"
 import { createSignal, For, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationRow } from "./organization-row"
 
 export type OrganizationsProps = {
   authClient: OrganizationAuthClient
 }
 
-const slugify = (value: string) =>
-  value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-
 export function Organizations(props: OrganizationsProps) {
   const organizations = useListOrganizations(props.authClient)
-  const createOrganization = useCreateOrganization(props.authClient, {
-    onSuccess: () => setName("")
-  })
-  const [name, setName] = createSignal("")
-
-  const handleSubmit = (event: SubmitEvent) => {
-    event.preventDefault()
-    const nextName = name().trim()
-
-    if (!nextName) return
-
-    createOrganization.mutate({
-      name: nextName,
-      slug: slugify(nextName)
-    })
-  }
+  const [createOpen, setCreateOpen] = createSignal(false)
 
   return (
     <div class="flex flex-col gap-4">
-      <form class="grid gap-3 sm:grid-cols-[1fr_auto]" onSubmit={handleSubmit}>
-        <div class="grid gap-2">
-          <Label for="organization-name">Organization name</Label>
-          <Input
-            id="organization-name"
-            name="name"
-            value={name()}
-            onInput={(event) => setName(event.currentTarget.value)}
-            placeholder="Acme Inc."
-            disabled={createOrganization.isPending}
-          />
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h3 class="font-medium">Organizations</h3>
+          <p class="text-sm text-muted-foreground">
+            Create and manage organizations for shared access.
+          </p>
         </div>
-        <Button
-          class="self-end"
-          type="submit"
-          disabled={createOrganization.isPending}
-        >
+        <Button onClick={() => setCreateOpen(true)} type="button">
+          <PlusCircle class="size-4" />
           Create organization
         </Button>
-      </form>
+      </div>
 
       <Show
         when={!organizations.isPending}
@@ -72,9 +39,13 @@ export function Organizations(props: OrganizationsProps) {
           <For
             each={organizations.data ?? []}
             fallback={
-              <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+              <button
+                class="rounded-md border border-dashed p-4 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                onClick={() => setCreateOpen(true)}
+                type="button"
+              >
                 No organizations yet. Create one to enable organization routes.
-              </p>
+              </button>
             }
           >
             {(organization) => (
@@ -86,6 +57,11 @@ export function Organizations(props: OrganizationsProps) {
           </For>
         </div>
       </Show>
+
+      <CreateOrganizationDialog
+        open={createOpen()}
+        onOpenChange={setCreateOpen}
+      />
     </div>
   )
 }

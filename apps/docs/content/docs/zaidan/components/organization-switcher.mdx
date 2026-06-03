@@ -3,7 +3,7 @@ title: <OrganizationSwitcher />
 description: Solid/Zaidan header dropdown for organization navigation.
 ---
 
-`OrganizationSwitcher` reads the current user's organizations, shows the active organization or personal account, and navigates with the slug-aware Organization runtime.
+`OrganizationSwitcher` reads the current user's organizations, shows the active organization or personal account, and navigates with the slug-aware Organization runtime. It also owns `CreateOrganizationDialog` so users can create organizations directly from the switcher.
 
 ## Usage
 
@@ -30,10 +30,11 @@ Use `setActive` to override the default slug navigation or session mutation beha
 />
 ```
 
-You can also hide personal-account or settings entries and provide a custom trigger:
+You can also hide personal-account, settings, or create entries and provide a custom trigger:
 
 ```tsx
 <OrganizationSwitcher
+  hideCreate
   hidePersonal
   hideSettings
   hideSlug={false}
@@ -55,4 +56,4 @@ npx zaidan add https://better-auth-ui.com/r/solid/organization.json
 
 The switcher uses `useListOrganizations`, `useActiveOrganization`, and `useSetActiveOrganization` from `@better-auth-ui/solid`. In slug-aware routes it navigates to `/organization/$slug/settings`; outside slug mode it preserves the legacy set-active mutation flow.
 
-Focused switcher parity includes `setActive`, `hidePersonal`, `hideSettings`, `hideSlug`, and custom trigger support. create-dialog parity is deferred; users can create organizations from `/settings/organizations` in this slice.
+Create organization parity is implemented with `CreateOrganizationDialog` and a reusable `SlugField`. Focused switcher parity includes `setActive`, `hideCreate`, `hidePersonal`, `hideSettings`, `hideSlug`, and custom trigger support.

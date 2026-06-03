@@ -2618,12 +2618,15 @@ describe("Solid registry isolation", () => {
     expect(organizationSwitcherDoc).toContain("hideSettings")
     expect(organizationSwitcherDoc).toContain("hideSlug")
     expect(organizationSwitcherDoc).toContain("custom trigger")
-    expect(organizationSwitcherDoc).toContain(
+    expect(organizationSwitcherDoc).toContain("hideCreate")
+    expect(organizationSwitcherDoc).toContain("CreateOrganizationDialog")
+    expect(organizationSwitcherDoc).not.toContain(
       "create-dialog parity is deferred"
     )
-    expect(organizationSwitcherDoc).not.toContain("hideCreate")
     expect(organizationSwitcherDoc).not.toContain("className")
     expect(organizationRegistry).toContain("organization-switcher.tsx")
+    expect(organizationRegistry).toContain("create-organization-dialog.tsx")
+    expect(organizationRegistry).toContain("slug-field.tsx")
     expect(organizationRegistry).toContain("trigger?: JSX.Element")
     expect(organizationRegistry).toContain(
       "setActive?: (organization: Organization | null) => void"
@@ -2631,7 +2634,9 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("hidePersonal?: boolean")
     expect(organizationRegistry).toContain("hideSettings?: boolean")
     expect(organizationRegistry).toContain("hideSlug?: boolean")
-    expect(organizationRegistry).not.toContain("hideCreate")
+    expect(organizationRegistry).toContain("hideCreate?: boolean")
+    expect(organizationRegistry).toContain("CreateOrganizationDialog")
+    expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
     expect(organizationRegistry).toContain("organization.tsx")
     expect(organizationRegistry).toContain("plugin.slug !== undefined")

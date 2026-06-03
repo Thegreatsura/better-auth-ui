@@ -88,6 +88,8 @@ With this setup, `useActiveOrganization` and plugin-contributed organization car
 - `src/lib/auth/organization-plugin.tsx`
 - `src/components/auth/organization/organizations-settings.tsx`
 - `src/components/auth/organization/organizations.tsx`
+- `src/components/auth/organization/create-organization-dialog.tsx`
+- `src/components/auth/organization/slug-field.tsx`
 - `src/components/auth/organization/organization-row.tsx`
 - `src/components/auth/organization/organization-switcher.tsx`
 - `src/components/auth/organization/organization.tsx`
@@ -95,7 +97,7 @@ With this setup, `useActiveOrganization` and plugin-contributed organization car
 
 ## Deferred UI parity
 
-This runtime slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes members, invitations, profile, role editing, logo upload, delete dialogs, and leave dialogs. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
+This runtime and create-dialog slice does not claim the complete copied organization interface. The broader shadcn/HeroUI organization UI still includes members, invitations, profile, role editing, logo upload, delete dialogs, and leave dialogs. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but the larger copied organization UI remains a follow-up slice to keep PR #393 reviewable.
 
 ## Related APIs
 
