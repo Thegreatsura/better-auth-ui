@@ -1,5 +1,9 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
-import { useAuth, useListOrganizationMembers } from "@better-auth-ui/solid"
+import {
+  useAuth,
+  useListOrganizationInvitations,
+  useListOrganizationMembers
+} from "@better-auth-ui/solid"
 import { For, Show } from "solid-js"
 import { UserView } from "@/components/auth/user/user-view"
 import {
@@ -26,10 +30,37 @@ type OrganizationMember = {
   } | null
 }
 
+type OrganizationInvitation = {
+  createdAt?: Date | string | null
+  email?: string | null
+  id: string
+  role?: string | null
+  status?: string | null
+}
+
 function formatRole(role?: string | null) {
   if (!role) return "Member"
 
   return role.charAt(0).toUpperCase() + role.slice(1)
+}
+
+function formatStatus(status?: string | null) {
+  if (!status) return "Pending"
+
+  return status.charAt(0).toUpperCase() + status.slice(1)
+}
+
+function formatInvitationDate(createdAt?: Date | string | null) {
+  if (!createdAt) return "—"
+
+  const date = createdAt instanceof Date ? createdAt : new Date(createdAt)
+
+  if (Number.isNaN(date.getTime())) return "—"
+
+  return date.toLocaleString(undefined, {
+    dateStyle: "short",
+    timeStyle: "short"
+  })
 }
 
 function OrganizationMemberRow(props: { member: OrganizationMember }) {
@@ -58,12 +89,57 @@ function OrganizationMemberRowSkeleton() {
   )
 }
 
+function OrganizationInvitationRow(props: {
+  invitation: OrganizationInvitation
+}) {
+  return (
+    <div class="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+      <div class="grid min-w-0 gap-1">
+        <span class="truncate text-sm font-medium text-foreground">
+          {props.invitation.email ?? "Invitation"}
+        </span>
+        <span class="text-xs text-muted-foreground">
+          Invited {formatInvitationDate(props.invitation.createdAt)}
+        </span>
+      </div>
+      <div class="flex flex-wrap gap-2 sm:justify-end">
+        <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+          {formatRole(props.invitation.role)}
+        </span>
+        <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+          {formatStatus(props.invitation.status)}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+function OrganizationInvitationRowSkeleton() {
+  return (
+    <div class="grid gap-3 rounded-md border p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+      <div class="grid gap-1">
+        <Skeleton class="h-4 w-40 rounded-md" />
+        <Skeleton class="h-3 w-28 rounded-md" />
+      </div>
+      <div class="flex gap-2 sm:justify-end">
+        <Skeleton class="h-6 w-16 rounded-md" />
+        <Skeleton class="h-6 w-20 rounded-md" />
+      </div>
+    </div>
+  )
+}
+
 export function OrganizationPeople(props: OrganizationPeopleProps) {
   const auth = useAuth()
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
   )
+  const invitations = useListOrganizationInvitations(
+    auth.authClient as OrganizationAuthClient
+  )
   const memberRows = () => (members.data?.members ?? []) as OrganizationMember[]
+  const invitationRows = () =>
+    (invitations.data ?? []) as OrganizationInvitation[]
 
   return (
     <div class={cn("grid gap-4 md:gap-6", props.class)}>
@@ -106,15 +182,36 @@ export function OrganizationPeople(props: OrganizationPeopleProps) {
         <CardHeader>
           <CardTitle>Invitations</CardTitle>
           <CardDescription>
-            Invitation APIs are available from @better-auth-ui/solid.
+            View pending and historical invitations for the active organization.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p class="text-sm text-muted-foreground">
-            The invitations table UI remains deferred. Future slices can add
-            invite, cancel, search, filters, and status UI here without changing
-            the route contract.
-          </p>
+          <Show
+            when={!invitations.isPending}
+            fallback={
+              <div class="grid gap-2">
+                <OrganizationInvitationRowSkeleton />
+                <OrganizationInvitationRowSkeleton />
+              </div>
+            }
+          >
+            <Show
+              when={invitationRows().length > 0}
+              fallback={
+                <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+                  No invitations found for this organization.
+                </p>
+              }
+            >
+              <div class="grid gap-2">
+                <For each={invitationRows()}>
+                  {(invitation) => (
+                    <OrganizationInvitationRow invitation={invitation} />
+                  )}
+                </For>
+              </div>
+            </Show>
+          </Show>
         </CardContent>
       </Card>
     </div>

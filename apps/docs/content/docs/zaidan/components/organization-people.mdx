@@ -3,7 +3,7 @@ title: <OrganizationPeople />
 description: Solid/Zaidan organization people route shell.
 ---
 
-`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It now includes a basic members list backed by `useListOrganizationMembers` and keeps invitations ready for a follow-up slice.
+`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a basic members list backed by `useListOrganizationMembers` and a basic invitations list backed by `useListOrganizationInvitations`.
 
 ## Usage
 
@@ -29,7 +29,7 @@ The members section renders a basic members list with loading and empty states. 
 
 ## Invitations
 
-The invitations section is present as a shell. Invitation tables, invite, cancel, search, filters, and status actions remain deferred.
+The invitations section renders a basic invitations list with loading and empty states. Full invitations tables and actions remain deferred: invite, cancel, search, filters, sorting, and status actions are follow-up slices.
 
 ## Notes
 

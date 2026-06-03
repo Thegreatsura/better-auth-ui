@@ -2626,6 +2626,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("Members")
     expect(organizationPeopleDoc).toContain("Invitations")
     expect(organizationPeopleDoc).toContain("basic members list")
+    expect(organizationPeopleDoc).toContain("basic invitations list")
     expect(organizationPeopleDoc).toContain(
       "tables and actions remain deferred"
     )
@@ -2665,6 +2666,9 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useListOrganizationMembers")
     expect(organizationRegistry).toContain("OrganizationMemberRow")
     expect(organizationRegistry).toContain("OrganizationMemberRowSkeleton")
+    expect(organizationRegistry).toContain("useListOrganizationInvitations")
+    expect(organizationRegistry).toContain("OrganizationInvitationRow")
+    expect(organizationRegistry).toContain("OrganizationInvitationRowSkeleton")
     expect(organizationRegistry).toContain("useUpdateOrganization")
     expect(organizationRegistry).toContain(
       "data: { name: name(), slug: slug() }"
