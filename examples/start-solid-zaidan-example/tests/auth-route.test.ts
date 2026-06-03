@@ -2984,8 +2984,44 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const organizationInvitations = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-invitations.tsx"
+      ),
+      "utf8"
+    )
+    const organizationInvitationRow = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-invitation-row.tsx"
+      ),
+      "utf8"
+    )
+    const organizationInvitationRowSkeleton = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-invitation-row-skeleton.tsx"
+      ),
+      "utf8"
+    )
+    const organizationInvitationsEmpty = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-invitations-empty.tsx"
+      ),
+      "utf8"
+    )
     const table = readFileSync(
       resolve(__dirname, "../src/components/ui/table.tsx"),
+      "utf8"
+    )
+    const badge = readFileSync(
+      resolve(__dirname, "../src/components/ui/badge.tsx"),
+      "utf8"
+    )
+    const spinner = readFileSync(
+      resolve(__dirname, "../src/components/ui/spinner.tsx"),
       "utf8"
     )
 
@@ -2998,6 +3034,19 @@ describe("Solid auth route component selection", () => {
     expect(table).toContain("splitProps")
     expect(table).toContain("local.class")
     expect(table).not.toContain("className")
+    expect(badge).toContain("@kobalte/core/badge")
+    expect(badge).toContain("badgeVariants")
+    expect(badge).toContain("variant")
+    expect(badge).toContain('data-slot="badge"')
+    expect(badge).toContain('local.variant ?? "default"')
+    expect(badge).toContain("data-variant={variant()}")
+    expect(badge).toContain("local.class")
+    expect(badge).not.toContain("className")
+    expect(spinner).toContain("LoaderCircle")
+    expect(spinner).toContain('role="status"')
+    expect(spinner).toContain('aria-label="Loading"')
+    expect(spinner).toContain("z-spinner size-4 animate-spin")
+    expect(spinner).not.toContain("className")
     expect(organization).toContain("OrganizationPeople")
     expect(organization).not.toContain(
       "Member and invitation APIs are available"
@@ -3007,6 +3056,7 @@ describe("Solid auth route component selection", () => {
     expect(organizationPeople).toContain("Members")
     expect(organizationPeople).toContain("Invitations")
     expect(organizationPeople).toContain("OrganizationMembers")
+    expect(organizationPeople).toContain("OrganizationInvitations")
     expect(organizationMembers).toContain("OrganizationMembersProps")
     expect(organizationMembers).toContain("useListOrganizationMembers")
     expect(organizationMembers).toContain("OrganizationAuthClient")
@@ -3022,10 +3072,10 @@ describe("Solid auth route component selection", () => {
     expect(organizationMembers).toContain("member.role")
     expect(organizationMembers).toContain("No members")
     expect(organizationMembers).toContain("Input")
-    expect(organizationPeople).toContain("Search")
-    expect(organizationPeople).toContain("Filter")
-    expect(organizationPeople).toContain("DropdownMenuRadioGroup")
-    expect(organizationPeople).toContain("DropdownMenuRadioItem")
+    expect(organizationMembers).toContain("Search")
+    expect(organizationMembers).toContain("Filter")
+    expect(organizationMembers).toContain("DropdownMenuRadioGroup")
+    expect(organizationMembers).toContain("DropdownMenuRadioItem")
     expect(organizationMembers).toContain("memberSearch")
     expect(organizationMembers).toContain("memberRoleFilter")
     expect(organizationMembers).toContain("memberSort")
@@ -3045,55 +3095,88 @@ describe("Solid auth route component selection", () => {
     expect(organizationMembers).not.toContain("sortDescriptor")
     expect(organizationMembers).not.toContain("InputGroup")
     expect(organizationMembers).not.toContain("Badge")
-    expect(organizationPeople).toContain("useListOrganizationInvitations")
-    expect(organizationPeople).toContain("invitations.data ?? []")
-    expect(organizationPeople).toContain("OrganizationInvitationRow")
-    expect(organizationPeople).toContain("OrganizationInvitationRowSkeleton")
-    expect(organizationPeople).toContain("invitation.email")
-    expect(organizationPeople).toContain("invitation.createdAt")
-    expect(organizationPeople).toContain("invitation.role")
-    expect(organizationPeople).toContain("invitation.status")
-    expect(organizationPeople).toContain("invitationSearch")
-    expect(organizationPeople).toContain("invitationRoleFilter")
-    expect(organizationPeople).toContain("invitationStatusFilter")
-    expect(organizationPeople).toContain("normalizedInvitationSearch")
-    expect(organizationPeople).toContain("filteredInvitationRows")
-    expect(organizationPeople).toContain("InvitationSort")
-    expect(organizationPeople).toContain("invitationSort")
-    expect(organizationPeople).toContain("setInvitationSort")
-    expect(organizationPeople).toContain("sortInvitations")
-    expect(organizationPeople).toContain("sortedInvitationRows")
-    expect(organizationPeople).toContain('invitationSort() === "email"')
-    expect(organizationPeople).toContain('invitationSort() === "createdAt"')
-    expect(organizationPeople).toContain('invitationSort() === "role"')
-    expect(organizationPeople).toContain('invitationSort() === "status"')
-    expect(organizationPeople).toContain("invitation.email?.toLowerCase()")
-    expect(organizationPeople).toContain('invitationRoleFilter() === "all"')
-    expect(organizationPeople).toContain('invitationStatusFilter() === "all"')
-    expect(organizationPeople).toContain("localization().status")
-    expect(organizationPeople).toContain('"pending"')
-    expect(organizationPeople).toContain('"accepted"')
-    expect(organizationPeople).toContain('"rejected"')
-    expect(organizationPeople).toContain('"canceled"')
-    expect(organizationPeople).toContain("No invitations")
-    expect(organizationPeople).toContain(
+    expect(organizationInvitations).toContain("OrganizationInvitationsProps")
+    expect(organizationInvitations).toContain("useListOrganizationInvitations")
+    expect(organizationInvitations).toContain("invitations.data ?? []")
+    expect(organizationInvitations).toContain("OrganizationInvitationRow")
+    expect(organizationInvitations).toContain(
+      "OrganizationInvitationRowSkeleton"
+    )
+    expect(organizationInvitations).toContain("OrganizationInvitationsEmpty")
+    expect(organizationInvitations).toContain("Table")
+    expect(organizationInvitations).toContain("TableHeader")
+    expect(organizationInvitations).toContain("TableBody")
+    expect(organizationInvitations).toContain("TableHead")
+    expect(organizationInvitations).toContain("TableRow")
+    expect(organizationInvitations).toContain("TableCell")
+    expect(organizationInvitations).toContain("invitation.email")
+    expect(organizationInvitations).toContain("invitation.createdAt")
+    expect(organizationInvitations).toContain("invitation.role")
+    expect(organizationInvitations).toContain("invitation.status")
+    expect(organizationInvitations).toContain("invitationSearch")
+    expect(organizationInvitations).toContain("invitationRoleFilter")
+    expect(organizationInvitations).toContain("invitationStatusFilter")
+    expect(organizationInvitations).toContain("normalizedInvitationSearch")
+    expect(organizationInvitations).toContain("filteredInvitationRows")
+    expect(organizationInvitations).toContain("InvitationSort")
+    expect(organizationInvitations).toContain("invitationSort")
+    expect(organizationInvitations).toContain("setInvitationSort")
+    expect(organizationInvitations).toContain("sortInvitations")
+    expect(organizationInvitations).toContain("sortedInvitationRows")
+    expect(organizationInvitations).toContain('invitationSort() === "email"')
+    expect(organizationInvitations).toContain(
+      'invitationSort() === "createdAt"'
+    )
+    expect(organizationInvitations).toContain('invitationSort() === "role"')
+    expect(organizationInvitations).toContain('invitationSort() === "status"')
+    expect(organizationInvitations).toContain("invitation.email?.toLowerCase()")
+    expect(organizationInvitations).toContain(
+      'invitationRoleFilter() === "all"'
+    )
+    expect(organizationInvitations).toContain(
+      'invitationStatusFilter() === "all"'
+    )
+    expect(organizationInvitations).toContain("localization().status")
+    expect(organizationInvitations).toContain('"pending"')
+    expect(organizationInvitations).toContain('"accepted"')
+    expect(organizationInvitations).toContain('"rejected"')
+    expect(organizationInvitations).toContain('"canceled"')
+    expect(organizationInvitations).toContain("No invitations")
+    expect(organizationInvitations).toContain(
       "No invitations match the current filters."
     )
-    expect(organizationPeople).toContain("useCancelInvitation")
-    expect(organizationPeople).toContain("useHasPermission")
-    expect(organizationPeople).toContain(
+    expect(organizationInvitationRow).toContain("useCancelInvitation")
+    expect(organizationInvitationRow).toContain("useHasPermission")
+    expect(organizationInvitationRow).toContain(
       'permissions: { invitation: ["cancel"] }'
     )
-    expect(organizationPeople).toContain("permission.data?.success")
-    expect(organizationPeople).toContain(
+    expect(organizationInvitationRow).toContain("permission.data?.success")
+    expect(organizationInvitationRow).toContain(
       'props.invitation.status === "pending"'
     )
-    expect(organizationPeople).toContain("cancelInvitation.mutate")
-    expect(organizationPeople).toContain("invitationId: props.invitation.id")
-    expect(organizationPeople).toContain(
+    expect(organizationInvitationRow).toContain("cancelInvitation.mutate")
+    expect(organizationInvitationRow).toContain(
+      "invitationId: props.invitation.id"
+    )
+    expect(organizationInvitationRow).toContain(
       "disabled={cancelInvitation.isPending}"
     )
-    expect(organizationPeople).toContain('aria-label="Cancel invitation"')
+    expect(organizationInvitationRow).toContain(
+      'aria-label="Cancel invitation"'
+    )
+    expect(organizationInvitationRow).toContain("Badge")
+    expect(organizationInvitationRow).toContain("Spinner")
+    expect(organizationInvitationRowSkeleton).toContain("TableRow")
+    expect(organizationInvitationRowSkeleton).toContain("TableCell")
+    expect(organizationInvitationsEmpty).toContain(
+      "organizationInvitationsEmptyDescription"
+    )
+    expect(organizationInvitations).not.toContain("InputGroup")
+    expect(organizationInvitations).not.toContain("Textarea")
+    expect(organizationInvitations).not.toContain("SortableTableHead")
+    expect(organizationInvitations).not.toContain("sortDescriptor")
+    expect(organizationInvitations).not.toContain("SortDirection")
+    expect(organizationInvitations).not.toContain("descending")
     expect(organizationMemberRow).toContain("useUpdateMemberRole")
     expect(organizationMemberRow).toContain(
       'permissions: { member: ["update"] }'

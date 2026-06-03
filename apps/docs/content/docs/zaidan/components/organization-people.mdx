@@ -3,7 +3,7 @@ title: <OrganizationPeople />
 description: Solid/Zaidan organization people route shell.
 ---
 
-`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a members table backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and a basic invitations list backed by `useListOrganizationInvitations` with client-side search, filtering, and sorting.
+`OrganizationPeople` is the shell for the `/organization/$slug/people` route. It includes a members table backed by `useListOrganizationMembers`, client-side member search, role filtering, and sorting, permission-gated member role editing and removal for non-current members, self-service leave organization, an `InviteMemberDialog` for inviting members, and an invitations table backed by `useListOrganizationInvitations` with client-side search, filtering, and sorting.
 
 ## Usage
 
@@ -29,8 +29,8 @@ The members section renders a members table with loading and empty states. It ca
 
 ## Invitations
 
-The invitations section renders a basic invitations list with loading and empty states. Users can search, filter, and sort invitations by email, invited date, role, or status. Users with permission can cancel pending invitations. Full invitations table layout and advanced status actions remain deferred as follow-up slices.
+The invitations section renders an invitations table with loading and empty states. Users can search, filter, and sort invitations by email, invited date, role, or status. Users with permission can cancel pending invitations. Advanced status actions remain deferred as a follow-up slice.
 
 ## Notes
 
-The People shell exists and is installed with the Organization registry entry. Invitations table layout and advanced status actions remain deferred to follow-up slices.
+The People shell exists and is installed with the Organization registry entry. Advanced invitation status actions remain deferred to a follow-up slice.

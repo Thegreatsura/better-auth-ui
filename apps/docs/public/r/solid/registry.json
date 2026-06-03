@@ -1667,6 +1667,14 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/components/ui/badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/components/ui/spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/components/auth/organization/organizations-settings.tsx",
           "type": "registry:component"
         },
@@ -1740,6 +1748,22 @@
         },
         {
           "path": "src/components/auth/organization/organization-member-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitations.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitation-row.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitation-row-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-invitations-empty.tsx",
           "type": "registry:component"
         },
         {

@@ -467,6 +467,8 @@ export const solidRegistryManifest = {
       files: [
         libFile("src/lib/auth/organization-plugin.tsx"),
         uiFile("src/components/ui/table.tsx"),
+        uiFile("src/components/ui/badge.tsx"),
+        uiFile("src/components/ui/spinner.tsx"),
         componentFile(
           "src/components/auth/organization/organizations-settings.tsx"
         ),
@@ -515,6 +517,18 @@ export const solidRegistryManifest = {
         ),
         componentFile(
           "src/components/auth/organization/organization-member-row-skeleton.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-invitations.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-invitation-row.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-invitation-row-skeleton.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organization-invitations-empty.tsx"
         ),
         componentFile(
           "src/components/auth/organization/invite-member-dialog.tsx"
