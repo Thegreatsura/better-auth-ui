@@ -2636,12 +2636,12 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).toContain("Invitations")
     expect(organizationPeopleDoc).toContain("members table")
     expect(organizationPeopleDoc).toContain(
-      "search, filter by role, and sort members"
+      "search with a grouped search control, filter by role, and sort members"
     )
     expect(organizationPeopleDoc).toContain("update member roles")
     expect(organizationPeopleDoc).toContain("invitations table")
     expect(organizationPeopleDoc).toContain(
-      "search, filter, and sort invitations"
+      "search with a grouped search control, filter, and sort invitations"
     )
     expect(organizationPeopleDoc).toContain("InviteMemberDialog")
     expect(organizationPeopleDoc).toContain("cancel pending invitations")
@@ -2689,6 +2689,8 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("src/components/ui/table.tsx")
     expect(organizationRegistry).toContain("src/components/ui/badge.tsx")
     expect(organizationRegistry).toContain("src/components/ui/spinner.tsx")
+    expect(organizationRegistry).toContain("src/components/ui/input-group.tsx")
+    expect(organizationRegistry).toContain("src/components/ui/textarea.tsx")
     expect(organizationRegistry).toContain('data-slot=\\"table-container\\"')
     expect(organizationRegistry).toContain('data-slot=\\"table\\"')
     expect(organizationRegistry).toContain('data-slot=\\"badge\\"')
@@ -2696,6 +2698,14 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("LoaderCircle")
     expect(organizationRegistry).toContain('role=\\"status\\"')
     expect(organizationRegistry).toContain('aria-label=\\"Loading\\"')
+    expect(organizationRegistry).toContain('data-slot=\\"input-group\\"')
+    expect(organizationRegistry).toContain('data-slot=\\"input-group-addon\\"')
+    expect(organizationRegistry).toContain(
+      'data-slot=\\"input-group-control\\"'
+    )
+    expect(organizationRegistry).toContain('data-slot=\\"textarea\\"')
+    expect(organizationRegistry).toContain("InputGroupInput")
+    expect(organizationRegistry).toContain("InputGroupTextarea")
     expect(organizationRegistry).toContain("TableHeader")
     expect(organizationRegistry).toContain("TableBody")
     expect(organizationRegistry).toContain("TableHead")

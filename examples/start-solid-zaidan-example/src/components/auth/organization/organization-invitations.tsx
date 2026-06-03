@@ -18,7 +18,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput
+} from "@/components/ui/input-group"
 import {
   Table,
   TableBody,
@@ -230,18 +234,19 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
           >
             <div class="grid gap-4">
               <div class="flex flex-col gap-2 sm:flex-row">
-                <div class="relative min-w-0 flex-1">
-                  <Search class="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-muted-foreground" />
-                  <Input
+                <InputGroup class="min-w-0 flex-1">
+                  <InputGroupAddon>
+                    <Search class="size-4" />
+                  </InputGroupAddon>
+                  <InputGroupInput
                     aria-label={localization().search}
-                    class="pl-9"
                     onInput={(event) =>
                       setInvitationSearch(event.currentTarget.value)
                     }
                     placeholder={localization().search}
                     value={invitationSearch()}
                   />
-                </div>
+                </InputGroup>
                 <div class="flex gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger as={Button} class="" variant="outline">

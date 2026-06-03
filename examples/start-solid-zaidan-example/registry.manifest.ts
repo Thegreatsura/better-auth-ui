@@ -469,6 +469,8 @@ export const solidRegistryManifest = {
         uiFile("src/components/ui/table.tsx"),
         uiFile("src/components/ui/badge.tsx"),
         uiFile("src/components/ui/spinner.tsx"),
+        uiFile("src/components/ui/input-group.tsx"),
+        uiFile("src/components/ui/textarea.tsx"),
         componentFile(
           "src/components/auth/organization/organizations-settings.tsx"
         ),

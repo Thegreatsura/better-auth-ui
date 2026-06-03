@@ -3024,6 +3024,14 @@ describe("Solid auth route component selection", () => {
       resolve(__dirname, "../src/components/ui/spinner.tsx"),
       "utf8"
     )
+    const inputGroup = readFileSync(
+      resolve(__dirname, "../src/components/ui/input-group.tsx"),
+      "utf8"
+    )
+    const textarea = readFileSync(
+      resolve(__dirname, "../src/components/ui/textarea.tsx"),
+      "utf8"
+    )
 
     expect(table).toContain('data-slot="table-container"')
     expect(table).toContain('data-slot="table"')
@@ -3047,6 +3055,22 @@ describe("Solid auth route component selection", () => {
     expect(spinner).toContain('aria-label="Loading"')
     expect(spinner).toContain("z-spinner size-4 animate-spin")
     expect(spinner).not.toContain("className")
+    expect(inputGroup).toContain('data-slot="input-group"')
+    expect(inputGroup).toContain('ComponentProps<"fieldset">')
+    expect(inputGroup).toContain("<fieldset")
+    expect(inputGroup).toContain("InputGroupAddon")
+    expect(inputGroup).toContain('data-slot="input-group-addon"')
+    expect(inputGroup).toContain("InputGroupInput")
+    expect(inputGroup).toContain('data-slot="input-group-control"')
+    expect(inputGroup).toContain("InputGroupTextarea")
+    expect(inputGroup).toContain("InputGroupButton")
+    expect(inputGroup).toContain("InputGroupText")
+    expect(inputGroup).toContain("local.class")
+    expect(inputGroup).not.toContain("className")
+    expect(textarea).toContain('data-slot="textarea"')
+    expect(textarea).toContain("z-textarea")
+    expect(textarea).toContain("local.class")
+    expect(textarea).not.toContain("className")
     expect(organization).toContain("OrganizationPeople")
     expect(organization).not.toContain(
       "Member and invitation APIs are available"
@@ -3091,9 +3115,13 @@ describe("Solid auth route component selection", () => {
     expect(organizationMembers).toContain('memberSort() === "name"')
     expect(organizationMembers).toContain('memberSort() === "email"')
     expect(organizationMembers).toContain('memberSort() === "role"')
+    expect(organizationMembers).toContain("InputGroup")
+    expect(organizationMembers).toContain("InputGroupAddon")
+    expect(organizationMembers).toContain("InputGroupInput")
     expect(organizationMembers).not.toContain("SortableTableHead")
     expect(organizationMembers).not.toContain("sortDescriptor")
-    expect(organizationMembers).not.toContain("InputGroup")
+    expect(organizationMembers).not.toContain("SortDirection")
+    expect(organizationMembers).not.toContain("descending")
     expect(organizationMembers).not.toContain("Badge")
     expect(organizationInvitations).toContain("OrganizationInvitationsProps")
     expect(organizationInvitations).toContain("useListOrganizationInvitations")
@@ -3171,8 +3199,10 @@ describe("Solid auth route component selection", () => {
     expect(organizationInvitationsEmpty).toContain(
       "organizationInvitationsEmptyDescription"
     )
-    expect(organizationInvitations).not.toContain("InputGroup")
-    expect(organizationInvitations).not.toContain("Textarea")
+    expect(organizationInvitations).toContain("InputGroup")
+    expect(organizationInvitations).toContain("InputGroupAddon")
+    expect(organizationInvitations).toContain("InputGroupInput")
+    expect(organizationInvitations).not.toContain("InputGroupTextarea")
     expect(organizationInvitations).not.toContain("SortableTableHead")
     expect(organizationInvitations).not.toContain("sortDescriptor")
     expect(organizationInvitations).not.toContain("SortDirection")
