@@ -85,9 +85,13 @@ describe("Solid auth route component selection", () => {
     expect(existsSync(authComponentPath)).toBe(false)
     expect(authRoute).toContain('import { Auth } from "@/components/auth/auth"')
     expect(authRoute).toContain("viewPaths.auth")
+    expect(authRoute).toContain('from "@/lib/auth/magic-link-plugin"')
+    expect(authRoute).toContain("validAuthPathSegments")
+    expect(authRoute).toContain("Object.values(viewPaths.auth)")
     expect(authRoute).toContain(
-      "if (!Object.values(viewPaths.auth).includes(path))"
+      "Object.values(magicLinkPlugin().viewPaths.auth)"
     )
+    expect(authRoute).toContain("if (!validAuthPathSegments.has(path))")
     expect(authRoute).toContain('throw redirect({ to: "/" })')
     expect(authRoute).toContain("<Auth path={path} />")
     expect(authRoute).not.toContain("resolveAuthRoute")
@@ -136,8 +140,8 @@ describe("Solid auth route component selection", () => {
     expect(providers).toContain('from "@/lib/auth/passkey-plugin"')
     expect(providers).toContain("deleteUserPlugin()")
     expect(providers).toContain("usernamePlugin()")
-    expect(providers).not.toContain("magicLinkPlugin()")
-    expect(providers).not.toContain('from "@/lib/auth/magic-link-plugin"')
+    expect(providers).toContain("magicLinkPlugin()")
+    expect(providers).toContain('from "@/lib/auth/magic-link-plugin"')
     expect(authClient).toContain("export const authClient")
     expect(authClient).toContain("createAuthClient")
     expect(authClient).toContain("magicLinkClient")
@@ -172,7 +176,7 @@ describe("Solid auth route component selection", () => {
     expect(viteConfig).not.toContain("process.cwd()")
   })
 
-  it("keeps magic-link configured but not surfaced in the default shadcn-parity sign-in", () => {
+  it("surfaces magic-link through provider wiring and plugin auth-route support", () => {
     const authRoute = readFileSync(
       resolve(__dirname, "../src/routes/auth/$path.tsx"),
       "utf8"
@@ -205,13 +209,13 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(authRoute).not.toContain("magicLinkPlugin().viewPaths")
-    expect(authRoute).not.toContain("supportedAuthPaths")
+    expect(authRoute).toContain("magicLinkPlugin().viewPaths.auth")
+    expect(authRoute).toContain("validAuthPathSegments")
     expect(authComponent).toContain("plugin.views?.auth")
     expect(authComponent).toContain("plugin.fallbackViews?.auth?.signIn")
     expect(signInUsername).toContain(".flatMap(")
     expect(signInUsername).toContain('view="signIn"')
-    expect(providers).not.toContain("magicLinkPlugin()")
+    expect(providers).toContain("magicLinkPlugin()")
     expect(authClient).toContain("magicLinkClient()")
     expect(authServer).toContain("magicLink({")
     expect(magicLinkPlugin).toContain("authButtons: [MagicLinkButton]")
