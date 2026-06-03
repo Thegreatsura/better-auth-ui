@@ -1,6 +1,7 @@
 import { useAuth } from "@better-auth-ui/solid"
 import { For } from "solid-js"
 import type { OrganizationCardsPlugin } from "@/components/auth/settings/shared/types"
+import { OrganizationDangerZone } from "./organization-danger-zone"
 import { OrganizationProfile } from "./organization-profile"
 
 export type OrganizationSettingsProps = {
@@ -20,6 +21,7 @@ export function OrganizationSettings(props: OrganizationSettingsProps) {
       <For each={organizationCards()}>
         {(OrganizationCard) => <OrganizationCard />}
       </For>
+      <OrganizationDangerZone />
     </div>
   )
 }

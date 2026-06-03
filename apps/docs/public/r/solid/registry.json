@@ -1695,6 +1695,18 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/organization/organization-danger-zone.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/delete-organization.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/delete-organization-dialog.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/auth/organization/organization-people.tsx",
           "type": "registry:component"
         },

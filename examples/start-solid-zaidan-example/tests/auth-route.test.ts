@@ -2809,6 +2809,27 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const organizationDangerZone = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/organization-danger-zone.tsx"
+      ),
+      "utf8"
+    )
+    const deleteOrganization = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/delete-organization.tsx"
+      ),
+      "utf8"
+    )
+    const deleteOrganizationDialog = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/delete-organization-dialog.tsx"
+      ),
+      "utf8"
+    )
 
     expect(organization).toContain("OrganizationSettings")
     expect(organization).not.toContain(
@@ -2816,7 +2837,7 @@ describe("Solid auth route component selection", () => {
     )
     expect(organizationSettings).toContain("OrganizationProfile")
     expect(organizationSettings).toContain("organizationCards")
-    expect(organizationSettings).not.toContain("OrganizationDangerZone")
+    expect(organizationSettings).toContain("OrganizationDangerZone")
     expect(organizationProfile).toContain("useActiveOrganization")
     expect(organizationProfile).toContain("useUpdateOrganization")
     expect(organizationProfile).toContain("ChangeOrganizationLogo")
@@ -2832,6 +2853,27 @@ describe("Solid auth route component selection", () => {
     expect(organizationLogo).toContain("OrganizationLogoSize")
     expect(organizationLogo).toContain("organization?.logo?.trim()")
     expect(organizationLogo).toContain("Skeleton")
+    expect(organizationDangerZone).toContain("OrganizationDangerZoneProps")
+    expect(organizationDangerZone).toContain("dangerZone")
+    expect(organizationDangerZone).toContain("DeleteOrganization")
+    expect(organizationDangerZone).not.toContain("LeaveOrganization")
+    expect(deleteOrganization).toContain("useActiveOrganization")
+    expect(deleteOrganization).toContain("useHasPermission")
+    expect(deleteOrganization).toContain(
+      'permissions: { organization: ["delete"] }'
+    )
+    expect(deleteOrganization).toContain("DeleteOrganizationDialog")
+    expect(deleteOrganization).toContain("deleteOrganization")
+    expect(deleteOrganization).toContain("deleteOrganizationDescription")
+    expect(deleteOrganizationDialog).toContain("useDeleteOrganization")
+    expect(deleteOrganizationDialog).toContain("DeleteOrganizationParams")
+    expect(deleteOrganizationDialog).toContain(
+      "organizationId: props.organization.id"
+    )
+    expect(deleteOrganizationDialog).toContain("organizationDeleted")
+    expect(deleteOrganizationDialog).toContain("auth.navigate")
+    expect(deleteOrganizationDialog).toContain("auth.basePaths.settings")
+    expect(deleteOrganizationDialog).toContain("replace: true")
   })
 
   it("adds Solid/Zaidan Organization people shell parity", () => {
