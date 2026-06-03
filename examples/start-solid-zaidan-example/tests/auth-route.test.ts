@@ -2579,10 +2579,16 @@ describe("Solid auth route component selection", () => {
     expect(magicLinkStory).toContain('title: "Zaidan/Plugins/Magic Link"')
     expect(magicLinkStory).toContain("function MagicLinkStory()")
     expect(magicLinkStory).toContain("export const Preview: Story = {}")
+    expect(magicLinkStory).toContain("RouterProvider")
+    expect(magicLinkStory).toContain("createMemoryHistory")
     expect(magicLinkStory).toContain("plugins={[magicLinkPlugin()]}")
-    expect(magicLinkStory).toContain("emailAndPassword={{ enabled: false }}")
+    expect(magicLinkStory).toContain('socialProviders={["github", "google"]}')
+    expect(magicLinkStory).not.toContain(
+      "emailAndPassword={{ enabled: false }}"
+    )
     expect(magicLinkStory).toContain("signIn: {")
     expect(magicLinkStory).toContain("magicLink: async () =>")
+    expect(magicLinkStory).toContain("social: async () =>")
     expect(magicLinkStory).toContain("<MagicLink />")
   })
 })
