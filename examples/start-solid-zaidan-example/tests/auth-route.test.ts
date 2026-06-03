@@ -2565,4 +2565,24 @@ describe("Solid auth route component selection", () => {
     expect(deleteUserStory).toContain("queryClient={queryClient}")
     expect(deleteUserStory).not.toContain("as unknown as AuthClient")
   })
+
+  it("adds a Zaidan Magic Link Storybook preview story", () => {
+    const magicLinkStoryPath = resolve(
+      __dirname,
+      "../src/stories/magic-link.stories.tsx"
+    )
+
+    expect(existsSync(magicLinkStoryPath)).toBe(true)
+
+    const magicLinkStory = readFileSync(magicLinkStoryPath, "utf8")
+
+    expect(magicLinkStory).toContain('title: "Zaidan/Plugins/Magic Link"')
+    expect(magicLinkStory).toContain("function MagicLinkStory()")
+    expect(magicLinkStory).toContain("export const Preview: Story = {}")
+    expect(magicLinkStory).toContain("plugins={[magicLinkPlugin()]}")
+    expect(magicLinkStory).toContain("emailAndPassword={{ enabled: false }}")
+    expect(magicLinkStory).toContain("signIn: {")
+    expect(magicLinkStory).toContain("magicLink: async () =>")
+    expect(magicLinkStory).toContain("<MagicLink />")
+  })
 })
