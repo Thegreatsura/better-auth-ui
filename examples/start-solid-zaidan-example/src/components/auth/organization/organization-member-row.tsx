@@ -239,27 +239,21 @@ export function OrganizationMemberRow(props: OrganizationMemberRowProps) {
           secondaryLabel={user()?.email}
         />
       </TableCell>
-      <TableCell class="text-muted-foreground text-sm">
-        {user()?.email ?? "—"}
+      <TableCell class="text-sm">
+        {props.roles[props.member.role ?? ""] ?? formatRole(props.member.role)}
       </TableCell>
-      <TableCell>
-        <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-          {props.roles[props.member.role ?? ""] ??
-            formatRole(props.member.role)}
-        </span>
-      </TableCell>
-      <TableCell class="text-right">
+      <TableCell class="text-end">
         <div class="flex justify-end gap-2">
           <Show when={permission.data?.success}>
             <DropdownMenu>
               <DropdownMenuTrigger
                 as={Button}
                 aria-label={props.localization.changeMemberRole}
-                class=""
+                class="size-8"
                 disabled={updateMemberRole.isPending}
                 size="icon-sm"
                 type="button"
-                variant="outline"
+                variant="ghost"
               >
                 <Pencil class="size-4" />
               </DropdownMenuTrigger>

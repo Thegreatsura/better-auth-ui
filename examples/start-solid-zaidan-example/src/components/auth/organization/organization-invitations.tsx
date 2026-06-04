@@ -1,16 +1,11 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useListOrganizationInvitations } from "@better-auth-ui/solid"
-import { ChevronUp, Filter, Search } from "lucide-solid"
+import { ChevronUp, Filter, Search, X } from "lucide-solid"
 import { createMemo, createSignal, For, type JSX, Show } from "solid-js"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -172,6 +167,14 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
   const roles = createMemo(
     () => organizationPluginConfig()?.roles ?? fallbackRoles
   )
+  const selectedRoleLabel = () =>
+    roles()[invitationRoleFilter()] ?? invitationRoleFilter()
+  const selectedStatusLabel = () =>
+    invitationStatusFilter() === "all"
+      ? localization().all
+      : invitationStatusLabel(
+          invitationStatusFilter() as (typeof invitationStatuses)[number]
+        )
   const normalizedInvitationSearch = () =>
     invitationSearch().trim().toLowerCase()
   const filteredInvitationRows = () =>
@@ -254,28 +257,25 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
   }
 
   return (
-    <Card class={props.class}>
-      <CardHeader>
-        <CardTitle>Invitations</CardTitle>
-        <CardDescription>
-          View pending and historical invitations for the active organization.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Show
-          when={!invitations.isPending}
-          fallback={
+    <div class={cn("flex flex-col gap-3", props.class)}>
+      <h3 class="truncate text-sm font-semibold">Invitations</h3>
+      <Show
+        when={!invitations.isPending}
+        fallback={
+          <Card class="!p-0">
             <Table>
               <TableBody>
                 <OrganizationInvitationRowSkeleton />
                 <OrganizationInvitationRowSkeleton />
               </TableBody>
             </Table>
-          }
-        >
-          <Show
-            when={invitationRows().length > 0}
-            fallback={
+          </Card>
+        }
+      >
+        <Show
+          when={invitationRows().length > 0}
+          fallback={
+            <Card class="!p-0">
               <Table>
                 <TableBody>
                   <TableRow>
@@ -285,166 +285,189 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
                   </TableRow>
                 </TableBody>
               </Table>
+            </Card>
+          }
+        >
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <InputGroup class="min-w-0 sm:w-[220px]">
+              <InputGroupAddon>
+                <Search class="size-4 text-muted-foreground" />
+              </InputGroupAddon>
+              <InputGroupInput
+                aria-label={localization().search}
+                onInput={(event) =>
+                  setInvitationSearch(event.currentTarget.value)
+                }
+                placeholder={localization().search}
+                type="search"
+                value={invitationSearch()}
+              />
+            </InputGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                as={Button}
+                class="shrink-0"
+                variant="outline"
+              >
+                <Filter class="size-4" />
+                {localization().role}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuRadioGroup
+                  onChange={setInvitationRoleFilter}
+                  value={invitationRoleFilter()}
+                >
+                  <DropdownMenuRadioItem value="all">
+                    {localization().all}
+                  </DropdownMenuRadioItem>
+                  <For each={Object.entries(roles())}>
+                    {([role, label]) => (
+                      <DropdownMenuRadioItem value={role}>
+                        {label}
+                      </DropdownMenuRadioItem>
+                    )}
+                  </For>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                as={Button}
+                class="shrink-0"
+                variant="outline"
+              >
+                <Filter class="size-4" />
+                {localization().status}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuRadioGroup
+                  onChange={setInvitationStatusFilter}
+                  value={invitationStatusFilter()}
+                >
+                  <DropdownMenuRadioItem value="all">
+                    {localization().all}
+                  </DropdownMenuRadioItem>
+                  <For each={invitationStatuses}>
+                    {(status) => (
+                      <DropdownMenuRadioItem value={status}>
+                        {invitationStatusLabel(status)}
+                      </DropdownMenuRadioItem>
+                    )}
+                  </For>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Show
+            when={
+              invitationRoleFilter() !== "all" ||
+              invitationStatusFilter() !== "all"
             }
           >
-            <div class="grid gap-4">
-              <div class="flex flex-col gap-2 sm:flex-row">
-                <InputGroup class="min-w-0 flex-1">
-                  <InputGroupAddon>
-                    <Search class="size-4" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    aria-label={localization().search}
-                    onInput={(event) =>
-                      setInvitationSearch(event.currentTarget.value)
-                    }
-                    placeholder={localization().search}
-                    value={invitationSearch()}
-                  />
-                </InputGroup>
-                <div class="flex gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger as={Button} class="" variant="outline">
-                      <Filter class="size-4" />
-                      {localization().role}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuRadioGroup
-                        onChange={setInvitationRoleFilter}
-                        value={invitationRoleFilter()}
-                      >
-                        <DropdownMenuRadioItem value="all">
-                          {localization().all}
-                        </DropdownMenuRadioItem>
-                        <For each={Object.entries(roles())}>
-                          {([role, label]) => (
-                            <DropdownMenuRadioItem value={role}>
-                              {label}
-                            </DropdownMenuRadioItem>
-                          )}
-                        </For>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger as={Button} class="" variant="outline">
-                      <Filter class="size-4" />
-                      {localization().status}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuRadioGroup
-                        onChange={setInvitationStatusFilter}
-                        value={invitationStatusFilter()}
-                      >
-                        <DropdownMenuRadioItem value="all">
-                          {localization().all}
-                        </DropdownMenuRadioItem>
-                        <For each={invitationStatuses}>
-                          {(status) => (
-                            <DropdownMenuRadioItem value={status}>
-                              {invitationStatusLabel(status)}
-                            </DropdownMenuRadioItem>
-                          )}
-                        </For>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Show
-                    when={
-                      invitationSearch() ||
-                      invitationRoleFilter() !== "all" ||
-                      invitationStatusFilter() !== "all"
-                    }
+            <div class="flex flex-wrap gap-2">
+              <Show when={invitationRoleFilter() !== "all"}>
+                <Badge class="gap-1 pr-1" variant="secondary">
+                  {localization().role}: {selectedRoleLabel()}
+                  <button
+                    aria-label={`${localization().clear} invitation role filter`}
+                    class="rounded-sm p-0.5 hover:bg-muted"
+                    onClick={() => setInvitationRoleFilter("all")}
+                    type="button"
                   >
-                    <Button
-                      onClick={() => {
-                        setInvitationSearch("")
-                        setInvitationRoleFilter("all")
-                        setInvitationStatusFilter("all")
-                      }}
-                      type="button"
-                      variant="ghost"
-                    >
-                      {localization().clear}
-                    </Button>
-                  </Show>
-                </div>
-              </div>
-              <Table aria-label="Invitations">
-                <TableHeader>
-                  <TableRow>
-                    <SortableTableHead
-                      onClick={() => toggleSort("email")}
-                      sortDirection={
-                        sortDescriptor()?.column === "email"
-                          ? sortDescriptor()?.direction
-                          : undefined
-                      }
-                    >
-                      Email
-                    </SortableTableHead>
-                    <SortableTableHead
-                      onClick={() => toggleSort("createdAt")}
-                      sortDirection={
-                        sortDescriptor()?.column === "createdAt"
-                          ? sortDescriptor()?.direction
-                          : undefined
-                      }
-                    >
-                      Invited
-                    </SortableTableHead>
-                    <SortableTableHead
-                      onClick={() => toggleSort("role")}
-                      sortDirection={
-                        sortDescriptor()?.column === "role"
-                          ? sortDescriptor()?.direction
-                          : undefined
-                      }
-                    >
-                      {localization().role}
-                    </SortableTableHead>
-                    <SortableTableHead
-                      onClick={() => toggleSort("status")}
-                      sortDirection={
-                        sortDescriptor()?.column === "status"
-                          ? sortDescriptor()?.direction
-                          : undefined
-                      }
-                    >
-                      {localization().status}
-                    </SortableTableHead>
-                    <TableHead class="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <Show
-                    when={filteredInvitationRows().length > 0}
-                    fallback={
-                      <TableRow>
-                        <TableCell
-                          class="text-muted-foreground text-sm"
-                          colSpan={5}
-                        >
-                          No invitations match the current filters.
-                        </TableCell>
-                      </TableRow>
-                    }
+                    <X class="size-3" />
+                  </button>
+                </Badge>
+              </Show>
+              <Show when={invitationStatusFilter() !== "all"}>
+                <Badge class="gap-1 pr-1" variant="secondary">
+                  {localization().status}: {selectedStatusLabel()}
+                  <button
+                    aria-label={`${localization().clear} invitation status filter`}
+                    class="rounded-sm p-0.5 hover:bg-muted"
+                    onClick={() => setInvitationStatusFilter("all")}
+                    type="button"
                   >
-                    <For each={sortedInvitationRows()}>
-                      {(invitation) => (
-                        <OrganizationInvitationRow
-                          invitation={invitation}
-                          roles={roles()}
-                        />
-                      )}
-                    </For>
-                  </Show>
-                </TableBody>
-              </Table>
+                    <X class="size-3" />
+                  </button>
+                </Badge>
+              </Show>
             </div>
           </Show>
+          <Card class="!p-0">
+            <Table aria-label="Invitations">
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHead
+                    onClick={() => toggleSort("email")}
+                    sortDirection={
+                      sortDescriptor()?.column === "email"
+                        ? sortDescriptor()?.direction
+                        : undefined
+                    }
+                  >
+                    Email
+                  </SortableTableHead>
+                  <SortableTableHead
+                    onClick={() => toggleSort("createdAt")}
+                    sortDirection={
+                      sortDescriptor()?.column === "createdAt"
+                        ? sortDescriptor()?.direction
+                        : undefined
+                    }
+                  >
+                    Invited
+                  </SortableTableHead>
+                  <SortableTableHead
+                    onClick={() => toggleSort("role")}
+                    sortDirection={
+                      sortDescriptor()?.column === "role"
+                        ? sortDescriptor()?.direction
+                        : undefined
+                    }
+                  >
+                    {localization().role}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    onClick={() => toggleSort("status")}
+                    sortDirection={
+                      sortDescriptor()?.column === "status"
+                        ? sortDescriptor()?.direction
+                        : undefined
+                    }
+                  >
+                    {localization().status}
+                  </SortableTableHead>
+                  <TableHead class="!text-end">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <Show
+                  when={filteredInvitationRows().length > 0}
+                  fallback={
+                    <TableRow>
+                      <TableCell
+                        class="text-muted-foreground text-sm"
+                        colSpan={5}
+                      >
+                        No invitations match the current filters.
+                      </TableCell>
+                    </TableRow>
+                  }
+                >
+                  <For each={sortedInvitationRows()}>
+                    {(invitation) => (
+                      <OrganizationInvitationRow
+                        invitation={invitation}
+                        roles={roles()}
+                      />
+                    )}
+                  </For>
+                </Show>
+              </TableBody>
+            </Table>
+          </Card>
         </Show>
-      </CardContent>
-    </Card>
+      </Show>
+    </div>
   )
 }

@@ -65,7 +65,7 @@ export function UserView(props: UserViewProps) {
   }
 
   return (
-    <div class={cn("contents", props.class)}>
+    <div class={cn("flex min-w-0 items-center gap-2", props.class)}>
       <UserAvatar
         user={resolvedUser()}
         image={props.image}
@@ -73,7 +73,7 @@ export function UserView(props: UserViewProps) {
         label={label()}
       />
 
-      <div class="grid min-w-0 flex-1 gap-0.5 text-sm">
+      <div class="grid min-w-0 flex-1 gap-0.5 text-left text-sm">
         <span class="truncate font-medium leading-4 text-foreground">
           {label()}
         </span>

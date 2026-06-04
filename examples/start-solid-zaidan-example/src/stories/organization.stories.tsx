@@ -128,6 +128,27 @@ const organizationInvitations = [
     id: "invitation_docs_alan",
     role: "member",
     status: "pending"
+  },
+  {
+    createdAt: new Date("2026-01-07T16:45:00Z"),
+    email: "dorothy@example.com",
+    id: "invitation_docs_dorothy",
+    role: "owner",
+    status: "accepted"
+  },
+  {
+    createdAt: new Date("2026-01-06T15:20:00Z"),
+    email: "margaret@example.com",
+    id: "invitation_docs_margaret",
+    role: "admin",
+    status: "rejected"
+  },
+  {
+    createdAt: new Date("2026-01-05T11:10:00Z"),
+    email: "hedy@example.com",
+    id: "invitation_docs_hedy",
+    role: "member",
+    status: "canceled"
   }
 ]
 
@@ -351,7 +372,7 @@ function OrganizationPeoplePreviewContent() {
   return (
     <OrganizationStoryProvider queryClient={queryClient} slug="acme">
       {() => (
-        <main class="mx-auto min-h-[720px] w-full max-w-5xl bg-background p-6 text-foreground">
+        <main class="mx-auto min-h-[860px] w-full max-w-5xl bg-background p-6 text-foreground">
           <OrganizationPeople />
         </main>
       )}

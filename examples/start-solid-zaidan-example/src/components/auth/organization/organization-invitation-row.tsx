@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { TableCell, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 type OrganizationInvitation = {
   createdAt?: Date | string | null
@@ -20,6 +21,13 @@ type OrganizationInvitation = {
 }
 
 type RoleMap = Record<string, string>
+
+const statusBadgeClasses: Record<string, string> = {
+  accepted: "!bg-emerald-500/10 !text-emerald-600 dark:!text-emerald-400",
+  canceled: "!bg-muted !text-muted-foreground",
+  pending: "!bg-amber-500/10 !text-amber-600 dark:!text-amber-400",
+  rejected: "!bg-destructive/10 !text-destructive"
+}
 
 export type OrganizationInvitationRowProps = {
   invitation: OrganizationInvitation
@@ -73,14 +81,19 @@ export function OrganizationInvitationRow(
       <TableCell class="font-medium">
         {props.invitation.email ?? "Invitation"}
       </TableCell>
-      <TableCell>{formatInvitationDate(props.invitation.createdAt)}</TableCell>
-      <TableCell>
-        <Badge variant="secondary">{roleLabel()}</Badge>
+      <TableCell class="whitespace-nowrap text-muted-foreground text-xs tabular-nums">
+        {formatInvitationDate(props.invitation.createdAt)}
       </TableCell>
+      <TableCell class="text-sm">{roleLabel()}</TableCell>
       <TableCell>
-        <Badge variant="outline">{formatStatus(props.invitation.status)}</Badge>
+        <Badge
+          class={cn(statusBadgeClasses[props.invitation.status ?? "pending"])}
+          variant="secondary"
+        >
+          {formatStatus(props.invitation.status)}
+        </Badge>
       </TableCell>
-      <TableCell class="text-right">
+      <TableCell class="text-end">
         <Show
           when={
             permission.data?.success && props.invitation.status === "pending"

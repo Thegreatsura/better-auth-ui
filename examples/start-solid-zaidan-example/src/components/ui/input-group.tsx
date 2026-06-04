@@ -114,7 +114,7 @@ const InputGroupInput = (props: InputGroupInputProps) => {
   return (
     <Input
       class={cn(
-        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
+        "z-input-group-input flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
         local.class
       )}
       data-slot="input-group-control"
@@ -131,7 +131,7 @@ const InputGroupTextarea = (props: InputGroupTextareaProps) => {
   return (
     <Textarea
       class={cn(
-        "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
+        "z-input-group-textarea flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
         local.class
       )}
       data-slot="input-group-control"

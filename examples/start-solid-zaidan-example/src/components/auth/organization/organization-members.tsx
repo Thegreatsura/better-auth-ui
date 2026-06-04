@@ -5,16 +5,11 @@ import {
   useListOrganizationMembers,
   useSession
 } from "@better-auth-ui/solid"
-import { ChevronUp, Filter, PlusCircle, Search } from "lucide-solid"
+import { ChevronUp, Filter, Search, X } from "lucide-solid"
 import { createMemo, createSignal, For, type JSX, Show } from "solid-js"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,7 +53,7 @@ type OrganizationMember = {
 }
 
 type RoleMap = Record<string, string>
-type MemberSort = "name" | "email" | "role"
+type MemberSort = "name" | "role"
 type SortDirection = "ascending" | "descending"
 
 type SortDescriptor = {
@@ -177,6 +172,8 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
   const roles = createMemo(
     () => organizationPluginConfig()?.roles ?? fallbackRoles
   )
+  const selectedRoleLabel = () =>
+    roles()[memberRoleFilter()] ?? memberRoleFilter()
   const normalizedMemberSearch = () => memberSearch().trim().toLowerCase()
   const filteredMemberRows = () =>
     memberRows().filter((member) => {
@@ -208,13 +205,6 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
       const secondRole = roles()[second.role ?? ""] ?? second.role ?? ""
 
       comparison = firstRole.localeCompare(secondRole)
-    }
-
-    if (memberSort() === "email") {
-      const firstEmail = first.user?.email ?? first.user?.name ?? ""
-      const secondEmail = second.user?.email ?? second.user?.name ?? ""
-
-      comparison = firstEmail.localeCompare(secondEmail)
     }
 
     if (memberSort() === "name") {
@@ -250,160 +240,155 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
     )
 
   return (
-    <Card class={props.class}>
-      <CardHeader class="gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div class="grid gap-1.5">
-          <CardTitle>Members</CardTitle>
-          <CardDescription>
-            View the members of the active organization.
-          </CardDescription>
-        </div>
-        <Button onClick={() => setInviteOpen(true)} size="sm" type="button">
-          <PlusCircle class="size-4" />
+    <div class={cn("flex flex-col gap-3", props.class)}>
+      <div class="flex items-end justify-between gap-3">
+        <h3 class="truncate text-sm font-semibold">Members</h3>
+        <Button
+          class="shrink-0"
+          onClick={() => setInviteOpen(true)}
+          size="sm"
+          type="button"
+        >
           Invite member
         </Button>
-      </CardHeader>
-      <CardContent>
-        <Show
-          when={!members.isPending}
-          fallback={
+      </div>
+      <Show
+        when={!members.isPending}
+        fallback={
+          <Card class="!p-0">
             <Table>
               <TableBody>
                 <OrganizationMemberRowSkeleton />
                 <OrganizationMemberRowSkeleton />
               </TableBody>
             </Table>
+          </Card>
+        }
+      >
+        <Show
+          when={memberRows().length > 0}
+          fallback={
+            <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+              No members found for this organization.
+            </p>
           }
         >
-          <Show
-            when={memberRows().length > 0}
-            fallback={
-              <p class="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-                No members found for this organization.
-              </p>
-            }
-          >
-            <div class="grid gap-4">
-              <div class="flex flex-col gap-2 sm:flex-row">
-                <InputGroup class="min-w-0 flex-1">
-                  <InputGroupAddon>
-                    <Search class="size-4" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    aria-label={localization().search}
-                    onInput={(event) =>
-                      setMemberSearch(event.currentTarget.value)
-                    }
-                    placeholder={localization().search}
-                    value={memberSearch()}
-                  />
-                </InputGroup>
-                <div class="flex gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger as={Button} class="" variant="outline">
-                      <Filter class="size-4" />
-                      {localization().role}
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuRadioGroup
-                        onChange={setMemberRoleFilter}
-                        value={memberRoleFilter()}
-                      >
-                        <DropdownMenuRadioItem value="all">
-                          {localization().all}
-                        </DropdownMenuRadioItem>
-                        <For each={Object.entries(roles())}>
-                          {([role, label]) => (
-                            <DropdownMenuRadioItem value={role}>
-                              {label}
-                            </DropdownMenuRadioItem>
-                          )}
-                        </For>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Show when={memberSearch() || memberRoleFilter() !== "all"}>
-                    <Button
-                      onClick={() => {
-                        setMemberSearch("")
-                        setMemberRoleFilter("all")
-                      }}
-                      type="button"
-                      variant="ghost"
-                    >
-                      {localization().clear}
-                    </Button>
-                  </Show>
-                </div>
-              </div>
-              <Table aria-label="Members">
-                <TableHeader>
-                  <TableRow>
-                    <SortableTableHead
-                      onClick={() => toggleSort("name")}
-                      sortDirection={
-                        sortDescriptor().column === "name"
-                          ? sortDescriptor().direction
-                          : undefined
-                      }
-                    >
-                      {localization().member}
-                    </SortableTableHead>
-                    <SortableTableHead
-                      onClick={() => toggleSort("email")}
-                      sortDirection={
-                        sortDescriptor().column === "email"
-                          ? sortDescriptor().direction
-                          : undefined
-                      }
-                    >
-                      Email
-                    </SortableTableHead>
-                    <SortableTableHead
-                      onClick={() => toggleSort("role")}
-                      sortDirection={
-                        sortDescriptor().column === "role"
-                          ? sortDescriptor().direction
-                          : undefined
-                      }
-                    >
-                      {localization().role}
-                    </SortableTableHead>
-                    <TableHead class="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <Show
-                    when={filteredMemberRows().length > 0}
-                    fallback={
-                      <TableRow>
-                        <TableCell
-                          class="text-muted-foreground text-sm"
-                          colSpan={4}
-                        >
-                          No members match the current filters.
-                        </TableCell>
-                      </TableRow>
-                    }
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <InputGroup class="min-w-0 sm:w-[220px]">
+              <InputGroupAddon>
+                <Search class="size-4 text-muted-foreground" />
+              </InputGroupAddon>
+              <InputGroupInput
+                aria-label={localization().search}
+                onInput={(event) => setMemberSearch(event.currentTarget.value)}
+                placeholder={localization().search}
+                type="search"
+                value={memberSearch()}
+              />
+            </InputGroup>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                as={Button}
+                class="shrink-0"
+                variant="outline"
+              >
+                <Filter class="size-4" />
+                {localization().role}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuRadioGroup
+                  onChange={setMemberRoleFilter}
+                  value={memberRoleFilter()}
+                >
+                  <DropdownMenuRadioItem value="all">
+                    {localization().all}
+                  </DropdownMenuRadioItem>
+                  <For each={Object.entries(roles())}>
+                    {([role, label]) => (
+                      <DropdownMenuRadioItem value={role}>
+                        {label}
+                      </DropdownMenuRadioItem>
+                    )}
+                  </For>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Show when={memberRoleFilter() !== "all"}>
+            <div class="flex flex-wrap gap-2">
+              <Show when={memberRoleFilter() !== "all"}>
+                <Badge class="gap-1 pr-1" variant="secondary">
+                  {localization().role}: {selectedRoleLabel()}
+                  <button
+                    aria-label={`${localization().clear} member role filter`}
+                    class="rounded-sm p-0.5 hover:bg-muted"
+                    onClick={() => setMemberRoleFilter("all")}
+                    type="button"
                   >
-                    <For each={sortedMemberRows()}>
-                      {(member) => (
-                        <OrganizationMemberRow
-                          isOwner={isOwner()}
-                          localization={localization()}
-                          member={member}
-                          roles={roles()}
-                        />
-                      )}
-                    </For>
-                  </Show>
-                </TableBody>
-              </Table>
+                    <X class="size-3" />
+                  </button>
+                </Badge>
+              </Show>
             </div>
           </Show>
+          <Card class="!p-0">
+            <Table aria-label="Members">
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHead
+                    onClick={() => toggleSort("name")}
+                    sortDirection={
+                      sortDescriptor().column === "name"
+                        ? sortDescriptor().direction
+                        : undefined
+                    }
+                  >
+                    {localization().member}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    onClick={() => toggleSort("role")}
+                    sortDirection={
+                      sortDescriptor().column === "role"
+                        ? sortDescriptor().direction
+                        : undefined
+                    }
+                  >
+                    {localization().role}
+                  </SortableTableHead>
+                  <TableHead class="!text-end">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <Show
+                  when={filteredMemberRows().length > 0}
+                  fallback={
+                    <TableRow>
+                      <TableCell
+                        class="text-muted-foreground text-sm"
+                        colSpan={3}
+                      >
+                        No members match the current filters.
+                      </TableCell>
+                    </TableRow>
+                  }
+                >
+                  <For each={sortedMemberRows()}>
+                    {(member) => (
+                      <OrganizationMemberRow
+                        isOwner={isOwner()}
+                        localization={localization()}
+                        member={member}
+                        roles={roles()}
+                      />
+                    )}
+                  </For>
+                </Show>
+              </TableBody>
+            </Table>
+          </Card>
         </Show>
-      </CardContent>
+      </Show>
       <InviteMemberDialog open={inviteOpen()} onOpenChange={setInviteOpen} />
-    </Card>
+    </div>
   )
 }
