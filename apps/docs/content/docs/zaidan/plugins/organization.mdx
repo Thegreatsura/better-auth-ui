@@ -499,9 +499,17 @@ The copied Zaidan components read the configured client from `<AuthProvider>` wi
 
 ## Components
 
+These previews use seeded Storybook fixtures and do not call live Better Auth endpoints.
+
 ### `<OrganizationSwitcher />`
 
 Dropdown that shows the active organization, lets the user switch between organizations, and exposes a "Create organization" entry. Drop it in your app shell — typically next to `<UserButton />`.
+
+<ZaidanStory
+  storyId="zaidan-plugins-organization--organization-switcher-preview"
+  title="Zaidan Organization Switcher preview"
+  height={420}
+/>
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-switcher.tsx" name="OrganizationSwitcherProps" />
 
@@ -546,6 +554,12 @@ Invitations table with grouped search, role/status filtering, sortable table hea
 ### `<OrganizationsSettings />`
 
 The settings tab panel mounted at `/settings/organizations`. It renders organizations the user belongs to plus pending invitations addressed to the user.
+
+<ZaidanStory
+  storyId="zaidan-plugins-organization--organizations-settings-preview"
+  title="Zaidan Organizations Settings preview"
+  height={560}
+/>
 
 ### `<Organizations />`
 

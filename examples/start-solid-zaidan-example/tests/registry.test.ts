@@ -2492,6 +2492,10 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/stories/multi-session.stories.tsx"),
       "utf8"
     )
+    const organizationStory = readFileSync(
+      resolve(__dirname, "../src/stories/organization.stories.tsx"),
+      "utf8"
+    )
 
     expect(magicLinkPluginDoc).toContain("## Setup")
     expect(magicLinkPluginDoc).toContain("## Components")
@@ -2624,6 +2628,13 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain("### Queries")
     expect(organizationPluginDoc).toContain("### Mutations")
     expect(organizationPluginDoc).toContain("## Components")
+    expect(organizationPluginDoc).toContain("<ZaidanStory")
+    expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organization-switcher-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organizations-settings-preview"'
+    )
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
     expect(organizationPluginDoc).toContain(
       'Show keyed when={organizationSlug() ?? "personal"}'
@@ -2729,6 +2740,22 @@ describe("Solid registry isolation", () => {
       "create-dialog parity is deferred"
     )
     expect(organizationSwitcherDoc).not.toContain("className")
+    expect(organizationStory).toContain('title: "Zaidan/Plugins/Organization"')
+    expect(organizationStory).toContain(
+      "export const OrganizationSwitcherPreview"
+    )
+    expect(organizationStory).toContain(
+      "export const OrganizationsSettingsPreview"
+    )
+    expect(organizationStory).toContain("organizationQueryKeys.list")
+    expect(organizationStory).toContain(
+      "organizationQueryKeys.activeOrganization"
+    )
+    expect(organizationStory).toContain(
+      "organizationQueryKeys.userInvitations.list"
+    )
+    expect(organizationStory).toContain("RouterProvider")
+    expect(organizationStory).toContain("createMemoryHistory")
     expect(organizationRegistry).toContain("organization-switcher.tsx")
     expect(organizationRegistry).toContain("create-organization-dialog.tsx")
     expect(organizationRegistry).toContain("slug-field.tsx")
