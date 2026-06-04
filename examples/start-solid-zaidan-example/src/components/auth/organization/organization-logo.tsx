@@ -19,7 +19,7 @@ export type OrganizationLogoProps = {
 const sizeClass: Record<OrganizationLogoSize, string> = {
   sm: "size-8",
   md: "size-10",
-  lg: "size-12"
+  lg: "size-16"
 }
 
 function getInitials(name?: string | null) {
@@ -44,12 +44,12 @@ export function OrganizationLogo(props: OrganizationLogoProps) {
     <Show
       when={!props.isPending || props.organization}
       fallback={
-        <Skeleton class={cn("rounded-md", sizeClass[size()], props.class)} />
+        <Skeleton class={cn("rounded-full", sizeClass[size()], props.class)} />
       }
     >
       <Avatar
         class={cn(
-          "rounded-md bg-muted text-muted-foreground",
+          "rounded-full bg-muted text-muted-foreground",
           sizeClass[size()],
           props.class
         )}
@@ -57,7 +57,7 @@ export function OrganizationLogo(props: OrganizationLogoProps) {
         <Show when={logo()}>
           {(src) => <AvatarImage alt={label()} src={src()} />}
         </Show>
-        <AvatarFallback class="rounded-md bg-muted text-muted-foreground">
+        <AvatarFallback class="rounded-full bg-muted text-muted-foreground">
           {fallback()}
         </AvatarFallback>
       </Avatar>

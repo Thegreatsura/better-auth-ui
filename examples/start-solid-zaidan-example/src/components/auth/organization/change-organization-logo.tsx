@@ -138,7 +138,7 @@ export function ChangeOrganizationLogo(props: ChangeOrganizationLogoProps) {
         />
         <div class="flex items-center gap-4">
           <Button
-            class="h-auto w-auto rounded-md p-0"
+            class="h-auto w-auto rounded-full p-0"
             disabled={isPending()}
             onClick={() => logoFileInput?.click()}
             type="button"

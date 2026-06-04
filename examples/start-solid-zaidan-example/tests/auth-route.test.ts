@@ -2823,6 +2823,13 @@ describe("Solid auth route component selection", () => {
       ),
       "utf8"
     )
+    const leaveOrganization = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/organization/leave-organization.tsx"
+      ),
+      "utf8"
+    )
     const deleteOrganizationDialog = readFileSync(
       resolve(
         __dirname,
@@ -2832,6 +2839,8 @@ describe("Solid auth route component selection", () => {
     )
 
     expect(organization).toContain("OrganizationSettings")
+    expect(organization).toContain("SettingsIcon")
+    expect(organization).toContain("UsersIcon")
     expect(organization).not.toContain(
       "Organization profile management is intentionally minimal"
     )
@@ -2842,6 +2851,9 @@ describe("Solid auth route component selection", () => {
     expect(organizationProfile).toContain("useUpdateOrganization")
     expect(organizationProfile).toContain("ChangeOrganizationLogo")
     expect(organizationProfile).toContain("SlugField")
+    expect(organizationProfile).toContain("<h2")
+    expect(organizationProfile).toContain("mt-1 w-fit")
+    expect(organizationProfile).not.toContain("CardDescription")
     expect(organizationProfile).toContain(
       "data: { name: name(), slug: slug() }"
     )
@@ -2853,15 +2865,22 @@ describe("Solid auth route component selection", () => {
     expect(organizationLogo).toContain("OrganizationLogoSize")
     expect(organizationLogo).toContain("organization?.logo?.trim()")
     expect(organizationLogo).toContain("Skeleton")
+    expect(organizationLogo).toContain('lg: "size-16"')
+    expect(organizationLogo).toContain("rounded-full")
     expect(organizationDangerZone).toContain("OrganizationDangerZoneProps")
     expect(organizationDangerZone).toContain("dangerZone")
+    expect(organizationDangerZone).toContain("LeaveOrganization")
     expect(organizationDangerZone).toContain("DeleteOrganization")
-    expect(organizationDangerZone).not.toContain("LeaveOrganization")
-    expect(deleteOrganization).toContain("useActiveOrganization")
-    expect(deleteOrganization).toContain("useHasPermission")
-    expect(deleteOrganization).toContain(
+    expect(organizationDangerZone).toContain("useHasPermission")
+    expect(organizationDangerZone).toContain(
       'permissions: { organization: ["delete"] }'
     )
+    expect(leaveOrganization).toContain("useLeaveOrganization")
+    expect(leaveOrganization).toContain("LeaveOrganizationParams")
+    expect(leaveOrganization).toContain("leftOrganization")
+    expect(leaveOrganization).toContain("auth.navigate")
+    expect(deleteOrganization).toContain("useActiveOrganization")
+    expect(deleteOrganization).not.toContain("useHasPermission")
     expect(deleteOrganization).toContain("DeleteOrganizationDialog")
     expect(deleteOrganization).toContain("deleteOrganization")
     expect(deleteOrganization).toContain("deleteOrganizationDescription")

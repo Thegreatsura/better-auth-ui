@@ -509,6 +509,9 @@ export const solidRegistryManifest = {
           "src/components/auth/organization/delete-organization-dialog.tsx"
         ),
         componentFile(
+          "src/components/auth/organization/leave-organization.tsx"
+        ),
+        componentFile(
           "src/components/auth/organization/organization-people.tsx"
         ),
         componentFile(

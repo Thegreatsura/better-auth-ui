@@ -81,7 +81,8 @@ This drops the following into your codebase:
 - `src/components/auth/organization/create-organization-dialog.tsx` — new-organization dialog
 - `src/components/auth/organization/invite-member-dialog.tsx` — invite-by-email dialog
 - `src/components/auth/organization/delete-organization-dialog.tsx` — delete confirmation dialog
-- `src/components/auth/organization/delete-organization.tsx` — danger-zone row
+- `src/components/auth/organization/delete-organization.tsx` — delete danger-zone row
+- `src/components/auth/organization/leave-organization.tsx` — leave danger-zone row
 - `src/components/auth/organization/change-organization-logo.tsx` — logo upload control
 - `src/components/auth/organization/organization-logo.tsx`, `slug-field.tsx`, plus matching loading and empty states
 
@@ -537,7 +538,7 @@ Editable profile card for the active organization: logo, display name, and slug.
 
 ### `<OrganizationDangerZone />`
 
-Danger-zone section for irreversible organization actions. The Solid/Zaidan implementation includes delete organization support; leave organization is exposed from the People member row for the current user.
+Danger-zone section for irreversible organization actions. The Solid/Zaidan implementation includes leave organization and delete organization actions.
 
 ### `<OrganizationPeople />`
 
@@ -589,7 +590,7 @@ Confirmation dialog used by the organization danger zone before deleting an orga
 
 ## Deferred UI parity
 
-Solid/Zaidan implements the organization runtime, slug-aware routing, settings/profile/delete, user invitation accept/reject, organization switcher, People tables with search/filter/sort, member role edit/remove/leave, invite member, and cancel pending invitation flows.
+Solid/Zaidan implements the organization runtime, slug-aware routing, settings/profile/delete/leave, user invitation accept/reject, organization switcher, People tables with search/filter/sort, member role edit/remove/leave, invite member, and cancel pending invitation flows.
 
 Advanced invitation status actions and larger copied UI details remain deferred. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but remaining copied organization UI polish stays follow-up work to keep PR #393 reviewable.
 
