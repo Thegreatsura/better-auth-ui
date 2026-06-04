@@ -2625,10 +2625,42 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain("### Mutations")
     expect(organizationPluginDoc).toContain("## Components")
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
+    expect(organizationPluginDoc).toContain(
+      'Show keyed when={organizationSlug() ?? "personal"}'
+    )
+    expect(organizationPluginDoc).toContain("authClient={authClient}")
+    expect(organizationPluginDoc).toContain("queryClient={props.queryClient}")
     expect(organizationPluginDoc).toContain("organizationPlugin({ slug")
+    expect(organizationPluginDoc).toContain(
+      'createFileRoute("/organization/$slug/$path")'
+    )
+    expect(organizationPluginDoc).toContain(
+      "ensureSessionServer(queryClient, auth"
+    )
+    expect(organizationPluginDoc).toContain(
+      "ensureSessionClient(queryClient, authClient)"
+    )
+    expect(organizationPluginDoc).toContain(
+      "validOrganizationPaths.includes(path)"
+    )
     expect(organizationPluginDoc).toContain("/organization/$slug/$path")
     expect(organizationPluginDoc).toContain("non-slug page")
     expect(organizationPluginDoc).toContain("`null`")
+    expect(organizationPluginDoc).toContain(
+      "The copied Zaidan components read the configured client"
+    )
+    expect(organizationPluginDoc).toContain("useAuth()")
+    expect(organizationPluginDoc).toContain(
+      "low-level `@better-auth-ui/solid` hooks"
+    )
+    expect(organizationPluginDoc).toContain("useActiveOrganization()")
+    expect(organizationPluginDoc).toContain("useHasPermission()")
+    expect(organizationPluginDoc).toContain("useCreateOrganization()")
+    expect(organizationPluginDoc).toContain("useCheckOrganizationSlug()")
+    expect(organizationPluginDoc).not.toContain(
+      "useCreateOrganization(authClient)"
+    )
+    expect(organizationPluginDoc).not.toContain("Server-side prefetching")
     expect(organizationPluginDoc).toContain("Deferred UI parity")
     expect(organizationPluginDoc).toContain("members")
     expect(organizationPluginDoc).toContain("invitations")

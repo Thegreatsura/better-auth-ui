@@ -92,17 +92,50 @@ This drops the following into your codebase:
 Pass `organizationPlugin()` to `<AuthProvider>` so the organizations settings tab, `<Organization />` shell, and `<OrganizationSwitcher />` can read plugin localization and view paths.
 
 ```tsx title="src/components/providers.tsx"
+import type { QueryClient } from "@tanstack/solid-query"
+import { useNavigate, useParams } from "@tanstack/solid-router"
+import type { JSX } from "solid-js"
+import { Show } from "solid-js"
+
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { organizationPlugin } from "@/lib/auth/organization-plugin" // [!code highlight]
+import { authClient } from "@/lib/auth-client"
 
-<AuthProvider
-  plugins={[
-    organizationPlugin() // [!code highlight]
-  ]}
->
-  {props.children}
-</AuthProvider>
+export type ProvidersProps = {
+  children?: JSX.Element | (() => JSX.Element)
+  queryClient?: QueryClient
+}
+
+export function Providers(props: ProvidersProps) {
+  const navigate = useNavigate()
+  const params = useParams({ strict: false })
+  const organizationSlug = () => {
+    const slug = params().slug
+
+    if (typeof slug === "string" && slug.length > 0) return slug
+
+    return null
+  }
+
+  return (
+    <Show keyed when={organizationSlug() ?? "personal"}>
+      <AuthProvider
+        authClient={authClient}
+        redirectTo="/settings/account"
+        navigate={navigate}
+        queryClient={props.queryClient}
+        plugins={[
+          organizationPlugin({ slug: organizationSlug() }) // [!code highlight]
+        ]}
+      >
+        {props.children}
+      </AuthProvider>
+    </Show>
+  )
+}
 ```
+
+`Show keyed` remounts the provider when the URL slug changes, so plugin state and organization-scoped queries cannot keep using a previous slug.
 
 </Step>
 <Step>
@@ -262,7 +295,7 @@ The Solid/Zaidan organization UI uses slug-based routes for organization pages. 
 This unlocks:
 
 - Shareable, bookmarkable per-org URLs that don't depend on session state
-- Server-side prefetching of the correct organization without round-tripping `setActive`
+- Fetching the organization identified by the URL without round-tripping `setActive`
 - Letting members keep multiple organizations open in separate tabs without thrashing the active organization
 
 You wire this up by passing the URL slug into `organizationPlugin({ slug })`. The UI plugin then:
@@ -279,9 +312,11 @@ Read the slug param wherever you render `<AuthProvider>` and forward it to `orga
 
 ```tsx title="src/components/providers.tsx"
 import { useNavigate, useParams } from "@tanstack/solid-router"
+import { Show } from "solid-js"
 
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { authClient } from "@/lib/auth-client"
 
 export function Providers(props: ProvidersProps) {
   const navigate = useNavigate()
@@ -295,12 +330,16 @@ export function Providers(props: ProvidersProps) {
   }
 
   return (
-    <AuthProvider
-      navigate={navigate}
-      plugins={[organizationPlugin({ slug: organizationSlug() })]} // [!code highlight]
-    >
-      {props.children}
-    </AuthProvider>
+    <Show keyed when={organizationSlug() ?? "personal"}>
+      <AuthProvider
+        authClient={authClient}
+        navigate={navigate}
+        queryClient={props.queryClient}
+        plugins={[organizationPlugin({ slug: organizationSlug() })]} // [!code highlight]
+      >
+        {props.children}
+      </AuthProvider>
+    </Show>
   )
 }
 ```
@@ -311,10 +350,50 @@ When the user is on a non-slug page (`/settings/organizations`, `/dashboard`, et
 <Step>
 ### Add the slug-prefixed organization route
 
-Use `/organization/$slug/$path` and validate the path segment against `organizationPlugin().viewPaths.organization`.
+Move `/organization/$path` to `/organization/$slug/$path`. Validate the path segment and gate on the signed-in session as before.
 
 ```tsx title="src/routes/organization/$slug/$path.tsx"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/solid"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/solid/server"
+import { createFileRoute, notFound, redirect } from "@tanstack/solid-router"
+import { createIsomorphicFn } from "@tanstack/solid-start"
+import { getRequestHeaders } from "@tanstack/solid-start/server"
+
 import { Organization } from "@/components/auth/organization/organization"
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+
+const validOrganizationPaths = Object.values(
+  organizationPlugin().viewPaths.organization ?? {}
+)
+
+export const Route = createFileRoute("/organization/$slug/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!validOrganizationPaths.includes(path)) {
+      throw notFound()
+    }
+
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
+      )
+      .client(() => ensureSessionClient(queryClient, authClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: OrganizationPage
+})
 
 function OrganizationPage() {
   const params = Route.useParams()
@@ -392,6 +471,8 @@ Read these inside custom slot components via `useAuthPlugin(organizationPlugin).
 
 ## Solid Hooks
 
+The copied Zaidan components read the configured client from `<AuthProvider>` with `useAuth()`. If you build custom organization UI with the low-level `@better-auth-ui/solid` hooks, pass your configured `authClient` as shown in the linked Solid API docs.
+
 ### Queries
 
 - `useActiveOrganization()` — Full organization for the URL slug when `organizationPlugin({ slug })` is set, or the active session organization when slug is omitted
@@ -399,7 +480,7 @@ Read these inside custom slot components via `useAuthPlugin(organizationPlugin).
 - `useListOrganizationMembers()` — Members of the active organization
 - `useListOrganizationInvitations()` — Invitations for the active organization
 - `useListUserInvitations()` — Pending invitations addressed to the signed-in user
-- `useHasPermission({ permissions })` — Check the current member's permission against the active organization
+- `useHasPermission()` — Check the current member's permission against the active organization
 
 ### Mutations
 
