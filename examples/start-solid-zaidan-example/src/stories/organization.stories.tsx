@@ -15,6 +15,7 @@ import type { JSX } from "solid-js"
 import type { Meta, StoryObj } from "storybook-solidjs-vite"
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { Organization } from "@/components/auth/organization/organization"
+import { OrganizationDangerZone } from "@/components/auth/organization/organization-danger-zone"
 import { OrganizationProfile } from "@/components/auth/organization/organization-profile"
 import { OrganizationSettings } from "@/components/auth/organization/organization-settings"
 import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
@@ -329,6 +330,20 @@ function OrganizationProfilePreviewContent() {
   )
 }
 
+function OrganizationDangerZonePreviewContent() {
+  const queryClient = createStoryQueryClient()
+
+  return (
+    <OrganizationStoryProvider queryClient={queryClient} slug="acme">
+      {() => (
+        <main class="mx-auto min-h-[320px] w-full max-w-3xl bg-background p-6 text-foreground">
+          <OrganizationDangerZone />
+        </main>
+      )}
+    </OrganizationStoryProvider>
+  )
+}
+
 function OrganizationsSettingsPreviewContent() {
   const queryClient = createStoryQueryClient()
 
@@ -381,6 +396,14 @@ export const OrganizationProfilePreview: Story = {
   render: () => (
     <RouterProvider
       router={createStoryRouter(OrganizationProfilePreviewContent)}
+    />
+  )
+}
+
+export const OrganizationDangerZonePreview: Story = {
+  render: () => (
+    <RouterProvider
+      router={createStoryRouter(OrganizationDangerZonePreviewContent)}
     />
   )
 }
