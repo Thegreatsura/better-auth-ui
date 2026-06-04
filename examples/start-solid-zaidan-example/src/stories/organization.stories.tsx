@@ -10,10 +10,11 @@ import {
   RouterProvider,
   useNavigate
 } from "@tanstack/solid-router"
-import type { Organization } from "better-auth/client"
+import type { Organization as BetterAuthOrganization } from "better-auth/client"
 import type { JSX } from "solid-js"
 import type { Meta, StoryObj } from "storybook-solidjs-vite"
 import { AuthProvider } from "@/components/auth/auth-provider"
+import { Organization } from "@/components/auth/organization/organization"
 import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
 import { OrganizationsSettings } from "@/components/auth/organization/organizations-settings"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
@@ -55,7 +56,7 @@ const organizations = [
     name: "Northwind Traders",
     slug: "northwind"
   }
-] satisfies Organization[]
+] satisfies BetterAuthOrganization[]
 
 const activeOrganization = organizations[0]
 
@@ -284,6 +285,20 @@ function OrganizationSwitcherPreviewContent() {
   )
 }
 
+function OrganizationPreviewContent() {
+  const queryClient = createStoryQueryClient()
+
+  return (
+    <OrganizationStoryProvider queryClient={queryClient} slug="acme">
+      {() => (
+        <main class="mx-auto min-h-[640px] w-full max-w-3xl bg-background p-6 text-foreground">
+          <Organization path="settings" slug="acme" />
+        </main>
+      )}
+    </OrganizationStoryProvider>
+  )
+}
+
 function OrganizationsSettingsPreviewContent() {
   const queryClient = createStoryQueryClient()
 
@@ -315,6 +330,12 @@ export const OrganizationSwitcherPreview: Story = {
     <RouterProvider
       router={createStoryRouter(OrganizationSwitcherPreviewContent)}
     />
+  )
+}
+
+export const OrganizationPreview: Story = {
+  render: () => (
+    <RouterProvider router={createStoryRouter(OrganizationPreviewContent)} />
   )
 }
 
