@@ -105,7 +105,7 @@ function createStoryQueryClient() {
 }
 
 type OrganizationStoryProviderProps = {
-  children: JSX.Element
+  children: () => JSX.Element
   queryClient: QueryClient
   slug?: string | null
 }
@@ -144,9 +144,11 @@ function OrganizationSwitcherPreviewContent() {
 
   return (
     <OrganizationStoryProvider queryClient={queryClient} slug="acme">
-      <main class="mx-auto flex min-h-[360px] w-full max-w-xl items-center justify-center bg-background p-6 text-foreground">
-        <OrganizationSwitcher hideCreate hideSlug={false} />
-      </main>
+      {() => (
+        <main class="mx-auto flex min-h-[360px] w-full max-w-xl items-center justify-center bg-background p-6 text-foreground">
+          <OrganizationSwitcher />
+        </main>
+      )}
     </OrganizationStoryProvider>
   )
 }
@@ -156,9 +158,11 @@ function OrganizationsSettingsPreviewContent() {
 
   return (
     <OrganizationStoryProvider queryClient={queryClient} slug={null}>
-      <main class="mx-auto min-h-[520px] w-full max-w-2xl bg-background p-6 text-foreground">
-        <OrganizationsSettings />
-      </main>
+      {() => (
+        <main class="mx-auto min-h-[520px] w-full max-w-2xl bg-background p-6 text-foreground">
+          <OrganizationsSettings />
+        </main>
+      )}
     </OrganizationStoryProvider>
   )
 }

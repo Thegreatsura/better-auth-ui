@@ -1,19 +1,21 @@
-import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
+import {
+  organizationLocalization as defaultOrganizationLocalization,
+  type OrganizationLocalization
+} from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import {
   useActiveOrganization,
   useAuth,
   useListOrganizations,
+  useSession,
   useSetActiveOrganization
 } from "@better-auth-ui/solid"
 import { useNavigate } from "@tanstack/solid-router"
 import type { Organization } from "better-auth/client"
 import {
-  BriefcaseBusiness,
   ChevronsUpDown,
   PlusCircle,
-  Settings,
-  User
+  Settings as SettingsIcon
 } from "lucide-solid"
 import type { JSX } from "solid-js"
 import {
@@ -30,13 +32,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
+import { OrganizationView } from "./organization-view"
 
 export type OrganizationSwitcherProps = {
   class?: string
@@ -48,20 +50,12 @@ export type OrganizationSwitcherProps = {
   setActive?: (organization: Organization | null) => void
 }
 
-function OrganizationLabel(props: {
-  organization: Organization
-  hideSlug: boolean
-}) {
-  return (
-    <span class="grid min-w-0 flex-1 text-left">
-      <span class="truncate">{props.organization.name}</span>
-      <Show when={!props.hideSlug}>
-        <span class="truncate text-xs text-muted-foreground">
-          /{props.organization.slug}
-        </span>
-      </Show>
-    </span>
-  )
+type OrganizationPluginConfig = {
+  slug?: string | null
+  localization?: Pick<
+    OrganizationLocalization,
+    "createOrganization" | "organization" | "organizations" | "manage"
+  >
 }
 
 function OrganizationSwitcherTrigger(rawProps: OrganizationSwitcherProps = {}) {
@@ -71,10 +65,13 @@ function OrganizationSwitcherTrigger(rawProps: OrganizationSwitcherProps = {}) {
     <Show
       when={props.trigger}
       fallback={
-        <Button class={props.class} disabled variant="ghost">
-          <BriefcaseBusiness class="size-4 text-muted-foreground" />
-          <span class="hidden max-w-36 truncate sm:inline">Organization</span>
-          <ChevronsUpDown class="size-4 text-muted-foreground" />
+        <Button
+          class={cn("h-auto px-2 py-2 text-left", props.class)}
+          disabled
+          variant="ghost"
+        >
+          <OrganizationView isPending hideRole hideSlug={props.hideSlug} />
+          <ChevronsUpDown class="size-4 shrink-0 text-muted-foreground" />
         </Button>
       }
     >
@@ -86,8 +83,9 @@ function OrganizationSwitcherTrigger(rawProps: OrganizationSwitcherProps = {}) {
 function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
   const props = mergeProps({ hideSlug: true }, rawProps)
   const auth = useAuth()
-  const client = authClient as OrganizationAuthClient
+  const client = auth.authClient as OrganizationAuthClient
   const navigate = useNavigate()
+  const session = useSession(client)
   const activeOrganization = useActiveOrganization(client)
   const organizations = useListOrganizations(client)
   const setActiveOrganization = useSetActiveOrganization(client)
@@ -95,14 +93,12 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
   const [isOpen, setIsOpen] = createSignal(false)
   const organizationPluginConfig = () =>
     auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
-      | {
-          slug?: string | null
-          localization?: Pick<
-            OrganizationLocalization,
-            "createOrganization" | "organizations" | "manage"
-          >
-        }
+      | OrganizationPluginConfig
       | undefined
+  const organizationViewPaths = () =>
+    organizationPlugin().viewPaths.organization ?? { settings: "settings" }
+  const localization = () =>
+    organizationPluginConfig()?.localization ?? defaultOrganizationLocalization
   const isSlugMode = () => {
     const plugin = organizationPluginConfig()
 
@@ -110,29 +106,48 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
 
     return plugin.slug !== undefined
   }
+  const isPending = () =>
+    session.isPending ||
+    (!!session.data &&
+      (organizations.isPending || activeOrganization.isPending))
+  const shouldShowSlug = () => !props.hideSlug
   const selectableOrganizations = () =>
     ((organizations.data ?? []) as Organization[]).filter(
       (organization) => organization.id !== activeOrganization.data?.id
     )
-  const organizationLocalization = () =>
-    organizationPluginConfig()?.localization ?? {
-      createOrganization: "Create organization",
-      organizations: "Organizations",
-      manage: "Manage"
-    }
+  const hasOtherEntries = () =>
+    selectableOrganizations().length > 0 ||
+    (!!activeOrganization.data && !props.hidePersonal)
 
   const navigateToOrganization = (organization: Organization) => {
     navigate({
       to: "/organization/$slug/$path",
-      params: { slug: organization.slug, path: "settings" }
+      params: {
+        slug: organization.slug,
+        path: organizationViewPaths().settings
+      }
     })
   }
 
   const navigateToPersonal = () => {
     navigate({
       to: "/settings/$path",
-      params: { path: "account" }
+      params: { path: auth.viewPaths.settings.account }
     })
+  }
+
+  const navigateToActiveOrganizationSettings = () => {
+    const active = activeOrganization.data
+
+    if (!active) {
+      navigate({
+        to: "/settings/$path",
+        params: { path: auth.viewPaths.settings.account }
+      })
+      return
+    }
+
+    navigateToOrganization(active as Organization)
   }
 
   const handleSetActive = (organization: Organization | null) => {
@@ -176,14 +191,53 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
             <DropdownMenuTrigger
               as={Button}
               variant="ghost"
-              class={props.class}
-              disabled={organizations.isPending}
+              class={cn("h-auto px-2 py-2 text-left", props.class)}
+              disabled={!session.data || isPending()}
             >
-              <BriefcaseBusiness class="size-4 text-muted-foreground" />
-              <span class="hidden max-w-36 truncate sm:inline">
-                {activeOrganization.data?.name ?? "Organization"}
-              </span>
-              <ChevronsUpDown class="size-4 text-muted-foreground" />
+              <Show
+                when={!isPending()}
+                fallback={
+                  <OrganizationView
+                    isPending
+                    hideRole
+                    hideSlug={props.hideSlug}
+                  />
+                }
+              >
+                <Show
+                  when={activeOrganization.data}
+                  fallback={
+                    <Show
+                      when={
+                        !props.hidePersonal ? session.data?.user : undefined
+                      }
+                      fallback={
+                        <OrganizationView
+                          hideRole
+                          hideSlug={props.hideSlug}
+                          organization={{
+                            name: localization().organization
+                          }}
+                        />
+                      }
+                    >
+                      {(user) => (
+                        <UserView hideSubtitle={props.hideSlug} user={user()} />
+                      )}
+                    </Show>
+                  }
+                >
+                  {(organization) => (
+                    <OrganizationView
+                      hideRole
+                      hideSlug={!shouldShowSlug()}
+                      organization={organization()}
+                    />
+                  )}
+                </Show>
+              </Show>
+
+              <ChevronsUpDown class="size-4 shrink-0 text-muted-foreground" />
             </DropdownMenuTrigger>
           }
         >
@@ -191,74 +245,91 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
             {props.trigger}
           </DropdownMenuTrigger>
         </Show>
-        <DropdownMenuContent class="min-w-64">
-          <DropdownMenuLabel class="px-2 py-1.5 font-normal">
-            <Show
-              when={activeOrganization.data}
-              fallback={
-                <Show
-                  when={!props.hidePersonal}
-                  fallback={organizationLocalization().organizations}
-                >
-                  <UserView />
+        <DropdownMenuContent class="min-w-64 max-w-svw">
+          <Show when={activeOrganization.data}>
+            {(organization) => (
+              <div class="flex items-center justify-between gap-4 px-2 py-2">
+                <OrganizationView
+                  hideRole
+                  hideSlug={props.hideSlug}
+                  organization={organization()}
+                />
+
+                <Show when={!props.hideSettings}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={navigateToActiveOrganizationSettings}
+                  >
+                    <SettingsIcon class="text-muted-foreground" />
+                    {localization().manage}
+                  </Button>
                 </Show>
-              }
-            >
-              {(organization) => (
-                <div class="flex items-center gap-2">
-                  <BriefcaseBusiness class="size-4 text-muted-foreground" />
-                  <OrganizationLabel
-                    organization={organization()}
-                    hideSlug={props.hideSlug}
-                  />
-                </div>
-              )}
-            </Show>
-          </DropdownMenuLabel>
-          <Show when={!props.hideSettings}>
-            <DropdownMenuItem
-              onSelect={() =>
-                navigate({
-                  to: "/settings/$path",
-                  params: { path: "organizations" }
-                })
-              }
-            >
-              <Settings class="size-4 text-muted-foreground" />
-              {organizationLocalization().manage}
-            </DropdownMenuItem>
+              </div>
+            )}
           </Show>
+
+          <Show
+            when={
+              !activeOrganization.data && !isPending() && !props.hidePersonal
+                ? session.data?.user
+                : undefined
+            }
+          >
+            {(resolvedSession) => (
+              <div class="flex items-center justify-between gap-4 px-2 py-2">
+                <UserView
+                  hideSubtitle={props.hideSlug}
+                  user={resolvedSession()}
+                />
+
+                <Show when={!props.hideSettings}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={navigateToPersonal}
+                  >
+                    <SettingsIcon class="text-muted-foreground" />
+                    {auth.localization.settings.settings}
+                  </Button>
+                </Show>
+              </div>
+            )}
+          </Show>
+
           <DropdownMenuSeparator />
+
           <Show when={activeOrganization.data && !props.hidePersonal}>
             <DropdownMenuItem onSelect={() => handleSetActive(null)}>
-              <User class="size-4 text-muted-foreground" />
-              Personal account
+              <UserView hideSubtitle={props.hideSlug} />
             </DropdownMenuItem>
           </Show>
-          <Show when={selectableOrganizations().length > 0}>
-            <For each={selectableOrganizations()}>
-              {(organization) => (
-                <DropdownMenuItem
-                  onSelect={() => handleSetActive(organization)}
-                >
-                  <OrganizationLabel
-                    organization={organization}
-                    hideSlug={props.hideSlug}
-                  />
-                </DropdownMenuItem>
-              )}
-            </For>
-          </Show>
+
+          <For each={selectableOrganizations()}>
+            {(organization) => (
+              <DropdownMenuItem onSelect={() => handleSetActive(organization)}>
+                <OrganizationView
+                  hideRole
+                  hideSlug={props.hideSlug}
+                  organization={organization}
+                />
+              </DropdownMenuItem>
+            )}
+          </For>
+
           <Show when={!props.hideCreate}>
-            <DropdownMenuSeparator />
+            <Show when={hasOtherEntries()}>
+              <DropdownMenuSeparator />
+            </Show>
+
             <DropdownMenuItem
               onSelect={() => {
                 setIsOpen(false)
                 setCreateOpen(true)
               }}
             >
-              <PlusCircle class="size-4 text-muted-foreground" />
-              {organizationLocalization().createOrganization}
+              <PlusCircle class="text-muted-foreground" />
+              {localization().createOrganization}
             </DropdownMenuItem>
           </Show>
         </DropdownMenuContent>

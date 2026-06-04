@@ -12,6 +12,7 @@ type AuthUser = AuthUserBase & {
 
 export type UserViewProps = {
   class?: string
+  hideSubtitle?: boolean
   image?: string | null
   initials?: string
   isPending?: boolean
@@ -47,7 +48,9 @@ export function UserView(props: UserViewProps) {
     props.user ?? (session.data?.user as AuthUser | undefined)
   const label = () => resolvePrimaryLabel(resolvedUser(), props.label)
   const secondaryLabel = () =>
-    resolveSecondaryLabel(resolvedUser(), props.secondaryLabel)
+    props.hideSubtitle
+      ? null
+      : resolveSecondaryLabel(resolvedUser(), props.secondaryLabel)
 
   if ((props.isPending || sessionPending()) && !props.user && !props.label) {
     return (

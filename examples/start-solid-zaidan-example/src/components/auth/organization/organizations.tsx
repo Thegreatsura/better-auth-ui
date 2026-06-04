@@ -1,67 +1,99 @@
+import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
+import { organizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
-import { useListOrganizations } from "@better-auth-ui/solid"
-import { PlusCircle } from "lucide-solid"
+import { useAuth, useListOrganizations } from "@better-auth-ui/solid"
 import { createSignal, For, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { cn } from "@/lib/utils"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationRow } from "./organization-row"
+import { OrganizationViewSkeleton } from "./organization-view-skeleton"
+import { OrganizationsEmpty } from "./organizations-empty"
 
 export type OrganizationsProps = {
-  authClient: OrganizationAuthClient
+  class?: string
 }
 
-export function Organizations(props: OrganizationsProps) {
-  const organizations = useListOrganizations(props.authClient)
+type OrganizationPluginConfig = {
+  localization?: OrganizationLocalization
+}
+
+export function Organizations(props: OrganizationsProps = {}) {
+  const auth = useAuth()
+  const client = auth.authClient as OrganizationAuthClient
+  const localization = () =>
+    (
+      auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
+        | OrganizationPluginConfig
+        | undefined
+    )?.localization ?? organizationLocalization
+  const organizations = useListOrganizations(client)
   const [createOpen, setCreateOpen] = createSignal(false)
 
   return (
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <h3 class="font-medium">Organizations</h3>
-          <p class="text-sm text-muted-foreground">
-            Create and manage organizations for shared access.
-          </p>
-        </div>
-        <Button onClick={() => setCreateOpen(true)} type="button">
-          <PlusCircle class="size-4" />
-          Create organization
-        </Button>
-      </div>
+    <>
+      <div class={props.class}>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-end justify-between gap-3">
+            <h2 class="truncate font-semibold text-sm">
+              {localization().organizations}
+            </h2>
 
-      <Show
-        when={!organizations.isPending}
-        fallback={
-          <p class="text-sm text-muted-foreground">Loading organizations…</p>
-        }
-      >
-        <div class="flex flex-col gap-2">
-          <For
-            each={organizations.data ?? []}
-            fallback={
-              <button
-                class="rounded-md border border-dashed p-4 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                onClick={() => setCreateOpen(true)}
-                type="button"
+            <Button
+              class="shrink-0"
+              size="sm"
+              disabled={organizations.isPending}
+              onClick={() => setCreateOpen(true)}
+            >
+              {localization().createOrganization}
+            </Button>
+          </div>
+
+          <Card class={cn("p-0")}>
+            <CardContent class="p-0">
+              <Show
+                when={!organizations.isPending}
+                fallback={
+                  <div class="p-4">
+                    <OrganizationViewSkeleton />
+                  </div>
+                }
               >
-                No organizations yet. Create one to enable organization routes.
-              </button>
-            }
-          >
-            {(organization) => (
-              <OrganizationRow
-                authClient={props.authClient}
-                organization={organization}
-              />
-            )}
-          </For>
+                <Show
+                  when={(organizations.data ?? []).length > 0}
+                  fallback={
+                    <OrganizationsEmpty
+                      onCreatePress={() => setCreateOpen(true)}
+                    />
+                  }
+                >
+                  <For each={organizations.data ?? []}>
+                    {(organization, index) => (
+                      <>
+                        <Show when={index() > 0}>
+                          <Separator />
+                        </Show>
+
+                        <div class="p-4">
+                          <OrganizationRow organization={organization} />
+                        </div>
+                      </>
+                    )}
+                  </For>
+                </Show>
+              </Show>
+            </CardContent>
+          </Card>
         </div>
-      </Show>
+      </div>
 
       <CreateOrganizationDialog
         open={createOpen()}
         onOpenChange={setCreateOpen}
       />
-    </div>
+    </>
   )
 }

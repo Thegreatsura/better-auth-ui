@@ -3325,7 +3325,9 @@ describe("Solid auth route component selection", () => {
     expect(organizationSwitcher).toContain(
       "organization.id !== activeOrganization.data?.id"
     )
-    expect(organizationSwitcher).toContain('params: { path: "account" }')
+    expect(organizationSwitcher).toContain(
+      "params: { path: auth.viewPaths.settings.account }"
+    )
     expect(organizationSwitcher).toContain('to: "/settings/$path"')
     expect(organizationSwitcher).toContain('to: "/organization/$slug/$path"')
     expect(organizationSwitcher).toContain("setActiveOrganization.mutate")

@@ -1,23 +1,35 @@
+import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
+import { organizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useSetActiveOrganization } from "@better-auth-ui/solid"
 import { useNavigate } from "@tanstack/solid-router"
 import type { Organization } from "better-auth/client"
+import { Settings as SettingsIcon } from "lucide-solid"
+import { Show } from "solid-js"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Spinner } from "@/components/ui/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { OrganizationView } from "./organization-view"
 
 export type OrganizationRowProps = {
-  authClient: OrganizationAuthClient
   organization: Organization
+}
+
+type OrganizationPluginConfig = {
+  slug?: string | null
+  localization?: Pick<OrganizationLocalization, "manage">
 }
 
 export function OrganizationRow(props: OrganizationRowProps) {
   const auth = useAuth()
+  const client = auth.authClient as OrganizationAuthClient
   const navigate = useNavigate()
   const organizationPluginConfig = () =>
     auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
-      | { slug?: string | null }
+      | OrganizationPluginConfig
       | undefined
+  const localization = () =>
+    organizationPluginConfig()?.localization ?? organizationLocalization
   const isSlugMode = () => {
     const plugin = organizationPluginConfig()
 
@@ -25,20 +37,23 @@ export function OrganizationRow(props: OrganizationRowProps) {
 
     return plugin.slug !== undefined
   }
+  const organizationViewPaths = () =>
+    organizationPlugin().viewPaths.organization ?? { settings: "settings" }
+
   const navigateToOrganization = () => {
     navigate({
       to: "/organization/$slug/$path",
       params: {
         slug: props.organization.slug,
-        path: "settings"
+        path: organizationViewPaths().settings
       }
     })
   }
-  const setActiveOrganization = useSetActiveOrganization(props.authClient, {
+  const setActiveOrganization = useSetActiveOrganization(client, {
     onSuccess: navigateToOrganization
   })
 
-  const openOrganization = () => {
+  const manageOrganization = () => {
     if (isSlugMode()) {
       navigateToOrganization()
       return
@@ -50,23 +65,26 @@ export function OrganizationRow(props: OrganizationRowProps) {
   }
 
   return (
-    <Card size="sm">
-      <CardContent class="flex items-center justify-between gap-4 py-3">
-        <div class="min-w-0">
-          <p class="truncate text-sm font-medium">{props.organization.name}</p>
-          <p class="truncate text-xs text-muted-foreground">
-            /organization/{props.organization.slug}/settings
-          </p>
-        </div>
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={setActiveOrganization.isPending}
-          onClick={openOrganization}
+    <div class="flex items-center gap-3">
+      <OrganizationView organization={props.organization} />
+
+      <Button
+        class="ml-auto shrink-0"
+        variant="outline"
+        size="sm"
+        disabled={setActiveOrganization.isPending}
+        onClick={manageOrganization}
+        aria-label={localization().manage}
+      >
+        <Show
+          when={setActiveOrganization.isPending}
+          fallback={<SettingsIcon />}
         >
-          Open
-        </Button>
-      </CardContent>
-    </Card>
+          <Spinner />
+        </Show>
+
+        {localization().manage}
+      </Button>
+    </div>
   )
 }
