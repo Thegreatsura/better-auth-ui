@@ -5,8 +5,8 @@ import {
   useListOrganizationMembers,
   useSession
 } from "@better-auth-ui/solid"
-import { ArrowUpDown, Filter, PlusCircle, Search } from "lucide-solid"
-import { createMemo, createSignal, For, Show } from "solid-js"
+import { ChevronUp, Filter, PlusCircle, Search } from "lucide-solid"
+import { createMemo, createSignal, For, type JSX, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -36,6 +36,7 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { cn } from "@/lib/utils"
 import { InviteMemberDialog } from "./invite-member-dialog"
 import { OrganizationMemberRow } from "./organization-member-row"
 import { OrganizationMemberRowSkeleton } from "./organization-member-row-skeleton"
@@ -58,6 +59,12 @@ type OrganizationMember = {
 
 type RoleMap = Record<string, string>
 type MemberSort = "name" | "email" | "role"
+type SortDirection = "ascending" | "descending"
+
+type SortDescriptor = {
+  column: MemberSort
+  direction: SortDirection
+}
 
 const fallbackLocalization = {
   changeMemberRole: "Change member role",
@@ -102,12 +109,42 @@ const fallbackRoles: RoleMap = {
   member: fallbackLocalization.member
 }
 
+function SortableTableHead(props: {
+  children: JSX.Element
+  onClick: () => void
+  sortDirection?: SortDirection
+}) {
+  return (
+    <TableHead aria-sort={props.sortDirection ?? "none"}>
+      <button
+        class="flex w-full items-center gap-2 text-left font-medium"
+        onClick={props.onClick}
+        type="button"
+      >
+        {props.children}
+        <Show when={props.sortDirection}>
+          <ChevronUp
+            class={cn(
+              "size-3 transition-transform duration-100 ease-out",
+              props.sortDirection === "descending" && "rotate-180"
+            )}
+          />
+        </Show>
+      </button>
+    </TableHead>
+  )
+}
+
 export function OrganizationMembers(props: OrganizationMembersProps) {
   const auth = useAuth()
   const [inviteOpen, setInviteOpen] = createSignal(false)
   const [memberSearch, setMemberSearch] = createSignal("")
   const [memberRoleFilter, setMemberRoleFilter] = createSignal("all")
   const [memberSort, setMemberSort] = createSignal<MemberSort>("name")
+  const [sortDescriptor, setSortDescriptor] = createSignal<SortDescriptor>({
+    column: "name",
+    direction: "ascending"
+  })
   const session = useSession(auth.authClient)
   const members = useListOrganizationMembers(
     auth.authClient as OrganizationAuthClient
@@ -164,30 +201,48 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
     first: OrganizationMember,
     second: OrganizationMember
   ) => {
+    let comparison = 0
+
     if (memberSort() === "role") {
       const firstRole = roles()[first.role ?? ""] ?? first.role ?? ""
       const secondRole = roles()[second.role ?? ""] ?? second.role ?? ""
 
-      return firstRole.localeCompare(secondRole)
+      comparison = firstRole.localeCompare(secondRole)
     }
 
     if (memberSort() === "email") {
       const firstEmail = first.user?.email ?? first.user?.name ?? ""
       const secondEmail = second.user?.email ?? second.user?.name ?? ""
 
-      return firstEmail.localeCompare(secondEmail)
+      comparison = firstEmail.localeCompare(secondEmail)
     }
 
     if (memberSort() === "name") {
       const firstName = first.user?.name ?? first.user?.email ?? ""
       const secondName = second.user?.name ?? second.user?.email ?? ""
 
-      return firstName.localeCompare(secondName)
+      comparison = firstName.localeCompare(secondName)
     }
 
-    return 0
+    return sortDescriptor().direction === "descending"
+      ? comparison * -1
+      : comparison
   }
   const sortedMemberRows = () => [...filteredMemberRows()].sort(sortMembers)
+  const toggleSort = (column: MemberSort) => {
+    setMemberSort(column)
+    setSortDescriptor((current) => {
+      if (current.column !== column) {
+        return { column, direction: "ascending" }
+      }
+
+      return {
+        column,
+        direction:
+          current.direction === "ascending" ? "descending" : "ascending"
+      }
+    })
+  }
   const isOwner = () =>
     memberRows().some(
       (member) =>
@@ -267,28 +322,6 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger as={Button} class="" variant="outline">
-                      <ArrowUpDown class="size-4" />
-                      Sort
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuRadioGroup
-                        onChange={(value) => setMemberSort(value as MemberSort)}
-                        value={memberSort()}
-                      >
-                        <DropdownMenuRadioItem value="name">
-                          Name
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="email">
-                          Email
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="role">
-                          {localization().role}
-                        </DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                   <Show when={memberSearch() || memberRoleFilter() !== "all"}>
                     <Button
                       onClick={() => {
@@ -306,8 +339,36 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
               <Table aria-label="Members">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{localization().member}</TableHead>
-                    <TableHead>{localization().role}</TableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("name")}
+                      sortDirection={
+                        sortDescriptor().column === "name"
+                          ? sortDescriptor().direction
+                          : undefined
+                      }
+                    >
+                      {localization().member}
+                    </SortableTableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("email")}
+                      sortDirection={
+                        sortDescriptor().column === "email"
+                          ? sortDescriptor().direction
+                          : undefined
+                      }
+                    >
+                      Email
+                    </SortableTableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("role")}
+                      sortDirection={
+                        sortDescriptor().column === "role"
+                          ? sortDescriptor().direction
+                          : undefined
+                      }
+                    >
+                      {localization().role}
+                    </SortableTableHead>
                     <TableHead class="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -318,7 +379,7 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
                       <TableRow>
                         <TableCell
                           class="text-muted-foreground text-sm"
-                          colSpan={3}
+                          colSpan={4}
                         >
                           No members match the current filters.
                         </TableCell>

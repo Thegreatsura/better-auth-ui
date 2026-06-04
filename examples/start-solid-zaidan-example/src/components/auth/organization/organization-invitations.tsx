@@ -1,8 +1,8 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useListOrganizationInvitations } from "@better-auth-ui/solid"
-import { ArrowUpDown, Filter, Search } from "lucide-solid"
-import { createMemo, createSignal, For, Show } from "solid-js"
+import { ChevronUp, Filter, Search } from "lucide-solid"
+import { createMemo, createSignal, For, type JSX, Show } from "solid-js"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -32,6 +32,7 @@ import {
   TableRow
 } from "@/components/ui/table"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { cn } from "@/lib/utils"
 import { OrganizationInvitationRow } from "./organization-invitation-row"
 import { OrganizationInvitationRowSkeleton } from "./organization-invitation-row-skeleton"
 import { OrganizationInvitationsEmpty } from "./organization-invitations-empty"
@@ -42,6 +43,13 @@ export type OrganizationInvitationsProps = {
 
 type RoleMap = Record<string, string>
 type InvitationSort = "none" | "email" | "createdAt" | "role" | "status"
+type InvitationSortColumn = Exclude<InvitationSort, "none">
+type SortDirection = "ascending" | "descending"
+
+type SortDescriptor = {
+  column: InvitationSortColumn
+  direction: SortDirection
+}
 
 const fallbackLocalization = {
   search: "Search...",
@@ -99,6 +107,32 @@ function formatStatus(status?: string | null) {
   return status.charAt(0).toUpperCase() + status.slice(1)
 }
 
+function SortableTableHead(props: {
+  children: JSX.Element
+  onClick: () => void
+  sortDirection?: SortDirection
+}) {
+  return (
+    <TableHead aria-sort={props.sortDirection ?? "none"}>
+      <button
+        class="flex w-full items-center gap-2 text-left font-medium"
+        onClick={props.onClick}
+        type="button"
+      >
+        {props.children}
+        <Show when={props.sortDirection}>
+          <ChevronUp
+            class={cn(
+              "size-3 transition-transform duration-100 ease-out",
+              props.sortDirection === "descending" && "rotate-180"
+            )}
+          />
+        </Show>
+      </button>
+    </TableHead>
+  )
+}
+
 export function OrganizationInvitations(props: OrganizationInvitationsProps) {
   const auth = useAuth()
   const [invitationSearch, setInvitationSearch] = createSignal("")
@@ -107,6 +141,9 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
     createSignal("all")
   const [invitationSort, setInvitationSort] =
     createSignal<InvitationSort>("none")
+  const [sortDescriptor, setSortDescriptor] = createSignal<
+    SortDescriptor | undefined
+  >()
   const invitations = useListOrganizationInvitations(
     auth.authClient as OrganizationAuthClient
   )
@@ -172,31 +209,49 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
     first: OrganizationInvitation,
     second: OrganizationInvitation
   ) => {
+    let comparison = 0
+
     if (invitationSort() === "email") {
-      return (first.email ?? "").localeCompare(second.email ?? "")
+      comparison = (first.email ?? "").localeCompare(second.email ?? "")
     }
 
     if (invitationSort() === "createdAt") {
-      return invitationDateTime(first) - invitationDateTime(second)
+      comparison = invitationDateTime(first) - invitationDateTime(second)
     }
 
     if (invitationSort() === "role") {
       const firstRole = roles()[first.role ?? ""] ?? first.role ?? ""
       const secondRole = roles()[second.role ?? ""] ?? second.role ?? ""
 
-      return firstRole.localeCompare(secondRole)
+      comparison = firstRole.localeCompare(secondRole)
     }
 
     if (invitationSort() === "status") {
-      return formatStatus(first.status).localeCompare(
+      comparison = formatStatus(first.status).localeCompare(
         formatStatus(second.status)
       )
     }
 
-    return 0
+    return sortDescriptor()?.direction === "descending"
+      ? comparison * -1
+      : comparison
   }
   const sortedInvitationRows = () =>
     [...filteredInvitationRows()].sort(sortInvitations)
+  const toggleSort = (column: InvitationSortColumn) => {
+    setInvitationSort(column)
+    setSortDescriptor((current) => {
+      if (current?.column !== column) {
+        return { column, direction: "ascending" }
+      }
+
+      return {
+        column,
+        direction:
+          current.direction === "ascending" ? "descending" : "ascending"
+      }
+    })
+  }
 
   return (
     <Card class={props.class}>
@@ -294,36 +349,6 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger as={Button} class="" variant="outline">
-                      <ArrowUpDown class="size-4" />
-                      Sort
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuRadioGroup
-                        onChange={(value) =>
-                          setInvitationSort(value as InvitationSort)
-                        }
-                        value={invitationSort()}
-                      >
-                        <DropdownMenuRadioItem value="none">
-                          {localization().all}
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="email">
-                          Email
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="createdAt">
-                          Invited
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="role">
-                          {localization().role}
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="status">
-                          {localization().status}
-                        </DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                   <Show
                     when={
                       invitationSearch() ||
@@ -348,10 +373,46 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
               <Table aria-label="Invitations">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Invited</TableHead>
-                    <TableHead>{localization().role}</TableHead>
-                    <TableHead>{localization().status}</TableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("email")}
+                      sortDirection={
+                        sortDescriptor()?.column === "email"
+                          ? sortDescriptor()?.direction
+                          : undefined
+                      }
+                    >
+                      Email
+                    </SortableTableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("createdAt")}
+                      sortDirection={
+                        sortDescriptor()?.column === "createdAt"
+                          ? sortDescriptor()?.direction
+                          : undefined
+                      }
+                    >
+                      Invited
+                    </SortableTableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("role")}
+                      sortDirection={
+                        sortDescriptor()?.column === "role"
+                          ? sortDescriptor()?.direction
+                          : undefined
+                      }
+                    >
+                      {localization().role}
+                    </SortableTableHead>
+                    <SortableTableHead
+                      onClick={() => toggleSort("status")}
+                      sortDirection={
+                        sortDescriptor()?.column === "status"
+                          ? sortDescriptor()?.direction
+                          : undefined
+                      }
+                    >
+                      {localization().status}
+                    </SortableTableHead>
                     <TableHead class="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>

@@ -14,6 +14,9 @@ export function OrganizationMemberRowSkeleton() {
         </div>
       </TableCell>
       <TableCell>
+        <Skeleton class="h-4 w-40 rounded-md" />
+      </TableCell>
+      <TableCell>
         <Skeleton class="h-6 w-16 rounded-md" />
       </TableCell>
       <TableCell class="text-right">
