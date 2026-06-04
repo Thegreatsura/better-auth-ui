@@ -19,7 +19,7 @@ export type OrganizationLogoProps = {
 const sizeClass: Record<OrganizationLogoSize, string> = {
   sm: "size-8",
   md: "size-10",
-  lg: "size-16"
+  lg: "size-20"
 }
 
 function getInitials(name?: string | null) {

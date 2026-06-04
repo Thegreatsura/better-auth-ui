@@ -76,7 +76,7 @@ export function OrganizationProfile(props: OrganizationProfileProps) {
       <Card>
         <CardContent>
           <form class="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <ChangeOrganizationLogo />
+            <ChangeOrganizationLogo class="-ml-1 grid gap-2" />
 
             <Show
               when={activeOrganization.data}

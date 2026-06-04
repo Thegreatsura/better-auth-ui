@@ -2865,7 +2865,7 @@ describe("Solid auth route component selection", () => {
     expect(organizationLogo).toContain("OrganizationLogoSize")
     expect(organizationLogo).toContain("organization?.logo?.trim()")
     expect(organizationLogo).toContain("Skeleton")
-    expect(organizationLogo).toContain('lg: "size-16"')
+    expect(organizationLogo).toContain('lg: "size-20"')
     expect(organizationLogo).toContain("rounded-full")
     expect(organizationDangerZone).toContain("OrganizationDangerZoneProps")
     expect(organizationDangerZone).toContain("dangerZone")
