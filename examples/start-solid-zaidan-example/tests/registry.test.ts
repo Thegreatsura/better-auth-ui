@@ -2636,6 +2636,9 @@ describe("Solid registry isolation", () => {
       'storyId="zaidan-plugins-organization--organization-preview"'
     )
     expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organization-settings-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
       'storyId="zaidan-plugins-organization--organizations-settings-preview"'
     )
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
