@@ -1,7 +1,6 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useHasPermission } from "@better-auth-ui/solid"
-import type { ComponentProps } from "solid-js"
 import { Show } from "solid-js"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -11,7 +10,9 @@ import { cn } from "@/lib/utils"
 import { DeleteOrganization } from "./delete-organization"
 import { LeaveOrganization } from "./leave-organization"
 
-export type OrganizationDangerZoneProps = ComponentProps<"div">
+export type OrganizationDangerZoneProps = {
+  class?: string
+}
 
 const fallbackLocalization = {
   deleteOrganization: "Delete organization",
@@ -58,7 +59,7 @@ export function OrganizationDangerZone(props: OrganizationDangerZoneProps) {
     organizationPluginConfig()?.localization ?? fallbackLocalization
 
   return (
-    <div class={cn("flex w-full flex-col", props.class)} {...props}>
+    <div class={cn("flex w-full flex-col", props.class)}>
       <h2 class="mb-3 font-semibold text-destructive text-sm">
         {auth.localization.settings.dangerZone}
       </h2>
