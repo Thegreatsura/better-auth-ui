@@ -2639,6 +2639,9 @@ describe("Solid registry isolation", () => {
       'storyId="zaidan-plugins-organization--organization-settings-preview"'
     )
     expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organization-profile-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
       'storyId="zaidan-plugins-organization--organizations-settings-preview"'
     )
     expect(organizationPluginDoc).toContain(
@@ -2651,8 +2654,12 @@ describe("Solid registry isolation", () => {
       "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-settings.tsx"
     )
     expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-profile.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
       "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organizations-settings.tsx"
     )
+    expect(organizationPluginDoc).toContain('name="OrganizationProfileProps"')
     expect(organizationPluginDoc).toContain('name="OrganizationsSettingsProps"')
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
     expect(organizationPluginDoc).toContain(
