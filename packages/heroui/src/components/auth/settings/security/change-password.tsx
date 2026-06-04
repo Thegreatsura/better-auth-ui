@@ -1,6 +1,7 @@
 import {
   useAuth,
   useChangePassword,
+  useFetchOptions,
   useListAccounts,
   useRequestPasswordReset,
   useSession
@@ -73,19 +74,27 @@ function SetPassword({
   variant,
   ...props
 }: Omit<CardProps, "children">) {
-  const { authClient, localization } = useAuth()
+  const { authClient, localization, plugins } = useAuth()
   const { data: session } = useSession(authClient)
+  const { fetchOptions, resetFetchOptions } = useFetchOptions()
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
     {
+      onError: () => {
+        resetFetchOptions()
+      },
       onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
     }
   )
 
+  const Captcha = plugins.find(
+    (plugin) => plugin.captchaComponent
+  )?.captchaComponent
+
   const handleSetPassword = () => {
     if (!session?.user.email) return
-    requestPasswordReset({ email: session.user.email })
+    requestPasswordReset({ email: session.user.email, fetchOptions })
   }
 
   return (
@@ -106,15 +115,19 @@ function SetPassword({
             </p>
           </div>
 
-          <Button
-            size="sm"
-            isPending={isPending}
-            isDisabled={!session}
-            onPress={handleSetPassword}
-          >
-            {isPending && <Spinner color="current" size="sm" />}
-            {localization.auth.sendResetLink}
-          </Button>
+          <div className="flex flex-col gap-3 items-start sm:items-end">
+            {Captcha && <div>{Captcha}</div>}
+
+            <Button
+              size="sm"
+              isPending={isPending}
+              isDisabled={!session?.user.email}
+              onPress={handleSetPassword}
+            >
+              {isPending && <Spinner color="current" size="sm" />}
+              {localization.auth.sendResetLink}
+            </Button>
+          </div>
         </Card.Content>
       </Card>
     </div>
