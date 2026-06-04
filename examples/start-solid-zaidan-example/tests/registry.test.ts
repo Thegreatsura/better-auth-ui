@@ -2642,16 +2642,16 @@ describe("Solid registry isolation", () => {
       'storyId="zaidan-plugins-organization--organizations-settings-preview"'
     )
     expect(organizationPluginDoc).toContain(
-      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-switcher.tsx"
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-switcher.tsx"
     )
     expect(organizationPluginDoc).toContain(
-      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization.tsx"
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization.tsx"
     )
     expect(organizationPluginDoc).toContain(
-      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-settings.tsx"
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-settings.tsx"
     )
     expect(organizationPluginDoc).toContain(
-      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organizations-settings.tsx"
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organizations-settings.tsx"
     )
     expect(organizationPluginDoc).toContain('name="OrganizationsSettingsProps"')
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
