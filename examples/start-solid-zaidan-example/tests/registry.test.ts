@@ -2600,14 +2600,39 @@ describe("Solid registry isolation", () => {
       "utf8"
     )
 
+    expect(organizationPluginDoc).toContain("## Setup")
+    expect(organizationPluginDoc).toContain("### Install the server plugin")
+    expect(organizationPluginDoc).toContain(
+      "### Install the matching client plugin"
+    )
+    expect(organizationPluginDoc).toContain("### Install the UI plugin")
+    expect(organizationPluginDoc).toContain("### Register the UI plugin")
+    expect(organizationPluginDoc).toContain(
+      "### Mount the organization switcher"
+    )
+    expect(organizationPluginDoc).toContain(
+      "### Allow the `organizations` settings path"
+    )
+    expect(organizationPluginDoc).toContain("### Create the organization page")
+    expect(organizationPluginDoc).toContain("## Slug-based routes")
+    expect(organizationPluginDoc).toContain(
+      "### Customize where the switcher navigates"
+    )
+    expect(organizationPluginDoc).toContain("## Options")
+    expect(organizationPluginDoc).toContain("## Localization")
+    expect(organizationPluginDoc).toContain("## Solid Hooks")
+    expect(organizationPluginDoc).toContain("### Queries")
+    expect(organizationPluginDoc).toContain("### Mutations")
+    expect(organizationPluginDoc).toContain("## Components")
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
     expect(organizationPluginDoc).toContain("organizationPlugin({ slug")
     expect(organizationPluginDoc).toContain("/organization/$slug/$path")
-    expect(organizationPluginDoc).toContain("non-slug routes pass `null`")
+    expect(organizationPluginDoc).toContain("non-slug page")
+    expect(organizationPluginDoc).toContain("`null`")
     expect(organizationPluginDoc).toContain("Deferred UI parity")
     expect(organizationPluginDoc).toContain("members")
     expect(organizationPluginDoc).toContain("invitations")
-    expect(organizationPluginDoc).toContain("profile/settings")
+    expect(organizationPluginDoc).toContain("profile/delete")
     expect(organizationPluginDoc).toContain("organization-profile.tsx")
     expect(organizationPluginDoc).toContain("change-organization-logo.tsx")
     expect(organizationPluginDoc).toContain("organization-people.tsx")
