@@ -2641,6 +2641,19 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain(
       'storyId="zaidan-plugins-organization--organizations-settings-preview"'
     )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-switcher.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-settings.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/auth/organization/organizations-settings.tsx"
+    )
+    expect(organizationPluginDoc).toContain('name="OrganizationsSettingsProps"')
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
     expect(organizationPluginDoc).toContain(
       'Show keyed when={organizationSlug() ?? "personal"}'
