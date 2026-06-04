@@ -57,6 +57,75 @@ const organizations = [
   }
 ] satisfies Organization[]
 
+const activeOrganization = organizations[0]
+
+const organizationMembers = [
+  {
+    id: "member_docs_ada",
+    organizationId: "org_acme_docs",
+    role: "owner",
+    user: {
+      email: "ada@example.com",
+      image: null,
+      name: "Ada Lovelace"
+    },
+    userId
+  },
+  {
+    id: "member_docs_grace",
+    organizationId: "org_acme_docs",
+    role: "admin",
+    user: {
+      email: "grace@example.com",
+      image: null,
+      name: "Grace Hopper"
+    },
+    userId: "user_grace_docs"
+  },
+  {
+    id: "member_docs_katherine",
+    organizationId: "org_acme_docs",
+    role: "member",
+    user: {
+      email: "katherine@example.com",
+      image: null,
+      name: "Katherine Johnson"
+    },
+    userId: "user_katherine_docs"
+  }
+]
+
+const northwindMembers = [
+  {
+    id: "member_docs_ada_northwind",
+    organizationId: "org_northwind_docs",
+    role: "admin",
+    user: {
+      email: "ada@example.com",
+      image: null,
+      name: "Ada Lovelace"
+    },
+    userId
+  }
+]
+
+const organizationInvitations = [
+  {
+    createdAt: new Date("2026-01-09T10:00:00Z"),
+    email: "grace@example.com",
+    id: "invitation_docs_grace",
+    role: "admin",
+    status: "pending"
+  },
+  {
+    createdAt: new Date("2026-01-10T12:30:00Z"),
+    email: "alan@example.com",
+    id: "invitation_docs_alan",
+    role: "member",
+    status: "pending"
+  }
+]
+
 const userInvitations = [
   {
     createdAt: new Date("2026-01-08T14:15:00Z"),
@@ -70,12 +139,28 @@ const mockAuthClient = {
   getSession: async () => sessionData,
   organization: {
     acceptInvitation: async () => null,
-    create: async () => organizations[0],
-    getFullOrganization: async () => organizations[0],
+    cancelInvitation: async () => null,
+    checkSlug: async () => ({ status: true }),
+    create: async () => activeOrganization,
+    delete: async () => null,
+    getFullOrganization: async () => activeOrganization,
+    hasPermission: async () => ({ success: true }),
+    inviteMember: async () => null,
+    leave: async () => null,
     list: async () => organizations,
+    listInvitations: async () => organizationInvitations,
+    listMembers: async (params?: { query?: { organizationId?: string } }) => ({
+      members:
+        params?.query?.organizationId === "org_northwind_docs"
+          ? northwindMembers
+          : organizationMembers
+    }),
     listUserInvitations: async () => userInvitations,
     rejectInvitation: async () => null,
-    setActive: async () => null
+    removeMember: async () => null,
+    setActive: async () => null,
+    update: async () => activeOrganization,
+    updateMemberRole: async () => null
   }
 } as unknown as OrganizationAuthClient
 
@@ -94,7 +179,53 @@ function createStoryQueryClient() {
     organizationQueryKeys.activeOrganization(userId, {
       organizationSlug: "acme"
     }),
-    organizations[0]
+    activeOrganization
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.members.list(userId, {
+      organizationId: "org_acme_docs"
+    }),
+    { members: organizationMembers }
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.members.list(userId, {
+      organizationId: "org_northwind_docs"
+    }),
+    { members: northwindMembers }
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.invitations.list(userId, {
+      organizationId: "org_acme_docs"
+    }),
+    organizationInvitations
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.permissions.has(userId, {
+      organizationId: "org_acme_docs",
+      permissions: { member: ["update"] }
+    }),
+    { success: true }
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.permissions.has(userId, {
+      organizationId: "org_acme_docs",
+      permissions: { member: ["delete"] }
+    }),
+    { success: true }
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.permissions.has(userId, {
+      organizationId: "org_acme_docs",
+      permissions: { invitation: ["cancel"] }
+    }),
+    { success: true }
+  )
+  queryClient.setQueryData(
+    organizationQueryKeys.permissions.has(userId, {
+      organizationId: "org_acme_docs",
+      permissions: { organization: ["delete"] }
+    }),
+    { success: true }
   )
   queryClient.setQueryData(
     organizationQueryKeys.userInvitations.list(userId),
