@@ -1,4 +1,4 @@
-import { deleteUserPlugin, usernamePlugin } from "@better-auth-ui/core/plugins"
+import { deleteUserPlugin } from "@better-auth-ui/core/plugins"
 import type { QueryClient } from "@tanstack/solid-query"
 import { useNavigate, useParams } from "@tanstack/solid-router"
 import type { JSX } from "solid-js"
@@ -9,6 +9,7 @@ import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { themePlugin } from "@/lib/auth/theme-plugin"
+import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
 import { syncDocumentThemePreference } from "@/lib/theme"
 

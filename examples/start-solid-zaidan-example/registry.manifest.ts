@@ -164,8 +164,9 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid Username",
       description:
-        "Solid username sign-in form and username availability field.",
+        "Solid username UI plugin, sign-in form, and username availability field.",
       files: [
+        libFile("src/lib/auth/username-plugin.ts"),
         componentFile("src/components/auth/username/sign-in-username.tsx"),
         componentFile("src/components/auth/username/username-field.tsx"),
         componentFile("src/components/auth/sign-in-path.ts"),

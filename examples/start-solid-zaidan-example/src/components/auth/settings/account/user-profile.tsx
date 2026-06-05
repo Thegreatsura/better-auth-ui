@@ -14,10 +14,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
-const getUsername = (session: ReturnType<typeof useSession>) =>
-  (session.data?.user as { username?: string | null } | undefined)?.username ??
-  ""
-
 export type UserProfileProps = {
   class?: string
 }
@@ -31,7 +27,6 @@ export function UserProfile(props: UserProfileProps = {}) {
     onSuccess: () =>
       toast.success(auth.localization.settings.profileUpdatedSuccess)
   }))
-  const username = () => getUsername(session)
   const isProfilePending = () => updateUser.isPending
 
   const profileFields = () =>
@@ -42,7 +37,6 @@ export function UserProfile(props: UserProfileProps = {}) {
 
     const formData = new FormData(event.currentTarget as HTMLFormElement)
     const name = String(formData.get("name") ?? "")
-    const usernameValue = String(formData.get("username") ?? "")
     const additionalFieldValues: Record<string, unknown> = {}
 
     for (const field of auth.additionalFields ?? []) {
@@ -69,14 +63,15 @@ export function UserProfile(props: UserProfileProps = {}) {
 
     updateUser.mutate({
       name,
-      ...(username() ? { username: usernameValue } : {}),
       ...additionalFieldValues
     } as Parameters<typeof updateUser.mutate>[0])
   }
 
   return (
     <div class={cn(props.class)}>
-      <h2 class="mb-3 text-sm font-semibold">Profile</h2>
+      <h2 class="mb-3 text-sm font-semibold">
+        {auth.localization.settings.userProfile}
+      </h2>
       <form aria-label="Profile" onSubmit={submitProfile}>
         <Card>
           <CardContent class="flex flex-col gap-6">
@@ -93,18 +88,6 @@ export function UserProfile(props: UserProfileProps = {}) {
                 placeholder={auth.localization.auth.name}
                 required
                 value={name() || (session.data?.user.name ?? "")}
-              />
-            </div>
-
-            <div class="grid gap-2">
-              <Label for="settings-username">Username</Label>
-              <Input
-                autocomplete="username"
-                disabled={isProfilePending() || !username()}
-                id="settings-username"
-                name="username"
-                placeholder="Username"
-                value={username()}
               />
             </div>
 

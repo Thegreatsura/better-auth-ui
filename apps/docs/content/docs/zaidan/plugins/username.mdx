@@ -1,27 +1,122 @@
 ---
 title: Username
-description: Install the Solid username auth UI registry entry.
+description: Add username-based sign-in and real-time availability checking to your Solid/Zaidan authentication flow.
 ---
 
-The username components installs username-aware sign-in and username field pieces from `/r/solid/username.json`.
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The username plugin adds username-based authentication to your auth UI. Users can sign in with a username instead of an email address, and optionally check username availability during sign-up and profile updates.
+
+It contributes:
+
+- A `<SignInUsername />` view that accepts both username and email, routing to the appropriate sign-in method
+- A `<UsernameField />` renderer for the username additional field with real-time availability checking
+- Solid username availability and username sign-in mutations through the Better Auth client
+- Automatic username field injection into sign-up and user profile forms
+
+## Setup
+
+The username plugin requires the Better Auth server plugin, the matching client plugin, and the copied Zaidan UI plugin wrapper.
+
+<Steps>
+<Step>
+### Install the Better Auth plugin
+
+Install the [`better-auth`](https://www.better-auth.com/docs/plugins/username) server plugin and add it to your Better Auth config:
+
+```ts title="src/lib/auth.ts"
+import { betterAuth } from "better-auth"
+import { username } from "better-auth/plugins" // [!code highlight]
+
+export const auth = betterAuth({
+  // ...
+  plugins: [
+    username() // [!code highlight]
+  ]
+})
+```
+
+</Step>
+<Step>
+### Install the matching client plugin
+
+Add `usernameClient()` to your auth client so `authClient.signIn.username` and `authClient.username.*` are available:
+
+```ts title="src/lib/auth-client.ts"
+import { createAuthClient } from "better-auth/solid"
+import { usernameClient } from "better-auth/client/plugins" // [!code highlight]
+
+export const authClient = createAuthClient({
+  plugins: [usernameClient()] // [!code highlight]
+})
+```
+
+</Step>
+<Step>
+### Register the UI plugin
+
+Run the Zaidan CLI to install the Username UI plugin wrapper and copied Solid components:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/username.json
 ```
 
-Configure `username()` and `usernameClient()` in your Better Auth setup, then use [Solid runtime APIs](/docs/solid) for query and mutation boundaries.
+Then pass `usernamePlugin()` to `<AuthProvider>`:
 
-## Runtime prerequisites
+```tsx title="src/components/providers.tsx"
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { usernamePlugin } from "@/lib/auth/username-plugin" // [!code highlight]
+import { authClient } from "@/lib/auth-client"
 
-- Server: `username()` from `better-auth/plugins`.
-- Client: `usernameClient()` from `better-auth/client/plugins`.
-- Runtime API: `signInUsernameOptions` and username availability helpers from `@better-auth-ui/solid`.
+export function Providers(props: { children?: JSX.Element }) {
+  return (
+    <AuthProvider
+      authClient={authClient}
+      plugins={[
+        usernamePlugin() // [!code highlight]
+      ]}
+    >
+      {props.children}
+    </AuthProvider>
+  )
+}
+```
 
-## Copied files
+</Step>
+</Steps>
 
-- `src/components/auth/username/sign-in-username.tsx`
-- `src/components/auth/username/username-field.tsx`
-- `src/components/auth/sign-in-path.ts`
-- Local form UI primitives under `src/components/ui/**`
+## Components
 
-After install, customize labels, routing, and validation copy in your app.
+These previews use mocked auth clients and do not call live Better Auth endpoints.
+
+### `<SignIn />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-username--sign-in-preview"
+  title="Zaidan Username Sign In preview"
+  height={390}
+/>
+
+### `<SignUp />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-username--sign-up-preview"
+  title="Zaidan Username Sign Up preview"
+  height={560}
+/>
+
+### `<UserProfile />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-username--user-profile-preview"
+  title="Zaidan Username User Profile preview"
+  height={520}
+/>
+
+## Options
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/username/username-plugin.ts" name="UsernamePluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/username/username-localization.ts" name="UsernameLocalization" />

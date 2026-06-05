@@ -1,9 +1,5 @@
 import { authQueryKeys, parseAdditionalFieldValue } from "@better-auth-ui/core"
 import {
-  type UsernameLocalization,
-  usernameLocalization
-} from "@better-auth-ui/core/plugins"
-import {
   signUpEmailOptions,
   useAuth,
   useFetchOptions
@@ -36,8 +32,6 @@ export function SignUp(props: SignUpProps) {
   const [emailError, setEmailError] = createSignal<string>()
   const [name, setName] = createSignal("")
   const [nameError, setNameError] = createSignal<string>()
-  const [username, setUsername] = createSignal("")
-  const [usernameError, setUsernameError] = createSignal<string>()
   const [password, setPassword] = createSignal("")
   const [passwordError, setPasswordError] = createSignal<string>()
   const [confirmPassword, setConfirmPassword] = createSignal("")
@@ -62,14 +56,6 @@ export function SignUp(props: SignUpProps) {
       auth.navigate({ to: auth.redirectTo })
     }
   }))
-  const usernamePlugin = auth.plugins.find((plugin) => plugin.id === "username")
-  const usernameAuth = Boolean(usernamePlugin)
-  const usernameLabels: UsernameLocalization = {
-    ...usernameLocalization,
-    ...(usernamePlugin?.localization as
-      | Partial<UsernameLocalization>
-      | undefined)
-  }
   const captchaComponent = () =>
     (auth.plugins as AuthPlugin[]).find((plugin) => plugin.captchaComponent)
       ?.captchaComponent
@@ -127,7 +113,6 @@ export function SignUp(props: SignUpProps) {
       fetchOptions: fetchOptions(),
       name: name(),
       password: password(),
-      ...(usernameAuth ? { username: username() } : {}),
       ...additionalFieldValues
     } as Parameters<typeof signUp.mutate>[0])
   }
@@ -177,37 +162,6 @@ export function SignUp(props: SignUpProps) {
                 />
 
                 <Show when={nameError()}>
-                  {(message) => (
-                    <p class="text-sm text-destructive" role="alert">
-                      {message()}
-                    </p>
-                  )}
-                </Show>
-              </div>
-            </Show>
-            <Show when={usernameAuth}>
-              <div class="grid gap-3">
-                <Label for="sign-up-username">{usernameLabels.username}</Label>
-                <Input
-                  aria-invalid={Boolean(usernameError())}
-                  autocomplete="username"
-                  id="sign-up-username"
-                  name="username"
-                  onInput={(event) => {
-                    setUsername(event.currentTarget.value)
-                    setUsernameError(undefined)
-                  }}
-                  onInvalid={(event) => {
-                    event.preventDefault()
-                    setUsernameError(event.currentTarget.validationMessage)
-                  }}
-                  placeholder={usernameLabels.usernamePlaceholder}
-                  required
-                  type="text"
-                  value={username()}
-                />
-
-                <Show when={usernameError()}>
                   {(message) => (
                     <p class="text-sm text-destructive" role="alert">
                       {message()}

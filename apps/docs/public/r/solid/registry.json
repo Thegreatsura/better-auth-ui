@@ -270,7 +270,7 @@
       "name": "username",
       "type": "registry:component",
       "title": "Solid Username",
-      "description": "Solid username sign-in form and username availability field.",
+      "description": "Solid username UI plugin, sign-in form, and username availability field.",
       "dependencies": [
         "@better-auth-ui/solid@latest",
         "@better-auth-ui/core@latest",
@@ -288,6 +288,10 @@
         "solid/auth-provider"
       ],
       "files": [
+        {
+          "path": "src/lib/auth/username-plugin.ts",
+          "type": "registry:lib"
+        },
         {
           "path": "src/components/auth/username/sign-in-username.tsx",
           "type": "registry:component"

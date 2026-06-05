@@ -856,7 +856,9 @@ describe("Solid registry isolation", () => {
     expect(signUp).toContain(
       "placeholder={auth.localization.auth.namePlaceholder}"
     )
-    expect(signUp).toContain("usernamePlaceholder")
+    expect(signUp).toContain("signUpFieldsAbove")
+    expect(signUp).toContain("signUpFieldsBelow")
+    expect(signUp).toContain("parseAdditionalFieldValue")
     expect(signUp).toContain(
       "placeholder={auth.localization.auth.emailPlaceholder}"
     )
@@ -1104,9 +1106,10 @@ describe("Solid registry isolation", () => {
       'autocomplete={usernameAuth ? "username" : "email"}'
     )
 
-    expect(signUp).toContain("usernamePlaceholder")
-    expect(signUp).toContain('name="username"')
-    expect(signUp).toContain("username: username()")
+    expect(signUp).toContain("parseAdditionalFieldValue")
+    expect(signUp).toContain("additionalFieldValues")
+    expect(signUp).not.toContain('name="username"')
+    expect(signUp).not.toContain("username: username()")
   })
 
   it("uses a root user trigger surface instead of rendering the sign-in form directly", () => {
@@ -2419,7 +2422,8 @@ describe("Solid registry isolation", () => {
         name === "delete-user" ||
         name === "magic-link" ||
         name === "multi-session" ||
-        name === "theme"
+        name === "theme" ||
+        name === "username"
       ) {
         expect(page, `${name} should keep setup-driven structure`).toContain(
           "## Setup"
@@ -2433,7 +2437,7 @@ describe("Solid registry isolation", () => {
         )
       }
 
-      if (name !== "delete-user" && name !== "theme") {
+      if (name !== "delete-user" && name !== "theme" && name !== "username") {
         expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
           "/docs/solid"
         )
