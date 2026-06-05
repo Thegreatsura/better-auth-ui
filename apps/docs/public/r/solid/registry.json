@@ -350,6 +350,10 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/components/auth/passkey/passkey-localization.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/auth/passkey/passkey-button.tsx",
           "type": "registry:component"
         },
@@ -376,6 +380,10 @@
         {
           "path": "src/components/auth/passkey/delete-passkey-dialog.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/spinner.tsx",
+          "type": "registry:ui"
         },
         {
           "path": "src/components/ui/avatar.tsx",

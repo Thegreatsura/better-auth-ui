@@ -2981,7 +2981,69 @@ describe("Solid registry isolation", () => {
       '"path": "src/lib/auth/organization-plugin.tsx"'
     )
 
-    expect(pluginDoc("passkey")).toContain("WebAuthn origin")
+    const passkeyPluginDoc = pluginDoc("passkey")
+    const passkeyStoryPath = resolve(
+      __dirname,
+      "../src/stories/passkey.stories.tsx"
+    )
+    const solidPasskeyRegistry = readFileSync(
+      resolve(__dirname, "../../../apps/docs/public/r/solid/passkey.json"),
+      "utf8"
+    )
+
+    expect(passkeyPluginDoc).toContain("WebAuthn origin")
+    expect(passkeyPluginDoc).toContain("## Setup")
+    expect(passkeyPluginDoc).toContain("## Components")
+    expect(passkeyPluginDoc).toContain("## Options")
+    expect(passkeyPluginDoc).toContain("## Localization")
+    expect(passkeyPluginDoc).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/passkey.json"
+    )
+    expect(passkeyPluginDoc).toContain("passkey()")
+    expect(passkeyPluginDoc).toContain("passkeyClient()")
+    expect(passkeyPluginDoc).toContain("passkeyPlugin()")
+    for (const filePath of [
+      "src/lib/auth/passkey-plugin.ts",
+      "src/components/auth/passkey/passkey-button.tsx",
+      "src/components/auth/passkey/passkeys.tsx",
+      "src/components/auth/passkey/passkey.tsx",
+      "src/components/auth/passkey/passkey-skeleton.tsx",
+      "src/components/auth/passkey/passkeys-empty.tsx",
+      "src/components/auth/passkey/add-passkey-dialog.tsx",
+      "src/components/auth/passkey/delete-passkey-dialog.tsx"
+    ]) {
+      expect(passkeyPluginDoc).toContain(filePath)
+      expect(solidPasskeyRegistry).toContain(filePath)
+    }
+    expect(passkeyPluginDoc).toContain('name="PasskeyButtonProps"')
+    expect(passkeyPluginDoc).toContain('name="PasskeysSettingsProps"')
+    expect(passkeyPluginDoc).toContain('name="PasskeyPluginOptions"')
+    expect(passkeyPluginDoc).toContain('name="PasskeyLocalization"')
+    expect(passkeyPluginDoc).toContain(
+      'storyId="zaidan-plugins-passkey--passkey-sign-in-preview"'
+    )
+    expect(passkeyPluginDoc).toContain(
+      'storyId="zaidan-plugins-passkey--passkeys-preview"'
+    )
+    expect(passkeyPluginDoc).not.toContain("ComponentPreview")
+    expect(passkeyPluginDoc).not.toContain("className")
+    expect(passkeyPluginDoc).not.toContain("better-auth/react")
+    expect(passkeyPluginDoc).not.toContain("@tanstack/react-router")
+    expect(passkeyPluginDoc).not.toContain("payload")
+    expect(existsSync(passkeyStoryPath)).toBe(true)
+    if (existsSync(passkeyStoryPath)) {
+      const passkeyStories = readFileSync(passkeyStoryPath, "utf8")
+
+      expect(passkeyStories).toContain('title: "Zaidan/Plugins/Passkey"')
+      expect(passkeyStories).toContain("export const PasskeySignInPreview")
+      expect(passkeyStories).toContain("export const PasskeysPreview")
+      expect(passkeyStories).toContain("signIn")
+      expect(passkeyStories).toContain("passkey")
+      expect(passkeyStories).toContain("listPasskeys")
+      expect(passkeyStories).toContain("addPasskey")
+      expect(passkeyStories).toContain("deletePasskey")
+      expect(passkeyStories).not.toContain("navigator.credentials")
+    }
     expect(pluginDoc("api-key")).toContain("@better-auth/api-key")
     expect(pluginDoc("captcha")).toContain("captchaPlugin")
     expect(pluginDoc("captcha")).toContain("better-auth/plugins")
@@ -3282,6 +3344,7 @@ describe("Solid registry isolation", () => {
       expect(
         content
           .replaceAll("api-key-skeleton.tsx", "")
+          .replaceAll("passkey-skeleton.tsx", "")
           .replaceAll("user-invitation-row-skeleton.tsx", "")
       ).not.toContain("skeleton")
     }

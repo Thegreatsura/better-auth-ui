@@ -1,4 +1,3 @@
-import { passkeyLocalization } from "@better-auth-ui/core/plugins"
 import {
   listPasskeysOptions,
   type PasskeyAuthClient,
@@ -9,6 +8,7 @@ import { createQuery } from "@tanstack/solid-query"
 import { createSignal, For, Show } from "solid-js"
 import { AddPasskeyDialog } from "@/components/auth/passkey/add-passkey-dialog"
 import { Passkey } from "@/components/auth/passkey/passkey"
+import { passkeyLabels } from "@/components/auth/passkey/passkey-localization"
 import { PasskeySkeleton } from "@/components/auth/passkey/passkey-skeleton"
 import { PasskeysEmpty } from "@/components/auth/passkey/passkeys-empty"
 import { shouldLoadDeviceSessions } from "@/components/auth/settings/shared/helpers"
@@ -17,9 +17,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
 
-export function PasskeysSettings() {
+export type PasskeysSettingsProps = {
+  class?: string
+}
+
+export function PasskeysSettings(props: PasskeysSettingsProps) {
   const auth = useAuth()
+  const labels = () => passkeyLabels(auth)
   const session = useSession(auth.authClient)
   const userId = () => session.data?.user.id
   const [isAddDialogOpen, setIsAddDialogOpen] = createSignal(false)
@@ -33,11 +39,9 @@ export function PasskeysSettings() {
   const items = () => passkeys.data ?? []
 
   return (
-    <div class="flex flex-col gap-3">
+    <div class={cn("flex flex-col gap-3", props.class)}>
       <div class="flex items-end justify-between gap-3">
-        <h2 class="truncate text-sm font-semibold">
-          {passkeyLocalization.passkeys}
-        </h2>
+        <h2 class="truncate text-sm font-semibold">{labels().passkeys}</h2>
         <Dialog open={isAddDialogOpen()} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger
             as={Button}
@@ -45,7 +49,7 @@ export function PasskeysSettings() {
             disabled={passkeys.isPending}
             size="sm"
           >
-            {passkeyLocalization.addPasskey}
+            {labels().addPasskey}
           </DialogTrigger>
           <AddPasskeyDialog
             onOpenChange={setIsAddDialogOpen}
@@ -54,7 +58,7 @@ export function PasskeysSettings() {
         </Dialog>
       </div>
 
-      <Card class="p-0">
+      <Card class="!p-0">
         <CardContent class="p-0">
           <Show when={!passkeys.isPending} fallback={<PasskeySkeleton />}>
             <Show

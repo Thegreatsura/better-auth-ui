@@ -2406,9 +2406,9 @@ describe("Solid auth route component selection", () => {
     expect(passkey).toContain("<DeletePasskeyDialog")
     expect(apiKeys).toContain("apiKeyLocalization.createApiKey")
     expect(apiKeysEmpty).toContain("apiKeyLocalization.noApiKeys")
-    expect(passkeys).toContain("passkeyLocalization.passkeys")
-    expect(passkeys).toContain("passkeyLocalization.addPasskey")
-    expect(passkeysEmpty).toContain("passkeyLocalization.noPasskeys")
+    expect(passkeys).toContain("labels().passkeys")
+    expect(passkeys).toContain("labels().addPasskey")
+    expect(passkeysEmpty).toContain("labels().noPasskeys")
     expect(securitySettings).toContain(
       'from "@/components/auth/delete-user/danger-zone"'
     )
@@ -2526,6 +2526,76 @@ describe("Solid auth route component selection", () => {
     expect(newApiKeyDialog).toContain("apiKeyLocalization.dismissNewKey")
   })
 
+  it("keeps passkey localization, class prop, and pending UX aligned with shadcn parity", () => {
+    const passkeyLocalizationHelperPath = resolve(
+      __dirname,
+      "../src/components/auth/passkey/passkey-localization.ts"
+    )
+    const passkeyFiles = [
+      "passkey-button.tsx",
+      "passkeys.tsx",
+      "passkey.tsx",
+      "passkeys-empty.tsx",
+      "add-passkey-dialog.tsx",
+      "delete-passkey-dialog.tsx"
+    ]
+    const passkeyButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/passkey/passkey-button.tsx"),
+      "utf8"
+    )
+    const passkeys = readFileSync(
+      resolve(__dirname, "../src/components/auth/passkey/passkeys.tsx"),
+      "utf8"
+    )
+    const addPasskeyDialog = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/passkey/add-passkey-dialog.tsx"
+      ),
+      "utf8"
+    )
+    const deletePasskeyDialog = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/passkey/delete-passkey-dialog.tsx"
+      ),
+      "utf8"
+    )
+
+    expect(existsSync(passkeyLocalizationHelperPath)).toBe(true)
+    if (existsSync(passkeyLocalizationHelperPath)) {
+      const passkeyLocalizationHelper = readFileSync(
+        passkeyLocalizationHelperPath,
+        "utf8"
+      )
+
+      expect(passkeyLocalizationHelper).toContain("corePasskeyPlugin.id")
+      expect(passkeyLocalizationHelper).toContain("passkeyLocalization")
+      expect(passkeyLocalizationHelper).toContain("auth.plugins")
+    }
+
+    for (const file of passkeyFiles) {
+      const source = readFileSync(
+        resolve(__dirname, `../src/components/auth/passkey/${file}`),
+        "utf8"
+      )
+
+      expect(source).toContain("passkeyLabels")
+      expect(source).not.toContain("passkeyLocalization.")
+    }
+
+    expect(passkeys).toContain("export type PasskeysSettingsProps")
+    expect(passkeys).toContain("class?: string")
+    expect(passkeys).not.toContain("className")
+    expect(passkeys).toContain('class={cn("flex flex-col gap-3", props.class)}')
+    expect(passkeyButton).toContain("useIsMutating")
+    expect(passkeyButton).toContain("authMutationKeys.signIn.all")
+    expect(passkeyButton).toContain("authMutationKeys.signUp.all")
+    expect(passkeyButton).toContain("Spinner")
+    expect(addPasskeyDialog).toContain("Spinner")
+    expect(deletePasskeyDialog).toContain("Spinner")
+  })
+
   it("wires passkey list, add, and delete dialogs to Solid passkey mutations", () => {
     const settingsComponents = readFileSync(
       resolve(__dirname, "../src/components/auth/settings/settings.tsx"),
@@ -2565,7 +2635,7 @@ describe("Solid auth route component selection", () => {
     expect(securitySettings).toContain(
       'from "@/components/auth/passkey/passkeys"'
     )
-    expect(passkeys).toContain("passkeyLocalization")
+    expect(passkeys).toContain("passkeyLabels")
     const settingsTypes = readFileSync(
       resolve(__dirname, "../src/components/auth/settings/shared/types.ts"),
       "utf8"
@@ -2590,14 +2660,10 @@ describe("Solid auth route component selection", () => {
     )
     expect(deletePasskeyDialog).toContain("deletePasskey.mutate({")
     expect(deletePasskeyDialog).toContain("id: props.passkey.id")
-    expect(passkey).toContain("passkeyLocalization.deletePasskey.replace")
-    expect(deletePasskeyDialog).toContain(
-      "passkeyLocalization.deletePasskeyTitle"
-    )
-    expect(deletePasskeyDialog).toContain(
-      "passkeyLocalization.deletePasskeyWarning"
-    )
-    expect(addPasskeyDialog).toContain("passkeyLocalization.name")
+    expect(passkey).toContain("labels().deletePasskey.replace")
+    expect(deletePasskeyDialog).toContain("labels().deletePasskeyTitle")
+    expect(deletePasskeyDialog).toContain("labels().deletePasskeyWarning")
+    expect(addPasskeyDialog).toContain("labels().name")
     expect(addPasskeyDialog).toContain("auth.localization.settings.optional")
     expect(deletePasskeyDialog).toContain("auth.localization.settings.cancel")
     expect(passkey).toContain("Fingerprint")

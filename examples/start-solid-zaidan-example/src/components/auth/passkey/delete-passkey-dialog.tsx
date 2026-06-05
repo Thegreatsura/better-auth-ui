@@ -1,4 +1,3 @@
-import { passkeyLocalization } from "@better-auth-ui/core/plugins"
 import {
   deletePasskeyOptions,
   type PasskeyAuthClient,
@@ -6,6 +5,7 @@ import {
 } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
 import { Fingerprint } from "lucide-solid"
+import { passkeyLabels } from "@/components/auth/passkey/passkey-localization"
 import type { ListedPasskey } from "@/components/auth/settings/shared/types"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,13 +18,15 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 
 export function DeletePasskeyDialog(props: {
   onOpenChange: (open: boolean) => void
   passkey: ListedPasskey
 }) {
   const auth = useAuth()
-  const passkeyName = () => props.passkey.name || passkeyLocalization.passkey
+  const labels = () => passkeyLabels(auth)
+  const passkeyName = () => props.passkey.name || labels().passkey
   const previewId = () => `delete-passkey-preview-${props.passkey.id}`
   const deletePasskey = createMutation(() => ({
     ...deletePasskeyOptions(auth.authClient as PasskeyAuthClient),
@@ -43,10 +45,8 @@ export function DeletePasskeyDialog(props: {
         <div class="flex size-10 items-center justify-center rounded-md bg-muted">
           <Fingerprint class="size-4.5" />
         </div>
-        <DialogTitle>{passkeyLocalization.deletePasskeyTitle}</DialogTitle>
-        <DialogDescription>
-          {passkeyLocalization.deletePasskeyWarning}
-        </DialogDescription>
+        <DialogTitle>{labels().deletePasskeyTitle}</DialogTitle>
+        <DialogDescription>{labels().deletePasskeyWarning}</DialogDescription>
       </DialogHeader>
 
       <div class="grid gap-2">
@@ -69,9 +69,8 @@ export function DeletePasskeyDialog(props: {
           type="button"
           variant="destructive"
         >
-          {deletePasskey.isPending
-            ? `${passkeyLocalization.deletePasskeyTitle}…`
-            : passkeyLocalization.deletePasskeyTitle}
+          {deletePasskey.isPending ? <Spinner /> : null}
+          {labels().deletePasskeyTitle}
         </Button>
       </DialogFooter>
     </DialogContent>

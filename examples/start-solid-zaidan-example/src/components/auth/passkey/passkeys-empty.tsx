@@ -1,8 +1,12 @@
-import { passkeyLocalization } from "@better-auth-ui/core/plugins"
+import { useAuth } from "@better-auth-ui/solid"
 import { Fingerprint } from "lucide-solid"
+import { passkeyLabels } from "@/components/auth/passkey/passkey-localization"
 import { Button } from "@/components/ui/button"
 
 export function PasskeysEmpty(props: { onAddPress: () => void }) {
+  const auth = useAuth()
+  const labels = () => passkeyLabels(auth)
+
   return (
     <div class="flex flex-col items-center justify-center gap-4 p-6 text-center">
       <div class="flex size-10 items-center justify-center rounded-md bg-muted">
@@ -10,14 +14,14 @@ export function PasskeysEmpty(props: { onAddPress: () => void }) {
       </div>
 
       <div class="flex flex-col items-center justify-center gap-1">
-        <p class="font-semibold text-sm">{passkeyLocalization.noPasskeys}</p>
+        <p class="font-semibold text-sm">{labels().noPasskeys}</p>
         <p class="text-muted-foreground text-xs">
-          {passkeyLocalization.passkeysDescription}
+          {labels().passkeysDescription}
         </p>
       </div>
 
       <Button onClick={props.onAddPress} size="sm" type="button">
-        {passkeyLocalization.addPasskey}
+        {labels().addPasskey}
       </Button>
     </div>
   )

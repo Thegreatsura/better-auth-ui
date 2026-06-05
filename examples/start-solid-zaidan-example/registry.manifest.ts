@@ -180,6 +180,7 @@ export const solidRegistryManifest = {
       dependencies: [...solidAuthDependencies, "@better-auth/passkey"],
       files: [
         libFile("src/lib/auth/passkey-plugin.ts"),
+        componentFile("src/components/auth/passkey/passkey-localization.ts"),
         componentFile("src/components/auth/passkey/passkey-button.tsx"),
         componentFile("src/components/auth/passkey/passkeys.tsx"),
         componentFile("src/components/auth/passkey/passkey.tsx"),
@@ -187,6 +188,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/passkey/passkey-skeleton.tsx"),
         componentFile("src/components/auth/passkey/add-passkey-dialog.tsx"),
         componentFile("src/components/auth/passkey/delete-passkey-dialog.tsx"),
+        uiFile("src/components/ui/spinner.tsx"),
         ...zaidanInteractiveUiFiles
       ]
     }),

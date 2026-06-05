@@ -1,16 +1,17 @@
-import { passkeyLocalization } from "@better-auth-ui/core/plugins"
 import { useAuth } from "@better-auth-ui/solid"
 import { Fingerprint, X } from "lucide-solid"
 import { createSignal } from "solid-js"
 import { DeletePasskeyDialog } from "@/components/auth/passkey/delete-passkey-dialog"
+import { passkeyLabels } from "@/components/auth/passkey/passkey-localization"
 import type { ListedPasskey } from "@/components/auth/settings/shared/types"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 export function Passkey(props: { passkey: ListedPasskey }) {
   const auth = useAuth()
+  const labels = () => passkeyLabels(auth)
   const [deleteOpen, setDeleteOpen] = createSignal(false)
-  const passkeyName = () => props.passkey.name || passkeyLocalization.passkey
+  const passkeyName = () => props.passkey.name || labels().passkey
 
   return (
     <div class="flex items-center gap-3 p-4 text-sm">
@@ -31,10 +32,7 @@ export function Passkey(props: { passkey: ListedPasskey }) {
       <Dialog open={deleteOpen()} onOpenChange={setDeleteOpen}>
         <DialogTrigger
           as={Button}
-          aria-label={passkeyLocalization.deletePasskey.replace(
-            "{{name}}",
-            passkeyName()
-          )}
+          aria-label={labels().deletePasskey.replace("{{name}}", passkeyName())}
           class="ml-auto shrink-0"
           size="sm"
           variant="outline"

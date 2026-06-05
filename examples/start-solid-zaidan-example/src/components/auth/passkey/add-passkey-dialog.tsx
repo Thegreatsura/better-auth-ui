@@ -1,4 +1,3 @@
-import { passkeyLocalization } from "@better-auth-ui/core/plugins"
 import {
   addPasskeyOptions,
   type PasskeyAuthClient,
@@ -6,6 +5,7 @@ import {
 } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
 import { Fingerprint } from "lucide-solid"
+import { passkeyLabels } from "@/components/auth/passkey/passkey-localization"
 import { Button } from "@/components/ui/button"
 import {
   DialogClose,
@@ -17,12 +17,14 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 
 export function AddPasskeyDialog(props: {
   onOpenChange: (open: boolean) => void
   onPasskeyAdded: () => void
 }) {
   const auth = useAuth()
+  const labels = () => passkeyLabels(auth)
   const addPasskey = createMutation(() => ({
     ...addPasskeyOptions(auth.authClient as PasskeyAuthClient),
     onSuccess: () => {
@@ -49,14 +51,12 @@ export function AddPasskeyDialog(props: {
           <div class="flex size-10 items-center justify-center rounded-md bg-muted">
             <Fingerprint class="size-4.5" />
           </div>
-          <DialogTitle>{passkeyLocalization.addPasskey}</DialogTitle>
-          <DialogDescription>
-            {passkeyLocalization.passkeysDescription}
-          </DialogDescription>
+          <DialogTitle>{labels().addPasskey}</DialogTitle>
+          <DialogDescription>{labels().passkeysDescription}</DialogDescription>
         </DialogHeader>
 
         <div class="grid gap-2">
-          <Label for="passkey-name">{passkeyLocalization.name}</Label>
+          <Label for="passkey-name">{labels().name}</Label>
           <Input
             autofocus
             disabled={addPasskey.isPending}
@@ -76,9 +76,8 @@ export function AddPasskeyDialog(props: {
             {auth.localization.settings.cancel}
           </DialogClose>
           <Button disabled={addPasskey.isPending} type="submit">
-            {addPasskey.isPending
-              ? `${passkeyLocalization.addPasskey}…`
-              : passkeyLocalization.addPasskey}
+            {addPasskey.isPending ? <Spinner /> : null}
+            {labels().addPasskey}
           </Button>
         </DialogFooter>
       </form>
