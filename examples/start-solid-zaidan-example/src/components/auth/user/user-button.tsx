@@ -154,14 +154,14 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
     )
 
   const userLinks = createMemo(() =>
-    props.links?.flatMap((link) => {
-      if (isUserButtonLink(link)) {
-        const visibility = link.visibility ?? "always"
-        if (visibility === "authenticated" && !session.data) return []
-        if (visibility === "unauthenticated" && session.data) return []
-      }
+    props.links?.filter((link) => {
+      if (!isUserButtonLink(link)) return true
 
-      return [renderUserLink(link)]
+      const visibility = link.visibility ?? "always"
+      if (visibility === "authenticated" && !session.data) return false
+      if (visibility === "unauthenticated" && session.data) return false
+
+      return true
     })
   )
   const pluginUserMenuItems = createMemo(() =>
@@ -304,7 +304,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
               when={session.data}
               fallback={
                 <>
-                  {userLinks()}
+                  <For each={userLinks()}>{renderUserLink}</For>
 
                   <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                     <Link
@@ -330,7 +330,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                 </>
               }
             >
-              {userLinks()}
+              <For each={userLinks()}>{renderUserLink}</For>
 
               <Show when={!props.hideSettings}>
                 <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">

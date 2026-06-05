@@ -1,31 +1,44 @@
 ---
 title: <UserButton />
-description: Renders the Solid account trigger with session-aware menu items, settings links, sign out, theme controls, and plugin-contributed user menu items.
+description: Renders the Solid account trigger with session-aware menu items, settings links, sign out, and plugin-contributed user menu items.
 ---
 
 ## Usage
 
-Install `user-button` when you need the signed-in account menu in a Solid route or header. It reads the active session from `AuthProvider`, shows sign-in/sign-up actions when unauthenticated, and renders settings, plugin-contributed user menu items, theme, and sign-out entries when a user is signed in.
+<ZaidanStory
+  storyId="zaidan-components-user--user-button-preview"
+  title="Zaidan UserButton preview"
+  height={260}
+/>
 
-```tsx
-import { UserButton } from "@/components/auth/user/user-button"
-
-export function HeaderActions() {
-  return <UserButton size="icon" align="end" />
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/user/user-button.tsx
 ```
 
-Use the default size when the trigger should show the avatar, user label, and secondary label together.
+## Icon
 
-```tsx
-import { UserButton } from "@/components/auth/user/user-button"
+<ZaidanStory
+  storyId="zaidan-components-user--user-button-icon-preview"
+  title="Zaidan UserButton icon preview"
+  height={260}
+/>
 
-export function AccountMenu() {
-  return <UserButton />
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/user/user-button-icon.tsx
 ```
 
-The menu uses the copied theme item from the Zaidan registry entry and the route paths from your `AuthProvider` config. When a plugin contributes `userMenuItems`, `UserButton` renders them in the authenticated dropdown. With Multi Session enabled, that means the user menu can inject the multi-session submenu without replacing the built-in settings, theme, or sign-out actions.
+## Custom links
+
+Use the `links` prop to add entries above the built-in items. Each entry is either a `{ label, href, icon?, variant?, visibility? }` descriptor or a fully rendered Solid element. `visibility` defaults to `"always"` and accepts `"authenticated" | "unauthenticated" | "always"`. Pass `hideSettings` to remove the built-in Settings link.
+
+<ZaidanStory
+  storyId="zaidan-components-user--user-button-links-preview"
+  title="Zaidan UserButton links preview"
+  height={260}
+/>
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/user/user-button-links.tsx
+```
+
+For interactive items shared across the app, prefer a plugin's `userMenuItems` slot over `links`.
 
 ## Installation
 
@@ -33,20 +46,8 @@ The menu uses the copied theme item from the Zaidan registry entry and the route
 npx zaidan add https://better-auth-ui.com/r/solid/user-button.json
 ```
 
+After install, `src/components/auth/user-button.tsx` and the copied user button files are app-owned. Point auth and settings links at your TanStack Router paths, then decide which plugins should contribute extra authenticated user menu items.
+
 ## Props
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/user/user-button.tsx" name="UserButtonProps" />
-
-### Parity classification
-
-`links` and `hideSettings` are Solid-adapted matches for the shadcn user menu contract. Zaidan exposes the styling hook as Solid `class` to follow local Solid conventions.
-
-## Installed files
-
-- `src/components/auth/user-button.tsx`
-- `src/components/auth/user/user-button.tsx`
-- `src/components/auth/user/user-avatar.tsx`
-- `src/components/auth/user/user-view.tsx`
-- `src/components/auth/theme/theme-toggle-item.tsx`
-
-After install, point the auth and settings links at your TanStack Router paths, then decide whether to keep the icon trigger or the full account row and which plugins should contribute extra authenticated user menu items.

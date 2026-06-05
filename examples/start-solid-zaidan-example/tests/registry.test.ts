@@ -938,9 +938,17 @@ describe("Solid registry isolation", () => {
       userView: readFileSync(resolve(docsRoot, "user-view.mdx"), "utf8")
     }
 
+    const shadcnModelUserDocs = new Set([
+      "userAvatar",
+      "userButton",
+      "userView"
+    ])
+
     for (const [name, content] of Object.entries(pages)) {
       expect(content, name).not.toMatch(/does not expose public props/i)
-      expect(content, name).toContain("Parity classification")
+      if (!shadcnModelUserDocs.has(name)) {
+        expect(content, name).toContain("Parity classification")
+      }
       expect(content, name).toContain("<auto-type-table")
       expect(content, name).not.toContain("| Prop | Type")
     }
@@ -964,11 +972,13 @@ describe("Solid registry isolation", () => {
     expect(pages.userView).toContain('name="UserViewProps"')
 
     for (const [name, content] of Object.entries(pages)) {
-      expect(content, name).toContain("`class`")
+      if (!shadcnModelUserDocs.has(name)) {
+        expect(content, name).toContain("`class`")
+      }
     }
 
-    expect(pages.userAvatar).toContain("intentional-difference")
-    expect(pages.userView).toContain("intentional-difference")
+    expect(pages.userAvatar).not.toContain("intentional-difference")
+    expect(pages.userView).not.toContain("intentional-difference")
   })
 
   it("adds password visibility toggles and inline field feedback parity", () => {
@@ -2055,6 +2065,10 @@ describe("Solid registry isolation", () => {
     expect(zaidanComponentsMeta.pages).toEqual([
       "---Provider---",
       "auth-provider",
+      "---User---",
+      "user-avatar",
+      "user-button",
+      "user-view",
       "---Auth---",
       "auth",
       "sign-in",
@@ -2062,10 +2076,6 @@ describe("Solid registry isolation", () => {
       "forgot-password",
       "reset-password",
       "sign-out",
-      "---User---",
-      "user-button",
-      "user-avatar",
-      "user-view",
       "---Settings---",
       "settings",
       "account-settings",
@@ -3147,9 +3157,9 @@ describe("Solid registry isolation", () => {
     expect(themeDoc).not.toContain('from "react"')
     expect(themeDoc).not.toContain("@tanstack/react-router")
     expect(componentDoc("sign-in")).toContain("username-aware")
-    expect(componentDoc("user-button")).toContain("theme")
     expect(componentDoc("user-button")).toContain("plugin-contributed")
-    expect(componentDoc("user-button")).toContain("multi-session submenu")
+    expect(componentDoc("user-button")).toContain("userMenuItems")
+    expect(componentDoc("user-button")).not.toContain("ThemeToggleItem")
     expect(componentDoc("account-settings")).toContain("plugin-contributed")
     expect(componentDoc("account-settings")).toContain("accountCards")
     expect(componentDoc("security-settings")).toContain("passkey")
@@ -3172,6 +3182,64 @@ describe("Solid registry isolation", () => {
       '```tsx title="src/components/providers.tsx"'
     )
     expect(authProviderDoc).not.toContain("What it copies")
+
+    const userDocs: Record<
+      string,
+      {
+        headings: string[]
+        propsName: string
+        usageFences: string[]
+      }
+    > = {
+      "user-avatar": {
+        headings: ["Usage", "Installation", "Props"],
+        propsName: "UserAvatarProps",
+        usageFences: [
+          "examples/start-solid-zaidan-example/src/demos/user/user-avatar.tsx"
+        ]
+      },
+      "user-button": {
+        headings: ["Usage", "Icon", "Custom links", "Installation", "Props"],
+        propsName: "UserButtonProps",
+        usageFences: [
+          "examples/start-solid-zaidan-example/src/demos/user/user-button.tsx",
+          "examples/start-solid-zaidan-example/src/demos/user/user-button-icon.tsx",
+          "examples/start-solid-zaidan-example/src/demos/user/user-button-links.tsx"
+        ]
+      },
+      "user-view": {
+        headings: ["Usage", "Installation", "Props"],
+        propsName: "UserViewProps",
+        usageFences: [
+          "examples/start-solid-zaidan-example/src/demos/user/user-view.tsx"
+        ]
+      }
+    }
+
+    for (const [name, expectations] of Object.entries(userDocs)) {
+      const page = componentDoc(name)
+      expect(extractLevelTwoHeadings(page), name).toEqual(expectations.headings)
+      expect(page, name).toContain(
+        `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+      )
+      expect(page, name).toContain("After install")
+      for (const usageFence of expectations.usageFences) {
+        expect(page, `${name} usage fence ${usageFence}`).toContain(
+          `tsx file=<rootDir>/../../${usageFence}`
+        )
+      }
+      expect(page, name).toContain(`name="${expectations.propsName}"`)
+      expect(page, name).not.toContain("Parity classification")
+      expect(page, name).not.toContain("Installed files")
+    }
+
+    const userButtonDoc = componentDoc("user-button")
+    expect(userButtonDoc).toContain("userMenuItems")
+    expect(userButtonDoc).toContain("links")
+    expect(userButtonDoc).not.toContain("ThemeToggleItem")
+    expect(userButtonDoc).not.toContain(
+      "src/components/auth/theme/theme-toggle-item.tsx"
+    )
 
     const authFlowDocs: Record<
       string,
@@ -3305,24 +3373,24 @@ describe("Solid registry isolation", () => {
         headings,
         `${name} should not lead with copied files`
       ).not.toContain("What it copies")
-      expect(page, `${name} should show Solid/Zaidan import`).toContain(
+      expect(page, `${name} should not use inline imports`).not.toContain(
         expectation.importExample
       )
-      expect(page, `${name} should show practical usage`).toContain(
+      expect(page, `${name} should not use inline examples`).not.toContain(
         expectation.usageExample
       )
-      expect(page, `${name} should keep files as secondary content`).toContain(
-        "## Installed files"
-      )
+      expect(
+        page,
+        `${name} should not keep installed-files sections`
+      ).not.toContain("## Installed files")
 
       expect(page, `${name} should derive props from source types`).toContain(
         "<auto-type-table"
       )
     }
 
-    expect(componentDoc("user-button")).toContain("theme")
     expect(componentDoc("user-button")).toContain("session")
-    expect(componentDoc("user-button")).toContain("multi-session")
+    expect(componentDoc("user-button")).toContain("userMenuItems")
     expect(componentDoc("user-avatar")).toContain("session user")
 
     const settingsDocs: Record<
