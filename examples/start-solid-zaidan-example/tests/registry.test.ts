@@ -938,7 +938,13 @@ describe("Solid registry isolation", () => {
       userView: readFileSync(resolve(docsRoot, "user-view.mdx"), "utf8")
     }
 
-    const shadcnModelUserDocs = new Set([
+    const shadcnModelDocs = new Set([
+      "auth",
+      "forgotPassword",
+      "resetPassword",
+      "signIn",
+      "signOut",
+      "signUp",
       "userAvatar",
       "userButton",
       "userView"
@@ -946,7 +952,7 @@ describe("Solid registry isolation", () => {
 
     for (const [name, content] of Object.entries(pages)) {
       expect(content, name).not.toMatch(/does not expose public props/i)
-      if (!shadcnModelUserDocs.has(name)) {
+      if (!shadcnModelDocs.has(name)) {
         expect(content, name).toContain("Parity classification")
       }
       expect(content, name).toContain("<auto-type-table")
@@ -972,7 +978,7 @@ describe("Solid registry isolation", () => {
     expect(pages.userView).toContain('name="UserViewProps"')
 
     for (const [name, content] of Object.entries(pages)) {
-      if (!shadcnModelUserDocs.has(name)) {
+      if (!shadcnModelDocs.has(name)) {
         expect(content, name).toContain("`class`")
       }
     }
@@ -2073,9 +2079,9 @@ describe("Solid registry isolation", () => {
       "auth",
       "sign-in",
       "sign-up",
+      "sign-out",
       "forgot-password",
       "reset-password",
-      "sign-out",
       "---Settings---",
       "settings",
       "account-settings",
@@ -3244,69 +3250,125 @@ describe("Solid registry isolation", () => {
     const authFlowDocs: Record<
       string,
       {
-        importExample: string
-        props: string[]
-        usageExample: string
+        propsName: string
+        storyId: string
+        usageFence: string
       }
     > = {
       auth: {
-        importExample: 'import { Auth } from "@/components/auth/auth"',
-        props: ["path"],
-        usageExample: "<Auth path={params.path} />"
+        propsName: "AuthProps",
+        storyId: "zaidan-components-auth--auth-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/auth.tsx"
       },
       "sign-in": {
-        importExample: 'import { SignIn } from "@/components/auth/sign-in"',
-        props: [],
-        usageExample: "<SignIn />"
+        propsName: "SignInProps",
+        storyId: "zaidan-components-auth--sign-in-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/sign-in.tsx"
       },
       "sign-up": {
-        importExample: 'import { SignUp } from "@/components/auth/sign-up"',
-        props: [],
-        usageExample: "<SignUp />"
+        propsName: "SignUpProps",
+        storyId: "zaidan-components-auth--sign-up-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/sign-up.tsx"
       },
       "sign-out": {
-        importExample: 'import { SignOut } from "@/components/auth/sign-out"',
-        props: ["class", "label"],
-        usageExample: '<SignOut label="Signing you out…" />'
+        propsName: "SignOutProps",
+        storyId: "zaidan-components-auth--sign-out-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/sign-out.tsx"
       },
       "forgot-password": {
-        importExample:
-          'import { ForgotPassword } from "@/components/auth/forgot-password"',
-        props: ["class", "redirectTo"],
-        usageExample: '<ForgotPassword redirectTo="/auth/reset-password" />'
+        propsName: "ForgotPasswordProps",
+        storyId: "zaidan-components-auth--forgot-password-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/forgot-password.tsx"
       },
       "reset-password": {
-        importExample:
-          'import { ResetPassword } from "@/components/auth/reset-password"',
-        props: ["class", "token"],
-        usageExample: "<ResetPassword token={token} />"
+        propsName: "ResetPasswordProps",
+        storyId: "zaidan-components-auth--reset-password-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/auth/reset-password.tsx"
       }
     }
+
+    const meta = JSON.parse(
+      readFileSync(resolve(zaidanDocsRoot, "components/meta.json"), "utf8")
+    ) as { pages: string[] }
+    const authStart = meta.pages.indexOf("---Auth---")
+    expect(meta.pages.slice(authStart + 1, authStart + 7)).toEqual([
+      "auth",
+      "sign-in",
+      "sign-up",
+      "sign-out",
+      "forgot-password",
+      "reset-password"
+    ])
+
+    const authStories = readFileSync(
+      resolve(__dirname, "../src/stories/auth.stories.tsx"),
+      "utf8"
+    )
+    expect(authStories).toContain('socialProviders={["github", "google"]}')
+    expect(authStories).toContain("social: async () =>")
+    expect(authStories).toContain("navigate={() => undefined}")
+    expect(authStories).toContain("overflow-hidden")
+    expect(authStories).toContain("h-screen")
+
+    const providerButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/provider-button.tsx"),
+      "utf8"
+    )
+    expect(providerButton).toContain("function GitHubIcon")
+    expect(providerButton).toContain("function GoogleIcon")
+    expect(providerButton).toContain("<Spinner />")
+    expect(providerButton).not.toContain("providerName().slice(0, 1)")
+
+    const signOut = readFileSync(
+      resolve(__dirname, "../src/components/auth/sign-out.tsx"),
+      "utf8"
+    )
+    expect(signOut).toContain(
+      'import { Spinner } from "@/components/ui/spinner"'
+    )
+    expect(signOut).toContain(
+      '<Spinner class={cn("mx-auto my-auto", props.class)} />'
+    )
+    expect(signOut).not.toContain("label?: string")
+    expect(signOut).not.toContain("Signing out")
 
     for (const [name, expectation] of Object.entries(authFlowDocs)) {
       const page = componentDoc(name)
       const headings = extractLevelTwoHeadings(page)
 
-      expect(headings, `${name} should lead with usage`).toEqual(
-        expect.arrayContaining(["Usage", "Installation", "Props"])
+      expect(headings, `${name} should match shadcn model`).toEqual([
+        "Usage",
+        "Installation",
+        "Props"
+      ])
+      expect(page, `${name} should show Zaidan preview`).toContain(
+        `storyId="${expectation.storyId}"`
+      )
+      expect(page, `${name} should use file-backed Solid demo`).toContain(
+        `tsx file=<rootDir>/../../${expectation.usageFence}`
+      )
+      expect(page, `${name} should include install command`).toContain(
+        `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+      )
+      expect(page, `${name} should explain ownership`).toContain(
+        "After install"
+      )
+      expect(page, `${name} should derive props from source types`).toContain(
+        `name="${expectation.propsName}"`
+      )
+      expect(page, `${name} should not keep parity section`).not.toContain(
+        "Parity classification"
       )
       expect(
-        headings,
-        `${name} should not lead with copied files`
-      ).not.toContain("What it copies")
-      expect(page, `${name} should show Solid/Zaidan import`).toContain(
-        expectation.importExample
-      )
-      expect(page, `${name} should show practical usage`).toContain(
-        expectation.usageExample
-      )
-      expect(page, `${name} should keep files as secondary content`).toContain(
-        "## Installed files"
-      )
-
-      expect(page, `${name} should derive props from source types`).toContain(
-        "<auto-type-table"
-      )
+        page,
+        `${name} should not keep installed-files section`
+      ).not.toContain("## Installed files")
     }
 
     const userSurfaceDocs: Record<
