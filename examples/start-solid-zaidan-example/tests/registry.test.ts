@@ -3158,13 +3158,20 @@ describe("Solid registry isolation", () => {
     const authProviderHeadings = extractLevelTwoHeadings(authProviderDoc)
 
     expect(authProviderDoc).toContain("Solid Query")
-    expect(authProviderHeadings).toEqual(
-      expect.arrayContaining(["Usage", "Props"])
+    expect(authProviderHeadings).toEqual(["Usage", "Props"])
+    expect(authProviderDoc).toContain(
+      "```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/components/providers.tsx"
     )
-    expect(authProviderHeadings).not.toContain("What it copies")
-    expect(authProviderDoc).toContain("authClient")
-    expect(authProviderDoc).toContain("queryClient")
-    expect(authProviderDoc).toContain("navigate")
+    expect(authProviderDoc).toContain(
+      '<auto-type-table path="../../../../../../packages/solid/src/lib/auth-provider.tsx" name="AuthProviderProps" />'
+    )
+    expect(authProviderHeadings).not.toContain("Installation")
+    expect(authProviderHeadings).not.toContain("Installed files")
+    expect(authProviderDoc).not.toContain("| Prop | Type | Description |")
+    expect(authProviderDoc).not.toContain(
+      '```tsx title="src/components/providers.tsx"'
+    )
+    expect(authProviderDoc).not.toContain("What it copies")
 
     const authFlowDocs: Record<
       string,
