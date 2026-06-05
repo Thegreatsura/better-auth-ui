@@ -263,15 +263,13 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid User Button",
       description:
-        "Solid user menu trigger with account, settings, theme, and auth links.",
-      registryDependencies: ["solid/user-view", "solid/theme"],
+        "Solid user menu trigger with account, settings, plugin, and auth links.",
+      registryDependencies: ["solid/user-view"],
       files: [
         componentFile("src/components/auth/user-button.tsx"),
         componentFile("src/components/auth/user/user-button.tsx"),
         componentFile("src/components/auth/user/user-avatar.tsx"),
         componentFile("src/components/auth/user/user-view.tsx"),
-        componentFile("src/components/auth/theme/theme-toggle-item.tsx"),
-        libFile("src/lib/theme.ts"),
         ...zaidanInteractiveUiFiles
       ]
     }),
@@ -318,19 +316,15 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid Account Settings",
       description:
-        "Solid account settings with profile, email, appearance, and danger-zone cards.",
+        "Solid account settings with profile, email, danger-zone, and plugin account cards.",
       registryDependencies: [
         "solid/user-profile",
         "solid/change-email",
-        "solid/delete-user",
-        "solid/theme"
+        "solid/delete-user"
       ],
       files: [
         componentFile(
           "src/components/auth/settings/account/account-settings.tsx"
-        ),
-        componentFile(
-          "src/components/auth/settings/account/appearance-settings.tsx"
         ),
         ...zaidanInteractiveUiFiles
       ]
@@ -557,8 +551,10 @@ export const solidRegistryManifest = {
         "Solid theme preference utilities and controls for auth surfaces.",
       registryDependencies: [],
       files: [
+        libFile("src/lib/auth/theme-plugin.ts"),
         componentFile("src/components/auth/theme/appearance.tsx"),
         componentFile("src/components/auth/theme/theme-toggle-item.tsx"),
+        componentFile("src/components/auth/theme/theme-plugin-state.ts"),
         libFile("src/lib/theme.ts"),
         uiFile("src/components/ui/tabs.tsx"),
         uiFile("src/components/ui/dropdown-menu.tsx"),

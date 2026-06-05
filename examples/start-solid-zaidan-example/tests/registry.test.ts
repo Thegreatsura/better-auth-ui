@@ -1232,18 +1232,20 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain('align?: "center" | "end" | "start"')
     expect(userButton).toContain('size: "default" as const')
     expect(userButton).toContain('size() === "icon"')
-    expect(userButton).toContain("ThemeToggleItem")
+    expect(userButton).not.toContain("ThemeToggleItem")
     expect(themeToggleItem).toContain('from "@/components/ui/tabs"')
     expect(themeToggleItem).toContain("PaletteIcon")
     expect(themeToggleItem).toContain("<Tabs")
     expect(themeToggleItem).toContain("<TabsList")
     expect(themeToggleItem).toContain("<TabsTrigger")
-    expect(themeToggleItem).toContain('aria-label="System"')
-    expect(themeToggleItem).toContain('aria-label="Light"')
-    expect(themeToggleItem).toContain('aria-label="Dark"')
+    expect(themeToggleItem).toContain("ThemeToggleItemProps")
+    expect(themeToggleItem).toContain("resolveThemePluginState")
+    expect(themeToggleItem).toContain("themeState().themes")
+    expect(themeToggleItem).toContain("aria-label={themeLabel")
+    expect(themeToggleItem).not.toContain('aria-label="System"')
+    expect(themeToggleItem).not.toContain('aria-label="Light"')
+    expect(themeToggleItem).not.toContain('aria-label="Dark"')
     expect(themeToggleItem).toContain('from "@/lib/theme"')
-    expect(themeToggleItem).toContain("readStoredThemePreference")
-    expect(themeToggleItem).toContain("saveThemePreference")
     expect(themeToggleItem).toContain("applyThemePreference")
     expect(shadcnThemeToggleItem).toContain('[role="tab"][data-state="active"]')
     expect(themeToggleItem).toContain('[role="tab"][data-selected]')
@@ -1283,8 +1285,11 @@ describe("Solid registry isolation", () => {
       "disabled\n            >\n              <Settings"
     )
     expect(userButton.indexOf("{auth.localization.auth.signUp}")).toBeLessThan(
-      userButton.indexOf("<ThemeToggleItem />")
+      userButton.indexOf("<For each={pluginUserMenuItems()}")
     )
+    expect(
+      userButton.indexOf("<For each={pluginUserMenuItems()}")
+    ).toBeLessThan(userButton.indexOf("{auth.localization.auth.signOut}"))
     expect(userButton).not.toContain("needToCreateAnAccount")
 
     expect(header).toContain('from "./auth/user/user-button"')
@@ -1391,15 +1396,14 @@ describe("Solid registry isolation", () => {
     expect(settings.registryDependencies).not.toContain("solid/organization")
 
     const userButton = readJson<{
+      files: Array<{ content: string; path: string }>
       name: string
       registryDependencies: string[]
     }>(join(outputRoot, "solid/user-button.json"))
     expect(userButton.name).toBe("user-button")
-    expect(userButton.registryDependencies).toEqual([
-      "solid/user-view",
-      "solid/theme"
-    ])
+    expect(userButton.registryDependencies).toEqual(["solid/user-view"])
     expect(userButton.registryDependencies).not.toContain("solid/auth-provider")
+    expect(userButton.registryDependencies).not.toContain("solid/theme")
 
     const signIn = readJson<{
       dependencies: string[]
@@ -1554,13 +1558,18 @@ describe("Solid registry isolation", () => {
     expect(accountSettingsRegistry.registryDependencies).toEqual([
       "solid/user-profile",
       "solid/change-email",
-      "solid/delete-user",
-      "solid/theme"
+      "solid/delete-user"
     ])
+    expect(accountSettingsRegistry.registryDependencies).not.toContain(
+      "solid/theme"
+    )
     expect(accountSettingsRegistry.files).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           path: "src/components/auth/settings/account/manage-account-row.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/settings/account/appearance-settings.tsx"
         })
       ])
     )
@@ -1579,6 +1588,34 @@ describe("Solid registry isolation", () => {
     )?.content
     expect(generatedUserButtonSource).toContain("pluginUserMenuItems")
     expect(generatedUserButtonSource).toContain("plugin.userMenuItems")
+    expect(generatedUserButtonSource).not.toContain("<ThemeToggleItem />")
+
+    const themeRegistry = readJson<{
+      files: Array<{ content: string; path: string }>
+      name: string
+    }>(join(outputRoot, "solid/theme.json"))
+    expect(themeRegistry.name).toBe("theme")
+    expect(themeRegistry.files).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ path: "src/lib/auth/theme-plugin.ts" }),
+        expect.objectContaining({ path: "src/lib/theme.ts" }),
+        expect.objectContaining({
+          path: "src/components/auth/theme/appearance.tsx"
+        }),
+        expect.objectContaining({
+          path: "src/components/auth/theme/theme-toggle-item.tsx"
+        })
+      ])
+    )
+    const generatedThemePluginSource = themeRegistry.files.find(
+      (file) => file.path === "src/lib/auth/theme-plugin.ts"
+    )?.content
+    expect(generatedThemePluginSource).toContain("ThemePluginOptions")
+    expect(generatedThemePluginSource).toContain("ThemeLocalization")
+    expect(generatedThemePluginSource).toContain(
+      "userMenuItems: [ThemeToggleItem]"
+    )
+    expect(generatedThemePluginSource).toContain("accountCards: [Appearance]")
 
     const signOut = readJson<{
       files: Array<{ content: string; path: string }>
@@ -2381,7 +2418,8 @@ describe("Solid registry isolation", () => {
       } else if (
         name === "delete-user" ||
         name === "magic-link" ||
-        name === "multi-session"
+        name === "multi-session" ||
+        name === "theme"
       ) {
         expect(page, `${name} should keep setup-driven structure`).toContain(
           "## Setup"
@@ -2395,7 +2433,7 @@ describe("Solid registry isolation", () => {
         )
       }
 
-      if (name !== "delete-user") {
+      if (name !== "delete-user" && name !== "theme") {
         expect(page, `plugin ${name} should link Solid runtime docs`).toContain(
           "/docs/solid"
         )
@@ -3055,7 +3093,55 @@ describe("Solid registry isolation", () => {
       "@better-captcha/solidjs/provider/turnstile"
     )
     expect(pluginDoc("captcha")).not.toContain("Captcha is supported")
-    expect(pluginDoc("theme")).toContain("src/lib/theme.ts")
+    const themeDoc = pluginDoc("theme")
+    expect(themeDoc).toContain("## Setup")
+    expect(themeDoc).toContain("## Components")
+    expect(themeDoc).toContain("### Register the UI plugin")
+    expect(themeDoc).toContain("### Or pass static theme state")
+    expect(themeDoc).not.toContain("### Add the theme script before hydration")
+    expect(themeDoc).not.toContain(
+      "### Sync theme preference in your provider shell"
+    )
+    expect(themeDoc).toContain("## Options")
+    expect(themeDoc).toContain("## Localization")
+    expect(themeDoc).not.toContain("It contributes:")
+    expect(themeDoc).not.toContain("## Runtime prerequisites")
+    expect(themeDoc).not.toContain("## Copied files")
+    expect(themeDoc).not.toContain("Local tabs and dropdown primitives")
+    expect(themeDoc).toContain(
+      "npx zaidan add https://better-auth-ui.com/r/solid/theme.json"
+    )
+    expect(themeDoc).toContain("<ZaidanStory")
+    expect(themeDoc).toContain(
+      'storyId="zaidan-plugins-theme--user-button-preview"'
+    )
+    expect(themeDoc).toContain(
+      'storyId="zaidan-plugins-theme--appearance-preview"'
+    )
+    expect(themeDoc).toContain(
+      "examples/start-solid-zaidan-example/src/demos/theme/user-button.tsx"
+    )
+    expect(themeDoc).toContain(
+      "examples/start-solid-zaidan-example/src/demos/theme/appearance.tsx"
+    )
+    expect(themeDoc).toContain("src/lib/auth/theme-plugin.ts")
+    expect(themeDoc).toContain("src/lib/theme.ts")
+    expect(themeDoc).toContain("themeScript")
+    expect(themeDoc).toContain("syncDocumentThemePreference")
+    expect(themeDoc).toContain("themePlugin() // [!code highlight]")
+    expect(themeDoc).toContain(
+      "setTheme: (nextTheme) => setTheme(nextTheme as ThemeMode)"
+    )
+    expect(themeDoc).toContain("AppearanceProps")
+    expect(themeDoc).not.toContain("AppearanceSettingsProps")
+    expect(themeDoc).not.toContain("ThemeToggleItemProps")
+    expect(themeDoc).not.toContain('appearance: "Display"')
+    expect(themeDoc).toContain("ThemePluginOptions")
+    expect(themeDoc).toContain("ThemeLocalization")
+    expect(themeDoc).not.toContain("<ComponentPreview")
+    expect(themeDoc).not.toContain("className")
+    expect(themeDoc).not.toContain('from "react"')
+    expect(themeDoc).not.toContain("@tanstack/react-router")
     expect(componentDoc("sign-in")).toContain("username-aware")
     expect(componentDoc("user-button")).toContain("theme")
     expect(componentDoc("user-button")).toContain("plugin-contributed")

@@ -18,7 +18,6 @@ import {
   Show
 } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { ThemeToggleItem } from "@/components/auth/theme/theme-toggle-item"
 import { UserAvatar } from "@/components/auth/user/user-avatar"
 import { UserView } from "@/components/auth/user/user-view"
 import { buttonVariants } from "@/components/ui/button"
@@ -328,8 +327,6 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                       {auth.localization.auth.signUp}
                     </Link>
                   </DropdownMenuItem>
-
-                  <ThemeToggleItem />
                 </>
               }
             >
@@ -356,8 +353,6 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                   />
                 )}
               </For>
-
-              <ThemeToggleItem />
 
               <DropdownMenuSeparator class="my-1 bg-border" />
 

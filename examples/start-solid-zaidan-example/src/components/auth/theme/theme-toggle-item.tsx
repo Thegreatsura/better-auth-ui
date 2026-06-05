@@ -1,21 +1,39 @@
+import { useAuth } from "@better-auth-ui/solid"
 import { Monitor, Moon, PaletteIcon, Sun } from "lucide-solid"
-import { createSignal, onMount } from "solid-js"
+import { createSignal, For, onMount } from "solid-js"
+import {
+  resolveThemePluginState,
+  type ThemeOption
+} from "@/components/auth/theme/theme-plugin-state"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  applyThemePreference,
-  isThemeMode,
-  readStoredThemePreference,
-  saveThemePreference,
-  type ThemeMode
-} from "@/lib/theme"
+import { applyThemePreference, isThemeMode, type ThemeMode } from "@/lib/theme"
+import { cn } from "@/lib/utils"
 
-export function ThemeToggleItem() {
-  const [theme, setTheme] = createSignal<ThemeMode>("system")
+export type ThemeToggleItemProps = {
+  class?: string
+}
+
+const themeIcon = (value: ThemeMode) => {
+  if (value === "light") return Sun
+  if (value === "dark") return Moon
+
+  return Monitor
+}
+
+const themeLabel = (
+  localization: ReturnType<typeof resolveThemePluginState>["localization"],
+  option: ThemeOption
+) => localization[option.value]
+
+export function ThemeToggleItem(props: ThemeToggleItemProps = {}) {
+  const auth = useAuth()
+  const themeState = () => resolveThemePluginState(auth.plugins)
+  const [theme, setTheme] = createSignal<ThemeMode>(themeState().theme)
   let tabsListElement!: HTMLDivElement
 
   onMount(() => {
-    const initialTheme = readStoredThemePreference()
+    const initialTheme = themeState().theme
 
     setTheme(initialTheme)
     applyThemePreference(initialTheme)
@@ -23,8 +41,7 @@ export function ThemeToggleItem() {
 
   const selectTheme = (nextTheme: ThemeMode) => {
     setTheme(nextTheme)
-    saveThemePreference(nextTheme)
-    applyThemePreference(nextTheme)
+    themeState().setTheme(nextTheme)
   }
 
   const focusActiveTab = () => {
@@ -64,7 +81,10 @@ export function ThemeToggleItem() {
 
   return (
     <DropdownMenuItem
-      class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
+      class={cn(
+        "gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground",
+        props.class
+      )}
       closeOnSelect={false}
       onFocus={(event) => {
         if (event.target === event.currentTarget) focusActiveTab()
@@ -72,7 +92,7 @@ export function ThemeToggleItem() {
     >
       <div class="flex w-full items-center gap-2">
         <PaletteIcon class="size-4 text-muted-foreground" />
-        <span>Theme</span>
+        <span>{themeState().localization.theme}</span>
 
         <Tabs
           class="ml-auto"
@@ -83,15 +103,21 @@ export function ThemeToggleItem() {
           value={theme()}
         >
           <TabsList class="h-6!" ref={tabsListElement}>
-            <TabsTrigger aria-label="System" class="size-5 p-0" value="system">
-              <Monitor class="size-3" />
-            </TabsTrigger>
-            <TabsTrigger aria-label="Light" class="size-5 p-0" value="light">
-              <Sun class="size-3" />
-            </TabsTrigger>
-            <TabsTrigger aria-label="Dark" class="size-5 p-0" value="dark">
-              <Moon class="size-3" />
-            </TabsTrigger>
+            <For each={themeState().themes}>
+              {(option) => {
+                const Icon = themeIcon(option.value)
+
+                return (
+                  <TabsTrigger
+                    aria-label={themeLabel(themeState().localization, option)}
+                    class="size-5 p-0"
+                    value={option.value}
+                  >
+                    <Icon class="size-3" />
+                  </TabsTrigger>
+                )
+              }}
+            </For>
           </TabsList>
         </Tabs>
       </div>

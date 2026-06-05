@@ -1,1 +1,1 @@
-export { AppearanceSettings } from "../../theme/appearance"
+export { Appearance } from "../../theme/appearance"

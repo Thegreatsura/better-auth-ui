@@ -1,25 +1,144 @@
 ---
 title: Theme
-description: Install the Solid theme preference UI registry entry.
+description: Add theme selection with system, light, and dark modes to your Solid/Zaidan authentication flow.
 ---
 
-The theme components installs theme preference helpers and controls from `/r/solid/theme.json`.
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+The theme plugin adds theme selection to your authentication UI. Users can switch between system, light, and dark themes from the user button dropdown and account settings.
+
+## Setup
+
+<Steps>
+<Step>
+### Install the UI plugin
+
+Run the Zaidan CLI to install the theme plugin factory, preference helpers, and copied Theme UI components:
 
 ```npm
 npx zaidan add https://better-auth-ui.com/r/solid/theme.json
 ```
 
-## Runtime prerequisites
+</Step>
+<Step>
+### Register the UI plugin
 
-- Root route: run the theme script before hydration.
-- Provider: call `syncDocumentThemePreference()` from your app provider.
-- Runtime docs: keep package/provider boundaries in [Solid runtime APIs](/docs/solid).
+The plugin is theme-library agnostic. The recommended Zaidan setup is to use the copied theme helper from `src/lib/theme.ts`: run `themeScript` before Solid hydrates, sync the document preference in your provider shell, then register `themePlugin()` so the plugin's slot components read the persisted theme state.
 
-## Copied files
+```tsx title="src/routes/__root.tsx"
+import { themeScript } from "@/lib/theme" // [!code highlight]
 
-- `src/lib/theme.ts`
-- `src/components/auth/theme/appearance.tsx`
-- `src/components/auth/theme/theme-toggle-item.tsx`
-- Local tabs and dropdown primitives under `src/components/ui/**`
+export const Route = createRootRoute({
+  head: () => ({
+    scripts: [{ children: themeScript }] // [!code highlight]
+  })
+})
+```
 
-After install, keep the storage key and allowed theme values aligned with your app shell.
+```tsx title="src/components/providers.tsx"
+import { onCleanup, onMount } from "solid-js"
+import { AuthProvider } from "@/components/auth/auth-provider"
+import { themePlugin } from "@/lib/auth/theme-plugin" // [!code highlight]
+import { authClient } from "@/lib/auth-client"
+import { syncDocumentThemePreference } from "@/lib/theme" // [!code highlight]
+
+export function Providers(props: { children?: JSX.Element }) {
+  onMount(() => {
+    const cleanup = syncDocumentThemePreference() // [!code highlight]
+
+    onCleanup(cleanup)
+  })
+
+  return (
+    <AuthProvider
+      authClient={authClient}
+      plugins={[
+        themePlugin() // [!code highlight]
+      ]}
+    >
+      {props.children}
+    </AuthProvider>
+  )
+}
+```
+
+When the plugin is registered, `<UserButton />` renders the Theme menu item through `userMenuItems`, and account settings render `<Appearance />` through `accountCards`.
+
+</Step>
+<Step>
+### Or pass static theme state
+
+If you manage the theme with a custom Solid signal or controller, pass both `theme` **and** `setTheme` from that stateful source. The plugin receives the current value from the parent and the slot components call your setter when users change themes.
+
+```tsx title="src/components/providers.tsx"
+import { createSignal } from "solid-js"
+import type { ThemeMode } from "@/lib/theme"
+
+const [theme, setTheme] = createSignal<ThemeMode>("system") // [!code highlight]
+
+<AuthProvider
+  authClient={authClient}
+  plugins={[
+    themePlugin({ // [!code highlight]
+      theme: theme(), // [!code highlight]
+      setTheme: (nextTheme) => setTheme(nextTheme as ThemeMode), // [!code highlight]
+      themes: ["system", "light", "dark"] // [!code highlight]
+    }) // [!code highlight]
+  ]}
+>
+  {props.children}
+</AuthProvider>
+```
+
+Use either the copied helper defaults **or** an explicit `theme`/`setTheme` pair when you need a custom controller.
+
+</Step>
+</Steps>
+
+## Components
+
+These previews use local theme state only. They do not call Better Auth endpoints or require a live session.
+
+### `<UserButton />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-theme--user-button-preview"
+  title="Zaidan User Button Theme preview"
+  height={260}
+/>
+
+The Theme menu item is automatically rendered in `<UserButton />` when `themePlugin()` is registered.
+
+**Usage**
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/theme/user-button.tsx
+```
+
+### `<Appearance />`
+
+<ZaidanStory
+  storyId="zaidan-plugins-theme--appearance-preview"
+  title="Zaidan Theme Appearance preview"
+  height={360}
+/>
+
+The `<Appearance />` card is automatically rendered in account settings when `themePlugin()` is registered and the account page renders plugin-contributed `accountCards`.
+
+**Usage**
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/theme/appearance.tsx
+```
+
+**Props**
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/theme/appearance.tsx" name="AppearanceProps" />
+
+## Options
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/lib/auth/theme-plugin.ts" name="ThemePluginOptions" />
+
+## Localization
+
+<auto-type-table path="../../../../../../packages/core/src/plugins/theme/theme-localization.ts" name="ThemeLocalization" />
+
+The copied Zaidan Theme components resolve labels from `themePlugin({ localization })` and fall back to the default Theme localization.

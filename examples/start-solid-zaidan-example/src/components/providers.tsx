@@ -8,6 +8,7 @@ import { magicLinkPlugin } from "@/lib/auth/magic-link-plugin"
 import { multiSessionPlugin } from "@/lib/auth/multi-session-plugin"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
+import { themePlugin } from "@/lib/auth/theme-plugin"
 import { authClient } from "@/lib/auth-client"
 import { syncDocumentThemePreference } from "@/lib/theme"
 
@@ -53,6 +54,7 @@ export function Providers(props: ProvidersProps) {
           usernamePlugin(),
           magicLinkPlugin(),
           passkeyPlugin(),
+          themePlugin(),
           deleteUserPlugin(),
           organizationPlugin({ slug: organizationSlug() })
         ]}

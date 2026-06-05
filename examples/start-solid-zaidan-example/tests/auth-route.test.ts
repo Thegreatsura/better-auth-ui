@@ -783,6 +783,90 @@ describe("Solid auth route component selection", () => {
     )
   })
 
+  it("wires Theme through the local plugin instead of hard-coded user/account surfaces", () => {
+    const providers = readFileSync(
+      resolve(__dirname, "../src/components/providers.tsx"),
+      "utf8"
+    )
+    const userButton = readFileSync(
+      resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
+      "utf8"
+    )
+    const accountSettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/account/account-settings.tsx"
+      ),
+      "utf8"
+    )
+    const appearanceSettings = readFileSync(
+      resolve(__dirname, "../src/components/auth/theme/appearance.tsx"),
+      "utf8"
+    )
+    const themeToggleItem = readFileSync(
+      resolve(__dirname, "../src/components/auth/theme/theme-toggle-item.tsx"),
+      "utf8"
+    )
+    const themePluginPath = resolve(
+      __dirname,
+      "../src/lib/auth/theme-plugin.ts"
+    )
+    const themePlugin = existsSync(themePluginPath)
+      ? readFileSync(themePluginPath, "utf8")
+      : ""
+
+    expect(existsSync(themePluginPath)).toBe(true)
+    expect(themePlugin).toContain("export const themePlugin")
+    const themePluginState = readFileSync(
+      resolve(__dirname, "../src/components/auth/theme/theme-plugin-state.ts"),
+      "utf8"
+    )
+
+    expect(themePlugin).toContain("ThemePluginOptions")
+    expect(themePlugin).toContain("ThemeLocalization")
+    expect(themePlugin).toContain("userMenuItems: [ThemeToggleItem]")
+    expect(themePlugin).toContain("accountCards: [Appearance]")
+    expect(themePlugin).toContain("theme: options.theme")
+    expect(themePlugin).not.toContain("readStoredThemePreference")
+    expect(themePluginState).toContain('typeof window === "undefined"')
+    expect(themePluginState).toContain("readInitialThemePreference")
+
+    expect(providers).toContain('from "@/lib/auth/theme-plugin"')
+    expect(providers).toContain("themePlugin()")
+    expect(providers).not.toContain('themePlugin } from "@better-auth-ui/core')
+
+    expect(userButton).not.toContain(
+      'from "@/components/auth/theme/theme-toggle-item"'
+    )
+    expect(userButton).not.toContain("<ThemeToggleItem />")
+    expect(userButton).toContain("pluginUserMenuItems")
+    expect(userButton).toContain("plugin.userMenuItems")
+
+    expect(accountSettings).not.toContain(
+      'from "@/components/auth/theme/appearance"'
+    )
+    expect(accountSettings).not.toContain("<Appearance />")
+    expect(accountSettings).toContain("pluginAccountCards")
+    expect(accountSettings).toContain("plugin.accountCards")
+
+    expect(appearanceSettings).toContain("export type AppearanceProps")
+    expect(appearanceSettings).toContain("class?: string")
+    expect(appearanceSettings).not.toContain("className")
+    expect(appearanceSettings).toContain("resolveThemePluginState")
+    expect(appearanceSettings).toContain("themes")
+    expect(appearanceSettings).not.toContain('label: "System"')
+    expect(appearanceSettings).not.toContain('label: "Light"')
+    expect(appearanceSettings).not.toContain('label: "Dark"')
+
+    expect(themeToggleItem).toContain("ThemeToggleItemProps")
+    expect(themeToggleItem).toContain("class?: string")
+    expect(themeToggleItem).toContain("resolveThemePluginState")
+    expect(themeToggleItem).toContain("themes")
+    expect(themeToggleItem).not.toContain('aria-label="System"')
+    expect(themeToggleItem).not.toContain('aria-label="Light"')
+    expect(themeToggleItem).not.toContain('aria-label="Dark"')
+  })
+
   it("provides canonical shadcn-like Solid auth wrapper files without changing behavior", () => {
     const canonicalWrappers = [
       {
@@ -790,7 +874,7 @@ describe("Solid auth route component selection", () => {
         file: "theme/theme-toggle-item.tsx"
       },
       {
-        expected: "export function AppearanceSettings",
+        expected: "export function Appearance",
         file: "theme/appearance.tsx"
       },
       {
@@ -853,7 +937,7 @@ describe("Solid auth route component selection", () => {
         file: "user-button.tsx"
       },
       {
-        expected: 'export { AppearanceSettings } from "../../theme/appearance"',
+        expected: 'export { Appearance } from "../../theme/appearance"',
         file: "settings/account/appearance-settings.tsx"
       },
       {
@@ -878,7 +962,7 @@ describe("Solid auth route component selection", () => {
       resolve(__dirname, "../src/components/auth/user/user-button.tsx"),
       "utf8"
     )
-    expect(userButton).toContain(
+    expect(userButton).not.toContain(
       'from "@/components/auth/theme/theme-toggle-item"'
     )
     expect(userButton).toContain('from "@/components/auth/user/user-avatar"')
@@ -900,7 +984,7 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(accountSettings).toContain(
+    expect(accountSettings).not.toContain(
       'from "@/components/auth/theme/appearance"'
     )
     expect(accountSettings).toContain("useAuth")
@@ -1043,7 +1127,7 @@ describe("Solid auth route component selection", () => {
     expect(userButton).toContain("component={item.UserMenuItem}")
     expect(userButton).toContain("gap-2! rounded-md px-2.5! py-2! text-sm")
     expect(userButton).toContain("px-3.5 py-3")
-    expect(userButton).toContain("<ThemeToggleItem />")
+    expect(userButton).not.toContain("<ThemeToggleItem />")
     expect(userButton).toContain("auth.localization.auth.signOut")
   })
 
@@ -1676,7 +1760,7 @@ describe("Solid auth route component selection", () => {
       'from "@/components/auth/settings/account/account-settings"'
     )
     expect(settingsComponents).toContain("AccountSettings,")
-    expect(settingsComponents).not.toContain("function AppearanceSettings")
+    expect(settingsComponents).not.toContain("function Appearance")
     expect(settingsComponents).not.toContain("function ManageAccountRow")
     expect(manageAccounts).toContain("useAuth")
     expect(manageAccounts).toContain("session.data?.user.name")

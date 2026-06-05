@@ -1,13 +1,13 @@
+import { useAuth } from "@better-auth-ui/solid"
 import { Monitor, Moon, Sun } from "lucide-solid"
 import type { JSX } from "solid-js"
 import { createSignal, For, onMount } from "solid-js"
-import { Card, CardContent } from "@/components/ui/card"
 import {
-  applyThemePreference,
-  readStoredThemePreference,
-  saveThemePreference,
-  type ThemeMode
-} from "@/lib/theme"
+  resolveThemePluginState,
+  type ThemeOption
+} from "@/components/auth/theme/theme-plugin-state"
+import { Card, CardContent } from "@/components/ui/card"
+import { applyThemePreference, type ThemeMode } from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 type ThemePreviewSvgProps = JSX.SvgSVGAttributes<SVGSVGElement>
@@ -199,11 +199,29 @@ function ThemePreview(props: { mode: ThemeMode }) {
   return <ThemePreviewSystem class="aspect-[240/117] w-full rounded-md" />
 }
 
-export function AppearanceSettings() {
-  const [theme, setTheme] = createSignal<ThemeMode>("system")
+export type AppearanceProps = {
+  class?: string
+}
+
+const themeIcon = (value: ThemeMode) => {
+  if (value === "light") return Sun
+  if (value === "dark") return Moon
+
+  return Monitor
+}
+
+const themeLabel = (
+  localization: ReturnType<typeof resolveThemePluginState>["localization"],
+  option: ThemeOption
+) => localization[option.value]
+
+export function Appearance(props: AppearanceProps = {}) {
+  const auth = useAuth()
+  const themeState = () => resolveThemePluginState(auth.plugins)
+  const [theme, setTheme] = createSignal<ThemeMode>(themeState().theme)
 
   onMount(() => {
-    const initialTheme = readStoredThemePreference()
+    const initialTheme = themeState().theme
 
     setTheme(initialTheme)
     applyThemePreference(initialTheme)
@@ -211,24 +229,19 @@ export function AppearanceSettings() {
 
   const selectTheme = (nextTheme: ThemeMode) => {
     setTheme(nextTheme)
-    saveThemePreference(nextTheme)
-    applyThemePreference(nextTheme)
+    themeState().setTheme(nextTheme)
   }
 
-  const options = [
-    { icon: Monitor, label: "System", value: "system" },
-    { icon: Sun, label: "Light", value: "light" },
-    { icon: Moon, label: "Dark", value: "dark" }
-  ] as const
-
   return (
-    <div>
-      <h2 class="mb-3 text-sm font-semibold">Appearance</h2>
+    <div class={props.class}>
+      <h2 class="mb-3 text-sm font-semibold">
+        {themeState().localization.appearance}
+      </h2>
       <Card>
         <CardContent class="grid gap-3 sm:grid-cols-3">
-          <For each={options}>
+          <For each={themeState().themes}>
             {(option) => {
-              const Icon = option.icon
+              const Icon = themeIcon(option.value)
 
               return (
                 <button
@@ -243,7 +256,7 @@ export function AppearanceSettings() {
                   <div class="mb-3 flex items-center justify-between gap-2 text-sm font-medium">
                     <span class="flex items-center gap-2">
                       <Icon class="size-4 text-muted-foreground" />
-                      {option.label}
+                      {themeLabel(themeState().localization, option)}
                     </span>
                     <span
                       class={cn(

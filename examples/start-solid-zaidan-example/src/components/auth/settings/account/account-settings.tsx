@@ -4,7 +4,6 @@ import { For } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { ChangeEmail } from "@/components/auth/settings/account/change-email"
 import { UserProfile } from "@/components/auth/settings/account/user-profile"
-import { AppearanceSettings } from "@/components/auth/theme/appearance"
 import { cn } from "@/lib/utils"
 
 export type AccountSettingsProps = {
@@ -31,8 +30,6 @@ export function AccountSettings(props: AccountSettingsProps = {}) {
       <UserProfile />
 
       <ChangeEmail />
-
-      <AppearanceSettings />
 
       <For each={pluginAccountCards()}>
         {(item) => <Dynamic component={item.AccountCard} />}
