@@ -564,7 +564,7 @@ Editable profile card for the active organization: logo, display name, and slug.
 
 ### `<OrganizationDangerZone />`
 
-Danger-zone section for irreversible organization actions. The Solid/Zaidan implementation includes leave organization and delete organization actions.
+Danger-zone card with `<LeaveOrganization />` and `<DeleteOrganization />` rows.
 
 <ZaidanStory
   storyId="zaidan-plugins-organization--organization-danger-zone-preview"
@@ -579,7 +579,7 @@ Danger-zone section for irreversible organization actions. The Solid/Zaidan impl
 
 ### `<OrganizationPeople />`
 
-The contents of the `people` tab. It renders the invite-member dialog, members table, and invitations table.
+The contents of the `people` tab — `<OrganizationMembers />` on top, `<OrganizationInvitations />` below.
 
 <ZaidanStory
   storyId="zaidan-plugins-organization--organization-people-preview"
@@ -594,19 +594,37 @@ The contents of the `people` tab. It renders the invite-member dialog, members t
 
 ### `<OrganizationMembers />`
 
-Members table with grouped search, role filtering, sortable table headers, role editing, remove-member action, and current-user leave action.
+Searchable, sortable, filter-by-role table of the active organization's members with an invite control and per-row role / remove actions.
+
+<ZaidanStory
+  storyId="zaidan-plugins-organization--organization-members-preview"
+  title="Zaidan Organization Members preview"
+  height={460}
+/>
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-members.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-members.tsx" name="OrganizationMembersProps" />
 
 ### `<OrganizationInvitations />`
 
-Invitations table with grouped search, role/status filtering, sortable table headers, and cancel action for pending invitations.
+Pending invitations for the active organization as a table aligned with `<OrganizationMembers />`. Includes role / status filters and a per-row cancel action.
+
+<ZaidanStory
+  storyId="zaidan-plugins-organization--organization-invitations-preview"
+  title="Zaidan Organization Invitations preview"
+  height={520}
+/>
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-invitations.tsx
+```
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organization-invitations.tsx" name="OrganizationInvitationsProps" />
 
 ### `<OrganizationsSettings />`
 
-The settings tab panel mounted at `/settings/organizations`. It renders organizations the user belongs to plus pending invitations addressed to the user.
+The user-level organizations panel rendered at `/settings/organizations`. Lists every organization the user belongs to (with a "Create organization" button and empty state) plus invitations addressed to the user.
 
 <ZaidanStory
   storyId="zaidan-plugins-organization--organizations-settings-preview"
@@ -621,29 +639,42 @@ The settings tab panel mounted at `/settings/organizations`. It renders organiza
 
 ### `<Organizations />`
 
-List of organizations for the signed-in user. Each row links to the slug-aware organization route.
+List of organizations the user belongs to with a "Create organization" button and per-row Manage control. Embedded inside `<OrganizationsSettings />`.
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organizations.tsx" name="OrganizationsProps" />
 
 ### `<UserInvitations />`
 
-Pending invitations addressed to the signed-in user, with actions to accept or reject invitations.
+Invitations addressed to the signed-in user across every organization, with Accept / Reject actions. Embedded inside `<OrganizationsSettings />`.
+
+<ZaidanStory
+  storyId="zaidan-plugins-organization--user-invitations-preview"
+  title="Zaidan User Invitations preview"
+  height={260}
+/>
+
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/user-invitations.tsx
+```
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/user-invitations.tsx" name="UserInvitationsProps" />
 
 ### `<CreateOrganizationDialog />`
 
-Dialog used by `<OrganizationSwitcher />` and `<Organizations />` to create a new organization.
+Modal dialog with the new-organization form. Owned by `<OrganizationSwitcher />` and `<Organizations />`; mount it directly when you want to open the create flow from your own surface.
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/create-organization-dialog.tsx" name="CreateOrganizationDialogProps" />
 
 ### `<InviteMemberDialog />`
 
-Dialog used from `<OrganizationPeople />` to invite a member by email and role.
+Modal dialog for inviting a new member by email. Owned by `<OrganizationMembers />` and `<OrganizationInvitations />`; mount it directly to drive the invite flow from a custom action.
+
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/invite-member-dialog.tsx" name="InviteMemberDialogProps" />
 
 ### `<DeleteOrganizationDialog />`
 
-Confirmation dialog used by the organization danger zone before deleting an organization.
+Confirmation dialog for deleting an organization (owner permission, server-side).
 
-## Deferred UI parity
-
-Solid/Zaidan implements the organization runtime, slug-aware routing, settings/profile/delete/leave, user invitation accept/reject, organization switcher, People tables with search/filter/sort, member role edit/remove/leave, invite member, and cancel pending invitation flows.
-
-Advanced invitation status actions and larger copied UI details remain deferred. The Solid package APIs for those flows exist, and organization-scoped API key cards are included through the API Key plugin, but remaining copied organization UI polish stays follow-up work to keep PR #393 reviewable.
+<auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/delete-organization-dialog.tsx" name="DeleteOrganizationDialogProps" />
 
 ## Related APIs
 

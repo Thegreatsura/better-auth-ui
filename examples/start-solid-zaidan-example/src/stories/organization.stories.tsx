@@ -16,11 +16,14 @@ import type { Meta, StoryObj } from "storybook-solidjs-vite"
 import { AuthProvider } from "@/components/auth/auth-provider"
 import { Organization } from "@/components/auth/organization/organization"
 import { OrganizationDangerZone } from "@/components/auth/organization/organization-danger-zone"
+import { OrganizationInvitations } from "@/components/auth/organization/organization-invitations"
+import { OrganizationMembers } from "@/components/auth/organization/organization-members"
 import { OrganizationPeople } from "@/components/auth/organization/organization-people"
 import { OrganizationProfile } from "@/components/auth/organization/organization-profile"
 import { OrganizationSettings } from "@/components/auth/organization/organization-settings"
 import { OrganizationSwitcher } from "@/components/auth/organization/organization-switcher"
 import { OrganizationsSettings } from "@/components/auth/organization/organizations-settings"
+import { UserInvitations } from "@/components/auth/organization/user-invitations"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 const userId = "user_organization_docs"
@@ -372,8 +375,36 @@ function OrganizationPeoplePreviewContent() {
   return (
     <OrganizationStoryProvider queryClient={queryClient} slug="acme">
       {() => (
-        <main class="mx-auto min-h-[860px] w-full max-w-5xl bg-background p-6 text-foreground">
+        <main class="mx-auto w-full max-w-5xl bg-background p-6 text-foreground">
           <OrganizationPeople />
+        </main>
+      )}
+    </OrganizationStoryProvider>
+  )
+}
+
+function OrganizationMembersPreviewContent() {
+  const queryClient = createStoryQueryClient()
+
+  return (
+    <OrganizationStoryProvider queryClient={queryClient} slug="acme">
+      {() => (
+        <main class="mx-auto w-full max-w-5xl bg-background p-6 text-foreground">
+          <OrganizationMembers />
+        </main>
+      )}
+    </OrganizationStoryProvider>
+  )
+}
+
+function OrganizationInvitationsPreviewContent() {
+  const queryClient = createStoryQueryClient()
+
+  return (
+    <OrganizationStoryProvider queryClient={queryClient} slug="acme">
+      {() => (
+        <main class="mx-auto w-full max-w-5xl bg-background p-6 text-foreground">
+          <OrganizationInvitations />
         </main>
       )}
     </OrganizationStoryProvider>
@@ -388,6 +419,20 @@ function OrganizationsSettingsPreviewContent() {
       {() => (
         <main class="mx-auto min-h-[520px] w-full max-w-2xl bg-background p-6 text-foreground">
           <OrganizationsSettings />
+        </main>
+      )}
+    </OrganizationStoryProvider>
+  )
+}
+
+function UserInvitationsPreviewContent() {
+  const queryClient = createStoryQueryClient()
+
+  return (
+    <OrganizationStoryProvider queryClient={queryClient} slug={null}>
+      {() => (
+        <main class="mx-auto min-h-[220px] w-full max-w-2xl bg-background p-6 text-foreground">
+          <UserInvitations />
         </main>
       )}
     </OrganizationStoryProvider>
@@ -452,10 +497,32 @@ export const OrganizationPeoplePreview: Story = {
   )
 }
 
+export const OrganizationMembersPreview: Story = {
+  render: () => (
+    <RouterProvider
+      router={createStoryRouter(OrganizationMembersPreviewContent)}
+    />
+  )
+}
+
+export const OrganizationInvitationsPreview: Story = {
+  render: () => (
+    <RouterProvider
+      router={createStoryRouter(OrganizationInvitationsPreviewContent)}
+    />
+  )
+}
+
 export const OrganizationsSettingsPreview: Story = {
   render: () => (
     <RouterProvider
       router={createStoryRouter(OrganizationsSettingsPreviewContent)}
     />
+  )
+}
+
+export const UserInvitationsPreview: Story = {
+  render: () => (
+    <RouterProvider router={createStoryRouter(UserInvitationsPreviewContent)} />
   )
 }

@@ -23,6 +23,6 @@ npx zaidan add https://better-auth-ui.com/r/solid/organization.json
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/organization/organizations-settings.tsx" name="OrganizationsSettingsProps" />
 
-## Parity classification
+## Composition
 
-This is a reviewable slice, not full shadcn/HeroUI organization UI parity. It covers list, create, switch, route entry, and user invitations accept/reject. Advanced member and organization-invitation table layouts remain deferred while the Solid package APIs remain available.
+`OrganizationsSettings` composes `<Organizations />` and `<UserInvitations />` for the user-level organizations settings tab. Use `<Organization />` for the slug-aware organization management shell with settings and people tabs.

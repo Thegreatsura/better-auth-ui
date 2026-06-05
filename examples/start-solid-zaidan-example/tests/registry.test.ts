@@ -2648,7 +2648,16 @@ describe("Solid registry isolation", () => {
       'storyId="zaidan-plugins-organization--organization-people-preview"'
     )
     expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organization-members-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--organization-invitations-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
       'storyId="zaidan-plugins-organization--organizations-settings-preview"'
+    )
+    expect(organizationPluginDoc).toContain(
+      'storyId="zaidan-plugins-organization--user-invitations-preview"'
     )
     expect(organizationPluginDoc).toContain(
       "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-switcher.tsx"
@@ -2669,14 +2678,36 @@ describe("Solid registry isolation", () => {
       "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-people.tsx"
     )
     expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-members.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organization-invitations.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
       "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/organizations-settings.tsx"
+    )
+    expect(organizationPluginDoc).toContain(
+      "file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/organization/user-invitations.tsx"
     )
     expect(organizationPluginDoc).toContain('name="OrganizationProfileProps"')
     expect(organizationPluginDoc).toContain(
       'name="OrganizationDangerZoneProps"'
     )
     expect(organizationPluginDoc).toContain('name="OrganizationPeopleProps"')
+    expect(organizationPluginDoc).toContain('name="OrganizationMembersProps"')
+    expect(organizationPluginDoc).toContain(
+      'name="OrganizationInvitationsProps"'
+    )
     expect(organizationPluginDoc).toContain('name="OrganizationsSettingsProps"')
+    expect(organizationPluginDoc).toContain('name="UserInvitationsProps"')
+    expect(organizationPluginDoc).toContain('name="OrganizationsProps"')
+    expect(organizationPluginDoc).toContain(
+      'name="CreateOrganizationDialogProps"'
+    )
+    expect(organizationPluginDoc).toContain('name="InviteMemberDialogProps"')
+    expect(organizationPluginDoc).toContain(
+      'name="DeleteOrganizationDialogProps"'
+    )
     expect(organizationPluginDoc).toContain("useParams({ strict: false })")
     expect(organizationPluginDoc).toContain(
       'Show keyed when={organizationSlug() ?? "personal"}'
@@ -2714,15 +2745,22 @@ describe("Solid registry isolation", () => {
       "useCreateOrganization(authClient)"
     )
     expect(organizationPluginDoc).not.toContain("Server-side prefetching")
-    expect(organizationPluginDoc).toContain("Deferred UI parity")
+    expect(organizationPluginDoc).not.toContain("Deferred UI parity")
+    expect(organizationPluginDoc).not.toContain(
+      "Advanced invitation status actions"
+    )
+    expect(organizationPluginDoc).not.toContain(
+      "remaining copied organization UI polish"
+    )
     expect(organizationPluginDoc).toContain("members")
     expect(organizationPluginDoc).toContain("invitations")
-    expect(organizationPluginDoc).toContain("profile/delete")
+    expect(organizationPluginDoc).toContain("profile")
+    expect(organizationPluginDoc).toContain("delete")
     expect(organizationPluginDoc).toContain("organization-profile.tsx")
     expect(organizationPluginDoc).toContain("change-organization-logo.tsx")
     expect(organizationPluginDoc).toContain("organization-people.tsx")
     expect(organizationPluginDoc).toContain("user-invitations.tsx")
-    expect(organizationPluginDoc).toContain("accept or reject invitations")
+    expect(organizationPluginDoc).toContain("Accept / Reject actions")
     expect(organizationPluginDoc).not.toContain(
       "profile, role editing, logo upload"
     )
@@ -2764,7 +2802,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPeopleDoc).not.toContain(
       "search, filters, sorting, and advanced status actions"
     )
-    expect(organizationPeopleDoc).toContain(
+    expect(organizationPeopleDoc).not.toContain(
       "Advanced invitation status actions remain deferred"
     )
     expect(organizationDoc).toContain("People shell")

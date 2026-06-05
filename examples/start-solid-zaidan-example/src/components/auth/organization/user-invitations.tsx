@@ -3,7 +3,7 @@ import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useListUserInvitations } from "@better-auth-ui/solid"
 import { For, Show } from "solid-js"
 import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
 import { UserInvitationRow } from "./user-invitation-row"
 import { UserInvitationRowSkeleton } from "./user-invitation-row-skeleton"
 import { UserInvitationsEmpty } from "./user-invitations-empty"
@@ -19,7 +19,7 @@ type UserInvitation = {
   role?: string | null
 }
 
-export function UserInvitations(props: UserInvitationsProps) {
+export function UserInvitations(props: UserInvitationsProps = {}) {
   const auth = useAuth()
   const invitations = useListUserInvitations(
     auth.authClient as OrganizationAuthClient
@@ -27,37 +27,43 @@ export function UserInvitations(props: UserInvitationsProps) {
   const invitationRows = () => (invitations.data ?? []) as UserInvitation[]
 
   return (
-    <div class={cn("flex flex-col gap-3", props.class)}>
-      <h2 class="truncate font-semibold text-sm">
-        {organizationLocalization.invitations}
-      </h2>
-      <Card class="p-0">
-        <CardContent class="p-0">
-          <Show
-            when={!invitations.isPending}
-            fallback={
-              <div class="p-4">
-                <UserInvitationRowSkeleton />
-              </div>
-            }
-          >
+    <div class={props.class}>
+      <div class="flex flex-col gap-3">
+        <h2 class="truncate font-semibold text-sm">
+          {organizationLocalization.invitations}
+        </h2>
+        <Card class="!p-0">
+          <CardContent class="!p-0">
             <Show
-              when={invitationRows().length > 0}
-              fallback={<UserInvitationsEmpty />}
+              when={!invitations.isPending}
+              fallback={
+                <div class="p-4">
+                  <UserInvitationRowSkeleton />
+                </div>
+              }
             >
-              <div class="divide-y">
+              <Show
+                when={invitationRows().length > 0}
+                fallback={<UserInvitationsEmpty />}
+              >
                 <For each={invitationRows()}>
-                  {(invitation) => (
-                    <div class="p-4">
-                      <UserInvitationRow invitation={invitation} />
-                    </div>
+                  {(invitation, index) => (
+                    <>
+                      <Show when={index() > 0}>
+                        <Separator />
+                      </Show>
+
+                      <div class="p-4">
+                        <UserInvitationRow invitation={invitation} />
+                      </div>
+                    </>
                   )}
                 </For>
-              </div>
+              </Show>
             </Show>
-          </Show>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

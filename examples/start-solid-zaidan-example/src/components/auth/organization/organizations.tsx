@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
-import { cn } from "@/lib/utils"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
 import { OrganizationRow } from "./organization-row"
 import { OrganizationViewSkeleton } from "./organization-view-skeleton"
@@ -52,8 +51,8 @@ export function Organizations(props: OrganizationsProps = {}) {
             </Button>
           </div>
 
-          <Card class={cn("p-0")}>
-            <CardContent class="p-0">
+          <Card class="!p-0">
+            <CardContent class="!p-0">
               <Show
                 when={!organizations.isPending}
                 fallback={
