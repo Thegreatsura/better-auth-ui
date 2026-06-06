@@ -3,7 +3,7 @@ import solid from "vite-plugin-solid"
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [solid({ ssr: true })],
   resolve: {
     alias: {
       "@better-auth-ui/core": resolve(__dirname, "../core/src")

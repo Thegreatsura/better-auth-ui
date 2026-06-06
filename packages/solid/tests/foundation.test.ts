@@ -20,17 +20,18 @@ const packageJson = () =>
   }
 
 describe("@better-auth-ui/solid foundation", () => {
-  it("declares the additive Solid package exports without React-only email", () => {
+  it("declares the additive Solid package exports with native email support", () => {
     const metadata = packageJson()
 
     expect(metadata.name).toBe("@better-auth-ui/solid")
     expect(metadata.version).toBe("1.6.8")
     expect(Object.keys(metadata.exports).sort()).toEqual([
       ".",
+      "./email",
       "./plugins",
       "./server"
     ])
-    expect(metadata.exports).not.toHaveProperty("./email")
+    expect(metadata.exports).toHaveProperty("./email")
   })
 
   it("declares Solid runtime peers needed by the public surface", () => {
@@ -38,6 +39,7 @@ describe("@better-auth-ui/solid foundation", () => {
 
     expect(peers).toMatchObject({
       "@better-auth-ui/core": "*",
+      "@solidjs-email/main": ">=2.0.0",
       "@tanstack/solid-query": ">=5.100.9",
       "better-auth": ">=1.6.11",
       "solid-js": ">=1.9.12"
@@ -68,7 +70,6 @@ describe("@better-auth-ui/solid foundation", () => {
       plugins: [
         {
           id: "profile",
-          name: "Profile",
           additionalFields: [
             { name: "displayName", type: "string", label: "Display name" }
           ]
@@ -97,7 +98,11 @@ describe("@better-auth-ui/solid foundation", () => {
     const signal = new AbortController().signal
 
     expect(options.queryKey).toEqual(["auth", "getSession", { fresh: true }])
-    await expect(options.queryFn?.({ signal } as never)).resolves.toEqual({
+    await expect(
+      (
+        options as { queryFn?: (context: { signal: AbortSignal }) => unknown }
+      ).queryFn?.({ signal })
+    ).resolves.toEqual({
       data: {
         query: { fresh: true },
         fetchOptions: { credentials: "include", signal, throw: true }
@@ -111,10 +116,17 @@ describe("@better-auth-ui/solid foundation", () => {
 
     expect(options.mutationKey).toEqual(["auth", "signIn", "email"])
     await expect(
-      options.mutationFn?.({
+      (
+        options as {
+          mutationFn?: (variables: {
+            email: string
+            fetchOptions: { credentials: string }
+          }) => unknown
+        }
+      ).mutationFn?.({
         email: "ada@example.com",
         fetchOptions: { credentials: "include" }
-      } as never)
+      })
     ).resolves.toEqual({ data: "ada@example.com" })
     expect(authFn).toHaveBeenCalledWith({
       email: "ada@example.com",

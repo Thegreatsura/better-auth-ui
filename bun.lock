@@ -419,6 +419,9 @@
     "packages/solid": {
       "name": "@better-auth-ui/solid",
       "version": "1.6.8",
+      "dependencies": {
+        "@solidjs-email/main": "^2.0.0",
+      },
       "devDependencies": {
         "@better-auth/api-key": "^1.6.9",
         "@better-auth/passkey": "^1.6.10",
@@ -1388,6 +1391,48 @@
     "@solid-primitives/trigger": ["@solid-primitives/trigger@1.2.3", "", { "dependencies": { "@solid-primitives/utils": "^6.4.0" }, "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-Za2JebEiDyfamjmDwRaESYqBBYOlgYGzB8kHYH0QrkXyLf2qNADlKdGN+z3vWSLCTDcKxChS43Kssjuc0OZhng=="],
 
     "@solid-primitives/utils": ["@solid-primitives/utils@6.4.0", "", { "peerDependencies": { "solid-js": "^1.6.12" } }, "sha512-AeGTBg8Wtkh/0s+evyLtP8piQoS4wyqqQaAFs2HJcFMMjYAtUgo+ZPduRXLjPlqKVc2ejeR544oeqpbn8Egn8A=="],
+
+    "@solidjs-email/body": ["@solidjs-email/body@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-E3eRlz3jzdSRNhF3N+WHVORiZgSa+U8ZNyNvSh07db1smRJ4sVTFZjRMMz6tGvxCoxbNScccauCUG5MFQHW4XQ=="],
+
+    "@solidjs-email/button": ["@solidjs-email/button@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-+vJ6NMusskWUEMKNilyC5ITUletPja/AvWAWobUgsmqM/cKiRU+7stUV6s1PD+3EodPr3mcZQeWbHRixNcfBHw=="],
+
+    "@solidjs-email/code-block": ["@solidjs-email/code-block@2.0.0", "", { "dependencies": { "prismjs": "^1.30.0" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-85Pgt6fjmGoNPYoIrO1f/oWeL5KX4kSK0zm8FwD4yL2uIC2r4gJmuJodzsTdrXk+V3dC45PmygeyPGwCcXm5rQ=="],
+
+    "@solidjs-email/code-inline": ["@solidjs-email/code-inline@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-6/TBR3vhtJYhv8SJ6qd0MhD4eiBZnpjwQ7Fe/BoxG7Rw9ab0f48Ee5/dtb0H3eZb1Kfb/mpMQZKTZ3jzHS+Vsw=="],
+
+    "@solidjs-email/column": ["@solidjs-email/column@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-42by7+sBUgEOryrWyKHcfJvjjNoACIx57OXEbj2PGBC6GCCTgASSZY+6IC1jCFmwZooJEiKVYvvU3MIZy0fIMw=="],
+
+    "@solidjs-email/container": ["@solidjs-email/container@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-vJyQaroc0+OxpxwaoNi/D9Lsg84hwtn0QSxEeAIueKsJlKQEi+Em8IZk0NZGoLqOrwbHKJtrVt4RbZkn4AtWFA=="],
+
+    "@solidjs-email/font": ["@solidjs-email/font@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-gpXDT1mHOt8wvDwH2qtsU0Q0cbmne1SkPfUtH/0aG2pWbNqM12XchNrXY1Btqf1+/FtRqY8ysaxi4thoIdB2iA=="],
+
+    "@solidjs-email/head": ["@solidjs-email/head@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-cvGd7TjL3ZSOyvgTRDnkOGDpcGbJeAXIvpiAshI8UK6A9LCg8N4Y7xptR5WEBuzt2iQSGzyv7LR31GXLkYyrMQ=="],
+
+    "@solidjs-email/heading": ["@solidjs-email/heading@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-2znm0sBXYKQU09e4Z9xwDeMlE6Idq5D+epeD0j/byrGaqRtEbp3qfExfKk3+QxzLK3Xvlhz5dW3VvkPRhWPCRw=="],
+
+    "@solidjs-email/hr": ["@solidjs-email/hr@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-UE3YlXzE8pn7hy1bX8hJ7OX3ssH4ZAT1Dnx/4yhePVawxOJ1joHc3b1xbFROItMCnA0YAXCuJhqZRoGMLxP2IQ=="],
+
+    "@solidjs-email/html": ["@solidjs-email/html@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-f8zGdMn/A8vZY3x+QsneT/DtWSOYITdLCPAU/e8n1JYJDLaT/Dg68/ITZBtMWlDrANc/WCpdu2NIWJfEZAMtnA=="],
+
+    "@solidjs-email/img": ["@solidjs-email/img@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-qltvcmKZVDkozYj3eYhF/2Hrr5RiGDlZmHO8lKXbjAl2DS3PBQPnDYEHZQSBPmORHccgQIiEN50WRpZPEMMqqQ=="],
+
+    "@solidjs-email/link": ["@solidjs-email/link@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-qGBJkGsDqfE/1vtmsNwgmSfgZGtkEufkQezFpRT7iCghQBjQ5eeVRDm8P6ZJyYMRaBRWvozlN2EcOjklp0uqlQ=="],
+
+    "@solidjs-email/main": ["@solidjs-email/main@2.0.0", "", { "dependencies": { "@solidjs-email/body": "2.0.0", "@solidjs-email/button": "2.0.0", "@solidjs-email/code-block": "2.0.0", "@solidjs-email/code-inline": "2.0.0", "@solidjs-email/column": "2.0.0", "@solidjs-email/container": "2.0.0", "@solidjs-email/font": "2.0.0", "@solidjs-email/head": "2.0.0", "@solidjs-email/heading": "2.0.0", "@solidjs-email/hr": "2.0.0", "@solidjs-email/html": "2.0.0", "@solidjs-email/img": "2.0.0", "@solidjs-email/link": "2.0.0", "@solidjs-email/markdown": "2.0.0", "@solidjs-email/preview": "2.0.0", "@solidjs-email/render": "2.0.0", "@solidjs-email/row": "2.0.0", "@solidjs-email/section": "2.0.0", "@solidjs-email/tailwind": "2.0.0", "@solidjs-email/text": "2.0.0" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-op/JC5wfLw0OnwEZjeJdgkI7LN76GzxG2lST+MLw3ua0ki2tvL5BXGlu9uBfdfOUzlWpmW//MiCxloCh2wTtAQ=="],
+
+    "@solidjs-email/markdown": ["@solidjs-email/markdown@2.0.0", "", { "dependencies": { "marked": "^15.0.0" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-qK/4o4ei7JVrto2dIVujeSgaf0wdGfP3cWTVYo+e6pqO4Be4in03R41j/U+exBahH1xjIYcu9klYjo2apI9/vA=="],
+
+    "@solidjs-email/preview": ["@solidjs-email/preview@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-0hoL6fBEAXPGLXxXEPHu5Bj3AoTuw1fTzvakLdth1/ahzizi78KE+ASquiVqZro+ea2aViu3akouGVzyctYYeA=="],
+
+    "@solidjs-email/render": ["@solidjs-email/render@2.0.0", "", { "dependencies": { "@solidjs-email/tailwind": "2.0.0", "html-to-text": "^9.0.5", "prettier": "^3.5.3" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-FImIRai1pjsJaCI3+yuZFVJOMs4ARTT1GFpIEP+Hd87GsIVfceLZUBh3f9AzaMqQFsoEwbaNw7LKD/hfUpADBQ=="],
+
+    "@solidjs-email/row": ["@solidjs-email/row@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-40ixE1bw1jTLv7N0uRX6utWRnrsofsGhNFWWicO74tqU+UXvwuMCcUGcH4Z9fHjslZrdpBK55K8SjX7bIVQJ7Q=="],
+
+    "@solidjs-email/section": ["@solidjs-email/section@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-xD/9O7cu/IPdR2wvsqakbNtW/t0R81ZjGEtcoALCLpmIZ/dl8PIm4boUBk6B2REqUA/Dvm950razOkeqJIz9Qg=="],
+
+    "@solidjs-email/tailwind": ["@solidjs-email/tailwind@2.0.0", "", { "dependencies": { "css-tree": "^3.1.0", "tailwindcss": "^4.1.18" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-q87CLkvUy7ZIl3rQCOgq9DYDYriINE1hHU4WLW9tXE+EVo1mk2pYDNXSRmVqlDf0+V4y1CbyeJgV1iViiF4Oaw=="],
+
+    "@solidjs-email/text": ["@solidjs-email/text@2.0.0", "", { "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-S4SO91uR23ahLKOyMKYLphhlLv2v4As1u3dm+5OKTzwBWqc+ou8sloR8k2+0JIe/ae+rLVL6X1KSKQQVPFuroQ=="],
 
     "@solidjs/meta": ["@solidjs/meta@0.29.4", "", { "peerDependencies": { "solid-js": ">=1.8.4" } }, "sha512-zdIWBGpR9zGx1p1bzIPqF5Gs+Ks/BH8R6fWhmUa/dcK1L2rUC8BAcZJzNRYBQv74kScf1TSOs0EY//Vd/I0V8g=="],
 
