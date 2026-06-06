@@ -39,6 +39,13 @@ const zaidanUiDependencies = [
 
 const solidAuthDependencies = [...solidDependencies, ...zaidanUiDependencies]
 
+const solidEmailDependencies = [
+  "@better-auth-ui/solid@latest",
+  "@better-auth-ui/core@latest",
+  "@solidjs-email/main",
+  "solid-js"
+]
+
 const componentFile = (path: SolidRegistryFile["path"]) =>
   ({ path, type: "registry:component" }) satisfies SolidRegistryFile
 
@@ -70,6 +77,11 @@ const zaidanInteractiveUiFiles = [
   uiFile("src/components/ui/tabs.tsx"),
   libFile("src/lib/utils.ts")
 ] satisfies SolidRegistryFile[]
+
+const emailFiles = (path: SolidRegistryFile["path"]) => [
+  componentFile(path),
+  componentFile("src/components/auth/email/email-styles.tsx")
+]
 
 const item = ({
   dependencies = solidAuthDependencies,
@@ -427,6 +439,86 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/settings/account/change-email.tsx"),
         ...zaidanFormUiFiles
       ]
+    }),
+    item({
+      name: "email-verification-email",
+      type: "registry:component",
+      title: "Solid Email Verification Email",
+      description:
+        "Solid email template component that sends email verification links to users.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/email-verification.tsx")
+    }),
+    item({
+      name: "magic-link-email",
+      type: "registry:component",
+      title: "Solid Magic Link Email",
+      description:
+        "Solid email template component that sends magic link authentication emails for passwordless sign-in.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/magic-link.tsx")
+    }),
+    item({
+      name: "reset-password-email",
+      type: "registry:component",
+      title: "Solid Reset Password Email",
+      description:
+        "Solid email template component that sends password reset links to users.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/reset-password.tsx")
+    }),
+    item({
+      name: "password-changed-email",
+      type: "registry:component",
+      title: "Solid Password Changed Email",
+      description:
+        "Solid email template component that notifies users when their password has been changed.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/password-changed.tsx")
+    }),
+    item({
+      name: "email-changed-email",
+      type: "registry:component",
+      title: "Solid Email Changed Email",
+      description:
+        "Solid email template component that notifies users when their email address has been changed.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/email-changed.tsx")
+    }),
+    item({
+      name: "otp-email",
+      type: "registry:component",
+      title: "Solid OTP Email",
+      description:
+        "Solid email template component that sends one-time password (OTP) verification codes to users.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/otp-email.tsx")
+    }),
+    item({
+      name: "new-device-email",
+      type: "registry:component",
+      title: "Solid New Device Email",
+      description:
+        "Solid email template component that notifies users when a new device signs in to their account.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/new-device.tsx")
+    }),
+    item({
+      name: "organization-invitation-email",
+      type: "registry:component",
+      title: "Solid Organization Invitation Email",
+      description:
+        "Solid email template component that invites a user to join an organization.",
+      dependencies: solidEmailDependencies,
+      registryDependencies: [],
+      files: emailFiles("src/components/auth/email/organization-invitation.tsx")
     }),
     item({
       name: "delete-user",

@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
@@ -19,11 +20,18 @@ const FumadocsDeps = [
   "@fumadocs/ui"
 ]
 
+const solidJsWebServer = fileURLToPath(
+  new URL("web/dist/server.js", import.meta.resolve("solid-js/package.json"))
+)
+
 export default defineConfig({
   server: {
     port: 3000
   },
   resolve: {
+    alias: {
+      "solid-js/web": solidJsWebServer
+    },
     tsconfigPaths: true,
     noExternal: [...FumadocsDeps, "@gravity-ui/icons"]
   },

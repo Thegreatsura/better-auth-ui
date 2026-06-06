@@ -23,6 +23,15 @@
     "security-settings",
     "change-password",
     "linked-accounts",
-    "active-sessions"
+    "active-sessions",
+    "---Email---",
+    "email/email-verification-email",
+    "email/magic-link-email",
+    "email/reset-password-email",
+    "email/password-changed-email",
+    "email/email-changed-email",
+    "email/otp-email",
+    "email/new-device-email",
+    "email/organization-invitation-email"
   ]
 }

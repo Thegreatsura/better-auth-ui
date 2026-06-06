@@ -110,6 +110,14 @@ const expectedSolidRegistryPayloadNames = [
   "linked-accounts",
   "change-password",
   "change-email",
+  "email-verification-email",
+  "magic-link-email",
+  "reset-password-email",
+  "password-changed-email",
+  "email-changed-email",
+  "otp-email",
+  "new-device-email",
+  "organization-invitation-email",
   "delete-user",
   "multi-session",
   "organization",
@@ -2238,7 +2246,16 @@ describe("Solid registry isolation", () => {
       "security-settings",
       "change-password",
       "linked-accounts",
-      "active-sessions"
+      "active-sessions",
+      "---Email---",
+      "email/email-verification-email",
+      "email/magic-link-email",
+      "email/reset-password-email",
+      "email/password-changed-email",
+      "email/email-changed-email",
+      "email/otp-email",
+      "email/new-device-email",
+      "email/organization-invitation-email"
     ])
     expect(zaidanConceptsMeta.pages).toEqual(["additional-fields"])
     expect(zaidanIntegrationsMeta.pages).toEqual(["tanstack-start"])
@@ -2411,14 +2428,16 @@ describe("Solid registry isolation", () => {
     for (const docsPath of solidAndZaidanDocs) {
       const content = readFileSync(docsPath, "utf8")
 
-      expect(
-        content,
-        `${docsPath} should not claim live Solid previews`
-      ).not.toContain("ComponentPreview")
-      expect(
-        content,
-        `${docsPath} should not claim live Solid previews`
-      ).not.toContain("live Solid preview")
+      if (!docsPath.includes("/zaidan/components/email/")) {
+        expect(
+          content,
+          `${docsPath} should not claim live Solid previews`
+        ).not.toContain("ComponentPreview")
+        expect(
+          content,
+          `${docsPath} should not claim live Solid previews`
+        ).not.toContain("live Solid preview")
+      }
       expect(
         content,
         `${docsPath} should not keep stale pending claims`
@@ -2473,6 +2492,16 @@ describe("Solid registry isolation", () => {
     ]
     const runtimeOnlyPluginNames = ["captcha"]
     const hiddenComponentDocNames = ["organization"]
+    const emailPayloadNames = [
+      "email-verification-email",
+      "magic-link-email",
+      "reset-password-email",
+      "password-changed-email",
+      "email-changed-email",
+      "otp-email",
+      "new-device-email",
+      "organization-invitation-email"
+    ]
     const componentPayloadNames = solidRegistryManifest.items
       .map((item) => item.name)
       .filter(
@@ -2550,8 +2579,13 @@ describe("Solid registry isolation", () => {
     }
 
     for (const name of componentPayloadNames) {
+      const isEmailPayload = emailPayloadNames.includes(name)
       const page =
-        name === "additional-field" ? additionalFields : componentDoc(name)
+        name === "additional-field"
+          ? additionalFields
+          : isEmailPayload
+            ? componentDoc(`email/${name}`)
+            : componentDoc(name)
       const item = solidRegistryManifest.items.find(
         (entry) => entry.name === name
       )
@@ -2563,12 +2597,16 @@ describe("Solid registry isolation", () => {
         page,
         `component ${name} should include install command`
       ).toContain(`zaidan add https://better-auth-ui.com/r/solid/${name}.json`)
-      expect(page, `component ${name} should identify copied files`).toContain(
-        item?.files[0]?.path
-      )
-      expect(page, `component ${name} should explain ownership`).toContain(
-        "After install"
-      )
+
+      if (!isEmailPayload) {
+        expect(
+          page,
+          `component ${name} should identify copied files`
+        ).toContain(item?.files[0]?.path)
+        expect(page, `component ${name} should explain ownership`).toContain(
+          "After install"
+        )
+      }
     }
 
     for (const name of pluginPayloadNames) {

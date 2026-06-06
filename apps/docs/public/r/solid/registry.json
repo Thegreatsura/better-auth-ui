@@ -1483,6 +1483,190 @@
       ]
     },
     {
+      "name": "email-verification-email",
+      "type": "registry:component",
+      "title": "Solid Email Verification Email",
+      "description": "Solid email template component that sends email verification links to users.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/email-verification.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "magic-link-email",
+      "type": "registry:component",
+      "title": "Solid Magic Link Email",
+      "description": "Solid email template component that sends magic link authentication emails for passwordless sign-in.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/magic-link.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "reset-password-email",
+      "type": "registry:component",
+      "title": "Solid Reset Password Email",
+      "description": "Solid email template component that sends password reset links to users.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/reset-password.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "password-changed-email",
+      "type": "registry:component",
+      "title": "Solid Password Changed Email",
+      "description": "Solid email template component that notifies users when their password has been changed.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/password-changed.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "email-changed-email",
+      "type": "registry:component",
+      "title": "Solid Email Changed Email",
+      "description": "Solid email template component that notifies users when their email address has been changed.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/email-changed.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "otp-email",
+      "type": "registry:component",
+      "title": "Solid OTP Email",
+      "description": "Solid email template component that sends one-time password (OTP) verification codes to users.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/otp-email.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "new-device-email",
+      "type": "registry:component",
+      "title": "Solid New Device Email",
+      "description": "Solid email template component that notifies users when a new device signs in to their account.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/new-device.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "organization-invitation-email",
+      "type": "registry:component",
+      "title": "Solid Organization Invitation Email",
+      "description": "Solid email template component that invites a user to join an organization.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@solidjs-email/main",
+        "solid-js"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/auth/email/organization-invitation.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/email/email-styles.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "delete-user",
       "type": "registry:component",
       "title": "Solid Delete User",

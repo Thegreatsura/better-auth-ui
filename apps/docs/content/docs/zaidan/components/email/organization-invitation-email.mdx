@@ -1,0 +1,34 @@
+---
+title: <OrganizationInvitationEmail />
+description: Email template component that invites a user to join an organization.
+---
+
+## Usage
+
+<ComponentPreview name="zaidan-organization-invitation-email" />
+
+```tsx file=<rootDir>/src/demos/zaidan/email/organization-invitation-email.tsx#L13-
+```
+
+## Installation
+
+```npm
+npx zaidan add https://better-auth-ui.com/r/solid/organization-invitation-email.json
+```
+
+## Props
+
+<auto-type-table path="../../../../../../../packages/solid/src/components/auth/email/organization-invitation.tsx" name="OrganizationInvitationEmailProps" />
+
+## Features
+
+- Inviter name and email display
+- Organization name and optional organization logo
+- Role being offered (e.g. member, admin, owner)
+- Accept invitation button linking to the settings invitations page
+- Fallback URL for manual copy/paste
+- Optional expiration time
+- Security notice for unexpected invitations
+- Customizable branding and styling
+- Support for light/dark mode themes
+- Localization support

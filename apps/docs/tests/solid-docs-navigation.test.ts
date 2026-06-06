@@ -90,27 +90,17 @@ describe("Solid docs navigation", () => {
       "security-settings",
       "change-password",
       "linked-accounts",
-      "active-sessions"
-    ])
-    expect(zaidanComponentsMeta.pages).not.toContain("---Email---")
-    expect(zaidanComponentsMeta.pages).not.toContain(
-      "email/email-verification-email"
-    )
-    expect(zaidanComponentsMeta.pages).not.toContain("email/magic-link-email")
-    expect(zaidanComponentsMeta.pages).not.toContain(
-      "email/reset-password-email"
-    )
-    expect(zaidanComponentsMeta.pages).not.toContain(
-      "email/password-changed-email"
-    )
-    expect(zaidanComponentsMeta.pages).not.toContain(
-      "email/email-changed-email"
-    )
-    expect(zaidanComponentsMeta.pages).not.toContain("email/otp-email")
-    expect(zaidanComponentsMeta.pages).not.toContain("email/new-device-email")
-    expect(zaidanComponentsMeta.pages).not.toContain(
+      "active-sessions",
+      "---Email---",
+      "email/email-verification-email",
+      "email/magic-link-email",
+      "email/reset-password-email",
+      "email/password-changed-email",
+      "email/email-changed-email",
+      "email/otp-email",
+      "email/new-device-email",
       "email/organization-invitation-email"
-    )
+    ])
     expect(zaidanComponentsMeta.pages).not.toContain("---Organization---")
     expect(zaidanComponentsMeta.pages).not.toContain("organizations-settings")
     expect(zaidanComponentsMeta.pages).not.toContain("organization-switcher")
@@ -266,6 +256,82 @@ describe("Solid docs navigation", () => {
     expect(ssr).toContain("does not create routes")
   })
 
+  it("documents native Solid email templates in Zaidan Components", () => {
+    const emailPages = [
+      [
+        "email-verification-email",
+        "zaidan-email-verification-email",
+        "email-verification.tsx",
+        "EmailVerificationEmailProps"
+      ],
+      [
+        "magic-link-email",
+        "zaidan-magic-link-email",
+        "magic-link.tsx",
+        "MagicLinkEmailProps"
+      ],
+      [
+        "reset-password-email",
+        "zaidan-reset-password-email",
+        "reset-password.tsx",
+        "ResetPasswordEmailProps"
+      ],
+      [
+        "password-changed-email",
+        "zaidan-password-changed-email",
+        "password-changed.tsx",
+        "PasswordChangedEmailProps"
+      ],
+      [
+        "email-changed-email",
+        "zaidan-email-changed-email",
+        "email-changed.tsx",
+        "EmailChangedEmailProps"
+      ],
+      ["otp-email", "zaidan-otp-email", "otp-email.tsx", "OtpEmailProps"],
+      [
+        "new-device-email",
+        "zaidan-new-device-email",
+        "new-device.tsx",
+        "NewDeviceEmailProps"
+      ],
+      [
+        "organization-invitation-email",
+        "zaidan-organization-invitation-email",
+        "organization-invitation.tsx",
+        "OrganizationInvitationEmailProps"
+      ]
+    ] as const
+
+    for (const [slug, previewName, sourceFileName, propsName] of emailPages) {
+      const page = readDocsFile("zaidan", "components", "email", `${slug}.mdx`)
+      const demo = readFileSync(
+        join(sourceRoot, "demos", "zaidan", "email", `${slug}.tsx`),
+        "utf8"
+      )
+
+      expect(page).toContain(`<ComponentPreview name="${previewName}" />`)
+      expect(page).toContain("## Installation")
+      expect(page).toContain("```npm")
+      expect(page).toContain(
+        `npx zaidan add https://better-auth-ui.com/r/solid/${slug}.json`
+      )
+      expect(page).toContain(
+        `packages/solid/src/components/auth/email/${sourceFileName}`
+      )
+      expect(page).toContain(`name="${propsName}"`)
+      expect(page).not.toContain("## Server rendering")
+      expect(page).not.toContain("## Server setup")
+      expect(page).not.toContain("@better-auth-ui/react/email")
+      expect(page).not.toContain("@react-email/render")
+      expect(demo).toContain("EmailFrame")
+      expect(demo).toContain("@better-auth-ui/solid/email")
+      expect(demo).toContain("@solidjs-email/main")
+      expect(demo).not.toContain("@better-auth-ui/react/email")
+      expect(demo).not.toContain("@react-email/render")
+    }
+  })
+
   it("registers the Zaidan Storybook iframe embed for MDX docs", () => {
     const mdxComponents = readFileSync(
       join(sourceRoot, "lib/mdx-components.tsx"),
@@ -302,7 +368,7 @@ describe("Solid docs navigation", () => {
     const mutations = readDocsFile("solid", "mutations", "index.mdx")
     const source = readFileSync(sourceFile, "utf8")
 
-    expect(index).toContain("React email templates")
+    expect(index).toContain("React render-hook behavior")
     expect(index).toContain("HeroUI React components")
     expect(mutations).toContain("The Solid package does not render toast UI")
     expect(mutations).toContain("installed Zaidan components")

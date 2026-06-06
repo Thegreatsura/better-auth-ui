@@ -99,6 +99,14 @@ import { UserViewDemo as ShadcnUserViewDemo } from "./shadcn/user/user-view"
 import { SignInUsernameDemo as ShadcnSignInUsernameDemo } from "./shadcn/username/sign-in"
 import { SignUpUsernameDemo as ShadcnSignUpUsernameDemo } from "./shadcn/username/sign-up"
 import { UserProfileUsernameDemo as ShadcnUserProfileUsernameDemo } from "./shadcn/username/user-profile"
+import { EmailChangedEmailDemo as ZaidanEmailChangedEmailDemo } from "./zaidan/email/email-changed-email"
+import { EmailVerificationEmailDemo as ZaidanEmailVerificationEmailDemo } from "./zaidan/email/email-verification-email"
+import { MagicLinkEmailDemo as ZaidanMagicLinkEmailDemo } from "./zaidan/email/magic-link-email"
+import { NewDeviceEmailDemo as ZaidanNewDeviceEmailDemo } from "./zaidan/email/new-device-email"
+import { OrganizationInvitationEmailDemo as ZaidanOrganizationInvitationEmailDemo } from "./zaidan/email/organization-invitation-email"
+import { OtpEmailDemo as ZaidanOtpEmailDemo } from "./zaidan/email/otp-email"
+import { PasswordChangedEmailDemo as ZaidanPasswordChangedEmailDemo } from "./zaidan/email/password-changed-email"
+import { ResetPasswordEmailDemo as ZaidanResetPasswordEmailDemo } from "./zaidan/email/reset-password-email"
 
 export interface DemoItem {
   component: ComponentType
@@ -204,5 +212,13 @@ export const demos: Record<string, ComponentType> = {
   "shadcn-username-sign-in": ShadcnSignInUsernameDemo,
   "shadcn-username-sign-up": ShadcnSignUpUsernameDemo,
   "shadcn-username-user-profile": ShadcnUserProfileUsernameDemo,
-  "shadcn-theme-toggle-item": ShadcnThemeToggleItemDemo
+  "shadcn-theme-toggle-item": ShadcnThemeToggleItemDemo,
+  "zaidan-email-changed-email": ZaidanEmailChangedEmailDemo,
+  "zaidan-email-verification-email": ZaidanEmailVerificationEmailDemo,
+  "zaidan-magic-link-email": ZaidanMagicLinkEmailDemo,
+  "zaidan-new-device-email": ZaidanNewDeviceEmailDemo,
+  "zaidan-organization-invitation-email": ZaidanOrganizationInvitationEmailDemo,
+  "zaidan-otp-email": ZaidanOtpEmailDemo,
+  "zaidan-password-changed-email": ZaidanPasswordChangedEmailDemo,
+  "zaidan-reset-password-email": ZaidanResetPasswordEmailDemo
 }

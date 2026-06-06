@@ -36,6 +36,9 @@ describe("Solid email templates", () => {
     expect(html).toContain("https://example.com/logo-dark.png")
     expect(html).toContain("This link expires in 60 minutes")
     expect(html).toContain("Powered by")
+    expect(html).toContain("font-family: Arial, Helvetica, sans-serif")
+    expect(html).toContain("font-family:Arial, Helvetica, sans-serif")
+    expect(html).not.toContain("font-family:ui-sans-serif")
   })
 
   it("applies EmailVerificationEmail localization overrides", async () => {
