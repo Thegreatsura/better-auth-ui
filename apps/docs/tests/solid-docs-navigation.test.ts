@@ -61,9 +61,61 @@ describe("Solid docs navigation", () => {
     const solidQueriesMeta = JSON.parse(
       readDocsFile("solid", "queries", "meta.json")
     ) as { pages: string[]; title: string }
+    const zaidanComponentsMeta = JSON.parse(
+      readDocsFile("zaidan", "components", "meta.json")
+    ) as { pages: string[] }
     const solidMutationsMeta = JSON.parse(
       readDocsFile("solid", "mutations", "meta.json")
     ) as { pages: string[]; title: string }
+
+    expect(zaidanComponentsMeta.pages).toEqual([
+      "---Provider---",
+      "auth-provider",
+      "---User---",
+      "user-avatar",
+      "user-button",
+      "user-view",
+      "---Auth---",
+      "auth",
+      "sign-in",
+      "sign-up",
+      "sign-out",
+      "forgot-password",
+      "reset-password",
+      "---Settings---",
+      "settings",
+      "account-settings",
+      "user-profile",
+      "change-email",
+      "security-settings",
+      "change-password",
+      "linked-accounts",
+      "active-sessions"
+    ])
+    expect(zaidanComponentsMeta.pages).not.toContain("---Email---")
+    expect(zaidanComponentsMeta.pages).not.toContain(
+      "email/email-verification-email"
+    )
+    expect(zaidanComponentsMeta.pages).not.toContain("email/magic-link-email")
+    expect(zaidanComponentsMeta.pages).not.toContain(
+      "email/reset-password-email"
+    )
+    expect(zaidanComponentsMeta.pages).not.toContain(
+      "email/password-changed-email"
+    )
+    expect(zaidanComponentsMeta.pages).not.toContain(
+      "email/email-changed-email"
+    )
+    expect(zaidanComponentsMeta.pages).not.toContain("email/otp-email")
+    expect(zaidanComponentsMeta.pages).not.toContain("email/new-device-email")
+    expect(zaidanComponentsMeta.pages).not.toContain(
+      "email/organization-invitation-email"
+    )
+    expect(zaidanComponentsMeta.pages).not.toContain("---Organization---")
+    expect(zaidanComponentsMeta.pages).not.toContain("organizations-settings")
+    expect(zaidanComponentsMeta.pages).not.toContain("organization-switcher")
+    expect(zaidanComponentsMeta.pages).not.toContain("organization")
+    expect(zaidanComponentsMeta.pages).not.toContain("organization-people")
 
     expect(solidQueriesMeta).toMatchObject({
       title: "Queries",

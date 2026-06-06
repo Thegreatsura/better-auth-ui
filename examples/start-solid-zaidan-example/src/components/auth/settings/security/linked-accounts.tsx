@@ -7,7 +7,7 @@ import type {
   LinkedProvider
 } from "@/components/auth/settings/shared/types"
 import { Card, CardContent } from "@/components/ui/card"
-import { ItemSeparator } from "@/components/ui/item"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { LinkedAccountRow, LinkedAccountRowSkeleton } from "./linked-account"
 
@@ -29,21 +29,31 @@ export function LinkedAccountsSettings(
     })
   }))
   const socialProviders = () => auth.socialProviders ?? []
+  const linkedSocialAccounts = () =>
+    ((linkedAccounts.data ?? []) as LinkedAccount[]).filter(
+      (account) => account.providerId !== "credential"
+    )
+  const availableProviders = () => {
+    if (auth.multipleAccountsPerProvider !== false) return socialProviders()
+
+    const linkedProviderIds = new Set(
+      linkedSocialAccounts().map((account) => account.providerId)
+    )
+
+    return socialProviders().filter(
+      (provider) => !linkedProviderIds.has(provider)
+    )
+  }
   const accountRows = () => {
-    const linked = (linkedAccounts.data ?? [])
-      .filter(
-        (account: { providerId?: string }) =>
-          account.providerId !== "credential"
-      )
-      .map((account: LinkedAccount) => ({
-        account,
-        key: account.id,
-        provider: account.providerId as LinkedProvider
-      }))
+    const linked = linkedSocialAccounts().map((account: LinkedAccount) => ({
+      account,
+      key: account.id,
+      provider: account.providerId as LinkedProvider
+    }))
 
     return [
       ...linked,
-      ...socialProviders().map((provider) => ({
+      ...availableProviders().map((provider) => ({
         account: undefined,
         key: provider,
         provider: provider as LinkedProvider
@@ -57,17 +67,19 @@ export function LinkedAccountsSettings(
         {auth.localization.settings.linkedAccounts}
       </h2>
 
-      <Card class="p-0">
-        <CardContent class="p-0">
+      <Card class="!p-0">
+        <CardContent class="!p-0">
           <Show
             fallback={
               <For each={socialProviders()}>
                 {(_, index) => (
                   <>
                     <Show when={index() > 0}>
-                      <ItemSeparator />
+                      <Separator />
                     </Show>
-                    <LinkedAccountRowSkeleton />
+                    <div class="p-4">
+                      <LinkedAccountRowSkeleton />
+                    </div>
                   </>
                 )}
               </For>
@@ -78,13 +90,15 @@ export function LinkedAccountsSettings(
               {(row, index) => (
                 <>
                   <Show when={index() > 0}>
-                    <ItemSeparator />
+                    <Separator />
                   </Show>
-                  <LinkedAccountRow
-                    account={row.account}
-                    provider={row.provider}
-                    userId={userId()}
-                  />
+                  <div class="p-4">
+                    <LinkedAccountRow
+                      account={row.account}
+                      provider={row.provider}
+                      userId={userId()}
+                    />
+                  </div>
                 </>
               )}
             </For>

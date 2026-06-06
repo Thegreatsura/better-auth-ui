@@ -317,7 +317,7 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid Account Settings",
       description:
-        "Solid account settings with profile, email, danger-zone, and plugin account cards.",
+        "Solid account settings with profile, email, and plugin account cards.",
       registryDependencies: [
         "solid/user-profile",
         "solid/change-email",
@@ -340,6 +340,7 @@ export const solidRegistryManifest = {
         "solid/active-sessions",
         "solid/linked-accounts",
         "solid/change-password",
+        "solid/delete-user",
         "solid/passkey",
         "solid/api-key"
       ],
@@ -379,6 +380,8 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/settings/security/active-session.tsx"
         ),
+        componentFile("src/components/auth/settings/shared/helpers.ts"),
+        uiFile("src/components/ui/spinner.tsx"),
         ...zaidanInteractiveUiFiles
       ]
     }),
@@ -394,6 +397,9 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/settings/security/linked-account.tsx"
         ),
+        componentFile("src/components/auth/settings/shared/helpers.ts"),
+        componentFile("src/components/auth/settings/shared/types.ts"),
+        uiFile("src/components/ui/spinner.tsx"),
         ...zaidanInteractiveUiFiles
       ]
     }),
@@ -406,6 +412,9 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/settings/security/change-password.tsx"
         ),
+        componentFile("src/components/auth/settings/shared/helpers.ts"),
+        componentFile("src/components/auth/settings/shared/types.ts"),
+        uiFile("src/components/ui/skeleton.tsx"),
         ...zaidanFormUiFiles
       ]
     }),

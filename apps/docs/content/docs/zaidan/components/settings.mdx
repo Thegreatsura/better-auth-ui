@@ -5,23 +5,14 @@ description: A Solid settings shell with account and security tabs for authentic
 
 ## Usage
 
-Mount `Settings` from a protected TanStack Start route and pass the active settings path.
+<ZaidanStory
+  storyId="zaidan-components-settings--settings-preview"
+  title="Zaidan Settings preview"
+  height={760}
+/>
 
-```tsx
-import { Settings } from "@/components/auth/settings/settings"
-
-function SettingsPage() {
-  const path = () => Route.useParams()().path
-
-  return (
-    <div class="mx-auto w-full max-w-3xl p-4 md:p-6">
-      <Settings path={path()} />
-    </div>
-  )
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/settings/settings.tsx
 ```
-
-The route should require a session before rendering this surface. The shell maps the configured settings paths to the account and security tabs and redirects unknown paths at the route layer.
 
 ## Installation
 
@@ -29,21 +20,8 @@ The route should require a session before rendering this surface. The shell maps
 npx zaidan add https://better-auth-ui.com/r/solid/settings.json
 ```
 
+After install, `src/components/auth/settings/settings.tsx` is app-owned. Customize it inside your Solid app as needed.
+
 ## Props
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/settings/settings.tsx" name="SettingsProps" />
-
-### Parity classification
-
-Zaidan follows Solid's local `class` prop convention. It adapts the shadcn `className` styling hook to `class`; `path`, `view`, and `hideNav` keep their shadcn semantics in Solid form.
-
-## Plugin gates
-
-`Settings` itself only needs an authenticated session. The account and security panels decide which plugin-backed cards appear, so install the child registry entries that match your app configuration.
-
-## Installed files
-
-- `src/components/auth/settings/settings.tsx`
-- Local tabs, card, separator, and menu primitives.
-
-After install, keep the route guard and the account/security child registry entries aligned with your Better Auth config.

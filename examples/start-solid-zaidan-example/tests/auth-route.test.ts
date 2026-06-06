@@ -725,6 +725,53 @@ describe("Solid auth route component selection", () => {
     }
   })
 
+  it("keeps Settings runtime and standalone registry parity fixes", () => {
+    const accountSettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/account/account-settings.tsx"
+      ),
+      "utf8"
+    )
+    const securitySettings = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/security/security-settings.tsx"
+      ),
+      "utf8"
+    )
+    const changeEmail = readFileSync(
+      resolve(
+        __dirname,
+        "../src/components/auth/settings/account/change-email.tsx"
+      ),
+      "utf8"
+    )
+    const manifest = readFileSync(
+      resolve(__dirname, "../registry.manifest.ts"),
+      "utf8"
+    )
+
+    expect(accountSettings).toContain("showChangeEmail")
+    expect(accountSettings).toContain("auth.emailAndPassword?.enabled")
+    expect(accountSettings).toContain('plugin.id === "magicLink"')
+    expect(accountSettings).toContain("<Show when={showChangeEmail()}>")
+    expect(securitySettings).not.toContain("<PasskeysSettings />")
+    expect(securitySettings).not.toContain(
+      'hasAuthPlugin(auth.plugins, "passkey")'
+    )
+    expect(securitySettings).toContain("plugin as SecurityCardsPlugin")
+    expect(securitySettings).toContain("securityCards")
+    expect(changeEmail).toContain("changeEmailSuccess")
+    expect(manifest).toContain(
+      'componentFile("src/components/auth/settings/shared/helpers.ts")'
+    )
+    expect(manifest).toContain(
+      'componentFile("src/components/auth/settings/shared/types.ts")'
+    )
+    expect(manifest).toContain('uiFile("src/components/ui/skeleton.tsx")')
+  })
+
   it("extracts Zaidan Tabs settings navigation into the settings shell without document anchors", () => {
     const settingsComponents = readFileSync(
       resolve(__dirname, "../src/components/auth/settings/settings.tsx"),
@@ -1937,9 +1984,11 @@ describe("Solid auth route component selection", () => {
     expect(changeEmail).toContain("auth.localization.settings.changeEmail")
     expect(changeEmail).toContain("auth.localization.auth.email")
     expect(changeEmail).toContain("auth.localization.auth.emailPlaceholder")
-    expect(changeEmail).toContain('toast.success("Email updated successfully")')
-    expect(changeEmail).not.toContain(
+    expect(changeEmail).toContain(
       "toast.success(auth.localization.settings.changeEmailSuccess)"
+    )
+    expect(changeEmail).not.toContain(
+      'toast.success("Email updated successfully")'
     )
     expect(changeEmail).toContain("auth.localization.settings.updateEmail")
     expect(changeEmail).not.toContain(
@@ -2042,16 +2091,19 @@ describe("Solid auth route component selection", () => {
     expect(securitySettings).toContain("!!auth.socialProviders?.length")
     expect(securitySettings).toContain("<LinkedAccountsSettings")
     expect(securitySettings).toContain("<ActiveSessionsSettings")
-    expect(linkedAccounts).toContain("<ItemSeparator")
-    expect(activeSessions).toContain("<ItemGroup")
+    expect(linkedAccounts).toContain("<Separator")
+    expect(linkedAccounts).not.toContain("<ItemSeparator")
     expect(activeSessions).toContain("<ActiveSessionRow")
-    expect(activeSession).toContain("<Item")
-    expect(activeSession).toContain("<ItemMedia")
-    expect(activeSession).toContain("<ItemContent")
-    expect(activeSession).toContain("<ItemTitle")
-    expect(activeSession).toContain("<ItemDescription")
-    expect(activeSession).toContain("<ItemActions")
-    expect(activeSessions).toContain("<ItemSeparator")
+    expect(activeSessions).toContain("<Separator")
+    expect(activeSessions).not.toContain("<ItemGroup")
+    expect(activeSessions).toContain('<Card class="!p-0">')
+    expect(activeSessions).toContain('<CardContent class="!p-0">')
+    expect(activeSessions).toContain('<div class="p-4">')
+    expect(activeSession).not.toContain("<Card")
+    expect(activeSession).not.toContain("<CardContent")
+    expect(activeSession).toContain("flex items-center justify-between gap-3")
+    expect(activeSession).not.toContain("z-card")
+    expect(activeSessions).not.toContain("<ItemSeparator")
     expect(activeSession).toContain("auth.localization.settings.currentSession")
     expect(activeSession).toContain("auth.localization.auth.signOut")
     expect(securitySettings).toContain("auth.plugins.flatMap")
@@ -2213,8 +2265,8 @@ describe("Solid auth route component selection", () => {
     expect(activeSessions).toContain(
       "auth.localization.settings.revokeSessionSuccess"
     )
-    expect(activeSessions).toContain("activeSession.token ===")
-    expect(activeSessions).toContain("session.data?.session.token")
+    expect(activeSessions).toContain("activeSession.id ===")
+    expect(activeSessions).toContain("session.data?.session.id")
     expect(activeSessions).toContain("auth.navigate({")
     expect(activeSessions).toContain("auth.basePaths.auth")
     expect(activeSessions).toContain("auth.viewPaths.auth.signOut")
@@ -2275,6 +2327,17 @@ describe("Solid auth route component selection", () => {
     expect(linkedAccount).toContain("auth.localization.settings.unlinkProvider")
     expect(linkedAccount).toContain("auth.localization.settings.link")
     expect(linkedAccount).toContain("Link2Off")
+    expect(linkedAccount).toContain("function GitHubIcon")
+    expect(linkedAccount).toContain("function GoogleIcon")
+    expect(linkedAccount).toContain("<ProviderIcon")
+    expect(linkedAccounts).toContain('<Card class="!p-0">')
+    expect(linkedAccounts).toContain('<CardContent class="!p-0">')
+    expect(linkedAccounts).toContain('<div class="p-4">')
+    expect(linkedAccount).not.toContain("<Card")
+    expect(linkedAccount).not.toContain("<CardContent")
+    expect(linkedAccount).toContain("flex items-center justify-between gap-3")
+    expect(linkedAccount).not.toContain("z-card")
+    expect(linkedAccount).toContain("<Spinner")
     expect(linkedAccount).not.toContain(
       "link and unlink mutations are not wired in this Solid slice yet."
     )
@@ -2302,7 +2365,10 @@ describe("Solid auth route component selection", () => {
 
     expect(providers).toContain("deleteUserPlugin")
     expect(securitySettings).toContain('hasAuthPlugin(auth.plugins, "apiKey")')
-    expect(securitySettings).toContain('hasAuthPlugin(auth.plugins, "passkey")')
+    expect(securitySettings).not.toContain(
+      'hasAuthPlugin(auth.plugins, "passkey")'
+    )
+    expect(securitySettings).toContain("securityCards")
     expect(securitySettings).toContain(
       'hasAuthPlugin(auth.plugins, "deleteUser")'
     )
@@ -2476,9 +2542,10 @@ describe("Solid auth route component selection", () => {
     expect(authServer).toContain(
       '{ configId: "organization", references: "organization" }'
     )
-    expect(securitySettings).toContain(
+    expect(securitySettings).not.toContain(
       'from "@/components/auth/passkey/passkeys"'
     )
+    expect(securitySettings).toContain("securityCards")
     expect(settingsComponents).not.toContain("passkeys: PasskeysSettings")
     expect(settingsComponents).not.toContain("function PasskeysSettings")
     expect(settingsComponents).not.toContain("function PasskeyRow")
@@ -2717,9 +2784,10 @@ describe("Solid auth route component selection", () => {
       "utf8"
     )
 
-    expect(securitySettings).toContain(
+    expect(securitySettings).not.toContain(
       'from "@/components/auth/passkey/passkeys"'
     )
+    expect(securitySettings).toContain("securityCards")
     expect(passkeys).toContain("passkeyLabels")
     const settingsTypes = readFileSync(
       resolve(__dirname, "../src/components/auth/settings/shared/types.ts"),

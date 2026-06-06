@@ -9,10 +9,7 @@ import {
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import {
-  type SolidRegistryManifest,
-  solidRegistryManifest
-} from "../registry.manifest"
+import { solidRegistryManifest } from "../registry.manifest"
 import {
   buildSolidRegistry,
   verifySolidRegistryCoherence
@@ -939,14 +936,22 @@ describe("Solid registry isolation", () => {
     }
 
     const shadcnModelDocs = new Set([
+      "accountSettings",
+      "activeSessions",
       "auth",
+      "changeEmail",
+      "changePassword",
       "forgotPassword",
+      "linkedAccounts",
       "resetPassword",
+      "securitySettings",
+      "settings",
       "signIn",
       "signOut",
       "signUp",
       "userAvatar",
       "userButton",
+      "userProfile",
       "userView"
     ])
 
@@ -982,6 +987,144 @@ describe("Solid registry isolation", () => {
         expect(content, name).toContain("`class`")
       }
     }
+
+    const settingsFlowDocs: Record<
+      string,
+      {
+        content: string
+        headings: string[]
+        install?: boolean
+        propsName: string
+        storyId: string
+        usageFence: string
+      }
+    > = {
+      settings: {
+        content: pages.settings,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "SettingsProps",
+        storyId: "zaidan-components-settings--settings-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/settings.tsx"
+      },
+      "account-settings": {
+        content: pages.accountSettings,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "AccountSettingsProps",
+        storyId: "zaidan-components-settings--account-settings-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/account/account-settings.tsx"
+      },
+      "user-profile": {
+        content: pages.userProfile,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "UserProfileProps",
+        storyId: "zaidan-components-settings--user-profile-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/account/user-profile.tsx"
+      },
+      "change-email": {
+        content: pages.changeEmail,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "ChangeEmailProps",
+        storyId: "zaidan-components-settings--change-email-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/account/change-email.tsx"
+      },
+      "security-settings": {
+        content: pages.securitySettings,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "SecuritySettingsProps",
+        storyId: "zaidan-components-settings--security-settings-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/security/security-settings.tsx"
+      },
+      "change-password": {
+        content: pages.changePassword,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "ChangePasswordSettingsProps",
+        storyId: "zaidan-components-settings--change-password-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/security/change-password.tsx"
+      },
+      "linked-accounts": {
+        content: pages.linkedAccounts,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "LinkedAccountsSettingsProps",
+        storyId: "zaidan-components-settings--linked-accounts-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/security/linked-accounts.tsx"
+      },
+      "active-sessions": {
+        content: pages.activeSessions,
+        headings: ["Usage", "Installation", "Props"],
+        install: true,
+        propsName: "ActiveSessionsSettingsProps",
+        storyId: "zaidan-components-settings--active-sessions-preview",
+        usageFence:
+          "examples/start-solid-zaidan-example/src/demos/settings/security/active-sessions.tsx"
+      }
+    }
+
+    for (const [name, expectation] of Object.entries(settingsFlowDocs)) {
+      expect(extractLevelTwoHeadings(expectation.content), name).toEqual(
+        expectation.headings
+      )
+      expect(
+        expectation.content,
+        `${name} should show Zaidan preview`
+      ).toContain(`storyId="${expectation.storyId}"`)
+      expect(
+        expectation.content,
+        `${name} should use file-backed Solid demo`
+      ).toContain(`tsx file=<rootDir>/../../${expectation.usageFence}`)
+      expect(
+        expectation.content,
+        `${name} should derive props from Solid source`
+      ).toContain(`name="${expectation.propsName}"`)
+      if (expectation.install) {
+        expect(
+          expectation.content,
+          `${name} should include install command`
+        ).toContain(
+          `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+        )
+      } else {
+        expect(
+          expectation.content,
+          `${name} should match shadcn no-install model`
+        ).not.toContain("## Installation")
+      }
+      expect(
+        expectation.content,
+        `${name} should not keep plugin gates`
+      ).not.toContain("## Plugin gates")
+      expect(
+        expectation.content,
+        `${name} should not keep installed files`
+      ).not.toContain("## Installed files")
+      expect(
+        expectation.content,
+        `${name} should not keep parity prose`
+      ).not.toContain("Parity classification")
+    }
+
+    const settingsStories = readFileSync(
+      resolve(__dirname, "../src/stories/settings.stories.tsx"),
+      "utf8"
+    )
+    expect(settingsStories).toContain("h-screen")
+    expect(settingsStories).toContain("overflow-hidden")
+    expect(settingsStories).toContain("createStoryQueryClient")
+    expect(settingsStories).not.toContain("navigator.credentials")
+    expect(settingsStories).not.toContain("fetch(")
 
     expect(pages.userAvatar).not.toContain("intentional-difference")
     expect(pages.userView).not.toContain("intentional-difference")
@@ -1798,7 +1941,12 @@ describe("Solid registry isolation", () => {
     const report = verifyLocalRegistryCoherence()
 
     expect(report.packageName).toBe("@better-auth-ui/solid")
-    expect(report.packageExports).toEqual([".", "./server", "./plugins"])
+    expect(report.packageExports).toEqual([
+      ".",
+      "./email",
+      "./server",
+      "./plugins"
+    ])
     expect(report.exampleSolidDependency).toBe("*")
     expect(report.staticItemNames).toEqual(expectedSolidRegistryPayloadNames)
     expect(report.missingStaticFiles).toEqual([])
@@ -2088,14 +2236,9 @@ describe("Solid registry isolation", () => {
       "user-profile",
       "change-email",
       "security-settings",
-      "active-sessions",
-      "linked-accounts",
       "change-password",
-      "---Organization---",
-      "organizations-settings",
-      "organization-switcher",
-      "organization",
-      "organization-people"
+      "linked-accounts",
+      "active-sessions"
     ])
     expect(zaidanConceptsMeta.pages).toEqual(["additional-fields"])
     expect(zaidanIntegrationsMeta.pages).toEqual(["tanstack-start"])
@@ -2329,9 +2472,14 @@ describe("Solid registry isolation", () => {
       "theme"
     ]
     const runtimeOnlyPluginNames = ["captcha"]
+    const hiddenComponentDocNames = ["organization"]
     const componentPayloadNames = solidRegistryManifest.items
       .map((item) => item.name)
-      .filter((name) => !pluginPayloadNames.includes(name))
+      .filter(
+        (name) =>
+          !pluginPayloadNames.includes(name) &&
+          !hiddenComponentDocNames.includes(name)
+      )
 
     expect(quickStart).toContain("title: Quick Start")
     expect(quickStart).toContain("## Prerequisites")
@@ -2826,58 +2974,19 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).not.toContain(
       "organization API keys are deferred"
     )
-    const organizationsSettingsDoc = componentDoc("organizations-settings")
-    const organizationPeopleDoc = componentDoc("organization-people")
-    const organizationDoc = componentDoc("organization")
-    const organizationSwitcherDoc = componentDoc("organization-switcher")
-
-    expect(organizationsSettingsDoc).toContain("OrganizationsSettings")
-    expect(organizationsSettingsDoc).toContain("UserInvitations")
-    expect(organizationsSettingsDoc).toContain("accept or reject invitations")
-    expect(organizationsSettingsDoc).not.toContain(
-      "Member and invitation management UI is deferred"
-    )
-    expect(organizationPeopleDoc).toContain("OrganizationPeople")
-    expect(organizationPeopleDoc).toContain("Members")
-    expect(organizationPeopleDoc).toContain("Invitations")
-    expect(organizationPeopleDoc).toContain("members table")
-    expect(organizationPeopleDoc).toContain(
-      "search with a grouped search control, filter by role, and sort members"
-    )
-    expect(organizationPeopleDoc).toContain("update member roles")
-    expect(organizationPeopleDoc).toContain("invitations table")
-    expect(organizationPeopleDoc).toContain(
-      "search with a grouped search control, filter, and sort invitations"
-    )
-    expect(organizationPeopleDoc).toContain("InviteMemberDialog")
-    expect(organizationPeopleDoc).toContain("cancel pending invitations")
-    expect(organizationPeopleDoc).toContain("remove non-current members")
-    expect(organizationPeopleDoc).toContain("leave the active organization")
-    expect(organizationPeopleDoc).not.toContain("Full members table layout")
-    expect(organizationPeopleDoc).not.toContain(
-      "search, filters, sorting, remove member, and leave organization"
-    )
-    expect(organizationPeopleDoc).not.toContain(
-      "search, filters, sorting, and advanced status actions"
-    )
-    expect(organizationPeopleDoc).not.toContain(
-      "Advanced invitation status actions remain deferred"
-    )
-    expect(organizationDoc).toContain("People shell")
-    expect(organizationDoc).toContain("OrganizationDangerZone")
-    expect(organizationDoc).toContain("delete organization")
-    expect(organizationDoc).not.toContain("reserves the `people` route")
-    expect(organizationSwitcherDoc).toContain("setActive")
-    expect(organizationSwitcherDoc).toContain("hidePersonal")
-    expect(organizationSwitcherDoc).toContain("hideSettings")
-    expect(organizationSwitcherDoc).toContain("hideSlug")
-    expect(organizationSwitcherDoc).toContain("custom trigger")
-    expect(organizationSwitcherDoc).toContain("hideCreate")
-    expect(organizationSwitcherDoc).toContain("CreateOrganizationDialog")
-    expect(organizationSwitcherDoc).not.toContain(
-      "create-dialog parity is deferred"
-    )
-    expect(organizationSwitcherDoc).not.toContain("className")
+    for (const removedComponentDoc of [
+      "organizations-settings",
+      "organization-people",
+      "organization",
+      "organization-switcher"
+    ]) {
+      expect(
+        existsSync(
+          resolve(zaidanDocsRoot, `components/${removedComponentDoc}.mdx`)
+        ),
+        `${removedComponentDoc} should not be published under Zaidan Components`
+      ).toBe(false)
+    }
     expect(organizationStory).toContain('title: "Zaidan/Plugins/Organization"')
     expect(organizationStory).toContain(
       "export const OrganizationSwitcherPreview"
@@ -3532,7 +3641,7 @@ describe("Solid registry isolation", () => {
       }
     }
 
-    for (const [name, expectation] of Object.entries(settingsDocs)) {
+    for (const name of Object.keys(settingsDocs)) {
       const page = componentDoc(name)
       const headings = extractLevelTwoHeadings(page)
 
@@ -3543,23 +3652,19 @@ describe("Solid registry isolation", () => {
         headings,
         `${name} should not lead with copied files`
       ).not.toContain("What it copies")
-      expect(page, `${name} should show Solid/Zaidan import`).toContain(
-        expectation.importExample
+      expect(page, `${name} should show a Zaidan story preview`).toContain(
+        "<ZaidanStory"
       )
-      expect(page, `${name} should show practical usage`).toContain(
-        expectation.usageExample
+      expect(page, `${name} should use file-backed Solid demos`).toContain(
+        "tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/settings"
       )
-      expect(page, `${name} should keep files as secondary content`).toContain(
-        "## Installed files"
-      )
-
+      expect(
+        page,
+        `${name} should not keep installed files prose`
+      ).not.toContain("## Installed files")
       expect(page, `${name} should derive props from source types`).toContain(
         "<auto-type-table"
       )
-
-      for (const gate of expectation.pluginGates) {
-        expect(page, `${name} should document gate ${gate}`).toContain(gate)
-      }
     }
 
     for (const docsPath of zaidanDocs) {

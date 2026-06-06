@@ -1,21 +1,18 @@
 ---
 title: <UserProfile />
-description: A Solid profile form for updating the signed-in user's name, username, and avatar surface.
+description: A Solid profile form for updating the signed-in user's name, additional fields, and avatar surface.
 ---
 
 ## Usage
 
-Render `UserProfile` inside account settings once your app is wrapped in `AuthProvider`.
+<ZaidanStory
+  storyId="zaidan-components-settings--user-profile-preview"
+  title="Zaidan UserProfile preview"
+  height={440}
+/>
 
-```tsx
-import { UserProfile } from "@/components/auth/settings/account/user-profile"
-
-export function ProfileCard() {
-  return <UserProfile />
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/settings/account/user-profile.tsx
 ```
-
-The form reads the session user, calls `updateUserOptions`, and keeps avatar UI in the copied `ChangeAvatar` file so you can wire uploads to your storage layer.
 
 ## Installation
 
@@ -23,24 +20,8 @@ The form reads the session user, calls `updateUserOptions`, and keeps avatar UI 
 npx zaidan add https://better-auth-ui.com/r/solid/user-profile.json
 ```
 
+After install, `src/components/auth/settings/account/user-profile.tsx` is app-owned. Customize it inside your Solid app as needed.
+
 ## Props
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/settings/account/user-profile.tsx" name="UserProfileProps" />
-
-### Parity classification
-
-Zaidan exposes the wrapper styling hook as Solid `class`, adapting the shadcn `className` prop to the local Solid convention. Profile fields, username support, and avatar changes remain driven by installed plugins and provider configuration.
-
-## Plugin gates
-
-- `session user` data supplies the current name, email, and image.
-- `username` support is used when the signed-in user has a username field.
-- `avatar` upload behavior is app-owned after install; connect `ChangeAvatar` to your upload/storage flow.
-
-## Installed files
-
-- `src/components/auth/settings/account/user-profile.tsx`
-- `src/components/auth/settings/account/change-avatar.tsx`
-- `src/components/auth/additional-field.tsx`
-
-After install, adapt additional fields and avatar persistence to your account model.

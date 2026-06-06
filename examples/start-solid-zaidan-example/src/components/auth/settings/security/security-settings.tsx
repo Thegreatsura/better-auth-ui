@@ -2,7 +2,6 @@ import { useAuth } from "@better-auth-ui/solid"
 import { Show } from "solid-js"
 import { ApiKeys } from "@/components/auth/api-key/api-keys"
 import { DangerZone } from "@/components/auth/delete-user/danger-zone"
-import { PasskeysSettings } from "@/components/auth/passkey/passkeys"
 import { ActiveSessionsSettings } from "@/components/auth/settings/security/active-sessions"
 import { ChangePasswordSettings } from "@/components/auth/settings/security/change-password"
 import { LinkedAccountsSettings } from "@/components/auth/settings/security/linked-accounts"
@@ -33,10 +32,6 @@ export function SecuritySettings(props: SecuritySettingsProps = {}) {
 
       <Show when={hasAuthPlugin(auth.plugins, "apiKey")}>
         <ApiKeys />
-      </Show>
-
-      <Show when={hasAuthPlugin(auth.plugins, "passkey")}>
-        <PasskeysSettings />
       </Show>
 
       <Show when={hasAuthPlugin(auth.plugins, "deleteUser")}>

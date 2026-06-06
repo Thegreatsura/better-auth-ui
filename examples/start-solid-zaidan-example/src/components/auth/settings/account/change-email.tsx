@@ -18,7 +18,8 @@ export function ChangeEmail(props: ChangeEmailProps = {}) {
   const [emailFieldError, setEmailFieldError] = createSignal<string>()
   const changeEmail = createMutation(() => ({
     ...changeEmailOptions(auth.authClient),
-    onSuccess: () => toast.success("Email updated successfully")
+    onSuccess: () =>
+      toast.success(auth.localization.settings.changeEmailSuccess)
   }))
 
   const submitChangeEmail = (event: SubmitEvent) => {

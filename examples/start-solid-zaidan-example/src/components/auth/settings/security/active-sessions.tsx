@@ -13,7 +13,7 @@ import {
   shouldLoadDeviceSessions
 } from "@/components/auth/settings/shared/helpers"
 import { Card, CardContent } from "@/components/ui/card"
-import { ItemGroup, ItemSeparator } from "@/components/ui/item"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { ActiveSessionRow, ActiveSessionRowSkeleton } from "./active-session"
 
@@ -62,33 +62,37 @@ export function ActiveSessionsSettings(
         {auth.localization.settings.activeSessions}
       </h2>
 
-      <Card class="p-0">
-        <CardContent class="p-0">
+      <Card class="!p-0">
+        <CardContent class="!p-0">
           <Show
-            fallback={<ActiveSessionRowSkeleton />}
+            fallback={
+              <div class="p-4">
+                <ActiveSessionRowSkeleton />
+              </div>
+            }
             when={!activeSessions.isPending && session.data}
           >
-            <ItemGroup class="gap-0">
-              <For each={sessions()}>
-                {(activeSession, index) => (
-                  <>
-                    <Show when={index() > 0}>
-                      <ItemSeparator />
-                    </Show>
+            <For each={sessions()}>
+              {(activeSession, index) => (
+                <>
+                  <Show when={index() > 0}>
+                    <Separator />
+                  </Show>
+                  <div class="p-4">
                     <ActiveSessionRow
                       activeSession={activeSession}
                       displayName={displayName()}
                       isRevoking={revokeSession.isPending}
                       isCurrentSession={
-                        activeSession.token === session.data?.session.token
+                        activeSession.id === session.data?.session.id
                       }
                       onRevoke={revoke}
                       onSignOut={signOut}
                     />
-                  </>
-                )}
-              </For>
-            </ItemGroup>
+                  </div>
+                </>
+              )}
+            </For>
           </Show>
         </CardContent>
       </Card>

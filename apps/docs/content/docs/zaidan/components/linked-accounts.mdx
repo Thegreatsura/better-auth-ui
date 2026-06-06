@@ -5,17 +5,14 @@ description: A Solid security card for linking and unlinking configured social p
 
 ## Usage
 
-Render `LinkedAccountsSettings` when your app exposes social providers.
+<ZaidanStory
+  storyId="zaidan-components-settings--linked-accounts-preview"
+  title="Zaidan LinkedAccounts preview"
+  height={440}
+/>
 
-```tsx
-import { LinkedAccountsSettings } from "@/components/auth/settings/security/linked-accounts"
-
-export function SocialAccountsCard() {
-  return <LinkedAccountsSettings />
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/settings/security/linked-accounts.tsx
 ```
-
-The card combines existing linked accounts with configured providers so users can connect or disconnect accounts such as GitHub.
 
 ## Installation
 
@@ -23,24 +20,8 @@ The card combines existing linked accounts with configured providers so users ca
 npx zaidan add https://better-auth-ui.com/r/solid/linked-accounts.json
 ```
 
+After install, `src/components/auth/settings/security/linked-accounts.tsx` is app-owned. Customize it inside your Solid app as needed.
+
 ## Props
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/settings/security/linked-accounts.tsx" name="LinkedAccountsSettingsProps" />
-
-### Parity classification
-
-Zaidan exposes the wrapper styling hook as Solid `class`, adapting the shadcn `className` prop to the local Solid convention. Providers still come from `AuthProvider` via Better Auth UI configuration.
-
-## Plugin gates
-
-- `socialProviders` controls whether `SecuritySettings` renders this card.
-- Uses `listAccountsOptions` to load linked accounts outside SSR.
-- Configure social providers such as GitHub in Better Auth before exposing link/unlink actions.
-
-## Installed files
-
-- `src/components/auth/settings/security/linked-accounts.tsx`
-- `src/components/auth/settings/security/linked-account.tsx`
-- Local card, button, and menu primitives.
-
-After install, review provider labels and unlink confirmation copy for your app.

@@ -954,7 +954,7 @@
       "name": "account-settings",
       "type": "registry:component",
       "title": "Solid Account Settings",
-      "description": "Solid account settings with profile, email, danger-zone, and plugin account cards.",
+      "description": "Solid account settings with profile, email, and plugin account cards.",
       "dependencies": [
         "@better-auth-ui/solid@latest",
         "@better-auth-ui/core@latest",
@@ -1050,6 +1050,7 @@
         "solid/active-sessions",
         "solid/linked-accounts",
         "solid/change-password",
+        "solid/delete-user",
         "solid/passkey",
         "solid/api-key"
       ],
@@ -1224,6 +1225,14 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/settings/shared/helpers.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/components/ui/avatar.tsx",
           "type": "registry:ui"
         },
@@ -1304,6 +1313,18 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/settings/shared/helpers.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/shared/types.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/spinner.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/components/ui/avatar.tsx",
           "type": "registry:ui"
         },
@@ -1378,6 +1399,18 @@
         {
           "path": "src/components/auth/settings/security/change-password.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/shared/helpers.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/settings/shared/types.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/ui/skeleton.tsx",
+          "type": "registry:ui"
         },
         {
           "path": "src/components/ui/button.tsx",

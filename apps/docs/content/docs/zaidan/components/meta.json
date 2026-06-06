@@ -21,13 +21,8 @@
     "user-profile",
     "change-email",
     "security-settings",
-    "active-sessions",
-    "linked-accounts",
     "change-password",
-    "---Organization---",
-    "organizations-settings",
-    "organization-switcher",
-    "organization",
-    "organization-people"
+    "linked-accounts",
+    "active-sessions"
   ]
 }

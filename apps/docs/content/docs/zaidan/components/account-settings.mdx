@@ -1,21 +1,20 @@
 ---
 title: <AccountSettings />
-description: A Solid account settings stack for profile, email, appearance, and plugin-contributed account cards.
+description: A Solid account settings stack for profile, email, and plugin-contributed account cards.
 ---
 
 ## Usage
 
-Use `AccountSettings` inside your settings shell when the active tab is account.
+<ZaidanStory
+  storyId="zaidan-components-settings--account-settings-preview"
+  title="Zaidan AccountSettings preview"
+  height={560}
+/>
 
-```tsx
-import { AccountSettings } from "@/components/auth/settings/account/account-settings"
-
-export function AccountTab() {
-  return <AccountSettings />
-}
+```tsx file=<rootDir>/../../examples/start-solid-zaidan-example/src/demos/settings/account/account-settings.tsx
 ```
 
-The component composes the base account cards shipped by the Solid registry entries—profile, email, and theme appearance—and then renders plugin-contributed `accountCards`. With Multi Session enabled, that means `<ManageAccounts />` is injected by the registered plugin instead of being hardcoded into the settings stack.
+`AccountSettings` renders profile, email, and plugin-contributed `accountCards` in the account tab.
 
 ## Installation
 
@@ -23,23 +22,8 @@ The component composes the base account cards shipped by the Solid registry entr
 npx zaidan add https://better-auth-ui.com/r/solid/account-settings.json
 ```
 
+After install, `src/components/auth/settings/account/account-settings.tsx` is app-owned. Customize it inside your Solid app as needed.
+
 ## Props
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/settings/account/account-settings.tsx" name="AccountSettingsProps" />
-
-### Parity classification
-
-Zaidan exposes the wrapper styling hook as Solid `class`, adapting the shadcn `className` prop to the local Solid convention. Behavior remains configured through `AuthProvider`, Better Auth plugins, and installed child files.
-
-## Plugin gates
-
-- `theme` powers the appearance card.
-- `multi-session` can inject account switching through plugin-contributed `accountCards`.
-- `delete-user` is a related account/security registry entry; expose the danger-zone UI only when the Better Auth delete-user plugin is configured.
-
-## Installed files
-
-- `src/components/auth/settings/account/account-settings.tsx`
-- `src/components/auth/settings/account/appearance-settings.tsx`
-
-After install, pair it with `user-profile`, `change-email`, `theme`, and whichever plugins contribute extra account cards in your app.
