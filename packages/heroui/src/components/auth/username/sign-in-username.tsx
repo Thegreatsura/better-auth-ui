@@ -288,7 +288,7 @@ export function SignInUsername({
       </Card.Content>
 
       <Card.Footer className="flex-col gap-3">
-        {emailAndPassword?.forgotPassword && (
+        {emailAndPassword?.enabled && emailAndPassword?.forgotPassword && (
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
             className="no-underline hover:underline"
