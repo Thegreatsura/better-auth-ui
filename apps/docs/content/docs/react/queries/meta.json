@@ -12,6 +12,15 @@
     "account-info",
     "list-sessions",
     "list-device-sessions",
-    "list-passkeys"
+    "list-passkeys",
+    "list-api-keys",
+    "---Organization---",
+    "active-organization",
+    "full-organization",
+    "list-organizations",
+    "list-members",
+    "list-invitations",
+    "list-user-invitations",
+    "has-permission"
   ]
 }

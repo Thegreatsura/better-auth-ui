@@ -1,0 +1,56 @@
+---
+title: useListUserInvitations
+description: List organization invitations for the current user.
+---
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Usage
+
+```tsx
+import { useAuth, useListUserInvitations } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const result = useListUserInvitations(authClient)
+```
+
+## Client options factory and router-loader helpers
+
+```tsx
+import {
+  ensureListUserInvitations,
+  fetchListUserInvitations,
+  listUserInvitationsOptions,
+  prefetchListUserInvitations
+} from "@better-auth-ui/react"
+
+const options = listUserInvitationsOptions(authClient, userId)
+await ensureListUserInvitations(queryClient, authClient, userId)
+await prefetchListUserInvitations(queryClient, authClient, userId)
+const invitations = await fetchListUserInvitations(queryClient, authClient, userId)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For server loaders, import from `@better-auth-ui/react/server`. Pass the Better Auth server instance and signed-in `userId`; request headers are forwarded to Better Auth for session-aware calls.
+
+```ts
+import { ensureListUserInvitations } from "@better-auth-ui/react/server"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+await ensureListUserInvitations(queryClient, auth, userId, {
+  headers: getRequestHeaders()
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/queries/organization/list-user-invitations-query.ts" name="ListUserInvitationsParams" />

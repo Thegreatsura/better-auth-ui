@@ -1,0 +1,30 @@
+---
+title: useRejectInvitation
+description: Reject an organization invitation.
+---
+
+Organization mutations require `organizationClient()` on the Better Auth client.
+
+## Usage
+
+```tsx
+import { useAuth, useRejectInvitation } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const mutation = useRejectInvitation(authClient)
+
+mutation.mutate(/* params */)
+```
+
+## Options factory
+
+```tsx
+import { rejectInvitationOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const mutation = useMutation(rejectInvitationOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/mutations/organization/reject-invitation-mutation.ts" name="RejectInvitationParams" />

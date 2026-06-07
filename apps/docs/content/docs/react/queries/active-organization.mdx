@@ -1,0 +1,57 @@
+---
+title: useActiveOrganization
+description: Read the active organization from the session or a URL slug.
+---
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Usage
+
+```tsx
+import { useAuth, useActiveOrganization } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const result = useActiveOrganization(authClient)
+```
+
+## Client options factory and router-loader helpers
+
+```tsx
+import {
+  activeOrganizationOptions,
+  ensureActiveOrganization,
+  fetchActiveOrganization,
+  prefetchActiveOrganization
+} from "@better-auth-ui/react"
+
+const options = activeOrganizationOptions(authClient, userId)
+await ensureActiveOrganization(queryClient, authClient, userId)
+await prefetchActiveOrganization(queryClient, authClient, userId)
+const organization = await fetchActiveOrganization(queryClient, authClient, userId)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For server loaders, import from `@better-auth-ui/react/server`. The server helper uses your Better Auth server instance and request params so the prefetched key hydrates into `useActiveOrganization`.
+
+```ts
+import { ensureActiveOrganization } from "@better-auth-ui/react/server"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+await ensureActiveOrganization(queryClient, auth, userId, {
+  headers: getRequestHeaders(),
+  query: { organizationSlug: "acme" }
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/queries/organization/active-organization-query.ts" name="ActiveOrganizationParams" />

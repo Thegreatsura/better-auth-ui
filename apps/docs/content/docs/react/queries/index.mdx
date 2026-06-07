@@ -25,7 +25,7 @@ queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 
 ## Per-user queries
 
-Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListPasskeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
+Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListPasskeys`, `useListApiKeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
 
 ## Escape hatch
 
@@ -86,4 +86,19 @@ authQueryOptions(authClient.magicLink.list, ["auth", "magicLink", "list"], {
   <Card title="useListPasskeys" href="/docs/react/queries/list-passkeys">
     Passkeys registered for the current user.
   </Card>
+  <Card title="useListApiKeys" href="/docs/react/queries/list-api-keys">
+    API keys for the current user when the API key plugin is installed.
+  </Card>
+</Cards>
+
+### Organization
+
+<Cards>
+  <Card title="useActiveOrganization" href="/docs/react/queries/active-organization" />
+  <Card title="useFullOrganization" href="/docs/react/queries/full-organization" />
+  <Card title="useListOrganizations" href="/docs/react/queries/list-organizations" />
+  <Card title="useListOrganizationMembers" href="/docs/react/queries/list-members" />
+  <Card title="useListOrganizationInvitations" href="/docs/react/queries/list-invitations" />
+  <Card title="useListUserInvitations" href="/docs/react/queries/list-user-invitations" />
+  <Card title="useHasPermission" href="/docs/react/queries/has-permission" />
 </Cards>

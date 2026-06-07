@@ -182,4 +182,13 @@ export const ensureServerSession = (queryClient: QueryClient) =>
   ensureSession(queryClient, auth, { headers: getRequestHeaders() })
 ```
 
-The server entrypoint mirrors the client API one-to-one: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus the equivalents for `listAccounts`, `accountInfo`, `listSessions`, `listDeviceSessions`, and `listPasskeys`. Cache keys are identical between the two, so data prefetched on the server hydrates cleanly into the client-side `useSession`, `useListSessions`, etc.
+The server entrypoint mirrors supported read helpers with server-auth signatures: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`, plus equivalents for settings, passkey, API-key, and Organization queries. These helpers accept your Better Auth server instance (`auth`) and request params instead of a browser `authClient`.
+
+Available server query helper families include:
+
+- Session: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`
+- Settings/passkey: `listAccountsOptions`, `ensureListAccounts`, `prefetchListAccounts`, `fetchListAccounts`, `accountInfoOptions`, `ensureAccountInfo`, `listSessionsOptions`, `ensureListSessions`, `listDeviceSessionsOptions`, `ensureListDeviceSessions`, `listPasskeysOptions`, and `ensureListPasskeys` with matching prefetch/fetch helpers
+- API-key: `listApiKeysOptions`, `ensureListApiKeys`, `prefetchListApiKeys`, `fetchListApiKeys`
+- Organization: `activeOrganizationOptions`, `ensureActiveOrganization`, `prefetchActiveOrganization`, `fetchActiveOrganization`, `fullOrganizationOptions`, `ensureFullOrganization`, `listOrganizationsOptions`, `ensureListOrganizations`, `listOrganizationMembersOptions`, `ensureListOrganizationMembers`, `listOrganizationInvitationsOptions`, `ensureListOrganizationInvitations`, `listUserInvitationsOptions`, `ensureListUserInvitations`, `hasPermissionOptions`, and `ensureHasPermission` with matching prefetch/fetch helpers
+
+Cache keys are identical between server and client helpers, so data prefetched on the server hydrates cleanly into client-side hooks like `useSession`, `useListApiKeys`, and `useActiveOrganization`.

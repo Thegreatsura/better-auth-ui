@@ -3,9 +3,9 @@ title: Mutations
 description: Solid mutation factories for Better Auth write endpoints.
 ---
 
-Solid mutations expose `@tanstack/solid-query` mutation options for Better Auth write endpoints. They preserve shared mutation keys and pass `throw: true` so failures surface through standard Solid Query error handling.
+Solid mutations preserve shared mutation keys and pass `throw: true` so failures surface through standard Solid Query error handling.
 
-Unlike React, Solid package mutations are **options factories**, not purpose-built `use*` mutation hooks. Use the factory with `createMutation`, or use the generic `useAuthMutation` escape hatch for endpoints without a named factory.
+Named Solid mutations expose options factories for `createMutation`. Many named mutations also expose `use*` hooks for component code. Use `useAuthMutation` as the generic escape hatch when an endpoint does not have a named helper.
 
 ```tsx
 import { signInEmailOptions } from "@better-auth-ui/solid"
@@ -30,7 +30,7 @@ await queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 
 ## Escape hatch
 
-For write-style endpoints without a purpose-built factory, use `useAuthMutation` in components or `authMutationOptions` where Solid Query takes mutation options.
+For write-style endpoints without a purpose-built factory or hook, use `useAuthMutation` in components or `authMutationOptions` where Solid Query takes mutation options.
 
 ## UI boundary
 

@@ -34,8 +34,8 @@ export const beforeLoad = async ({ context }) => {
 | `ensureSession` | Ensure server session data is present in the query cache. |
 | `prefetchSession` | Warm session data without reading it immediately. |
 | `fetchSession` | Fetch session data through the query client. |
-| `listApiKeysOptions`, `listDeviceSessionsOptions`, `listPasskeysOptions`, `accountInfoOptions`, `listAccountsOptions`, `listSessionsOptions` | Shared read helpers re-exported for server-side prefetch flows. |
+| `listApiKeysOptions`, `listDeviceSessionsOptions`, `listPasskeysOptions`, `accountInfoOptions`, `listAccountsOptions` | Client-shaped read helpers re-exported for advanced cache prefill flows when you already have an `authClient` and `userId`; they are not Better Auth server-instance helpers. |
 
 ## Boundary
 
-Server helpers require your app's Better Auth instance and request headers. They do not own secrets, route files, or copied UI code. For TanStack Start installation and component customization, switch to [Zaidan](/docs/zaidan).
+True server-auth helpers require your app's Better Auth instance and request headers. In the Solid package today, that server-auth API is provided for session. Other re-exported read helpers keep their client-shaped `authClient`/`userId` signatures, so use them only when that is the shape your loader owns. These helpers do not own secrets, route files, or copied UI code. For TanStack Start installation and component customization, switch to [Zaidan](/docs/zaidan).

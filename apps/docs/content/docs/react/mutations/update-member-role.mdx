@@ -1,0 +1,30 @@
+---
+title: useUpdateMemberRole
+description: Update a member role in an organization.
+---
+
+Organization mutations require `organizationClient()` on the Better Auth client.
+
+## Usage
+
+```tsx
+import { useAuth, useUpdateMemberRole } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const mutation = useUpdateMemberRole(authClient)
+
+mutation.mutate(/* params */)
+```
+
+## Options factory
+
+```tsx
+import { updateMemberRoleOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const mutation = useMutation(updateMemberRoleOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/mutations/organization/update-member-role-mutation.ts" name="UpdateMemberRoleParams" />

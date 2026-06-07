@@ -32,6 +32,8 @@ const session = createQuery(() => sessionOptions(authClient))
 
 ## Loader helpers
 
+For client/router loaders that already have an `authClient`, use the client helpers from `@better-auth-ui/solid`.
+
 ```ts
 import { ensureSession, fetchSession, prefetchSession } from "@better-auth-ui/solid"
 
@@ -39,6 +41,20 @@ await ensureSession(queryClient, authClient)
 await prefetchSession(queryClient, authClient)
 const session = await fetchSession(queryClient, authClient)
 ```
+
+For server loaders, import from `@better-auth-ui/solid/server`. These helpers call your Better Auth server instance directly and require the request params passed to `auth.api.getSession`, typically request headers.
+
+```ts
+import { ensureSession } from "@better-auth-ui/solid/server"
+
+import { auth } from "~/lib/auth"
+
+const session = await ensureSession(queryClient, auth, {
+  headers: request.headers
+})
+```
+
+Today the Solid server entrypoint provides true server-auth helpers for session. Other query families use client/router helpers from `@better-auth-ui/solid` unless explicitly exported from `@better-auth-ui/solid/server`.
 
 ## Invalidation
 
@@ -50,6 +66,10 @@ queryClient.invalidateQueries({
 })
 ```
 
-## Params
+## Client params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/auth/session-query.ts" name="SessionParams" />
+
+## Server params
+
+<auto-type-table path="../../../../../../packages/solid/src/server/queries/auth/session-query.ts" name="SessionParams" />

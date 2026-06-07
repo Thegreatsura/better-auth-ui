@@ -1,0 +1,57 @@
+---
+title: useListOrganizationInvitations
+description: List organization invitations for an organization.
+---
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Usage
+
+```tsx
+import { useAuth, useListOrganizationInvitations } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const result = useListOrganizationInvitations(authClient)
+```
+
+## Client options factory and router-loader helpers
+
+```tsx
+import {
+  ensureListOrganizationInvitations,
+  fetchListOrganizationInvitations,
+  listOrganizationInvitationsOptions,
+  prefetchListOrganizationInvitations
+} from "@better-auth-ui/react"
+
+const options = listOrganizationInvitationsOptions(authClient, userId)
+await ensureListOrganizationInvitations(queryClient, authClient, userId)
+await prefetchListOrganizationInvitations(queryClient, authClient, userId)
+const invitations = await fetchListOrganizationInvitations(queryClient, authClient, userId)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For server loaders, import from `@better-auth-ui/react/server`. Pass the Better Auth server instance, signed-in `userId`, and the request params for organization invitations.
+
+```ts
+import { ensureListOrganizationInvitations } from "@better-auth-ui/react/server"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+await ensureListOrganizationInvitations(queryClient, auth, userId, {
+  headers: getRequestHeaders(),
+  query: { organizationId: "org_123" }
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/queries/organization/list-invitations-query.ts" name="ListOrganizationInvitationsParams" />
