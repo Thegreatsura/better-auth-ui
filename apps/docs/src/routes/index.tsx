@@ -9,7 +9,10 @@ import {
   ShieldCheck,
   Zap
 } from "lucide-react"
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
+import { HeroUI } from "@/components/icons/heroui"
+import { React as ReactIcon } from "@/components/icons/react"
+import { Shadcn } from "@/components/icons/shadcn"
 import { Solid } from "@/components/icons/solid"
 import { Zaidan } from "@/components/icons/zaidan"
 import { baseOptions } from "@/lib/layout.shared"
@@ -94,7 +97,8 @@ function Home() {
             >
               Better Auth
             </a>
-            . Built with shadcn/ui, HeroUI, and SolidJS. Drop in and go.
+            . Built with shadcn/ui, HeroUI, and Zaidan (SolidJS). Drop in and
+            go.
           </p>
 
           {/* CTA Buttons */}
@@ -195,13 +199,20 @@ function Home() {
               >
                 <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-orange-300 to-orange-500 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-30 dark:from-orange-400 dark:to-orange-600" />
                 <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
-                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                    <span className="ml-3 text-xs text-neutral-500">
-                      shadcn/ui
-                    </span>
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        shadcn/ui
+                      </span>
+                    </div>
+                    <PreviewBadge label="React and shadcn/ui preview badge">
+                      <ReactIcon className="h-4 w-4 text-[#61dafb]" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <Shadcn className="h-4 w-4 text-neutral-900 dark:text-white" />
+                    </PreviewBadge>
                   </div>
                   <img
                     src="/screenshots/shadcn-sign-in-light.png"
@@ -226,13 +237,20 @@ function Home() {
               >
                 <div className="absolute -inset-1 rounded-3xl bg-linear-to-br from-blue-400 to-blue-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-60 dark:from-blue-500 dark:to-blue-700" />
                 <div className="relative overflow-hidden rounded-2xl rounded-b-3xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
-                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                    <span className="ml-3 text-xs text-neutral-500">
-                      HeroUI
-                    </span>
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        HeroUI
+                      </span>
+                    </div>
+                    <PreviewBadge label="React and HeroUI preview badge">
+                      <ReactIcon className="h-4 w-4 text-[#61dafb]" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <HeroUI className="h-4 w-4 text-neutral-900 dark:text-white" />
+                    </PreviewBadge>
                   </div>
                   <img
                     src="/screenshots/heroui-sign-in-light.png"
@@ -257,13 +275,20 @@ function Home() {
               >
                 <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-sky-400 via-indigo-400 to-cyan-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-50 dark:from-sky-500 dark:via-indigo-500 dark:to-cyan-700" />
                 <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
-                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                    <span className="ml-3 text-xs text-neutral-500">
-                      Zaidan
-                    </span>
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        Zaidan
+                      </span>
+                    </div>
+                    <PreviewBadge label="SolidJS and Zaidan preview badge">
+                      <Solid className="h-4 w-4" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <Zaidan className="h-4 w-5" />
+                    </PreviewBadge>
                   </div>
                   <div className="relative">
                     <img
@@ -278,13 +303,6 @@ function Home() {
                       className="hidden w-full dark:block sm:w-80 lg:w-96"
                       draggable={false}
                     />
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-[1px] dark:bg-neutral-950/20">
-                      <div className="flex items-center gap-4 rounded-2xl border border-white/60 bg-white/70 px-5 py-4 shadow-2xl shadow-neutral-900/20 ring-1 ring-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10">
-                        <Solid className="h-12 w-12" />
-                        <div className="h-10 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
-                        <Zaidan className="h-12 w-14" />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </Link>
@@ -298,7 +316,7 @@ function Home() {
                 icon: <LayoutTemplate className="h-5 w-5" />,
                 title: "Fully Customizable",
                 description:
-                  "Built on shadcn/ui, HeroUI, and SolidJS. Own your code, style it your way."
+                  "Built on shadcn/ui, HeroUI, and Zaidan (SolidJS). Own your code, style it your way."
               },
               {
                 icon: <Zap className="h-5 w-5" />,
@@ -332,5 +350,22 @@ function Home() {
         </div>
       </div>
     </HomeLayout>
+  )
+}
+
+function PreviewBadge({
+  children,
+  label
+}: {
+  children: ReactNode
+  label: string
+}) {
+  return (
+    <div
+      title={label}
+      className="pointer-events-none flex h-4 shrink-0 items-center gap-1.5 text-neutral-500 dark:text-neutral-400"
+    >
+      {children}
+    </div>
   )
 }
