@@ -29,6 +29,16 @@ await prefetchListPasskeys(queryClient, authClient, userId)
 const passkeys = await fetchListPasskeys(queryClient, authClient, userId)
 ```
 
+## Invalidation
+
+```ts
+import { listPasskeysOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: listPasskeysOptions(authClient, userId).queryKey
+})
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/passkey/list-passkeys-query.ts" name="ListPasskeysParams" />

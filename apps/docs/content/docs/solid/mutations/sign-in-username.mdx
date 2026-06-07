@@ -3,9 +3,9 @@ title: signInUsernameOptions
 description: Username/password sign-in mutation options.
 ---
 
-Requires the Better Auth username plugin.
+Requires the Better Auth username plugin. If TypeScript cannot infer the plugin methods from your client, type or cast `authClient` as `UsernameAuthClient` from `@better-auth-ui/solid`.
 
-## Usage
+## Options factory
 
 ```tsx
 import { signInUsernameOptions } from "@better-auth-ui/solid"
@@ -13,7 +13,7 @@ import { createMutation } from "@tanstack/solid-query"
 
 const signIn = createMutation(() => signInUsernameOptions(authClient))
 
-signIn.mutate({ username: "alice", password: "hunter2" })
+signIn.mutate({ username: "alice", password: passwordInput })
 ```
 
 ## Params

@@ -29,6 +29,16 @@ await prefetchListAccounts(queryClient, authClient, userId)
 const accounts = await fetchListAccounts(queryClient, authClient, userId)
 ```
 
+## Invalidation
+
+```ts
+import { listAccountsOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: listAccountsOptions(authClient, userId).queryKey
+})
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/settings/list-accounts-query.ts" name="ListAccountsParams" />

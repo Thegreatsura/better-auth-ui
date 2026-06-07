@@ -3,7 +3,9 @@ title: signInSocialOptions
 description: Social sign-in mutation options.
 ---
 
-## Usage
+Starts the provider OAuth flow and redirects through Better Auth.
+
+## Options factory
 
 ```tsx
 import { signInSocialOptions } from "@better-auth-ui/solid"
@@ -11,7 +13,10 @@ import { createMutation } from "@tanstack/solid-query"
 
 const signInSocial = createMutation(() => signInSocialOptions(authClient))
 
-signInSocial.mutate({ provider: "github" })
+signInSocial.mutate({
+  provider: "github",
+  callbackURL: "/dashboard"
+})
 ```
 
 ## Params

@@ -14,16 +14,21 @@ const sessionQuery = sessionOptions(authClient)
 const session = useSession(authClient, { enabled: !import.meta.env.SSR })
 ```
 
-## Cache keys
+## Invalidation
 
-Use shared core keys instead of inlining tuples.
+Keys follow an `["auth", ...]` prefix, with per-user queries nested under `["auth", "user", userId, ...]`. Invalidate by prefix for hierarchical cache control. Use the shared `authQueryKeys` factory from `@better-auth-ui/core` so cache entries line up regardless of which options factory produced them:
 
 ```ts
 import { authQueryKeys } from "@better-auth-ui/core"
 
-queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+queryClient.invalidateQueries({ queryKey: authQueryKeys.all })
 queryClient.invalidateQueries({ queryKey: authQueryKeys.user(userId) })
+queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 ```
+
+## Per-user queries
+
+Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListPasskeys`, `useListApiKeys`) are keyed per-user and wait for the active session before firing — `queryFn` is swapped for `skipToken` until `userId` resolves. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
 
 ## Escape hatch
 

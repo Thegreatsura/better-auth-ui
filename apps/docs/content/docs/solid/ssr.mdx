@@ -1,41 +1,195 @@
 ---
 title: SSR
-description: Server-side helpers and SSR boundaries for the Solid package.
+description: Customize the Solid Query client and prefetch auth data on the server with TanStack Start.
 ---
 
-`@better-auth-ui/solid/server` provides server-safe query helpers for SSR boundaries. It does not create routes, generate registry payloads, install components, or prescribe TanStack Start app setup.
+import { Step, Steps } from 'fumadocs-ui/components/steps'
 
-## Quick path
+Every Better Auth UI Solid hook runs through [TanStack Solid Query](https://tanstack.com/query), so wiring up a shared `QueryClient` and passing it through `AuthProvider` is all you need to prefetch sessions in route loaders, guard routes before render, and hydrate the cache on the client.
 
-1. Configure Better Auth in your app server code.
-2. Pass your app's Better Auth instance and request headers to the server helper.
-3. Seed or read the same Solid Query cache that your client-side auth hooks use after hydration.
+The examples below mirror [`examples/start-solid-zaidan-example`](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/start-solid-zaidan-example) and target [TanStack Start](https://tanstack.com/start) with Solid Router. The same `QueryClient` recipe works in any Solid app — only the router integration differs.
 
-```ts
-import { ensureSession } from "@better-auth-ui/solid/server"
-import { auth } from "~/lib/auth" // your configured Better Auth instance
+## Install the SSR integration
 
-export const beforeLoad = async ({ context }) => {
-  const session = await ensureSession(context.queryClient, auth, {
-    headers: context.request.headers
+```package-install
+@tanstack/solid-query @tanstack/solid-router @tanstack/solid-start solid-js
+```
+
+TanStack Start wires Solid Router into the server/client render pipeline. Solid Query provides the shared `QueryClient`; pass that same client through route context and `AuthProvider` so loader-prefetched auth data hydrates into Better Auth UI hooks.
+
+## Customize the QueryClient
+
+Build the `QueryClient` inside your router factory so every SSR request gets a fresh cache. Apply your `defaultOptions` here — the example sets a 5 second `staleTime` so repeat navigations within that window skip the network.
+
+```tsx title="src/router.tsx"
+import { QueryClient } from "@tanstack/solid-query"
+import { createRouter } from "@tanstack/solid-router"
+
+import { routeTree } from "./routeTree.gen"
+
+export const getRouter = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5000
+      }
+    }
   })
 
-  return { session }
+  return createRouter({
+    context: { queryClient },
+    defaultPreloadStaleTime: 0,
+    routeTree,
+    scrollRestoration: true
+  })
 }
 ```
 
-## Server exports
+A few notes on the options above:
 
-| Export | Purpose |
+- `defaultPreloadStaleTime: 0` tells TanStack Router to always run loaders on preload. Pair it with `staleTime` on the query so the underlying data is still cached — the loader fires, the query returns instantly.
+- `context: { queryClient }` exposes the client to every loader/`beforeLoad` hook via `context.queryClient`.
+- Tune `defaultOptions` the same way you would in any TanStack Query app.
+
+## Type the root route context
+
+Use `createRootRouteWithContext` so child routes can read `context.queryClient` with full typing, then pass that same client into your app providers.
+
+```tsx title="src/routes/__root.tsx"
+import type { QueryClient } from "@tanstack/solid-query"
+import { createRootRouteWithContext, Outlet } from "@tanstack/solid-router"
+
+import { Providers } from "@/components/providers"
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+}>()({
+  component: RootComponent
+})
+
+function RootComponent() {
+  const routeContext = Route.useRouteContext()
+
+  return (
+    <Providers queryClient={routeContext().queryClient}>
+      <Outlet />
+    </Providers>
+  )
+}
+```
+
+The tree of routes now has `{ queryClient }` available in every loader, `beforeLoad`, and component via `Route.useRouteContext()`.
+
+## Prefetch the session in `beforeLoad`
+
+Every `@better-auth-ui/solid` query ships matching `ensure*`, `prefetch*`, and `fetch*` helpers alongside its options factory. They accept a `QueryClient`, the `authClient`, and the same params as the underlying query.
+
+| Helper | When to use |
 | --- | --- |
-| `AuthServer` | Minimal Better Auth server shape used by server query helpers. |
-| `MagicLinkAuthServer`, `MultiSessionAuthServer`, `PasskeyAuthServer`, `UsernameAuthServer` | Typed server shapes for plugin-enabled Better Auth instances. |
-| `sessionOptions` | Server-side Solid Query options for `auth.api.getSession`. |
-| `ensureSession` | Ensure server session data is present in the query cache. |
-| `prefetchSession` | Warm session data without reading it immediately. |
-| `fetchSession` | Fetch session data through the query client. |
-| `listApiKeysOptions`, `listDeviceSessionsOptions`, `listPasskeysOptions`, `accountInfoOptions`, `listAccountsOptions` | Client-shaped read helpers re-exported for advanced cache prefill flows when you already have an `authClient` and `userId`; they are not Better Auth server-instance helpers. |
+| `ensureSession` | Read the session, resolving from cache if fresh. Most common in loaders. |
+| `prefetchSession` | Kick off a background fetch without awaiting. Good for soft preloads. |
+| `fetchSession` | Fetch through the query client, reusing fresh cached data according to Query stale-time rules. |
 
-## Boundary
+Use `ensureSession` in `beforeLoad` to gate protected routes. In TanStack Start, pair the Solid client helper with the server-auth helper through `createIsomorphicFn`: the server path receives request headers and the client path reuses the browser `authClient`.
 
-True server-auth helpers require your app's Better Auth instance and request headers. In the Solid package today, that server-auth API is provided for session. Other re-exported read helpers keep their client-shaped `authClient`/`userId` signatures, so use them only when that is the shape your loader owns. These helpers do not own secrets, route files, or copied UI code. For TanStack Start installation and component customization, switch to [Zaidan](/docs/zaidan).
+```tsx title="src/routes/settings/$path.tsx"
+import { viewPaths } from "@better-auth-ui/core"
+import { ensureSession as ensureSessionClient } from "@better-auth-ui/solid"
+import { ensureSession as ensureSessionServer } from "@better-auth-ui/solid/server"
+import { createFileRoute, notFound, redirect } from "@tanstack/solid-router"
+import { createIsomorphicFn } from "@tanstack/solid-start"
+import { getRequestHeaders } from "@tanstack/solid-start/server"
+
+import { Settings } from "@/components/auth/settings/settings"
+import { auth } from "@/lib/auth"
+import { authClient } from "@/lib/auth-client"
+
+export const Route = createFileRoute("/settings/$path")({
+  async beforeLoad({ params: { path }, context: { queryClient }, location }) {
+    if (!Object.values(viewPaths.settings).includes(path)) {
+      throw notFound()
+    }
+
+    const ensureSession = createIsomorphicFn()
+      .server(() =>
+        ensureSessionServer(queryClient, auth, {
+          headers: getRequestHeaders()
+        })
+      )
+      .client(() => ensureSessionClient(queryClient, authClient))
+
+    const session = await ensureSession()
+
+    if (!session) {
+      throw redirect({
+        to: "/auth/$path",
+        params: { path: "sign-in" },
+        search: { redirectTo: location.href }
+      })
+    }
+
+    return { session }
+  },
+  component: SettingsPage
+})
+
+function SettingsPage() {
+  const path = () => Route.useParams()().path
+
+  return <Settings path={path()} />
+}
+```
+
+Because the query is seeded before the protected route renders, `Settings` — and any `useSession` call inside it — reads the session on first render with no loading flash.
+
+Anything you `return` from `beforeLoad` is merged into the route context, so you can forward the resolved session (or any other derived data) straight to the component via `Route.useRouteContext()` instead of re-reading the query downstream.
+
+## Prefetch without blocking
+
+Use `prefetchSession` when you want to warm the cache without blocking navigation — for example, on a public route that lazily renders an authed widget:
+
+```ts
+import { prefetchSession } from "@better-auth-ui/solid"
+
+export const Route = createFileRoute("/")({
+  loader: ({ context: { queryClient } }) => {
+    void prefetchSession(queryClient, authClient)
+  }
+})
+```
+
+The same pattern works for Solid read helpers that expose client-shaped loader helpers — for example `prefetchListAccounts`, `prefetchListApiKeys`, and `prefetchActiveOrganization` live in `@better-auth-ui/solid` next to their options factories.
+
+## Server-only helpers
+
+If you'd rather skip the HTTP round-trip for the session and hit the Better Auth server directly from a TanStack Start server function (or any other server runtime), import the session helpers from `@better-auth-ui/solid/server`. They accept your Better Auth server instance instead of an `authClient`:
+
+```ts title="src/lib/session.ts"
+import { ensureSession } from "@better-auth-ui/solid/server"
+import type { QueryClient } from "@tanstack/solid-query"
+import { createServerFn } from "@tanstack/solid-start"
+import { getRequestHeaders } from "@tanstack/solid-start/server"
+
+import { auth } from "@/lib/auth"
+
+const getSession = createServerFn().handler(() =>
+  auth.api.getSession({ headers: getRequestHeaders() })
+)
+
+export const ensureServerSession = (queryClient: QueryClient) =>
+  ensureSession(queryClient, auth, { headers: getRequestHeaders() })
+```
+
+The Solid server entrypoint is intentionally narrower than the React one. True server-auth helpers require your app's Better Auth instance and request headers. In the Solid package today, that server-auth API is provided for session.
+
+Available `@better-auth-ui/solid/server` exports include:
+
+- Server-auth session helpers: `sessionOptions`, `ensureSession`, `prefetchSession`, `fetchSession`
+- Server auth types: `AuthServer`, `MagicLinkAuthServer`, `MultiSessionAuthServer`, `PasskeyAuthServer`, `UsernameAuthServer`
+- Client-shaped cache helpers re-exported for advanced prefill flows: `listAccountsOptions`, `accountInfoOptions`, `listDeviceSessionsOptions`, `listPasskeysOptions`, and `listApiKeysOptions`
+
+Organization helpers are currently documented on their query pages as Solid router-loader helpers from `@better-auth-ui/solid`. They keep client-shaped `authClient`/`userId` signatures and are not Better Auth server-instance helpers.
+
+Cache keys are identical between loader helpers and component hooks, so data prefetched in route loaders hydrates cleanly into client-side hooks like `useSession`, `useListApiKeys`, and `useActiveOrganization`.
+
+These helpers do not own secrets, route files, copied UI code, or registry installation, and the Solid package does not create routes for you. For TanStack Start installation and component customization, switch to [Zaidan](/docs/zaidan).

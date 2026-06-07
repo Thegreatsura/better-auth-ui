@@ -3,7 +3,7 @@ title: signUpEmailOptions
 description: Email/password sign-up mutation options.
 ---
 
-## Usage
+## Options factory
 
 ```tsx
 import { signUpEmailOptions } from "@better-auth-ui/solid"
@@ -11,8 +11,14 @@ import { createMutation } from "@tanstack/solid-query"
 
 const signUp = createMutation(() => signUpEmailOptions(authClient))
 
-signUp.mutate({ email: "alice@example.com", password: "hunter2", name: "Alice" })
+signUp.mutate({
+  email: "alice@example.com",
+  password: passwordInput,
+  name: "Alice"
+})
 ```
+
+Invalidate `authQueryKeys.session` in your `onSuccess` handler when your screen needs the new session immediately after sign-up.
 
 ## Params
 

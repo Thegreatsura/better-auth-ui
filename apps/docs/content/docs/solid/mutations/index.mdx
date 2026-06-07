@@ -1,40 +1,112 @@
 ---
 title: Mutations
-description: Solid mutation factories for Better Auth write endpoints.
+description: TanStack Query primitives for every Better Auth write endpoint.
 ---
 
-Solid mutations preserve shared mutation keys and pass `throw: true` so failures surface through standard Solid Query error handling.
+Every mutation exposes an options factory. The factory's `.mutationKey` is the canonical key.
 
-Named Solid mutations expose options factories for `createMutation`. Many named mutations also expose `use*` hooks for component code. Use `useAuthMutation` as the generic escape hatch when an endpoint does not have a named helper.
+```ts
+import { signInEmailOptions } from "@better-auth-ui/solid"
+```
+
+Use the factory anywhere Solid Query takes a `mutationOptions` object — `createMutation`, global mutation state checks, or a `MutationCache` observer. Organization mutations additionally expose `use*` hooks for component code because they need provider-scoped invalidation metadata.
+
+## Error handling
+
+Every mutation wires `throw: true` into `fetchOptions`, so the promise rejects with a `BetterFetchError` on failure instead of resolving with `{ error }`. This means you can rely on `error`, `isError`, `throwOnError`, and standard `onError` handlers from `createMutation`.
 
 ```tsx
 import { signInEmailOptions } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
 
-const signIn = createMutation(() => signInEmailOptions(authClient))
+const signIn = createMutation(() => ({
+  ...signInEmailOptions(authClient),
+  onError: (err) => toast.error(err.message)
+}))
 ```
-
-## Error handling
-
-Every named factory wires `throw: true` into `fetchOptions`, so the mutation rejects with a `BetterFetchError` on failure instead of resolving with `{ error }`.
 
 ## Cache side effects
 
-Core auth factories stay explicit: invalidate or refetch with shared keys after a successful mutation. Organization hook mutations additionally attach `meta.invalidates` / `meta.awaits`, and `AuthProvider` installs the Solid mutation invalidator that consumes that metadata.
+Factories that change auth state set up the same shared mutation keys as React. Apply cache side effects in your mutation handlers, or use the Organization hooks where available so `AuthProvider` can consume their invalidation metadata.
+
+Common side effects mirror the React docs:
+
+- `signInEmailOptions` / `signInUsernameOptions` / `signInPasskeyOptions` / `signUpEmailOptions` — reset the session query so the new session is refetched. (`signInSocialOptions` and `signInMagicLinkOptions` redirect instead, so they leave the cache alone.)
+- `signOutOptions` — remove every `["auth", ...]` query.
+- `updateUserOptions` — merge or refetch the cached session after a successful profile update.
+- `setActiveSessionOptions` — update the active session and refetch session/device-session queries.
+- `changeEmailOptions` — refetch the session.
+- `addPasskeyOptions` / `deletePasskeyOptions` — refetch the passkey list.
+- `revokeSessionOptions` — refetch the sessions list.
+- `revokeMultiSessionOptions` — refetch the device sessions list.
+- `unlinkAccountOptions` — refetch the linked accounts list.
+- Organization hook mutations expose invalidation metadata consumed by `AuthProvider`, so organization/member/invitation queries are invalidated with the same shared cache keys.
+
+The Solid package does not render toast UI. Attach success/error handling in your app, or use installed Zaidan components that already integrate with the app's toast surface.
+
+## Tracking mutation state globally
+
+All mutation keys are prefixed with `"auth"` and exposed through the shared `authMutationKeys` factory in `@better-auth-ui/core`. Use it instead of inlining tuples so call sites share the same source of truth as the mutation factories:
 
 ```ts
-import { authQueryKeys } from "@better-auth-ui/core"
+import { authMutationKeys } from "@better-auth-ui/core"
 
-await queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
+const authPending = queryClient.isMutating({
+  mutationKey: authMutationKeys.all
+})
+const signInPending = queryClient.isMutating({
+  mutationKey: authMutationKeys.signIn.all
+})
+const emailSignInPending = queryClient.isMutating({
+  mutationKey: authMutationKeys.signIn.email
+})
+```
+
+Each grouping (`signIn`, `signUp`, `passkey`, `multiSession`) exposes an `all` prefix so you can match a whole feature at once.
+
+Match inside a `MutationCache` observer for global toasts or analytics:
+
+```ts
+import { authMutationKeys } from "@better-auth-ui/core"
+import { MutationCache } from "@tanstack/solid-query"
+
+new MutationCache({
+  onError: (error, _vars, _ctx, mutation) => {
+    if (mutation.options.mutationKey?.[0] === authMutationKeys.all[0]) {
+      toast.error(error.message)
+    }
+  }
+})
 ```
 
 ## Escape hatch
 
-For write-style endpoints without a purpose-built factory or hook, use `useAuthMutation` in components or `authMutationOptions` where Solid Query takes mutation options.
+For write-style endpoints without a purpose-built factory or hook, use `useAuthMutation` in components or `authMutationOptions` where Solid Query takes mutation options. Read-style endpoints should use `useAuthQuery` instead.
 
-## UI boundary
+```tsx
+import { useAuthMutation } from "@better-auth-ui/solid"
 
-The Solid package does not render toast UI. Attach success/error handling in your app, or use installed Zaidan components that already integrate with the app's toast surface.
+const mutation = useAuthMutation(
+  authClient.emailOtp.sendVerificationOtp,
+  ["auth", "emailOtp", "sendVerificationOtp"]
+)
+
+mutation.mutate({ email: "user@example.com", type: "sign-in" })
+```
+
+Variables are inferred from `authFn`'s parameter — required params reject `mutate()` at the type level, optional-param methods (e.g. `signOut`) allow it. `throw: true` is wired into `fetchOptions` so `onError` and `error` get a `BetterFetchError`.
+
+For shared mutation registration, global mutation state checks, a `MutationCache` observer, or manual `createMutation`, use the factory directly:
+
+```ts
+authMutationOptions(authClient.emailOtp.sendVerificationOtp, [
+  "auth",
+  "emailOtp",
+  "sendVerificationOtp"
+])
+```
+
+For endpoints that already have a key in `authMutationKeys`, prefer it over an inline tuple so cache observers and mutation state checks line up.
 
 ## Available mutations
 
@@ -75,16 +147,16 @@ The Solid package does not render toast UI. Attach success/error handling in you
 ### Organization
 
 <Cards>
-  <Card title="createOrganizationOptions" href="/docs/solid/mutations/create-organization" />
-  <Card title="updateOrganizationOptions" href="/docs/solid/mutations/update-organization" />
-  <Card title="deleteOrganizationOptions" href="/docs/solid/mutations/delete-organization" />
-  <Card title="setActiveOrganizationOptions" href="/docs/solid/mutations/set-active-organization" />
-  <Card title="inviteMemberOptions" href="/docs/solid/mutations/invite-member" />
-  <Card title="removeMemberOptions" href="/docs/solid/mutations/remove-member" />
-  <Card title="updateMemberRoleOptions" href="/docs/solid/mutations/update-member-role" />
-  <Card title="leaveOrganizationOptions" href="/docs/solid/mutations/leave-organization" />
-  <Card title="acceptInvitationOptions" href="/docs/solid/mutations/accept-invitation" />
-  <Card title="cancelInvitationOptions" href="/docs/solid/mutations/cancel-invitation" />
-  <Card title="rejectInvitationOptions" href="/docs/solid/mutations/reject-invitation" />
-  <Card title="checkOrganizationSlugOptions" href="/docs/solid/mutations/check-organization-slug" />
+  <Card title="useCreateOrganization" href="/docs/solid/mutations/create-organization" />
+  <Card title="useUpdateOrganization" href="/docs/solid/mutations/update-organization" />
+  <Card title="useDeleteOrganization" href="/docs/solid/mutations/delete-organization" />
+  <Card title="useSetActiveOrganization" href="/docs/solid/mutations/set-active-organization" />
+  <Card title="useInviteMember" href="/docs/solid/mutations/invite-member" />
+  <Card title="useRemoveMember" href="/docs/solid/mutations/remove-member" />
+  <Card title="useUpdateMemberRole" href="/docs/solid/mutations/update-member-role" />
+  <Card title="useLeaveOrganization" href="/docs/solid/mutations/leave-organization" />
+  <Card title="useAcceptInvitation" href="/docs/solid/mutations/accept-invitation" />
+  <Card title="useCancelInvitation" href="/docs/solid/mutations/cancel-invitation" />
+  <Card title="useRejectInvitation" href="/docs/solid/mutations/reject-invitation" />
+  <Card title="useCheckOrganizationSlug" href="/docs/solid/mutations/check-organization-slug" />
 </Cards>

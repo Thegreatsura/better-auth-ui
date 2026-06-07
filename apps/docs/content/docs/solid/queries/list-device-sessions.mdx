@@ -29,6 +29,16 @@ await prefetchListDeviceSessions(queryClient, authClient, userId)
 const sessions = await fetchListDeviceSessions(queryClient, authClient, userId)
 ```
 
+## Invalidation
+
+```ts
+import { listDeviceSessionsOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: listDeviceSessionsOptions(authClient, userId).queryKey
+})
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/multi-session/list-device-sessions-query.ts" name="ListDeviceSessionsParams" />

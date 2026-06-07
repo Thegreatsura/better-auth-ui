@@ -3,7 +3,7 @@ title: sendVerificationEmailOptions
 description: Send an email verification message.
 ---
 
-## Usage
+## Options factory
 
 ```tsx
 import { sendVerificationEmailOptions } from "@better-auth-ui/solid"
@@ -13,7 +13,10 @@ const sendVerificationEmail = createMutation(() =>
   sendVerificationEmailOptions(authClient)
 )
 
-sendVerificationEmail.mutate({ email: "alice@example.com" })
+sendVerificationEmail.mutate({
+  email: "alice@example.com",
+  callbackURL: "/dashboard"
+})
 ```
 
 ## Params

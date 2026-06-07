@@ -3,7 +3,7 @@ title: signOutOptions
 description: Sign-out mutation options.
 ---
 
-## Usage
+## Options factory
 
 ```tsx
 import { signOutOptions } from "@better-auth-ui/solid"
@@ -13,9 +13,7 @@ const signOut = createMutation(() => signOutOptions(authClient))
 signOut.mutate()
 ```
 
-## Cache
-
-After sign-out, remove or invalidate `authQueryKeys.all` so user-scoped data leaves the cache.
+The raw options factory does not perform React hook cache cleanup automatically. After sign-out, remove or invalidate `authQueryKeys.all` in your `onSuccess` handler so user-scoped data leaves the cache.
 
 ## Params
 

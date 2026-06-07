@@ -3,7 +3,7 @@ title: signInEmailOptions
 description: Email/password sign-in mutation options.
 ---
 
-## Usage
+## Options factory
 
 ```tsx
 import { signInEmailOptions } from "@better-auth-ui/solid"
@@ -11,12 +11,14 @@ import { createMutation } from "@tanstack/solid-query"
 
 const signIn = createMutation(() => signInEmailOptions(authClient))
 
-signIn.mutate({ email: "alice@example.com", password: "hunter2" })
+signIn.mutate({
+  email: "alice@example.com",
+  password: passwordInput,
+  rememberMe: true
+})
 ```
 
-## Cache
-
-Invalidate `authQueryKeys.session` on success when your screen needs the new session immediately.
+The raw options factory does not perform React hook cache cleanup automatically. Invalidate `authQueryKeys.session` in your `onSuccess` handler when your screen needs the new session immediately.
 
 ## Params
 

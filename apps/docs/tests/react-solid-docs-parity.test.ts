@@ -53,7 +53,7 @@ const organizationQueryPages = [
   "has-permission"
 ]
 
-const sharedMutationPages = [
+const sharedAuthMutationPages = [
   "sign-in-email",
   "sign-in-username",
   "sign-in-magic-link",
@@ -64,7 +64,11 @@ const sharedMutationPages = [
   "request-password-reset",
   "reset-password",
   "send-verification-email",
-  "is-username-available",
+  "is-username-available"
+]
+
+const sharedMutationPages = [
+  ...sharedAuthMutationPages,
   "update-user",
   "change-email",
   "change-password",
@@ -163,6 +167,22 @@ describe("React/Solid docs parity", () => {
     expectPagesExist("solid", "mutations", expectedSolid)
   })
 
+  it("keeps Solid auth mutation docs ordered and documents options factories", () => {
+    const solidMutationsMeta = readMeta("solid", "mutations")
+    const authStart = solidMutationsMeta.pages.indexOf("---Auth---") + 1
+    const authEnd = solidMutationsMeta.pages.indexOf("---Settings---")
+
+    expect(solidMutationsMeta.pages.slice(authStart, authEnd)).toEqual(
+      sharedAuthMutationPages
+    )
+
+    for (const page of sharedAuthMutationPages) {
+      const content = readDocsFile("solid", "mutations", `${page}.mdx`)
+
+      expect(content).toContain("## Options factory")
+    }
+  })
+
   it("removes stale solid-only wording that contradicts runtime parity", () => {
     const solidListApiKeys = readDocsFile(
       "solid",
@@ -184,6 +204,48 @@ describe("React/Solid docs parity", () => {
     expect(solidMutationsIndex).not.toContain(
       "not purpose-built `use*` mutation hooks"
     )
+  })
+
+  it("keeps Solid settings query docs aligned with React invalidation guidance", () => {
+    const solidSettingsQueries = [
+      ["list-accounts", "listAccountsOptions"],
+      ["account-info", "accountInfoOptions"],
+      ["list-sessions", "listSessionsOptions"],
+      ["list-device-sessions", "listDeviceSessionsOptions"],
+      ["list-passkeys", "listPasskeysOptions"],
+      ["list-api-keys", "listApiKeysOptions"]
+    ] as const
+
+    for (const [page, factory] of solidSettingsQueries) {
+      const content = readDocsFile("solid", "queries", `${page}.mdx`)
+
+      expect(content).toContain("## Invalidation")
+      expect(content).toContain(
+        `import { ${factory} } from "@better-auth-ui/solid"`
+      )
+      expect(content).toContain(`${factory}(authClient, userId`)
+    }
+  })
+
+  it("documents Solid organization query prefetch helpers", () => {
+    const solidOrganizationQueries = [
+      ["active-organization", "ensureActiveOrganization"],
+      ["full-organization", "ensureFullOrganization"],
+      ["list-organizations", "ensureListOrganizations"],
+      ["list-members", "ensureListOrganizationMembers"],
+      ["list-invitations", "ensureListOrganizationInvitations"],
+      ["list-user-invitations", "ensureListUserInvitations"],
+      ["has-permission", "ensureHasPermission"]
+    ] as const
+
+    for (const [page, helper] of solidOrganizationQueries) {
+      const content = readDocsFile("solid", "queries", `${page}.mdx`)
+
+      expect(content).toContain("## Server-side prefetching")
+      expect(content).toContain("@better-auth-ui/solid")
+      expect(content).toContain(`${helper}(queryClient, authClient, userId`)
+      expect(content).toContain("client-shaped `authClient`/`userId` signature")
+    }
   })
 
   it("documents server-side prefetch entrypoints with the correct API shape", () => {

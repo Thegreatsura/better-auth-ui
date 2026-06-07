@@ -3,9 +3,9 @@ title: signInPasskeyOptions
 description: Passkey sign-in mutation options.
 ---
 
-Requires the Better Auth passkey plugin.
+Requires the Better Auth passkey plugin. If TypeScript cannot infer the plugin methods from your client, type or cast `authClient` as `PasskeyAuthClient` from `@better-auth-ui/solid`.
 
-## Usage
+## Options factory
 
 ```tsx
 import { signInPasskeyOptions } from "@better-auth-ui/solid"

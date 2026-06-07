@@ -29,6 +29,16 @@ await prefetchListApiKeys(queryClient, authClient, userId)
 const keys = await fetchListApiKeys(queryClient, authClient, userId)
 ```
 
+## Invalidation
+
+```ts
+import { listApiKeysOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: listApiKeysOptions(authClient, userId).queryKey
+})
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/api-key/list-api-keys-query.ts" name="ListApiKeysParams" />

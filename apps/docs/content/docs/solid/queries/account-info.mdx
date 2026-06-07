@@ -33,6 +33,18 @@ await prefetchAccountInfo(queryClient, authClient, userId, { query: { accountId 
 const info = await fetchAccountInfo(queryClient, authClient, userId, { query: { accountId } })
 ```
 
+## Invalidation
+
+```ts
+import { accountInfoOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: accountInfoOptions(authClient, userId, {
+    query: { accountId: "acc_123" }
+  }).queryKey
+})
+```
+
 ## Params
 
 <auto-type-table path="../../../../../../packages/solid/src/queries/settings/account-info-query.ts" name="AccountInfoParams" />
