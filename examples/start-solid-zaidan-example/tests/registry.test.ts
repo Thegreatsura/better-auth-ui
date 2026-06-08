@@ -1444,6 +1444,10 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/components/ui/tabs.tsx"),
       "utf8"
     )
+    const baseCss = readFileSync(
+      resolve(__dirname, "../src/styles/base.css"),
+      "utf8"
+    )
     const shadcnThemeToggleItem = readFileSync(
       resolve(
         __dirname,
@@ -1487,10 +1491,17 @@ describe("Solid registry isolation", () => {
     expect(tabs).toContain('from "@kobalte/core/tabs"')
     expect(tabs).toContain('data-slot="tabs-list"')
     expect(tabs).toContain('data-slot="tabs-trigger"')
-    expect(tabs).toContain("rounded-lg p-[3px]")
-    expect(tabs).toContain("data-[selected]:bg-background")
-    expect(tabs).toContain("data-[selected]:text-foreground")
-    expect(tabs).toContain("data-[selected]:shadow-sm")
+    expect(tabs).toContain("z-tabs-list")
+    expect(tabs).toContain("z-tabs-trigger")
+    expect(tabs).toContain("data-selected:bg-background")
+    expect(tabs).toContain("data-selected:text-foreground")
+    expect(tabs).not.toContain("data-[selected]:")
+    const tabsListBlock = extractCssBlock(baseCss, ".z-tabs-list")
+    const tabsTriggerBlock = extractCssBlock(baseCss, ".z-tabs-trigger")
+    expect(baseCss).toContain(".z-tabs-list")
+    expect(tabsListBlock).toContain("rounded-lg p-[3px]")
+    expect(tabsTriggerBlock).toContain("data-selected:shadow-sm")
+    expect(tabsTriggerBlock).not.toContain("data-[selected=true]")
 
     expect(userButton).toContain('from "@better-auth-ui/solid"')
     expect(userButton).toContain("useSession")
