@@ -102,7 +102,7 @@ export function ThemeToggleItem(props: ThemeToggleItemProps = {}) {
           }}
           value={theme()}
         >
-          <TabsList class="h-6!" ref={tabsListElement}>
+          <TabsList class="z-tabs-list-theme-toggle" ref={tabsListElement}>
             <For each={themeState().themes}>
               {(option) => {
                 const Icon = themeIcon(option.value)

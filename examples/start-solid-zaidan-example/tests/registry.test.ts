@@ -544,7 +544,6 @@ describe("Solid registry isolation", () => {
   it("guards existing Zaidan auth styling important modifiers", () => {
     const authRoot = resolve(__dirname, "../src/components/auth")
     const expectedImportantClassTokens = {
-      "src/components/auth/theme/theme-toggle-item.tsx": ["h-6!"],
       "src/components/auth/user/user-button.tsx": [
         "rounded-full!",
         "border-0!",
@@ -1595,6 +1594,8 @@ describe("Solid registry isolation", () => {
     const tabsTriggerBlock = extractCssBlock(baseCss, ".z-tabs-trigger")
     expect(baseCss).toContain(".z-tabs-list")
     expect(tabsListBlock).toContain("rounded-lg p-[3px]")
+    expect(baseCss).toContain(".z-tabs-list-theme-toggle")
+    expect(baseCss).toContain("h-6")
     expect(tabsTriggerBlock).toContain("data-selected:shadow-sm")
     expect(tabsTriggerBlock).not.toContain("data-[selected=true]")
 
@@ -1626,6 +1627,7 @@ describe("Solid registry isolation", () => {
     expect(themeToggleItem).toContain("PaletteIcon")
     expect(themeToggleItem).toContain("<Tabs")
     expect(themeToggleItem).toContain("<TabsList")
+    expect(themeToggleItem).toContain("z-tabs-list-theme-toggle")
     expect(themeToggleItem).toContain("<TabsTrigger")
     expect(themeToggleItem).toContain("ThemeToggleItemProps")
     expect(themeToggleItem).toContain("resolveThemePluginState")
