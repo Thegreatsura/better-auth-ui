@@ -555,26 +555,10 @@ describe("Solid registry isolation", () => {
         "!text-destructive"
       ],
       "src/components/auth/organization/organization-invitations.tsx": [
-        "!p-0",
-        "!p-0",
-        "!p-0",
         "!text-end"
       ],
       "src/components/auth/organization/organization-members.tsx": [
-        "!p-0",
-        "!p-0",
         "!text-end"
-      ],
-      "src/components/auth/organization/organizations.tsx": ["!p-0", "!p-0"],
-      "src/components/auth/organization/user-invitations.tsx": ["!p-0", "!p-0"],
-      "src/components/auth/passkey/passkeys.tsx": ["!p-0"],
-      "src/components/auth/settings/security/active-sessions.tsx": [
-        "!p-0",
-        "!p-0"
-      ],
-      "src/components/auth/settings/security/linked-accounts.tsx": [
-        "!p-0",
-        "!p-0"
       ],
       "src/components/auth/theme/theme-toggle-item.tsx": [
         "gap-2!",

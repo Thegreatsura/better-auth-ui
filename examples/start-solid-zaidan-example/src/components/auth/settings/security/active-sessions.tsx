@@ -62,8 +62,8 @@ export function ActiveSessionsSettings(
         {auth.localization.settings.activeSessions}
       </h2>
 
-      <Card class="!p-0">
-        <CardContent class="!p-0">
+      <Card style={{ "padding-block": "0" }}>
+        <CardContent style={{ "padding-inline": "0" }}>
           <Show
             fallback={
               <div class="p-4">

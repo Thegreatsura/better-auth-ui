@@ -51,8 +51,8 @@ export function Organizations(props: OrganizationsProps = {}) {
             </Button>
           </div>
 
-          <Card class="!p-0">
-            <CardContent class="!p-0">
+          <Card style={{ "padding-block": "0" }}>
+            <CardContent style={{ "padding-inline": "0" }}>
               <Show
                 when={!organizations.isPending}
                 fallback={

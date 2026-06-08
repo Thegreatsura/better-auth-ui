@@ -119,7 +119,10 @@ export function DeleteAccount(props: DeleteAccountProps = {}) {
   }
 
   return (
-    <Card class={cn("border-destructive p-0", props.class)}>
+    <Card
+      class={cn("border-destructive", props.class)}
+      style={{ "padding-block": "0" }}
+    >
       <CardContent class="flex flex-col gap-6 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="font-medium text-sm leading-tight">

@@ -32,8 +32,8 @@ export function UserInvitations(props: UserInvitationsProps = {}) {
         <h2 class="truncate font-semibold text-sm">
           {organizationLocalization.invitations}
         </h2>
-        <Card class="!p-0">
-          <CardContent class="!p-0">
+        <Card style={{ "padding-block": "0" }}>
+          <CardContent style={{ "padding-inline": "0" }}>
             <Show
               when={!invitations.isPending}
               fallback={

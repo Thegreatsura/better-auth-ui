@@ -769,7 +769,7 @@ describe("Solid auth route component selection", () => {
     expect(manifest).toContain(
       'componentFile("src/components/auth/settings/shared/types.ts")'
     )
-    expect(manifest).toContain('uiFile("src/components/ui/skeleton.tsx")')
+    expect(manifest).toContain('"@zaidan/skeleton"')
   })
 
   it("extracts Zaidan Tabs settings navigation into the settings shell without document anchors", () => {
@@ -2096,8 +2096,10 @@ describe("Solid auth route component selection", () => {
     expect(activeSessions).toContain("<ActiveSessionRow")
     expect(activeSessions).toContain("<Separator")
     expect(activeSessions).not.toContain("<ItemGroup")
-    expect(activeSessions).toContain('<Card class="!p-0">')
-    expect(activeSessions).toContain('<CardContent class="!p-0">')
+    expect(activeSessions).toContain('<Card style={{ "padding-block": "0" }}>')
+    expect(activeSessions).toContain(
+      '<CardContent style={{ "padding-inline": "0" }}>'
+    )
     expect(activeSessions).toContain('<div class="p-4">')
     expect(activeSession).not.toContain("<Card")
     expect(activeSession).not.toContain("<CardContent")
@@ -2184,7 +2186,7 @@ describe("Solid auth route component selection", () => {
 
     expect(existsSync(itemPath)).toBe(true)
     expect(item).toContain(
-      'import { Separator } from "@/components/ui/separator"'
+      'import { Separator, type SeparatorProps } from "@/components/ui/separator"'
     )
     expect(item).toContain('import { cn } from "@/lib/utils"')
     expect(item).toContain('type ItemVariant = "default" | "outline" | "muted"')
@@ -2194,7 +2196,9 @@ describe("Solid auth route component selection", () => {
     )
     expect(item).toContain("const itemVariants =")
     expect(item).toContain("const itemMediaVariants =")
-    expect(item).toContain('{ as: "div", size: "default", variant: "default" }')
+    expect(item).toContain(
+      '{ as: "div" as T, variant: "default", size: "default" }'
+    )
     expect(item).toContain('type ItemGroupProps = ComponentProps<"div">')
     expect(item).toContain("<div")
     expect(item).not.toContain("<ul")
@@ -2330,8 +2334,10 @@ describe("Solid auth route component selection", () => {
     expect(linkedAccount).toContain("function GitHubIcon")
     expect(linkedAccount).toContain("function GoogleIcon")
     expect(linkedAccount).toContain("<ProviderIcon")
-    expect(linkedAccounts).toContain('<Card class="!p-0">')
-    expect(linkedAccounts).toContain('<CardContent class="!p-0">')
+    expect(linkedAccounts).toContain('<Card style={{ "padding-block": "0" }}>')
+    expect(linkedAccounts).toContain(
+      '<CardContent style={{ "padding-inline": "0" }}>'
+    )
     expect(linkedAccounts).toContain('<div class="p-4">')
     expect(linkedAccount).not.toContain("<Card")
     expect(linkedAccount).not.toContain("<CardContent")
@@ -2888,8 +2894,9 @@ describe("Solid auth route component selection", () => {
       "export function DeleteAccount(props: DeleteAccountProps = {})"
     )
     expect(deleteAccount).toContain(
-      'class={cn("border-destructive p-0", props.class)}'
+      'class={cn("border-destructive", props.class)}'
     )
+    expect(deleteAccount).toContain('style={{ "padding-block": "0" }}')
     expect(deleteAccount).not.toContain("className")
     expect(deleteAccount).toContain("const accounts = createQuery")
     expect(deleteAccount).toContain(
@@ -3294,8 +3301,8 @@ describe("Solid auth route component selection", () => {
     expect(spinner).toContain("z-spinner size-4 animate-spin")
     expect(spinner).not.toContain("className")
     expect(inputGroup).toContain('data-slot="input-group"')
-    expect(inputGroup).toContain('ComponentProps<"fieldset">')
-    expect(inputGroup).toContain("<fieldset")
+    expect(inputGroup).toContain('ComponentProps<"div">')
+    expect(inputGroup).toContain('role="group"')
     expect(inputGroup).toContain("InputGroupAddon")
     expect(inputGroup).toContain('data-slot="input-group-addon"')
     expect(inputGroup).toContain("InputGroupInput")
