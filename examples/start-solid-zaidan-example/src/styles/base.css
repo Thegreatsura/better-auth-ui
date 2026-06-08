@@ -115,6 +115,22 @@
   @apply text-primary underline-offset-4 hover:underline;
 }
 
+.z-badge-status-accepted {
+  @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400;
+}
+
+.z-badge-status-canceled {
+  @apply bg-muted text-muted-foreground;
+}
+
+.z-badge-status-pending {
+  @apply bg-amber-500/10 text-amber-600 dark:text-amber-400;
+}
+
+.z-badge-status-rejected {
+  @apply bg-destructive/10 text-destructive;
+}
+
 /* MARK: Breadcrumb */
 .z-breadcrumb-list {
   @apply text-muted-foreground gap-1.5 text-sm sm:gap-2.5;

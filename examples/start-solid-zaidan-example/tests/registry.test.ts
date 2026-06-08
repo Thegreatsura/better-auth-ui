@@ -542,19 +542,6 @@ describe("Solid registry isolation", () => {
   it("guards existing Zaidan auth styling important modifiers", () => {
     const authRoot = resolve(__dirname, "../src/components/auth")
     const expectedImportantClassTokens = {
-      "src/components/auth/organization/organization-invitation-row.tsx": [
-        "!bg-emerald-500/10",
-        "!text-emerald-600",
-        "dark:!text-emerald-400",
-        "!bg-muted",
-        "!text-muted-foreground",
-        "!bg-amber-500/10",
-        "!text-amber-600",
-        "dark:!text-amber-400",
-        "!bg-destructive/10",
-        "!text-destructive"
-      ],
-
       "src/components/auth/theme/theme-toggle-item.tsx": [
         "gap-2!",
         "px-2.5!",
