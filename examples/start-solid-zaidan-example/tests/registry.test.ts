@@ -1440,6 +1440,10 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../src/components/ui/skeleton.tsx"),
       "utf8"
     )
+    const item = readFileSync(
+      resolve(__dirname, "../src/components/ui/item.tsx"),
+      "utf8"
+    )
     const tabs = readFileSync(
       resolve(__dirname, "../src/components/ui/tabs.tsx"),
       "utf8"
@@ -1487,6 +1491,15 @@ describe("Solid registry isolation", () => {
 
     expect(skeleton).toContain('data-slot="skeleton"')
     expect(skeleton).toContain("z-skeleton animate-pulse")
+
+    expect(item).toContain("z-item flex")
+    expect(item).toContain("z-item-variant-default")
+    expect(item).toContain("z-item-size-default")
+    expect(item).toContain("z-item-media-variant-icon")
+    expect(item).toContain("z-item-separator")
+    expect(item).toContain(
+      "export type { ItemMediaVariant, ItemSize, ItemVariant }"
+    )
 
     expect(tabs).toContain('from "@kobalte/core/tabs"')
     expect(tabs).toContain('data-slot="tabs-list"')

@@ -1,80 +1,101 @@
 import { cva, type VariantProps } from "class-variance-authority"
 import {
   type ComponentProps,
+  type JSX,
   mergeProps,
   splitProps,
   type ValidComponent
 } from "solid-js"
 import { Dynamic } from "solid-js/web"
-
-import { Separator } from "@/components/ui/separator"
+import { Separator, type SeparatorProps } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 type ItemVariant = "default" | "outline" | "muted"
 type ItemSize = "default" | "sm" | "xs"
 type ItemMediaVariant = "default" | "icon" | "image"
 
+type ItemGroupProps = ComponentProps<"div">
+
+const ItemGroup = (props: ItemGroupProps) => {
+  const [local, others] = splitProps(props, ["class"])
+
+  return (
+    // biome-ignore lint/a11y/useSemanticElements: div with role=list keeps the upstream Zaidan item-group shape flexible.
+    <div
+      class={cn(
+        "group/item-group z-item-group flex w-full flex-col",
+        local.class
+      )}
+      data-slot="item-group"
+      role="list"
+      {...others}
+    />
+  )
+}
+
+type ItemSeparatorProps = SeparatorProps
+
+const ItemSeparator = (props: ItemSeparatorProps) => {
+  const [local, others] = splitProps(props, ["class"])
+
+  return (
+    <Separator
+      class={cn("z-item-separator", local.class)}
+      data-slot="item-separator"
+      orientation="horizontal"
+      {...others}
+    />
+  )
+}
+
 const itemVariants = cva(
-  "group/item flex w-full items-center gap-3 rounded-lg p-3 text-sm outline-none transition-colors",
+  "group/item z-item flex w-full flex-wrap items-center outline-none transition-colors duration-100 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors",
   {
     variants: {
       variant: {
-        default: "",
-        outline: "border bg-background",
-        muted: "bg-muted/50"
+        default: "z-item-variant-default",
+        outline: "z-item-variant-outline",
+        muted: "z-item-variant-muted"
       },
       size: {
-        default: "",
-        sm: "gap-2 p-2",
-        xs: "gap-2 p-1.5"
+        default: "z-item-size-default",
+        sm: "z-item-size-sm",
+        xs: "z-item-size-xs"
       }
     },
     defaultVariants: {
-      size: "default",
-      variant: "default"
+      variant: "default",
+      size: "default"
     }
   }
 )
 
-const itemMediaVariants = cva(
-  "flex shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted text-muted-foreground",
-  {
-    variants: {
-      variant: {
-        default: "size-10",
-        icon: "size-8",
-        image: "size-10 bg-transparent"
-      }
-    },
-    defaultVariants: {
-      variant: "default"
-    }
-  }
-)
+type ItemProps<T extends ValidComponent = "div"> = {
+  as?: T
+  class?: string | undefined
+  children?: JSX.Element
+} & VariantProps<typeof itemVariants> &
+  Omit<ComponentProps<T>, "as" | "class" | "children">
 
-type ItemProps = ComponentProps<"div"> & {
-  as?: ValidComponent
-} & VariantProps<typeof itemVariants>
-
-const Item = (props: ItemProps) => {
-  const mergedProps = mergeProps(
-    { as: "div", size: "default", variant: "default" } as const,
-    props
+const Item = <T extends ValidComponent = "div">(rawProps: ItemProps<T>) => {
+  const props = mergeProps(
+    { as: "div" as T, variant: "default", size: "default" } as const,
+    rawProps
   )
-  const [local, others] = splitProps(mergedProps, [
+  const [local, others] = splitProps(props as ItemProps, [
     "as",
     "class",
-    "size",
-    "variant"
+    "variant",
+    "size"
   ])
 
   return (
     <Dynamic
-      component={local.as}
       class={cn(
-        itemVariants({ size: local.size, variant: local.variant }),
+        itemVariants({ variant: local.variant, size: local.size }),
         local.class
       )}
+      component={local.as}
       data-size={local.size}
       data-slot="item"
       data-variant={local.variant}
@@ -83,26 +104,27 @@ const Item = (props: ItemProps) => {
   )
 }
 
-type ItemGroupProps = ComponentProps<"div">
-
-const ItemGroup = (props: ItemGroupProps) => {
-  const [local, others] = splitProps(props, ["class"])
-
-  return (
-    // biome-ignore lint/a11y/useSemanticElements: Zaidan ItemGroup source shape is a div with role=list.
-    <div
-      class={cn("flex w-full flex-col gap-0.5", local.class)}
-      data-slot="item-group"
-      role="list"
-      {...others}
-    />
-  )
-}
+const itemMediaVariants = cva(
+  "z-item-media flex shrink-0 items-center justify-center [&_svg]:pointer-events-none",
+  {
+    variants: {
+      variant: {
+        default: "z-item-media-variant-default",
+        icon: "z-item-media-variant-icon",
+        image: "z-item-media-variant-image"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+)
 
 type ItemMediaProps = ComponentProps<"div"> &
   VariantProps<typeof itemMediaVariants>
 
-const ItemMedia = (props: ItemMediaProps) => {
+const ItemMedia = (rawProps: ItemMediaProps) => {
+  const props = mergeProps({ variant: "default" } as const, rawProps)
   const [local, others] = splitProps(props, ["class", "variant"])
 
   return (
@@ -115,34 +137,6 @@ const ItemMedia = (props: ItemMediaProps) => {
   )
 }
 
-type ItemHeaderProps = ComponentProps<"div">
-
-const ItemHeader = (props: ItemHeaderProps) => {
-  const [local, others] = splitProps(props, ["class"])
-
-  return (
-    <div
-      class={cn("flex items-center gap-2", local.class)}
-      data-slot="item-header"
-      {...others}
-    />
-  )
-}
-
-type ItemFooterProps = ComponentProps<"div">
-
-const ItemFooter = (props: ItemFooterProps) => {
-  const [local, others] = splitProps(props, ["class"])
-
-  return (
-    <div
-      class={cn("flex items-center gap-2", local.class)}
-      data-slot="item-footer"
-      {...others}
-    />
-  )
-}
-
 type ItemContentProps = ComponentProps<"div">
 
 const ItemContent = (props: ItemContentProps) => {
@@ -150,7 +144,10 @@ const ItemContent = (props: ItemContentProps) => {
 
   return (
     <div
-      class={cn("grid min-w-0 flex-1 gap-1", local.class)}
+      class={cn(
+        "z-item-content flex flex-1 flex-col [&+[data-slot=item-content]]:flex-none",
+        local.class
+      )}
       data-slot="item-content"
       {...others}
     />
@@ -164,7 +161,10 @@ const ItemTitle = (props: ItemTitleProps) => {
 
   return (
     <div
-      class={cn("truncate font-medium leading-none", local.class)}
+      class={cn(
+        "z-font-heading z-item-title line-clamp-1 flex w-fit items-center",
+        local.class
+      )}
       data-slot="item-title"
       {...others}
     />
@@ -178,7 +178,10 @@ const ItemDescription = (props: ItemDescriptionProps) => {
 
   return (
     <p
-      class={cn("text-muted-foreground text-xs", local.class)}
+      class={cn(
+        "z-item-description line-clamp-2 font-normal [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
+        local.class
+      )}
       data-slot="item-description"
       {...others}
     />
@@ -192,24 +195,42 @@ const ItemActions = (props: ItemActionsProps) => {
 
   return (
     <div
-      class={cn("ml-auto flex shrink-0 items-center gap-2", local.class)}
+      class={cn("z-item-actions flex items-center", local.class)}
       data-slot="item-actions"
       {...others}
     />
   )
 }
 
-type ItemSeparatorProps = Omit<ComponentProps<typeof Separator>, "class"> & {
-  class?: string
-}
+type ItemHeaderProps = ComponentProps<"div">
 
-const ItemSeparator = (props: ItemSeparatorProps) => {
+const ItemHeader = (props: ItemHeaderProps) => {
   const [local, others] = splitProps(props, ["class"])
 
   return (
-    <Separator
-      class={cn("my-0", local.class)}
-      data-slot="item-separator"
+    <div
+      class={cn(
+        "z-item-header flex basis-full items-center justify-between",
+        local.class
+      )}
+      data-slot="item-header"
+      {...others}
+    />
+  )
+}
+
+type ItemFooterProps = ComponentProps<"div">
+
+const ItemFooter = (props: ItemFooterProps) => {
+  const [local, others] = splitProps(props, ["class"])
+
+  return (
+    <div
+      class={cn(
+        "z-item-footer flex basis-full items-center justify-between",
+        local.class
+      )}
+      data-slot="item-footer"
       {...others}
     />
   )
