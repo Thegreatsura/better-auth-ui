@@ -301,6 +301,7 @@
         "@fontsource-variable/inter": "^5.2.8",
         "@kobalte/core": "^0.13.11",
         "@neondatabase/serverless": "^1.0.2",
+        "@solidjs-email/main": "^2.0.0",
         "@tanstack/solid-query": "^5.100.9",
         "@tanstack/solid-router": "^1.167.65",
         "@tanstack/solid-start": "^1.167.62",

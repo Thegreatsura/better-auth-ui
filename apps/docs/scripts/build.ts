@@ -10,7 +10,12 @@ const zaidanStorybookScript = resolve(
   "examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts"
 )
 
-async function runStep(command: string, args: string[], cwd: string) {
+async function runStep(
+  command: string,
+  args: string[],
+  cwd: string,
+  env?: Record<string, string>
+) {
   const label = [command, ...args].join(" ")
   console.log(`\n> ${label}`)
 
@@ -18,7 +23,8 @@ async function runStep(command: string, args: string[], cwd: string) {
     const proc = spawn(command, args, {
       cwd,
       shell: process.platform === "win32",
-      stdio: "inherit"
+      stdio: "inherit",
+      env: env ? { ...process.env, ...env } : undefined
     })
 
     proc.on("close", resolveExitCode)
@@ -34,7 +40,9 @@ async function main() {
   await runStep("bun", [zaidanStorybookScript], repoRoot)
 
   console.log("Building docs...")
-  await runStep("bunx", ["vite", "build"], docsRoot)
+  await runStep("bunx", ["vite", "build"], docsRoot, {
+    NODE_OPTIONS: "--max-old-space-size=8192"
+  })
 }
 
 main().catch((error) => {
