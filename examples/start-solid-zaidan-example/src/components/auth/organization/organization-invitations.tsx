@@ -437,7 +437,7 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
                   >
                     {localization().status}
                   </SortableTableHead>
-                  <TableHead class="!text-end">Actions</TableHead>
+                  <TableHead class="z-table-head-align-end">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -554,12 +554,7 @@ describe("Solid registry isolation", () => {
         "!bg-destructive/10",
         "!text-destructive"
       ],
-      "src/components/auth/organization/organization-invitations.tsx": [
-        "!text-end"
-      ],
-      "src/components/auth/organization/organization-members.tsx": [
-        "!text-end"
-      ],
+
       "src/components/auth/theme/theme-toggle-item.tsx": [
         "gap-2!",
         "px-2.5!",
