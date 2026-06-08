@@ -19,16 +19,23 @@ async function runStep(
   const label = [command, ...args].join(" ")
   console.log(`\n> ${label}`)
 
-  const exitCode = await new Promise<number | null>((resolveExitCode) => {
-    const proc = spawn(command, args, {
-      cwd,
-      shell: process.platform === "win32",
-      stdio: "inherit",
-      env: env ? { ...process.env, ...env } : undefined
-    })
+  const exitCode = await new Promise<number | null>(
+    (resolveExitCode, reject) => {
+      try {
+        const proc = spawn(command, args, {
+          cwd,
+          shell: process.platform === "win32",
+          stdio: "inherit",
+          env: env ? { ...process.env, ...env } : undefined
+        })
 
-    proc.on("close", resolveExitCode)
-  })
+        proc.on("error", reject)
+        proc.on("close", resolveExitCode)
+      } catch (error) {
+        reject(error)
+      }
+    }
+  )
 
   if (exitCode !== 0) {
     throw new Error(`${label} failed with exit code ${exitCode}`)
