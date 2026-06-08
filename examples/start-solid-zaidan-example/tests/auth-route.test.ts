@@ -2096,9 +2096,9 @@ describe("Solid auth route component selection", () => {
     expect(activeSessions).toContain("<ActiveSessionRow")
     expect(activeSessions).toContain("<Separator")
     expect(activeSessions).not.toContain("<ItemGroup")
-    expect(activeSessions).toContain('<Card style={{ "padding-block": "0" }}>')
+    expect(activeSessions).toContain('<Card class="z-card-padding-none">')
     expect(activeSessions).toContain(
-      '<CardContent style={{ "padding-inline": "0" }}>'
+      '<CardContent class="z-card-content-padding-none">'
     )
     expect(activeSessions).toContain('<div class="p-4">')
     expect(activeSession).not.toContain("<Card")
@@ -2334,9 +2334,9 @@ describe("Solid auth route component selection", () => {
     expect(linkedAccount).toContain("function GitHubIcon")
     expect(linkedAccount).toContain("function GoogleIcon")
     expect(linkedAccount).toContain("<ProviderIcon")
-    expect(linkedAccounts).toContain('<Card style={{ "padding-block": "0" }}>')
+    expect(linkedAccounts).toContain('<Card class="z-card-padding-none">')
     expect(linkedAccounts).toContain(
-      '<CardContent style={{ "padding-inline": "0" }}>'
+      '<CardContent class="z-card-content-padding-none">'
     )
     expect(linkedAccounts).toContain('<div class="p-4">')
     expect(linkedAccount).not.toContain("<Card")
@@ -2894,9 +2894,8 @@ describe("Solid auth route component selection", () => {
       "export function DeleteAccount(props: DeleteAccountProps = {})"
     )
     expect(deleteAccount).toContain(
-      'class={cn("border-destructive", props.class)}'
+      'class={cn("z-card-padding-none border-destructive", props.class)}'
     )
-    expect(deleteAccount).toContain('style={{ "padding-block": "0" }}')
     expect(deleteAccount).not.toContain("className")
     expect(deleteAccount).toContain("const accounts = createQuery")
     expect(deleteAccount).toContain(

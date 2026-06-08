@@ -67,8 +67,8 @@ export function LinkedAccountsSettings(
         {auth.localization.settings.linkedAccounts}
       </h2>
 
-      <Card style={{ "padding-block": "0" }}>
-        <CardContent style={{ "padding-inline": "0" }}>
+      <Card class="z-card-padding-none">
+        <CardContent class="z-card-content-padding-none">
           <Show
             fallback={
               <For each={socialProviders()}>

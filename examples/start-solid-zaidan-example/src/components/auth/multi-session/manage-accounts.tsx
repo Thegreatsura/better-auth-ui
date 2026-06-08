@@ -91,8 +91,8 @@ export function ManageAccounts(props: ManageAccountsProps = {}) {
       <h2 class="mb-3 text-sm font-semibold">
         {multiSessionLabels().manageAccounts}
       </h2>
-      <Card style={{ "padding-block": "0" }}>
-        <CardContent style={{ "padding-inline": "0" }}>
+      <Card class="z-card-padding-none">
+        <CardContent class="z-card-content-padding-none">
           <ItemGroup class="gap-0">
             <ManageAccountRow
               description={`Signed in as ${displayName()}`}

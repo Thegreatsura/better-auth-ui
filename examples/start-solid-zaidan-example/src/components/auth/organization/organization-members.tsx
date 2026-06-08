@@ -255,7 +255,7 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
       <Show
         when={!members.isPending}
         fallback={
-          <Card style={{ "padding-block": "0" }}>
+          <Card class="z-card-padding-none">
             <Table>
               <TableBody>
                 <OrganizationMemberRowSkeleton />
@@ -331,7 +331,7 @@ export function OrganizationMembers(props: OrganizationMembersProps) {
               </Show>
             </div>
           </Show>
-          <Card style={{ "padding-block": "0" }}>
+          <Card class="z-card-padding-none">
             <Table aria-label="Members">
               <TableHeader>
                 <TableRow>

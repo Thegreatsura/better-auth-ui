@@ -84,8 +84,8 @@ export function ApiKeys(props: ApiKeysProps = {}) {
         </Show>
       </div>
 
-      <Card style={{ "padding-block": "0" }}>
-        <CardContent style={{ "padding-inline": "0" }}>
+      <Card class="z-card-padding-none">
+        <CardContent class="z-card-content-padding-none">
           <Show when={!pending()} fallback={<ApiKeySkeleton />}>
             <Show
               when={keys().length > 0}

@@ -2996,7 +2996,7 @@ describe("Solid registry isolation", () => {
       'class={cn(\\"flex w-full flex-col\\", props.class)}'
     )
     expect(deleteUserRegistryEntry).toContain(
-      'class={cn(\\"border-destructive p-0\\", props.class)}'
+      'class={cn(\\"z-card-padding-none border-destructive\\", props.class)}'
     )
 
     const magicLinkPluginDoc = pluginDoc("magic-link")

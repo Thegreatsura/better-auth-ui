@@ -58,8 +58,8 @@ export function PasskeysSettings(props: PasskeysSettingsProps) {
         </Dialog>
       </div>
 
-      <Card style={{ "padding-block": "0" }}>
-        <CardContent style={{ "padding-inline": "0" }}>
+      <Card class="z-card-padding-none">
+        <CardContent class="z-card-content-padding-none">
           <Show when={!passkeys.isPending} fallback={<PasskeySkeleton />}>
             <Show
               when={items().length > 0}

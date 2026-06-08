@@ -44,8 +44,8 @@ function ApiKeyStory() {
                 </div>
               </div>
 
-              <Card style={{ "padding-block": "0" }}>
-                <CardContent style={{ "padding-inline": "0" }}>
+              <Card class="z-card-padding-none">
+                <CardContent class="z-card-content-padding-none">
                   {apiKeys.map((apiKey, index) => (
                     <>
                       {index > 0 ? <ItemSeparator /> : null}
@@ -58,8 +58,8 @@ function ApiKeyStory() {
 
             <section class="flex flex-col gap-3">
               <h2 class="font-semibold text-sm">Empty state</h2>
-              <Card style={{ "padding-block": "0" }}>
-                <CardContent style={{ "padding-inline": "0" }}>
+              <Card class="z-card-padding-none">
+                <CardContent class="z-card-content-padding-none">
                   <ApiKeysEmpty onCreatePress={() => undefined} />
                 </CardContent>
               </Card>

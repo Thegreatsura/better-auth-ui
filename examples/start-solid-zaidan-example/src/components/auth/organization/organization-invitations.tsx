@@ -262,7 +262,7 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
       <Show
         when={!invitations.isPending}
         fallback={
-          <Card style={{ "padding-block": "0" }}>
+          <Card class="z-card-padding-none">
             <Table>
               <TableBody>
                 <OrganizationInvitationRowSkeleton />
@@ -275,7 +275,7 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
         <Show
           when={invitationRows().length > 0}
           fallback={
-            <Card style={{ "padding-block": "0" }}>
+            <Card class="z-card-padding-none">
               <Table>
                 <TableBody>
                   <TableRow>
@@ -393,7 +393,7 @@ export function OrganizationInvitations(props: OrganizationInvitationsProps) {
               </Show>
             </div>
           </Show>
-          <Card style={{ "padding-block": "0" }}>
+          <Card class="z-card-padding-none">
             <Table aria-label="Invitations">
               <TableHeader>
                 <TableRow>
