@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import {
   existsSync,
   mkdirSync,
@@ -9,7 +11,10 @@ import {
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { solidRegistryManifest } from "../registry.manifest"
+import {
+  type SolidRegistryManifest,
+  solidRegistryManifest
+} from "../registry.manifest"
 import {
   buildSolidRegistry,
   verifySolidRegistryCoherence
@@ -534,13 +539,19 @@ describe("Solid registry isolation", () => {
     expect(solidUserButton).not.toContain("rounded-lg border bg-popover")
   })
 
-  it("uses local Zaidan UI primitives in auth components and registry payloads", () => {
+  it("uses upstream Zaidan UI primitive dependencies in registry payloads", () => {
     const uiFiles = [
       "src/components/ui/button.tsx",
       "src/components/ui/card.tsx",
       "src/components/ui/input.tsx",
       "src/components/ui/label.tsx",
       "src/lib/utils.ts"
+    ]
+    const upstreamFormUiDependencies = [
+      "@zaidan/button",
+      "@zaidan/card",
+      "@zaidan/input",
+      "@zaidan/label"
     ]
     const formAuthFiles = [
       {
@@ -611,6 +622,17 @@ describe("Solid registry isolation", () => {
       "solid/auth-provider",
       "solid/additional-field"
     ])
+    const authProvider = readJson<{
+      registryDependencies: string[]
+    }>(join(outputRoot, "solid/auth-provider.json"))
+    expect(authProvider.registryDependencies).toEqual(
+      expect.arrayContaining([
+        "@zaidan/font-inter",
+        "@zaidan/neutral",
+        "@zaidan/style-mira",
+        ...upstreamFormUiDependencies
+      ])
+    )
     expect(signUp.dependencies).toEqual(
       expect.arrayContaining([
         "@kobalte/core",
@@ -623,9 +645,100 @@ describe("Solid registry isolation", () => {
       "src/components/auth/sign-up.tsx",
       "src/components/auth/provider-button.tsx",
       "src/components/auth/provider-buttons.tsx",
-      ...uiFiles
+      "src/lib/utils.ts"
     ])
-    expect(signUp.files.map((file) => file.type)).toContain("registry:ui")
+    expect(signUp.files.map((file) => file.path)).not.toEqual(
+      expect.arrayContaining(uiFiles.filter((file) => file.includes("/ui/")))
+    )
+    expect(signUp.files.map((file) => file.type)).not.toContain("registry:ui")
+  })
+
+  it("requires upstream Zaidan dependencies for generated UI primitive imports", () => {
+    const uiPrimitiveDependencies = {
+      avatar: "@zaidan/avatar",
+      badge: "@zaidan/badge",
+      button: "@zaidan/button",
+      card: "@zaidan/card",
+      dialog: "@zaidan/dialog",
+      "dropdown-menu": "@zaidan/dropdown-menu",
+      "input-group": "@zaidan/input-group",
+      input: "@zaidan/input",
+      item: "@zaidan/item",
+      label: "@zaidan/label",
+      separator: "@zaidan/separator",
+      skeleton: "@zaidan/skeleton",
+      sonner: "@zaidan/sonner",
+      spinner: "@zaidan/spinner",
+      table: "@zaidan/table",
+      tabs: "@zaidan/tabs",
+      textarea: "@zaidan/textarea"
+    }
+    const outputRoot = makeTempRoot()
+
+    buildSolidRegistry({
+      exampleRoot: resolve(__dirname, ".."),
+      manifest: solidRegistryManifest,
+      outputRoot
+    })
+
+    const registryFiles = readdirSync(join(outputRoot, "solid"))
+      .filter((file) => file.endsWith(".json") && file !== "registry.json")
+      .sort()
+    const registryPayloads = Object.fromEntries(
+      registryFiles.map((registryFile) => [
+        registryFile.replace(/\.json$/, ""),
+        readJson<{
+          files: Array<{ content?: string }>
+          registryDependencies: string[]
+        }>(join(outputRoot, "solid", registryFile))
+      ])
+    )
+    const collectRegistryDependencies = (
+      name: string,
+      seen = new Set<string>()
+    ): Set<string> => {
+      if (seen.has(name)) return seen
+      seen.add(name)
+
+      for (const dependency of registryPayloads[name]?.registryDependencies ??
+        []) {
+        seen.add(dependency)
+
+        if (dependency.startsWith("solid/")) {
+          collectRegistryDependencies(dependency.replace(/^solid\//, ""), seen)
+        }
+      }
+
+      return seen
+    }
+
+    for (const [name, payload] of Object.entries(registryPayloads)) {
+      const importedUiPrimitives = new Set<string>()
+
+      for (const file of payload.files) {
+        for (const [, primitive] of file.content?.matchAll(
+          /@\/components\/ui\/([a-z-]+)/g
+        ) ?? []) {
+          if (primitive) importedUiPrimitives.add(primitive)
+        }
+      }
+
+      if (importedUiPrimitives.size === 0) continue
+
+      const registryDependencies = collectRegistryDependencies(name)
+
+      for (const primitive of importedUiPrimitives) {
+        const dependency =
+          uiPrimitiveDependencies[
+            primitive as keyof typeof uiPrimitiveDependencies
+          ]
+
+        expect(
+          registryDependencies,
+          `${name}.json imports @/components/ui/${primitive}`
+        ).toContain(dependency)
+      }
+    }
   })
 
   it("documents apps/docs/public/r/solid as static asset hosting only", () => {
@@ -1805,9 +1918,18 @@ describe("Solid registry isolation", () => {
       dependencies: string[]
       files: Array<{ content: string; path: string }>
       name: string
+      registryDependencies: string[]
     }>(join(outputRoot, "solid/auth-provider.json"))
     expect(authProvider.dependencies).toContain("solid-sonner")
     expect(authProvider.dependencies).toContain("lucide-solid")
+    expect(authProvider.registryDependencies).toEqual(
+      expect.arrayContaining([
+        "@zaidan/font-inter",
+        "@zaidan/neutral",
+        "@zaidan/style-mira",
+        "@zaidan/sonner"
+      ])
+    )
     expect(authProvider.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -1819,14 +1941,13 @@ describe("Solid registry isolation", () => {
           path: "src/components/auth/error-toaster.tsx"
         }),
         expect.objectContaining({
-          content: expect.stringContaining("Toaster as Sonner"),
-          path: "src/components/ui/sonner.tsx"
-        }),
-        expect.objectContaining({
           content: expect.stringContaining("themeScript"),
           path: "src/lib/theme.ts"
         })
       ])
+    )
+    expect(authProvider.files.map((file) => file.path)).not.toContain(
+      "src/components/ui/sonner.tsx"
     )
 
     const forgotPassword = readJson<{
@@ -2843,6 +2964,9 @@ describe("Solid registry isolation", () => {
       resolve(__dirname, "../../../apps/docs/public/r/solid/organization.json"),
       "utf8"
     )
+    const organizationPayload = JSON.parse(organizationRegistry) as {
+      registryDependencies: string[]
+    }
     const solidRegistry = readFileSync(
       resolve(__dirname, "../../../apps/docs/public/r/solid/registry.json"),
       "utf8"
@@ -3055,26 +3179,31 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("CreateOrganizationDialog")
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
-    expect(organizationRegistry).toContain("src/components/ui/table.tsx")
-    expect(organizationRegistry).toContain("src/components/ui/badge.tsx")
-    expect(organizationRegistry).toContain("src/components/ui/spinner.tsx")
-    expect(organizationRegistry).toContain("src/components/ui/input-group.tsx")
-    expect(organizationRegistry).toContain("src/components/ui/textarea.tsx")
-    expect(organizationRegistry).toContain('data-slot=\\"table-container\\"')
-    expect(organizationRegistry).toContain('data-slot=\\"table\\"')
-    expect(organizationRegistry).toContain('data-slot=\\"badge\\"')
-    expect(organizationRegistry).toContain("badgeVariants")
-    expect(organizationRegistry).toContain("LoaderCircle")
-    expect(organizationRegistry).toContain('role=\\"status\\"')
-    expect(organizationRegistry).toContain('aria-label=\\"Loading\\"')
-    expect(organizationRegistry).toContain('data-slot=\\"input-group\\"')
-    expect(organizationRegistry).toContain('data-slot=\\"input-group-addon\\"')
-    expect(organizationRegistry).toContain(
-      'data-slot=\\"input-group-control\\"'
+    expect(organizationPayload.registryDependencies).toEqual([
+      "solid/auth-provider"
+    ])
+    const authProviderPayload = readJson<{
+      registryDependencies: string[]
+    }>(
+      resolve(__dirname, "../../../apps/docs/public/r/solid/auth-provider.json")
     )
-    expect(organizationRegistry).toContain('data-slot=\\"textarea\\"')
+    expect(authProviderPayload.registryDependencies).toEqual(
+      expect.arrayContaining([
+        "@zaidan/badge",
+        "@zaidan/input-group",
+        "@zaidan/spinner",
+        "@zaidan/table",
+        "@zaidan/textarea"
+      ])
+    )
+    expect(organizationRegistry).not.toContain("src/components/ui/table.tsx")
+    expect(organizationRegistry).not.toContain("src/components/ui/badge.tsx")
+    expect(organizationRegistry).not.toContain("src/components/ui/spinner.tsx")
+    expect(organizationRegistry).not.toContain(
+      "src/components/ui/input-group.tsx"
+    )
+    expect(organizationRegistry).not.toContain("src/components/ui/textarea.tsx")
     expect(organizationRegistry).toContain("InputGroupInput")
-    expect(organizationRegistry).toContain("InputGroupTextarea")
     expect(organizationRegistry).toContain("SortableTableHead")
     expect(organizationRegistry).toContain("SortDescriptor")
     expect(organizationRegistry).toContain("SortDirection")

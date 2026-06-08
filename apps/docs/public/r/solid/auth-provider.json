@@ -16,7 +16,28 @@
     "clsx",
     "tailwind-merge"
   ],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "@zaidan/font-inter",
+    "@zaidan/neutral",
+    "@zaidan/style-mira",
+    "@zaidan/avatar",
+    "@zaidan/badge",
+    "@zaidan/button",
+    "@zaidan/card",
+    "@zaidan/dialog",
+    "@zaidan/dropdown-menu",
+    "@zaidan/input-group",
+    "@zaidan/input",
+    "@zaidan/item",
+    "@zaidan/label",
+    "@zaidan/separator",
+    "@zaidan/skeleton",
+    "@zaidan/sonner",
+    "@zaidan/spinner",
+    "@zaidan/table",
+    "@zaidan/tabs",
+    "@zaidan/textarea"
+  ],
   "files": [
     {
       "path": "src/components/auth/auth-provider.tsx",
@@ -27,11 +48,6 @@
       "path": "src/components/auth/error-toaster.tsx",
       "type": "registry:component",
       "content": "import { useQueryClient } from \"@tanstack/solid-query\"\nimport type { BetterFetchError } from \"better-auth/client\"\nimport { onMount } from \"solid-js\"\nimport { toast } from \"solid-sonner\"\n\nconst resolveErrorMessage = (error: Error) =>\n  (error as BetterFetchError)?.error?.message || error.message\n\nexport function ErrorToaster() {\n  const queryClient = useQueryClient()\n\n  onMount(() => {\n    queryClient.getQueryCache().config.onError = (error) => {\n      const err = error as BetterFetchError\n      if (err?.error) toast.error(err.error.message)\n    }\n\n    queryClient.setMutationDefaults([], {\n      onError: (error) => {\n        toast.error(resolveErrorMessage(error))\n      }\n    })\n  })\n\n  return null\n}\n"
-    },
-    {
-      "path": "src/components/ui/sonner.tsx",
-      "type": "registry:ui",
-      "content": "import {\n  CircleCheck,\n  Info,\n  LoaderCircle,\n  OctagonX,\n  TriangleAlert\n} from \"lucide-solid\"\nimport {\n  type ComponentProps,\n  createSignal,\n  type JSX,\n  onCleanup,\n  onMount\n} from \"solid-js\"\nimport { Toaster as Sonner } from \"solid-sonner\"\n\nimport { readStoredThemePreference, resolveThemePreference } from \"@/lib/theme\"\n\ntype ToasterProps = ComponentProps<typeof Sonner>\n\nconst resolveCurrentTheme = (): ToasterProps[\"theme\"] => {\n  const prefersDark = matchMedia(\"(prefers-color-scheme: dark)\").matches\n\n  return resolveThemePreference(readStoredThemePreference(), prefersDark)\n}\n\nconst Toaster = (props: ToasterProps) => {\n  const [theme, setTheme] = createSignal<ToasterProps[\"theme\"]>(\"system\")\n\n  onMount(() => {\n    const mediaQuery = matchMedia(\"(prefers-color-scheme: dark)\")\n    const syncTheme = () => setTheme(resolveCurrentTheme())\n\n    syncTheme()\n    window.addEventListener(\"storage\", syncTheme)\n    mediaQuery.addEventListener(\"change\", syncTheme)\n\n    onCleanup(() => {\n      window.removeEventListener(\"storage\", syncTheme)\n      mediaQuery.removeEventListener(\"change\", syncTheme)\n    })\n  })\n\n  return (\n    <Sonner\n      theme={theme()}\n      class=\"toaster group\"\n      position=\"top-center\"\n      icons={{\n        success: <CircleCheck class=\"size-4\" />,\n        info: <Info class=\"size-4\" />,\n        warning: <TriangleAlert class=\"size-4\" />,\n        error: <OctagonX class=\"size-4\" />,\n        loading: <LoaderCircle class=\"size-4 animate-spin\" />\n      }}\n      style={\n        {\n          \"--normal-bg\": \"var(--popover)\",\n          \"--normal-text\": \"var(--popover-foreground)\",\n          \"--normal-border\": \"var(--border)\",\n          \"--border-radius\": \"var(--radius)\"\n        } as JSX.CSSProperties\n      }\n      {...props}\n    />\n  )\n}\n\nexport { Toaster }\n"
     },
     {
       "path": "src/lib/theme.ts",

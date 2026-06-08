@@ -21,7 +21,28 @@
         "clsx",
         "tailwind-merge"
       ],
-      "registryDependencies": [],
+      "registryDependencies": [
+        "@zaidan/font-inter",
+        "@zaidan/neutral",
+        "@zaidan/style-mira",
+        "@zaidan/avatar",
+        "@zaidan/badge",
+        "@zaidan/button",
+        "@zaidan/card",
+        "@zaidan/dialog",
+        "@zaidan/dropdown-menu",
+        "@zaidan/input-group",
+        "@zaidan/input",
+        "@zaidan/item",
+        "@zaidan/label",
+        "@zaidan/separator",
+        "@zaidan/skeleton",
+        "@zaidan/sonner",
+        "@zaidan/spinner",
+        "@zaidan/table",
+        "@zaidan/tabs",
+        "@zaidan/textarea"
+      ],
       "files": [
         {
           "path": "src/components/auth/auth-provider.tsx",
@@ -30,10 +51,6 @@
         {
           "path": "src/components/auth/error-toaster.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/sonner.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/theme.ts",
@@ -66,22 +83,6 @@
         {
           "path": "src/components/auth/additional-field.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -132,22 +133,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -189,22 +174,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -243,22 +212,6 @@
         {
           "path": "src/components/auth/magic-link-button.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -303,22 +256,6 @@
         {
           "path": "src/components/auth/sign-in-path.ts",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -386,54 +323,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -499,50 +388,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -575,22 +420,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -621,22 +450,6 @@
         {
           "path": "src/components/auth/reset-password.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -740,50 +553,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -814,10 +583,6 @@
         {
           "path": "src/components/auth/user/user-avatar.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -854,10 +619,6 @@
         {
           "path": "src/components/auth/user/user-avatar.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -901,50 +662,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -977,50 +694,6 @@
         {
           "path": "src/components/auth/settings/account/account-settings.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -1068,50 +741,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1143,50 +772,6 @@
         {
           "path": "src/components/auth/settings/settings.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -1227,54 +812,6 @@
         {
           "path": "src/components/auth/settings/shared/helpers.ts",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -1321,54 +858,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1409,26 +898,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1459,22 +928,6 @@
         {
           "path": "src/components/auth/settings/account/change-email.tsx",
           "type": "registry:component"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",
@@ -1697,50 +1150,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1802,50 +1211,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1876,26 +1241,6 @@
         {
           "path": "src/lib/auth/organization-plugin.tsx",
           "type": "registry:lib"
-        },
-        {
-          "path": "src/components/ui/table.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/badge.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input-group.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/textarea.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/components/auth/organization/organizations-settings.tsx",
@@ -2014,50 +1359,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/ui/avatar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/item.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/label.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/separator.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -2081,7 +1382,14 @@
         "clsx",
         "tailwind-merge"
       ],
-      "registryDependencies": [],
+      "registryDependencies": [
+        "@zaidan/font-inter",
+        "@zaidan/neutral",
+        "@zaidan/style-mira",
+        "@zaidan/card",
+        "@zaidan/dropdown-menu",
+        "@zaidan/tabs"
+      ],
       "files": [
         {
           "path": "src/lib/auth/theme-plugin.ts",
@@ -2102,14 +1410,6 @@
         {
           "path": "src/lib/theme.ts",
           "type": "registry:lib"
-        },
-        {
-          "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/components/ui/dropdown-menu.tsx",
-          "type": "registry:ui"
         },
         {
           "path": "src/lib/utils.ts",

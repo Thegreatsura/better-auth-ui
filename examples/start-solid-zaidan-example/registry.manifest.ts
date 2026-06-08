@@ -39,6 +39,39 @@ const zaidanUiDependencies = [
 
 const solidAuthDependencies = [...solidDependencies, ...zaidanUiDependencies]
 
+const zaidanStyleSetupRegistryDependencies = [
+  "@zaidan/font-inter",
+  "@zaidan/neutral",
+  "@zaidan/style-mira"
+]
+
+const zaidanThemeUiRegistryDependencies = [
+  ...zaidanStyleSetupRegistryDependencies,
+  "@zaidan/card",
+  "@zaidan/dropdown-menu",
+  "@zaidan/tabs"
+]
+
+const zaidanUiRegistryDependencies = [
+  "@zaidan/avatar",
+  "@zaidan/badge",
+  "@zaidan/button",
+  "@zaidan/card",
+  "@zaidan/dialog",
+  "@zaidan/dropdown-menu",
+  "@zaidan/input-group",
+  "@zaidan/input",
+  "@zaidan/item",
+  "@zaidan/label",
+  "@zaidan/separator",
+  "@zaidan/skeleton",
+  "@zaidan/sonner",
+  "@zaidan/spinner",
+  "@zaidan/table",
+  "@zaidan/tabs",
+  "@zaidan/textarea"
+]
+
 const solidEmailDependencies = [
   "@better-auth-ui/solid@latest",
   "@better-auth-ui/core@latest",
@@ -52,29 +85,11 @@ const componentFile = (path: SolidRegistryFile["path"]) =>
 const libFile = (path: SolidRegistryFile["path"]) =>
   ({ path, type: "registry:lib" }) satisfies SolidRegistryFile
 
-const uiFile = (path: SolidRegistryFile["path"]) =>
-  ({ path, type: "registry:ui" }) satisfies SolidRegistryFile
-
-const zaidanFormUiFiles = [
-  uiFile("src/components/ui/button.tsx"),
-  uiFile("src/components/ui/card.tsx"),
-  uiFile("src/components/ui/input.tsx"),
-  uiFile("src/components/ui/label.tsx"),
+const zaidanFormSupportFiles = [
   libFile("src/lib/utils.ts")
 ] satisfies SolidRegistryFile[]
 
-const zaidanInteractiveUiFiles = [
-  uiFile("src/components/ui/avatar.tsx"),
-  uiFile("src/components/ui/button.tsx"),
-  uiFile("src/components/ui/card.tsx"),
-  uiFile("src/components/ui/dialog.tsx"),
-  uiFile("src/components/ui/dropdown-menu.tsx"),
-  uiFile("src/components/ui/input.tsx"),
-  uiFile("src/components/ui/item.tsx"),
-  uiFile("src/components/ui/label.tsx"),
-  uiFile("src/components/ui/separator.tsx"),
-  uiFile("src/components/ui/skeleton.tsx"),
-  uiFile("src/components/ui/tabs.tsx"),
+const zaidanInteractiveSupportFiles = [
   libFile("src/lib/utils.ts")
 ] satisfies SolidRegistryFile[]
 
@@ -110,11 +125,13 @@ export const solidRegistryManifest = {
       title: "Solid Auth Provider",
       description:
         "Solid provider wrapper for Better Auth UI using Solid Query and the Solid package surface.",
-      registryDependencies: [],
+      registryDependencies: [
+        ...zaidanStyleSetupRegistryDependencies,
+        ...zaidanUiRegistryDependencies
+      ],
       files: [
         componentFile("src/components/auth/auth-provider.tsx"),
         componentFile("src/components/auth/error-toaster.tsx"),
-        uiFile("src/components/ui/sonner.tsx"),
         libFile("src/lib/theme.ts")
       ]
     }),
@@ -126,7 +143,7 @@ export const solidRegistryManifest = {
         "Additional field renderer used by Solid sign-up and profile surfaces.",
       files: [
         componentFile("src/components/auth/additional-field.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -141,7 +158,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/sign-in-path.ts"),
         componentFile("src/components/auth/provider-button.tsx"),
         componentFile("src/components/auth/provider-buttons.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -155,7 +172,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/sign-up.tsx"),
         componentFile("src/components/auth/provider-button.tsx"),
         componentFile("src/components/auth/provider-buttons.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -168,7 +185,7 @@ export const solidRegistryManifest = {
         libFile("src/lib/auth/magic-link-plugin.ts"),
         componentFile("src/components/auth/magic-link.tsx"),
         componentFile("src/components/auth/magic-link-button.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -182,7 +199,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/username/sign-in-username.tsx"),
         componentFile("src/components/auth/username/username-field.tsx"),
         componentFile("src/components/auth/sign-in-path.ts"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -201,8 +218,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/passkey/passkey-skeleton.tsx"),
         componentFile("src/components/auth/passkey/add-passkey-dialog.tsx"),
         componentFile("src/components/auth/passkey/delete-passkey-dialog.tsx"),
-        uiFile("src/components/ui/spinner.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -221,7 +237,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/api-key/create-api-key-dialog.tsx"),
         componentFile("src/components/auth/api-key/delete-api-key-dialog.tsx"),
         componentFile("src/components/auth/api-key/new-api-key-dialog.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -232,7 +248,7 @@ export const solidRegistryManifest = {
         "Solid forgot-password component using the Solid password reset mutation options.",
       files: [
         componentFile("src/components/auth/forgot-password.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -243,7 +259,7 @@ export const solidRegistryManifest = {
         "Solid reset-password component using the Solid password reset mutation options.",
       files: [
         componentFile("src/components/auth/reset-password.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -283,7 +299,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/user/user-button.tsx"),
         componentFile("src/components/auth/user/user-avatar.tsx"),
         componentFile("src/components/auth/user/user-view.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -293,7 +309,6 @@ export const solidRegistryManifest = {
       description: "Solid user avatar primitive for auth account surfaces.",
       files: [
         componentFile("src/components/auth/user/user-avatar.tsx"),
-        uiFile("src/components/ui/avatar.tsx"),
         libFile("src/lib/utils.ts")
       ]
     }),
@@ -307,7 +322,6 @@ export const solidRegistryManifest = {
       files: [
         componentFile("src/components/auth/user/user-view.tsx"),
         componentFile("src/components/auth/user/user-avatar.tsx"),
-        uiFile("src/components/ui/avatar.tsx"),
         libFile("src/lib/utils.ts")
       ]
     }),
@@ -321,7 +335,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/settings/account/user-profile.tsx"),
         componentFile("src/components/auth/settings/account/change-avatar.tsx"),
         componentFile("src/components/auth/additional-field.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -339,7 +353,7 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/settings/account/account-settings.tsx"
         ),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -362,7 +376,7 @@ export const solidRegistryManifest = {
         ),
         componentFile("src/components/auth/settings/shared/helpers.ts"),
         componentFile("src/components/auth/settings/shared/types.ts"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -377,7 +391,7 @@ export const solidRegistryManifest = {
       ],
       files: [
         componentFile("src/components/auth/settings/settings.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -393,8 +407,7 @@ export const solidRegistryManifest = {
           "src/components/auth/settings/security/active-session.tsx"
         ),
         componentFile("src/components/auth/settings/shared/helpers.ts"),
-        uiFile("src/components/ui/spinner.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -411,8 +424,7 @@ export const solidRegistryManifest = {
         ),
         componentFile("src/components/auth/settings/shared/helpers.ts"),
         componentFile("src/components/auth/settings/shared/types.ts"),
-        uiFile("src/components/ui/spinner.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -426,8 +438,7 @@ export const solidRegistryManifest = {
         ),
         componentFile("src/components/auth/settings/shared/helpers.ts"),
         componentFile("src/components/auth/settings/shared/types.ts"),
-        uiFile("src/components/ui/skeleton.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -437,7 +448,7 @@ export const solidRegistryManifest = {
       description: "Solid change-email settings card.",
       files: [
         componentFile("src/components/auth/settings/account/change-email.tsx"),
-        ...zaidanFormUiFiles
+        ...zaidanFormSupportFiles
       ]
     }),
     item({
@@ -529,7 +540,7 @@ export const solidRegistryManifest = {
       files: [
         componentFile("src/components/auth/delete-user/danger-zone.tsx"),
         componentFile("src/components/auth/delete-user/delete-account.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -553,7 +564,7 @@ export const solidRegistryManifest = {
         ),
         componentFile("src/components/auth/settings/shared/helpers.ts"),
         componentFile("src/components/auth/settings/shared/types.ts"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -564,11 +575,6 @@ export const solidRegistryManifest = {
         "Solid organization setup with settings tab, organization switcher, and slug route shell.",
       files: [
         libFile("src/lib/auth/organization-plugin.tsx"),
-        uiFile("src/components/ui/table.tsx"),
-        uiFile("src/components/ui/badge.tsx"),
-        uiFile("src/components/ui/spinner.tsx"),
-        uiFile("src/components/ui/input-group.tsx"),
-        uiFile("src/components/ui/textarea.tsx"),
         componentFile(
           "src/components/auth/organization/organizations-settings.tsx"
         ),
@@ -642,7 +648,7 @@ export const solidRegistryManifest = {
         ),
         componentFile("src/components/auth/organization/organization.tsx"),
         componentFile("src/routes/organization/$slug/$path.tsx"),
-        ...zaidanInteractiveUiFiles
+        ...zaidanInteractiveSupportFiles
       ]
     }),
     item({
@@ -651,15 +657,13 @@ export const solidRegistryManifest = {
       title: "Solid Theme",
       description:
         "Solid theme preference utilities and controls for auth surfaces.",
-      registryDependencies: [],
+      registryDependencies: zaidanThemeUiRegistryDependencies,
       files: [
         libFile("src/lib/auth/theme-plugin.ts"),
         componentFile("src/components/auth/theme/appearance.tsx"),
         componentFile("src/components/auth/theme/theme-toggle-item.tsx"),
         componentFile("src/components/auth/theme/theme-plugin-state.ts"),
         libFile("src/lib/theme.ts"),
-        uiFile("src/components/ui/tabs.tsx"),
-        uiFile("src/components/ui/dropdown-menu.tsx"),
         libFile("src/lib/utils.ts")
       ]
     })
