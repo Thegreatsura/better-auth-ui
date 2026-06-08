@@ -17,7 +17,7 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/user-view"
+    "https://better-auth-ui.com/r/solid/user-view.json"
   ],
   "files": [
     {

@@ -17,7 +17,7 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/user-avatar"
+    "https://better-auth-ui.com/r/solid/user-avatar.json"
   ],
   "files": [
     {

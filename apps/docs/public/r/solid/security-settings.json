@@ -17,12 +17,12 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/active-sessions",
-    "solid/linked-accounts",
-    "solid/change-password",
-    "solid/delete-user",
-    "solid/passkey",
-    "solid/api-key"
+    "https://better-auth-ui.com/r/solid/active-sessions.json",
+    "https://better-auth-ui.com/r/solid/linked-accounts.json",
+    "https://better-auth-ui.com/r/solid/change-password.json",
+    "https://better-auth-ui.com/r/solid/delete-user.json",
+    "https://better-auth-ui.com/r/solid/passkey.json",
+    "https://better-auth-ui.com/r/solid/api-key.json"
   ],
   "files": [
     {

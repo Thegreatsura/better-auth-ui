@@ -22,6 +22,9 @@ import {
 
 const tempRoots: string[] = []
 
+const solidRegistryUrl = (name: string) =>
+  `https://better-auth-ui.com/r/solid/${name}.json`
+
 const makeTempRoot = () => {
   const root = join(tmpdir(), `solid-registry-${crypto.randomUUID()}`)
   tempRoots.push(root)
@@ -695,8 +698,8 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/sign-up.json"))
 
     expect(signUp.registryDependencies).toEqual([
-      "solid/auth-provider",
-      "solid/additional-field"
+      solidRegistryUrl("auth-provider"),
+      solidRegistryUrl("additional-field")
     ])
     const authProvider = readJson<{
       registryDependencies: string[]
@@ -727,6 +730,34 @@ describe("Solid registry isolation", () => {
       expect.arrayContaining(uiFiles.filter((file) => file.includes("/ui/")))
     )
     expect(signUp.files.map((file) => file.type)).not.toContain("registry:ui")
+  })
+
+  it("uses direct hosted URLs for Better Auth UI-owned registry dependencies", () => {
+    const outputRoot = makeTempRoot()
+
+    buildSolidRegistry({
+      exampleRoot: resolve(__dirname, ".."),
+      manifest: solidRegistryManifest,
+      outputRoot
+    })
+
+    const registryFiles = readdirSync(join(outputRoot, "solid")).filter(
+      (file) => file.endsWith(".json") && file !== "registry.json"
+    )
+
+    for (const registryFile of registryFiles) {
+      const registryItem = readJson<{
+        registryDependencies?: string[]
+      }>(join(outputRoot, "solid", registryFile))
+
+      for (const registryDependency of registryItem.registryDependencies ??
+        []) {
+        expect(
+          registryDependency,
+          `${registryFile} has a bare Solid dep`
+        ).not.toMatch(/^solid\//)
+      }
+    }
   })
 
   it("requires upstream Zaidan dependencies for generated UI primitive imports", () => {
@@ -769,6 +800,16 @@ describe("Solid registry isolation", () => {
         }>(join(outputRoot, "solid", registryFile))
       ])
     )
+    const localSolidRegistryDependencyName = (dependency: string) => {
+      const solidPrefixMatch = dependency.match(/^solid\/(.+)$/)
+      if (solidPrefixMatch?.[1]) return solidPrefixMatch[1]
+
+      const directUrlMatch = dependency.match(
+        /^https:\/\/better-auth-ui\.com\/r\/solid\/(.+)\.json$/
+      )
+
+      return directUrlMatch?.[1]
+    }
     const collectRegistryDependencies = (
       name: string,
       seen = new Set<string>()
@@ -780,8 +821,9 @@ describe("Solid registry isolation", () => {
         []) {
         seen.add(dependency)
 
-        if (dependency.startsWith("solid/")) {
-          collectRegistryDependencies(dependency.replace(/^solid\//, ""), seen)
+        const localDependencyName = localSolidRegistryDependencyName(dependency)
+        if (localDependencyName) {
+          collectRegistryDependencies(localDependencyName, seen)
         }
       }
 
@@ -1757,12 +1799,12 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/auth.json"))
     expect(auth.name).toBe("auth")
     expect(auth.registryDependencies).toEqual([
-      "solid/auth-provider",
-      "solid/sign-in",
-      "solid/sign-up",
-      "solid/forgot-password",
-      "solid/reset-password",
-      "solid/sign-out"
+      solidRegistryUrl("auth-provider"),
+      solidRegistryUrl("sign-in"),
+      solidRegistryUrl("sign-up"),
+      solidRegistryUrl("forgot-password"),
+      solidRegistryUrl("reset-password"),
+      solidRegistryUrl("sign-out")
     ])
     expect(auth.files).toEqual([
       expect.objectContaining({
@@ -1777,10 +1819,12 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/settings.json"))
     expect(settings.name).toBe("settings")
     expect(settings.registryDependencies).toEqual([
-      "solid/account-settings",
-      "solid/security-settings"
+      solidRegistryUrl("account-settings"),
+      solidRegistryUrl("security-settings")
     ])
-    expect(settings.registryDependencies).not.toContain("solid/organization")
+    expect(settings.registryDependencies).not.toContain(
+      solidRegistryUrl("organization")
+    )
 
     const userButton = readJson<{
       files: Array<{ content: string; path: string }>
@@ -1788,9 +1832,15 @@ describe("Solid registry isolation", () => {
       registryDependencies: string[]
     }>(join(outputRoot, "solid/user-button.json"))
     expect(userButton.name).toBe("user-button")
-    expect(userButton.registryDependencies).toEqual(["solid/user-view"])
-    expect(userButton.registryDependencies).not.toContain("solid/auth-provider")
-    expect(userButton.registryDependencies).not.toContain("solid/theme")
+    expect(userButton.registryDependencies).toEqual([
+      solidRegistryUrl("user-view")
+    ])
+    expect(userButton.registryDependencies).not.toContain(
+      solidRegistryUrl("auth-provider")
+    )
+    expect(userButton.registryDependencies).not.toContain(
+      solidRegistryUrl("theme")
+    )
 
     const signIn = readJson<{
       dependencies: string[]
@@ -1868,8 +1918,8 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/multi-session.json"))
     expect(multiSession.name).toBe("multi-session")
     expect(multiSession.registryDependencies).toEqual([
-      "solid/auth-provider",
-      "solid/user-view"
+      solidRegistryUrl("auth-provider"),
+      solidRegistryUrl("user-view")
     ])
     expect(multiSession.files).toEqual(
       expect.arrayContaining([
@@ -1943,12 +1993,12 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/account-settings.json"))
     expect(accountSettingsRegistry.name).toBe("account-settings")
     expect(accountSettingsRegistry.registryDependencies).toEqual([
-      "solid/user-profile",
-      "solid/change-email",
-      "solid/delete-user"
+      solidRegistryUrl("user-profile"),
+      solidRegistryUrl("change-email"),
+      solidRegistryUrl("delete-user")
     ])
     expect(accountSettingsRegistry.registryDependencies).not.toContain(
-      "solid/theme"
+      solidRegistryUrl("theme")
     )
     expect(accountSettingsRegistry.files).not.toEqual(
       expect.arrayContaining([
@@ -2010,7 +2060,9 @@ describe("Solid registry isolation", () => {
       registryDependencies: string[]
     }>(join(outputRoot, "solid/sign-out.json"))
     expect(signOut.name).toBe("sign-out")
-    expect(signOut.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(signOut.registryDependencies).toEqual([
+      solidRegistryUrl("auth-provider")
+    ])
     expect(signOut.files).toEqual([
       expect.objectContaining({
         content: expect.stringContaining("export function SignOut"),
@@ -2064,7 +2116,9 @@ describe("Solid registry isolation", () => {
     expect(forgotPassword.dependencies).toContain(
       "@better-auth-ui/solid@latest"
     )
-    expect(forgotPassword.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(forgotPassword.registryDependencies).toEqual([
+      solidRegistryUrl("auth-provider")
+    ])
     expect(forgotPassword.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -2091,7 +2145,9 @@ describe("Solid registry isolation", () => {
     }>(join(outputRoot, "solid/reset-password.json"))
     expect(resetPassword.name).toBe("reset-password")
     expect(resetPassword.dependencies).toContain("@better-auth-ui/solid@latest")
-    expect(resetPassword.registryDependencies).toEqual(["solid/auth-provider"])
+    expect(resetPassword.registryDependencies).toEqual([
+      solidRegistryUrl("auth-provider")
+    ])
     expect(resetPassword.files).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -2122,8 +2178,8 @@ describe("Solid registry isolation", () => {
     expect(signUp.name).toBe("sign-up")
     expect(signUp.dependencies).toContain("@better-auth-ui/solid@latest")
     expect(signUp.registryDependencies).toEqual([
-      "solid/auth-provider",
-      "solid/additional-field"
+      solidRegistryUrl("auth-provider"),
+      solidRegistryUrl("additional-field")
     ])
     expect(signUp.files).toEqual(
       expect.arrayContaining([
@@ -3301,7 +3357,7 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
     expect(organizationPayload.registryDependencies).toEqual([
-      "solid/auth-provider"
+      solidRegistryUrl("auth-provider")
     ])
     const authProviderPayload = readJson<{
       registryDependencies: string[]

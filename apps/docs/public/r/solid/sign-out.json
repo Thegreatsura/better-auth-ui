@@ -13,7 +13,7 @@
     "solid-js"
   ],
   "registryDependencies": [
-    "solid/auth-provider"
+    "https://better-auth-ui.com/r/solid/auth-provider.json"
   ],
   "files": [
     {

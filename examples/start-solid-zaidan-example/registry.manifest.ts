@@ -39,6 +39,9 @@ const zaidanUiDependencies = [
 
 const solidAuthDependencies = [...solidDependencies, ...zaidanUiDependencies]
 
+const betterAuthSolidRegistryDependency = (name: string) =>
+  `https://better-auth-ui.com/r/solid/${name}.json`
+
 const zaidanStyleSetupRegistryDependencies = [
   "@zaidan/font-inter",
   "@zaidan/neutral",
@@ -101,7 +104,7 @@ const emailFiles = (path: SolidRegistryFile["path"]) => [
 const item = ({
   dependencies = solidAuthDependencies,
   files,
-  registryDependencies = ["solid/auth-provider"],
+  registryDependencies = [betterAuthSolidRegistryDependency("auth-provider")],
   ...definition
 }: Omit<SolidRegistryItem, "dependencies" | "registryDependencies"> & {
   dependencies?: string[]
@@ -167,7 +170,10 @@ export const solidRegistryManifest = {
       title: "Solid Sign Up",
       description:
         "Solid sign-up component using the Solid email sign-up mutation options.",
-      registryDependencies: ["solid/auth-provider", "solid/additional-field"],
+      registryDependencies: [
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("additional-field")
+      ],
       files: [
         componentFile("src/components/auth/sign-up.tsx"),
         componentFile("src/components/auth/provider-button.tsx"),
@@ -278,12 +284,12 @@ export const solidRegistryManifest = {
       description:
         "Solid auth router surface that selects the active auth view.",
       registryDependencies: [
-        "solid/auth-provider",
-        "solid/sign-in",
-        "solid/sign-up",
-        "solid/forgot-password",
-        "solid/reset-password",
-        "solid/sign-out"
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("sign-in"),
+        betterAuthSolidRegistryDependency("sign-up"),
+        betterAuthSolidRegistryDependency("forgot-password"),
+        betterAuthSolidRegistryDependency("reset-password"),
+        betterAuthSolidRegistryDependency("sign-out")
       ],
       files: [componentFile("src/components/auth/auth.tsx")]
     }),
@@ -293,7 +299,7 @@ export const solidRegistryManifest = {
       title: "Solid User Button",
       description:
         "Solid user menu trigger with account, settings, plugin, and auth links.",
-      registryDependencies: ["solid/user-view"],
+      registryDependencies: [betterAuthSolidRegistryDependency("user-view")],
       files: [
         componentFile("src/components/auth/user-button.tsx"),
         componentFile("src/components/auth/user/user-button.tsx"),
@@ -318,7 +324,7 @@ export const solidRegistryManifest = {
       title: "Solid User View",
       description:
         "Solid user identity row used by account menus and profile surfaces.",
-      registryDependencies: ["solid/user-avatar"],
+      registryDependencies: [betterAuthSolidRegistryDependency("user-avatar")],
       files: [
         componentFile("src/components/auth/user/user-view.tsx"),
         componentFile("src/components/auth/user/user-avatar.tsx"),
@@ -330,7 +336,10 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid User Profile",
       description: "Solid user profile card for account settings.",
-      registryDependencies: ["solid/auth-provider", "solid/additional-field"],
+      registryDependencies: [
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("additional-field")
+      ],
       files: [
         componentFile("src/components/auth/settings/account/user-profile.tsx"),
         componentFile("src/components/auth/settings/account/change-avatar.tsx"),
@@ -345,9 +354,9 @@ export const solidRegistryManifest = {
       description:
         "Solid account settings with profile, email, and plugin account cards.",
       registryDependencies: [
-        "solid/user-profile",
-        "solid/change-email",
-        "solid/delete-user"
+        betterAuthSolidRegistryDependency("user-profile"),
+        betterAuthSolidRegistryDependency("change-email"),
+        betterAuthSolidRegistryDependency("delete-user")
       ],
       files: [
         componentFile(
@@ -363,12 +372,12 @@ export const solidRegistryManifest = {
       description:
         "Solid security settings tabs for sessions, linked accounts, passkeys, and API keys.",
       registryDependencies: [
-        "solid/active-sessions",
-        "solid/linked-accounts",
-        "solid/change-password",
-        "solid/delete-user",
-        "solid/passkey",
-        "solid/api-key"
+        betterAuthSolidRegistryDependency("active-sessions"),
+        betterAuthSolidRegistryDependency("linked-accounts"),
+        betterAuthSolidRegistryDependency("change-password"),
+        betterAuthSolidRegistryDependency("delete-user"),
+        betterAuthSolidRegistryDependency("passkey"),
+        betterAuthSolidRegistryDependency("api-key")
       ],
       files: [
         componentFile(
@@ -386,8 +395,8 @@ export const solidRegistryManifest = {
       description:
         "Solid settings shell combining account and security sections.",
       registryDependencies: [
-        "solid/account-settings",
-        "solid/security-settings"
+        betterAuthSolidRegistryDependency("account-settings"),
+        betterAuthSolidRegistryDependency("security-settings")
       ],
       files: [
         componentFile("src/components/auth/settings/settings.tsx"),
@@ -548,7 +557,10 @@ export const solidRegistryManifest = {
       type: "registry:component",
       title: "Solid Multi Session",
       description: "Solid multi-session account switcher components.",
-      registryDependencies: ["solid/auth-provider", "solid/user-view"],
+      registryDependencies: [
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("user-view")
+      ],
       files: [
         libFile("src/lib/auth/multi-session-plugin.ts"),
         componentFile("src/components/auth/multi-session/manage-account.tsx"),

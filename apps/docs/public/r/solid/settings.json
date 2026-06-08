@@ -17,8 +17,8 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/account-settings",
-    "solid/security-settings"
+    "https://better-auth-ui.com/r/solid/account-settings.json",
+    "https://better-auth-ui.com/r/solid/security-settings.json"
   ],
   "files": [
     {

@@ -17,9 +17,9 @@
     "tailwind-merge"
   ],
   "registryDependencies": [
-    "solid/user-profile",
-    "solid/change-email",
-    "solid/delete-user"
+    "https://better-auth-ui.com/r/solid/user-profile.json",
+    "https://better-auth-ui.com/r/solid/change-email.json",
+    "https://better-auth-ui.com/r/solid/delete-user.json"
   ],
   "files": [
     {
