@@ -16,7 +16,7 @@ Zaidan copies the Solid `<AdditionalField />` renderer into your app, so the hap
 Install the composed auth registry entry and the profile registry entry that render additional fields:
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/auth.json https://better-auth-ui.com/r/solid/user-profile.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json https://better-auth-ui.com/r/solid/user-profile.json
 ```
 
 Pass an array of field configurations to the copied `<AuthProvider>` shell:
@@ -55,7 +55,7 @@ Fields default to rendering on the user profile only. Set `signUp: true` to also
 The composed auth/profile registry entries include the additional field renderer when those forms need it. If you're building a smaller custom install, you can install the renderer by itself:
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/additional-field.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/additional-field.json
 ```
 
 The registry entry copies:

@@ -1291,7 +1291,7 @@ describe("Solid registry isolation", () => {
           expectation.content,
           `${name} should include install command`
         ).toContain(
-          `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+          `npx shadcn@latest add https://better-auth-ui.com/r/solid/${name}.json`
         )
       } else {
         expect(
@@ -2186,6 +2186,21 @@ describe("Solid registry isolation", () => {
     expect(report.missingDocsLinks).toEqual([])
   })
 
+  it("documents Zaidan registry installs through shadcn direct URLs", () => {
+    const zaidanDocs = collectFiles(
+      resolve(__dirname, "../../../apps/docs/content/docs/zaidan")
+    )
+      .filter((path) => path.endsWith(".mdx"))
+      .map((path) => readFileSync(path, "utf8"))
+      .join("\n")
+
+    expect(zaidanDocs).not.toContain("npx zaidan add")
+    expect(zaidanDocs).not.toContain("zaidan add https://")
+    expect(zaidanDocs).toContain(
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json"
+    )
+  })
+
   it("keeps Zaidan plugin docs linked to the focused Solid runtime track", () => {
     const solidQueriesDoc = collectFiles(
       resolve(__dirname, "../../../apps/docs/content/docs/solid/queries")
@@ -2492,10 +2507,10 @@ describe("Solid registry isolation", () => {
     expect(solidOverview).not.toContain("Zaidan registry entry points")
     expect(zaidanOverview).toContain("title: Quick Start")
     expect(zaidanOverview).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/auth.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json"
     )
     expect(zaidanOverview).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
     )
     expect(zaidanOverview).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(zaidanOverview).not.toContain("title: Overview")
@@ -2630,7 +2645,7 @@ describe("Solid registry isolation", () => {
     for (const { name, content } of solidPackageDocs) {
       expect(
         content,
-        `${name} should not duplicate Zaidan CLI commands`
+        `${name} should not duplicate install commands`
       ).not.toContain("zaidan add")
       expect(
         content,
@@ -2739,13 +2754,13 @@ describe("Solid registry isolation", () => {
     expect(quickStart).toContain("## Prerequisites")
     expect(quickStart).toContain("## Installation")
     expect(quickStart).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/auth.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json"
     )
     expect(quickStart).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json"
     )
     expect(quickStart).not.toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/auth-provider.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/auth-provider.json"
     )
     expect(quickStart).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(quickStart).not.toContain("title: Overview")
@@ -2765,7 +2780,7 @@ describe("Solid registry isolation", () => {
     expect(additionalFields).toContain("AdditionalFieldProps")
     expect(additionalFields).toContain("class")
     expect(additionalFields).toContain(
-      "zaidan add https://better-auth-ui.com/r/solid/additional-field.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/additional-field.json"
     )
 
     expect(existsSync(resolve(zaidanDocsRoot, "registry.mdx"))).toBe(false)
@@ -2821,7 +2836,9 @@ describe("Solid registry isolation", () => {
       expect(
         page,
         `component ${name} should include install command`
-      ).toContain(`zaidan add https://better-auth-ui.com/r/solid/${name}.json`)
+      ).toContain(
+        `npx shadcn@latest add https://better-auth-ui.com/r/solid/${name}.json`
+      )
 
       if (!isEmailPayload) {
         expect(
@@ -2926,7 +2943,7 @@ describe("Solid registry isolation", () => {
     expect(deleteUserPluginDoc).toContain("user: {")
     expect(deleteUserPluginDoc).toContain("deleteUser: {")
     expect(deleteUserPluginDoc).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/delete-user.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/delete-user.json"
     )
     expect(deleteUserPluginDoc).toContain(
       'import { deleteUserPlugin } from "@better-auth-ui/core/plugins"'
@@ -2973,7 +2990,7 @@ describe("Solid registry isolation", () => {
     expect(magicLinkPluginDoc).toContain("## Email template")
     expect(magicLinkPluginDoc).toContain("## Passwordless-only")
     expect(magicLinkPluginDoc).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/magic-link.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/magic-link.json"
     )
     expect(magicLinkPluginDoc).toContain("magicLink({")
     expect(magicLinkPluginDoc).toContain("sendMagicLink")
@@ -3010,7 +3027,7 @@ describe("Solid registry isolation", () => {
     expect(multiSessionPluginDoc).toContain("## Localization")
     expect(multiSessionPluginDoc).toContain("## Session management")
     expect(multiSessionPluginDoc).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/multi-session.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/multi-session.json"
     )
     expect(multiSessionPluginDoc).toContain("multiSession()")
     expect(multiSessionPluginDoc).toContain("multiSessionClient()")
@@ -3435,7 +3452,7 @@ describe("Solid registry isolation", () => {
     expect(passkeyPluginDoc).toContain("## Options")
     expect(passkeyPluginDoc).toContain("## Localization")
     expect(passkeyPluginDoc).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/passkey.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/passkey.json"
     )
     expect(passkeyPluginDoc).toContain("passkey()")
     expect(passkeyPluginDoc).toContain("passkeyClient()")
@@ -3509,7 +3526,7 @@ describe("Solid registry isolation", () => {
     expect(themeDoc).not.toContain("## Copied files")
     expect(themeDoc).not.toContain("Local tabs and dropdown primitives")
     expect(themeDoc).toContain(
-      "npx zaidan add https://better-auth-ui.com/r/solid/theme.json"
+      "npx shadcn@latest add https://better-auth-ui.com/r/solid/theme.json"
     )
     expect(themeDoc).toContain("<ZaidanStory")
     expect(themeDoc).toContain(
@@ -3606,7 +3623,7 @@ describe("Solid registry isolation", () => {
       const page = componentDoc(name)
       expect(extractLevelTwoHeadings(page), name).toEqual(expectations.headings)
       expect(page, name).toContain(
-        `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+        `npx shadcn@latest add https://better-auth-ui.com/r/solid/${name}.json`
       )
       expect(page, name).toContain("After install")
       for (const usageFence of expectations.usageFences) {
@@ -3734,7 +3751,7 @@ describe("Solid registry isolation", () => {
         `tsx file=<rootDir>/../../${expectation.usageFence}`
       )
       expect(page, `${name} should include install command`).toContain(
-        `zaidan add https://better-auth-ui.com/r/solid/${name}.json`
+        `npx shadcn@latest add https://better-auth-ui.com/r/solid/${name}.json`
       )
       expect(page, `${name} should explain ownership`).toContain(
         "After install"

@@ -44,7 +44,7 @@ The root route also imports the global Tailwind v4 stylesheet and renders shared
 Install the composed auth registry entry and create a dynamic auth page that renders the right authentication view from the URL segment.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/auth.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json
 ```
 
 ```tsx title="routes/auth/$path.tsx" file=<rootDir>/../../examples/start-solid-zaidan-example/src/routes/auth/$path.tsx
@@ -59,7 +59,7 @@ The `viewPaths.auth` object contains the built-in auth paths: `sign-in`, `sign-u
 If you installed the settings registry entry, create a dynamic settings route that renders the `Settings` component for the URL segment. Validate the segment against `viewPaths.settings` so unknown paths return a 404.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/settings.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/settings.json
 ```
 
 ```tsx title="routes/settings/$path.tsx" file=<rootDir>/../../examples/start-solid-zaidan-example/src/routes/settings/$path.tsx
@@ -74,7 +74,7 @@ The `viewPaths.settings` object contains the base settings path segments: `accou
 Install the composed user button registry entry when your shell needs the signed-in user menu.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/user-button.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/user-button.json
 ```
 
 The example app renders this from the header. The copied Solid component is SSR-safe: it renders a lightweight shell first and creates session queries after mount.

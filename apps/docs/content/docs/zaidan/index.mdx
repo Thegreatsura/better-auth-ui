@@ -26,10 +26,10 @@ Before installing registry entries, make sure your app has:
 <Step>
 ### Install the auth components
 
-Install the composed auth route surface using the Zaidan CLI.
+Install the composed auth route surface with the shadcn CLI from the Better Auth UI Solid registry.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/auth.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/auth.json
 ```
 
 This installs the `<Auth />` component and its views: sign-in, sign-up, forgot-password, reset-password, and sign-out.
@@ -40,7 +40,7 @@ This installs the `<Auth />` component and its views: sign-in, sign-up, forgot-p
 If you need the settings page and user button, install them separately.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/settings.json https://better-auth-ui.com/r/solid/user-button.json
 ```
 </Step>
 <Step>
@@ -49,7 +49,7 @@ npx zaidan add https://better-auth-ui.com/r/solid/settings.json https://better-a
 Plugin registry entries stay optional. Add them when your app enables the matching Better Auth plugin.
 
 ```npm
-npx zaidan add https://better-auth-ui.com/r/solid/passkey.json
+npx shadcn@latest add https://better-auth-ui.com/r/solid/passkey.json
 ```
 </Step>
 </Steps>

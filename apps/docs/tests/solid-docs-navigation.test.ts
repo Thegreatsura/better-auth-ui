@@ -314,7 +314,7 @@ describe("Solid docs navigation", () => {
       expect(page).toContain("## Installation")
       expect(page).toContain("```npm")
       expect(page).toContain(
-        `npx zaidan add https://better-auth-ui.com/r/solid/${slug}.json`
+        `npx shadcn@latest add https://better-auth-ui.com/r/solid/${slug}.json`
       )
       expect(page).toContain(
         `packages/solid/src/components/auth/email/${sourceFileName}`
