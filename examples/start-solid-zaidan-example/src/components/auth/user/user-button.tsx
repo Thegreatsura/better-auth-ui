@@ -148,7 +148,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
         variant: props.variant
       }),
       size() === "icon"
-        ? "rounded-full! border-0! p-0"
+        ? "z-button-user-icon-trigger p-0"
         : "h-auto rounded-full px-3.5 py-3 font-normal justify-between gap-3 hover:bg-white/10 hover:text-foreground aria-expanded:bg-white/10 aria-expanded:text-foreground",
       props.class
     )
@@ -391,7 +391,7 @@ function UserButtonHydrationFallback(rawProps: UserButtonProps = {}) {
         variant: props.variant
       }),
       size() === "icon"
-        ? "rounded-full! border-0! py-2.5"
+        ? "z-button-user-icon-trigger py-2.5"
         : "h-auto rounded-full px-3.5 py-3 font-normal justify-between gap-3 hover:bg-white/10 hover:text-foreground aria-expanded:bg-white/10 aria-expanded:text-foreground",
       props.class
     )

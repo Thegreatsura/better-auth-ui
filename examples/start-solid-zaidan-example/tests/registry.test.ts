@@ -472,6 +472,8 @@ describe("Solid registry isolation", () => {
     expect(solidBase).toContain("@apply h-8 gap-1.5 px-2.5")
     expect(solidBase).toContain(".z-button-size-lg")
     expect(solidBase).toContain("@apply h-9 gap-1.5 px-2.5")
+    expect(solidBase).toContain(".z-button-user-icon-trigger")
+    expect(solidBase).toContain("rounded-full border-0")
     expect(shadcnButton).toContain(
       "border-border bg-background hover:bg-muted hover:text-foreground"
     )
@@ -543,14 +545,7 @@ describe("Solid registry isolation", () => {
 
   it("guards existing Zaidan auth styling important modifiers", () => {
     const authRoot = resolve(__dirname, "../src/components/auth")
-    const expectedImportantClassTokens = {
-      "src/components/auth/user/user-button.tsx": [
-        "rounded-full!",
-        "border-0!",
-        "rounded-full!",
-        "border-0!"
-      ]
-    } satisfies Record<string, string[]>
+    const expectedImportantClassTokens = {} satisfies Record<string, string[]>
     const extractStringLiteralValues = (content: string) => {
       const values: string[] = []
       let index = 0
@@ -1655,6 +1650,7 @@ describe("Solid registry isolation", () => {
     expect(userButton).toContain('class="size-8 rounded-full"')
     expect(userButton).toContain('class="h-4 w-24"')
     expect(userButton).toContain('class="h-3 w-32"')
+    expect(userButton).toContain("z-button-user-icon-trigger")
     expect(userButton).toContain("px-3.5 py-3")
     expect(userButton).toContain("hover:bg-white/10 hover:text-foreground")
     expect(userButton).not.toContain("w-full max-w-sm")

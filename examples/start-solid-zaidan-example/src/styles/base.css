@@ -217,6 +217,10 @@
   @apply size-9;
 }
 
+.z-button-user-icon-trigger {
+  @apply rounded-full border-0;
+}
+
 /* MARK: Button Group */
 .z-button-group {
   @apply has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md;
