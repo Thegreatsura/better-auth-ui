@@ -1,36 +1,40 @@
 import { cva, type VariantProps } from "class-variance-authority"
-import { type ComponentProps, splitProps } from "solid-js"
+import { type ComponentProps, type JSX, splitProps } from "solid-js"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
-type InputGroupProps = ComponentProps<"fieldset">
+type InputGroupProps = ComponentProps<"div">
 
 const InputGroup = (props: InputGroupProps) => {
   const [local, others] = splitProps(props, ["class"])
 
   return (
-    <fieldset
+    // biome-ignore lint/a11y/useSemanticElements: input group needs group semantics without fieldset styling constraints.
+    <div
       class={cn(
-        "group/input-group z-input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input outline-none transition-colors has-disabled:bg-input/50 has-disabled:opacity-50 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80",
+        "group/input-group relative z-input-group flex w-full min-w-0 items-center outline-none has-[>textarea]:h-auto",
         local.class
       )}
       data-slot="input-group"
+      role="group"
       {...others}
     />
   )
 }
 
 const inputGroupAddonVariants = cva(
-  "z-input-group-addon flex h-auto cursor-text select-none items-center justify-center gap-2 py-1.5 font-medium text-muted-foreground text-sm group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
+  "z-input-group-addon flex cursor-text select-none items-center justify-center",
   {
     variants: {
       align: {
-        "inline-start": "order-first pl-2",
-        "inline-end": "order-last pr-2",
-        "block-start": "order-first w-full justify-start px-2.5 pt-2",
-        "block-end": "order-last w-full justify-start px-2.5 pb-2"
+        "inline-start": "z-input-group-addon-align-inline-start order-first",
+        "inline-end": "z-input-group-addon-align-inline-end order-last",
+        "block-start":
+          "z-input-group-addon-align-block-start order-first w-full justify-start",
+        "block-end":
+          "z-input-group-addon-align-block-end order-last w-full justify-start"
       }
     },
     defaultVariants: {
@@ -39,51 +43,73 @@ const inputGroupAddonVariants = cva(
   }
 )
 
-type InputGroupAddonProps = ComponentProps<"fieldset"> &
+type InputGroupAddonProps = ComponentProps<"div"> &
   VariantProps<typeof inputGroupAddonVariants>
 
 const InputGroupAddon = (props: InputGroupAddonProps) => {
-  const [local, others] = splitProps(props, ["class", "align"])
+  const [local, others] = splitProps(props, ["class", "align", "onClick"])
   const align = () => local.align ?? "inline-start"
 
+  const handleClick: JSX.EventHandler<HTMLDivElement, MouseEvent> = (event) => {
+    if ((event.target as HTMLElement).closest("button")) return
+
+    event.currentTarget.parentElement?.querySelector("input")?.focus()
+    if (typeof local.onClick === "function") local.onClick(event)
+  }
+
   return (
-    <fieldset
+    // biome-ignore lint/a11y/useSemanticElements: input group addon needs group semantics without fieldset styling constraints.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: click delegates focus to the input inside the group.
+    <div
       class={cn(inputGroupAddonVariants({ align: align() }), local.class)}
       data-align={align()}
       data-slot="input-group-addon"
+      onClick={handleClick}
+      role="group"
       {...others}
     />
   )
 }
 
-const inputGroupButtonVariants = cva("flex items-center gap-2 text-sm", {
-  variants: {
-    size: {
-      xs: "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
-      sm: "",
-      "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0",
-      "icon-sm": "size-8 p-0 has-[>svg]:p-0"
+const inputGroupButtonVariants = cva(
+  "z-input-group-button flex items-center shadow-none",
+  {
+    variants: {
+      size: {
+        xs: "z-input-group-button-size-xs",
+        sm: "z-input-group-button-size-sm",
+        "icon-xs": "z-input-group-button-size-icon-xs",
+        "icon-sm": "z-input-group-button-size-icon-sm"
+      }
+    },
+    defaultVariants: {
+      size: "xs"
     }
-  },
-  defaultVariants: {
-    size: "xs"
   }
-})
+)
 
 type InputGroupButtonProps = Omit<ButtonProps, "size"> &
-  VariantProps<typeof inputGroupButtonVariants>
+  VariantProps<typeof inputGroupButtonVariants> & {
+    type?: "button" | "submit" | "reset"
+  }
 
 const InputGroupButton = (props: InputGroupButtonProps) => {
-  const [local, others] = splitProps(props, ["class", "size", "type"])
+  const [local, others] = splitProps(props, [
+    "class",
+    "type",
+    "variant",
+    "size"
+  ])
   const size = () => local.size ?? "xs"
+  const variant = () => local.variant ?? "ghost"
+  const type = () => local.type ?? "button"
 
   return (
     <Button
       class={cn(inputGroupButtonVariants({ size: size() }), local.class)}
       data-size={size()}
-      size={size() === "sm" ? "sm" : "xs"}
-      type={local.type ?? "button"}
-      variant="ghost"
+      type={type()}
+      variant={variant()}
       {...others}
     />
   )
@@ -97,10 +123,9 @@ const InputGroupText = (props: InputGroupTextProps) => {
   return (
     <span
       class={cn(
-        "z-input-group-text flex items-center gap-2 text-muted-foreground text-sm [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        "z-input-group-text flex items-center [&_svg]:pointer-events-none",
         local.class
       )}
-      data-slot="input-group-text"
       {...others}
     />
   )
@@ -113,10 +138,7 @@ const InputGroupInput = (props: InputGroupInputProps) => {
 
   return (
     <Input
-      class={cn(
-        "z-input-group-input flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
-        local.class
-      )}
+      class={cn("z-input-group-input flex-1", local.class)}
       data-slot="input-group-control"
       {...others}
     />
@@ -130,10 +152,7 @@ const InputGroupTextarea = (props: InputGroupTextareaProps) => {
 
   return (
     <Textarea
-      class={cn(
-        "z-input-group-textarea flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
-        local.class
-      )}
+      class={cn("z-input-group-textarea flex-1 resize-none", local.class)}
       data-slot="input-group-control"
       {...others}
     />
@@ -143,8 +162,14 @@ const InputGroupTextarea = (props: InputGroupTextareaProps) => {
 export {
   InputGroup,
   InputGroupAddon,
+  type InputGroupAddonProps,
   InputGroupButton,
+  type InputGroupButtonProps,
   InputGroupInput,
+  type InputGroupInputProps,
+  type InputGroupProps,
   InputGroupText,
-  InputGroupTextarea
+  InputGroupTextarea,
+  type InputGroupTextareaProps,
+  type InputGroupTextProps
 }
