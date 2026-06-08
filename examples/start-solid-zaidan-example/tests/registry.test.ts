@@ -539,6 +539,146 @@ describe("Solid registry isolation", () => {
     expect(solidUserButton).not.toContain("rounded-lg border bg-popover")
   })
 
+  it("guards existing Zaidan auth styling important modifiers", () => {
+    const authRoot = resolve(__dirname, "../src/components/auth")
+    const expectedImportantClassTokens = {
+      "src/components/auth/organization/organization-invitation-row.tsx": [
+        "!bg-emerald-500/10",
+        "!text-emerald-600",
+        "dark:!text-emerald-400",
+        "!bg-muted",
+        "!text-muted-foreground",
+        "!bg-amber-500/10",
+        "!text-amber-600",
+        "dark:!text-amber-400",
+        "!bg-destructive/10",
+        "!text-destructive"
+      ],
+      "src/components/auth/organization/organization-invitations.tsx": [
+        "!p-0",
+        "!p-0",
+        "!p-0",
+        "!text-end"
+      ],
+      "src/components/auth/organization/organization-members.tsx": [
+        "!p-0",
+        "!p-0",
+        "!text-end"
+      ],
+      "src/components/auth/organization/organizations.tsx": ["!p-0", "!p-0"],
+      "src/components/auth/organization/user-invitations.tsx": ["!p-0", "!p-0"],
+      "src/components/auth/passkey/passkeys.tsx": ["!p-0"],
+      "src/components/auth/settings/security/active-sessions.tsx": [
+        "!p-0",
+        "!p-0"
+      ],
+      "src/components/auth/settings/security/linked-accounts.tsx": [
+        "!p-0",
+        "!p-0"
+      ],
+      "src/components/auth/theme/theme-toggle-item.tsx": [
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "h-6!"
+      ],
+      "src/components/auth/user/user-button.tsx": [
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "rounded-full!",
+        "border-0!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "gap-2!",
+        "px-2.5!",
+        "py-2!",
+        "rounded-full!",
+        "border-0!"
+      ]
+    } satisfies Record<string, string[]>
+    const extractStringLiteralValues = (content: string) => {
+      const values: string[] = []
+      let index = 0
+
+      while (index < content.length) {
+        const quote = content[index]
+
+        if (quote !== '"' && quote !== "'" && quote !== "`") {
+          index += 1
+          continue
+        }
+
+        let value = ""
+        index += 1
+
+        while (index < content.length) {
+          const character = content[index]
+
+          if (character === "\\") {
+            value += content.slice(index, index + 2)
+            index += 2
+            continue
+          }
+
+          if (character === quote) break
+
+          value += character
+          index += 1
+        }
+
+        values.push(value)
+        index += 1
+      }
+
+      return values
+    }
+    const isImportantClassToken = (token: string) => {
+      if (/[={}()?;]/.test(token)) return false
+      if (token === "!important") return false
+      if (token.startsWith("!")) return token.slice(1).includes("-")
+      if (token.includes(":!")) return token.includes("-")
+      if (token.endsWith("!")) return token.slice(0, -1).includes("-")
+
+      return false
+    }
+    const actualImportantClassTokens = Object.fromEntries(
+      collectFiles(authRoot)
+        .filter((path) => path.endsWith(".tsx"))
+        .map((path) => {
+          const relativePath = path
+            .replace(resolve(__dirname, ".."), "")
+            .replace(/^\//, "")
+          const tokens = extractStringLiteralValues(
+            readFileSync(path, "utf8")
+          ).flatMap((value) =>
+            value
+              .trim()
+              .split(/\s+/)
+              .filter((token) => isImportantClassToken(token))
+          )
+
+          return [relativePath, tokens] as const
+        })
+        .filter(([, tokens]) => tokens.length > 0)
+    )
+
+    expect(actualImportantClassTokens).toEqual(expectedImportantClassTokens)
+  })
+
   it("uses upstream Zaidan UI primitive dependencies in registry payloads", () => {
     const uiFiles = [
       "src/components/ui/button.tsx",
