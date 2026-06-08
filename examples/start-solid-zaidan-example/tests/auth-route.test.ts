@@ -1172,7 +1172,7 @@ describe("Solid auth route component selection", () => {
     expect(userButton).toContain("auth.plugins")
     expect(userButton).toContain("plugin.userMenuItems")
     expect(userButton).toContain("component={item.UserMenuItem}")
-    expect(userButton).toContain("gap-2! rounded-md px-2.5! py-2! text-sm")
+    expect(userButton).toContain("z-dropdown-menu-item-auth")
     expect(userButton).toContain("px-3.5 py-3")
     expect(userButton).not.toContain("<ThemeToggleItem />")
     expect(userButton).toContain("auth.localization.auth.signOut")

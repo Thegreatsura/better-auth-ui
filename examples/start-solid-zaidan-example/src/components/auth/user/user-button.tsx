@@ -109,7 +109,7 @@ function renderUserLink(link: UserButtonLink | JSX.Element) {
 
   return (
     <DropdownMenuItem
-      class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
+      class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
       variant={link.variant}
     >
       <a class={menuLinkClass} href={link.href}>
@@ -295,7 +295,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
           <Show
             when={!session.isPending}
             fallback={
-              <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm">
+              <DropdownMenuItem class="z-dropdown-menu-item-auth">
                 <UserButtonPendingView />
               </DropdownMenuItem>
             }
@@ -306,7 +306,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                 <>
                   <For each={userLinks()}>{renderUserLink}</For>
 
-                  <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
+                  <DropdownMenuItem class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                     <Link
                       class={menuLinkClass}
                       params={{ path: signInPath }}
@@ -317,7 +317,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
                     </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
+                  <DropdownMenuItem class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                     <Link
                       class={menuLinkClass}
                       params={{ path: signUpPath }}
@@ -333,7 +333,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
               <For each={userLinks()}>{renderUserLink}</For>
 
               <Show when={!props.hideSettings}>
-                <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
+                <DropdownMenuItem class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                   <Link
                     class={menuLinkClass}
                     params={{ path: settingsPath }}
@@ -348,7 +348,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
               <For each={pluginUserMenuItems()}>
                 {(item) => (
                   <Dynamic
-                    class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
+                    class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground"
                     component={item.UserMenuItem}
                   />
                 )}
@@ -356,7 +356,7 @@ function MountedUserButton(rawProps: UserButtonProps = {}) {
 
               <DropdownMenuSeparator class="my-1 bg-border" />
 
-              <DropdownMenuItem class="gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
+              <DropdownMenuItem class="z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground">
                 <Link
                   class={menuLinkClass}
                   params={{ path: signOutPath }}

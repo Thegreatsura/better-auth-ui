@@ -82,7 +82,7 @@ export function ThemeToggleItem(props: ThemeToggleItemProps = {}) {
   return (
     <DropdownMenuItem
       class={cn(
-        "gap-2! rounded-md px-2.5! py-2! text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground",
+        "z-dropdown-menu-item-auth hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-expanded:bg-accent data-expanded:text-accent-foreground",
         props.class
       )}
       closeOnSelect={false}

@@ -524,6 +524,8 @@ describe("Solid registry isolation", () => {
     expect(solidBase).toContain("min-w-32 rounded-lg p-1 shadow-md")
     expect(solidBase).toContain(".z-dropdown-menu-item")
     expect(solidBase).toContain("gap-1.5 rounded-md px-1.5 py-1 text-sm")
+    expect(solidBase).toContain(".z-dropdown-menu-item-auth")
+    expect(solidBase).toContain("gap-2 px-2.5 py-2")
     expect(solidBase).toContain(".z-dropdown-menu-label")
     expect(solidBase).toContain("px-1.5 py-1 text-xs font-medium")
     expect(solidBase).toContain(".z-dropdown-menu-separator")
@@ -542,36 +544,10 @@ describe("Solid registry isolation", () => {
   it("guards existing Zaidan auth styling important modifiers", () => {
     const authRoot = resolve(__dirname, "../src/components/auth")
     const expectedImportantClassTokens = {
-      "src/components/auth/theme/theme-toggle-item.tsx": [
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "h-6!"
-      ],
+      "src/components/auth/theme/theme-toggle-item.tsx": ["h-6!"],
       "src/components/auth/user/user-button.tsx": [
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
         "rounded-full!",
         "border-0!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
-        "gap-2!",
-        "px-2.5!",
-        "py-2!",
         "rounded-full!",
         "border-0!"
       ]
