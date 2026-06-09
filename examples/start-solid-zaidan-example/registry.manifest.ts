@@ -658,6 +658,7 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/organization/organization-switcher.tsx"
         ),
+        componentFile("src/components/auth/organization/organization-view.tsx"),
         componentFile("src/components/auth/organization/organization.tsx"),
         componentFile("src/routes/organization/$slug/$path.tsx"),
         ...zaidanInteractiveSupportFiles

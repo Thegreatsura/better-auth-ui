@@ -97,12 +97,12 @@ export function useListOrganizationMembers<
   options: UseListOrganizationMembersOptions<TAuthClient> = {}
 ) {
   const session = useSession(authClient)
-  const { query, fetchOptions, ...queryOptionsRest } = options
   const activeOrganization = useActiveOrganization(authClient, {
-    enabled: !query?.organizationId
+    enabled: !options.query?.organizationId
   } as never)
 
   return createQuery(() => {
+    const { query, fetchOptions, ...queryOptionsRest } = options
     const userId = session.data?.user.id
     const organizationId = query?.organizationId ?? activeOrganization.data?.id
     const params = {

@@ -103,9 +103,9 @@ export function useActiveOrganization<
 ) {
   const session = useSession(authClient)
   const slug = useOrganizationSlug()
-  const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createQuery(() => {
+    const { query, fetchOptions, ...queryOptionsRest } = options
     const userId = session.data?.user.id
     const effectiveQuery = slug ? { organizationSlug: slug } : query
     const baseOptions = activeOrganizationOptions(authClient, userId, {

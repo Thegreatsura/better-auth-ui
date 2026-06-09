@@ -7,7 +7,8 @@ import { FetchOptionsProvider } from "./fetch-options-provider"
 import { MutationInvalidator } from "./mutation-invalidator"
 
 const AuthContext = createContext<AuthConfig>()
-let renderingAuthConfig: AuthConfig | undefined
+/** Provider-instance scoped config fallback for SSR — replaces the former module-level global. */
+const RenderingAuthConfigContext = createContext<AuthConfig>()
 
 const fallbackQueryClient = new QueryClient({
   defaultOptions: {
@@ -28,31 +29,28 @@ const resolveProviderChildren = (children: AuthProviderProps["children"]) =>
   typeof children === "function" ? children() : children
 
 export function AuthProvider(props: AuthProviderProps) {
-  const config = resolveAuthConfig(props as AuthProviderProps<AuthClient>)
-  const previousRenderingAuthConfig = renderingAuthConfig
-  const queryClient = props.queryClient || fallbackQueryClient
+  const { children, queryClient: qc, ...configInput } = props
+  const config = resolveAuthConfig(configInput as AuthProviderProps<AuthClient>)
+  const queryClient = qc || fallbackQueryClient
 
-  renderingAuthConfig = config
-
-  try {
-    return (
-      <AuthContext.Provider value={config}>
+  return (
+    <AuthContext.Provider value={config}>
+      <RenderingAuthConfigContext.Provider value={config}>
         <QueryClientProvider client={queryClient}>
           <FetchOptionsProvider>
             <MutationInvalidator queryClient={queryClient} />
-            {resolveProviderChildren(props.children)}
+            {resolveProviderChildren(children)}
           </FetchOptionsProvider>
         </QueryClientProvider>
-      </AuthContext.Provider>
-    )
-  } finally {
-    renderingAuthConfig = previousRenderingAuthConfig
-  }
+      </RenderingAuthConfigContext.Provider>
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth(): AuthConfig {
   const context = useContext(AuthContext)
-  const auth = context ?? renderingAuthConfig
+  const renderingConfig = useContext(RenderingAuthConfigContext)
+  const auth = context ?? renderingConfig
 
   if (!auth) {
     throw new Error("[Better Auth UI] AuthProvider is required")

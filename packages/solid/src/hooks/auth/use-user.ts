@@ -8,12 +8,10 @@ export function useUser<TAuthClient extends AuthClient>(
   authClient: TAuthClient,
   options?: UseSessionOptions<TAuthClient>
 ) {
-  const session = useSession(authClient, options)
+  const { data, ...rest } = useSession(authClient, options)
 
   return {
-    get data() {
-      return session.data?.user
-    },
-    ...session
+    data: data?.user,
+    ...rest
   }
 }

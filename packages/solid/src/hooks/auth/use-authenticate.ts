@@ -1,4 +1,5 @@
 import { createEffect } from "solid-js"
+import { isServer } from "solid-js/web"
 import type { AuthClient } from "../../lib/auth-client"
 import { useAuth } from "../../lib/auth-provider"
 import {
@@ -16,7 +17,9 @@ export function useAuthenticate<TAuthClient extends AuthClient>(
   createEffect(() => {
     if (session.data || session.isPending) return
 
-    const currentURL = window.location.pathname + window.location.search
+    const currentURL = isServer
+      ? "/"
+      : window.location.pathname + window.location.search
     const redirectTo = encodeURIComponent(currentURL)
     const signInPath = `${config.basePaths.auth}/${config.viewPaths.auth.signIn}?redirectTo=${redirectTo}`
 

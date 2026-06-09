@@ -95,9 +95,9 @@ export function useListOrganizations<
   options: UseListOrganizationsOptions<TAuthClient> = {}
 ) {
   const session = useSession(authClient)
-  const { query, fetchOptions, ...queryOptionsRest } = options
 
   return createQuery(() => {
+    const { query, fetchOptions, ...queryOptionsRest } = options
     const userId = session.data?.user.id
     const baseOptions = listOrganizationsOptions(authClient, userId, {
       query,

@@ -1,6 +1,7 @@
 import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useCheckOrganizationSlug } from "@better-auth-ui/solid"
+import { createDebounce } from "@solid-primitives/debounce"
 import { Check, LoaderCircle, X } from "lucide-solid"
 import { createEffect } from "solid-js"
 import { Input } from "@/components/ui/input"
@@ -47,13 +48,17 @@ export function SlugField(props: SlugFieldProps) {
     !!props.value.trim() &&
     props.value.trim() !== props.currentSlug
 
+  const debouncedCheck = createDebounce((slug: string) => {
+    checkOrganizationSlug.mutate({ slug })
+  }, 300)
+
   createEffect(() => {
     if (!shouldCheckSlug()) {
       checkOrganizationSlug.reset()
       return
     }
 
-    checkOrganizationSlug.mutate({ slug: props.value.trim() })
+    debouncedCheck(props.value.trim())
   })
 
   return (

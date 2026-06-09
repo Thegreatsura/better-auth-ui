@@ -50,7 +50,7 @@ export const ensureHasPermission = <TAuthClient extends OrganizationAuthClient>(
 ) =>
   ensureOrganizationQuery(
     queryClient,
-    organizationQueryKeys.permissions.has(userId, params),
+    hasPermissionOptions(authClient, userId, params).queryKey,
     authClient.organization.hasPermission,
     params
   )
@@ -65,7 +65,7 @@ export const prefetchHasPermission = <
 ) =>
   prefetchOrganizationQuery(
     queryClient,
-    organizationQueryKeys.permissions.has(userId, params),
+    hasPermissionOptions(authClient, userId, params).queryKey,
     authClient.organization.hasPermission,
     params
   )
@@ -78,7 +78,7 @@ export const fetchHasPermission = <TAuthClient extends OrganizationAuthClient>(
 ) =>
   fetchOrganizationQuery(
     queryClient,
-    organizationQueryKeys.permissions.has(userId, params),
+    hasPermissionOptions(authClient, userId, params).queryKey,
     authClient.organization.hasPermission,
     params
   )
@@ -92,17 +92,17 @@ export function useHasPermission<TAuthClient extends OrganizationAuthClient>(
   options: UseHasPermissionOptions<TAuthClient>
 ) {
   const session = useSession(authClient)
-  const {
-    fetchOptions,
-    permissions,
-    organizationId: optionsOrganizationId,
-    ...queryOptionsRest
-  } = options
   const activeOrganization = useActiveOrganization(authClient, {
-    enabled: !optionsOrganizationId
+    enabled: !options.organizationId
   } as never)
 
   return createQuery(() => {
+    const {
+      fetchOptions,
+      permissions,
+      organizationId: optionsOrganizationId,
+      ...queryOptionsRest
+    } = options
     const userId = session.data?.user.id
     const organizationId = optionsOrganizationId ?? activeOrganization.data?.id
     const params = {
