@@ -1,0 +1,25 @@
+{
+  "name": "docs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "build": {
+      "dependsOn": ["^build", "build-storybook-zaidan"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='--max-old-space-size=10240' vite build",
+        "cwd": "apps/docs"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "build-storybook-zaidan": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bun ../../examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
+        "cwd": "apps/docs"
+      },
+      "outputs": ["{projectRoot}/public/storybook/zaidan"],
+      "cache": true
+    }
+  }
+}

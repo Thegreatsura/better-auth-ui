@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "bun scripts/build.ts",
+    "build": "vite build",
     "typecheck": "fumadocs-mdx && tsr generate && tsc --noEmit",
     "start": "serve dist/client",
     "postinstall": "fumadocs-mdx",

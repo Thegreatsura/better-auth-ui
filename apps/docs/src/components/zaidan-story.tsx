@@ -46,7 +46,7 @@ export function ZaidanStory({
 }: ZaidanStoryProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const normalizedBasePath = normalizeBasePath(basePath)
-  const src = `${normalizedBasePath}/iframe.html?id=${encodeURIComponent(
+  const src = `${normalizedBasePath}/iframe?id=${encodeURIComponent(
     storyId
   )}&viewMode=story`
   const style = {

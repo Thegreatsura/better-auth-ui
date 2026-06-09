@@ -61,3 +61,5 @@ Thumbs.db
 .cursor/
 .repos
 /apps/docs/public/storybook/
+# Local Pi runtime state
+.atl/
