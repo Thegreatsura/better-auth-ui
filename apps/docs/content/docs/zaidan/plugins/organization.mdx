@@ -42,7 +42,7 @@ export const auth = betterAuth({
 Add `organizationClient()` to your auth client so `authClient.organization.*` methods are available:
 
 ```ts title="src/lib/auth-client.ts"
-import { createAuthClient } from "better-auth/solid"
+import { createAuthClient } from "@better-auth-ui/solid"
 import { organizationClient } from "better-auth/client/plugins" // [!code highlight]
 
 export const authClient = createAuthClient({

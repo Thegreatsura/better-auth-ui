@@ -19,7 +19,7 @@ TanStack Start wires Solid Router into the server/client render pipeline. Solid 
 
 ## Customize the QueryClient
 
-Build the `QueryClient` inside your router factory so every SSR request gets a fresh cache. Apply your `defaultOptions` here — the example sets a 5 second `staleTime` so repeat navigations within that window skip the network.
+Build the `QueryClient` inside your router factory so every SSR request gets a fresh cache. Apply your `defaultOptions` here — the example sets a 5-second `staleTime` so repeat navigations within that window skip the network.
 
 ```tsx title="src/router.tsx"
 import { QueryClient } from "@tanstack/solid-query"

@@ -352,7 +352,7 @@ describe("Solid docs navigation", () => {
 
     expect(mdxComponents).toContain("ZaidanStory")
     expect(zaidanStory).toContain("/storybook/zaidan")
-    expect(zaidanStory).toContain("iframe.html?id=")
+    expect(zaidanStory).toContain("/iframe?id=")
     expect(zaidanStory).toContain("encodeURIComponent")
     expect(storybookIframeRoute).toContain(
       'createFileRoute("/storybook/zaidan/iframe.html")'

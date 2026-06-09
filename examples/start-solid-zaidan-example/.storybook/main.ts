@@ -29,7 +29,11 @@ const config: StorybookConfig = {
         plugins: [tailwindcss()],
         resolve: {
           alias: {
-            "@": resolve(__dirname, "../src")
+            "@": resolve(__dirname, "../src"),
+            "@better-auth-ui/solid": resolve(
+              __dirname,
+              "../../../packages/solid/src/index.ts"
+            )
           },
           conditions: ["browser", "default"],
           dedupe: ["solid-js", "solid-js/store", "solid-js/web"]
