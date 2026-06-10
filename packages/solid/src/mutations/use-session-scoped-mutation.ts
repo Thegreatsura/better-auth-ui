@@ -50,7 +50,7 @@ export function useSessionScopedMutation<
       ?.user?.id
 
     if (!userId) {
-      console.warn(
+      console.debug(
         `[useSessionScopedMutation] userId is undefined for mutation "${String(mutationKey)}". Cache invalidation will be a no-op until the session loads.`
       )
     }
