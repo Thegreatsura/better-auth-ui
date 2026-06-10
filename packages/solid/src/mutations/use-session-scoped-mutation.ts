@@ -27,6 +27,10 @@ export type SessionScopedMutationOptions<TMethod extends MutationMethod> = Omit<
  * This mirrors `useOrganizationMutation` for non-org domains: it reads the
  * session reactively and passes the userId to a meta factory function so that
  * `MutationInvalidator` can invalidate the correct scoped query keys.
+ *
+ * NOTE: `options` must NEVER contain a `meta` property — the type Omit
+ * enforces this at the type level, and the explicit `meta:` assignment below
+ * will silently override anything passed via options.
  */
 export function useSessionScopedMutation<
   TAuthClient extends AuthClient,
@@ -41,11 +45,20 @@ export function useSessionScopedMutation<
 ) {
   const session = useSession(authClient)
 
-  return createMutation(() => ({
-    ...createAuthMutationOptions(authFn, mutationKey),
-    ...options,
-    meta: meta(
-      (session.data as { user?: { id?: string } } | undefined)?.user?.id
-    )
-  }))
+  return createMutation(() => {
+    const userId = (session.data as { user?: { id?: string } } | undefined)
+      ?.user?.id
+
+    if (!userId) {
+      console.warn(
+        `[useSessionScopedMutation] userId is undefined for mutation "${String(mutationKey)}". Cache invalidation will be a no-op until the session loads.`
+      )
+    }
+
+    return {
+      ...createAuthMutationOptions(authFn, mutationKey),
+      ...options,
+      meta: meta(userId)
+    }
+  })
 }
