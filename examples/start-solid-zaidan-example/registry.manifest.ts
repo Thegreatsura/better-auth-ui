@@ -191,6 +191,9 @@ export const solidRegistryManifest = {
         libFile("src/lib/auth/magic-link-plugin.ts"),
         componentFile("src/components/auth/magic-link.tsx"),
         componentFile("src/components/auth/magic-link-button.tsx"),
+        componentFile("src/components/auth/provider-buttons.tsx"),
+        componentFile("src/components/auth/provider-button.tsx"),
+        componentFile("src/components/auth/sign-in-path.ts"),
         ...zaidanFormSupportFiles
       ]
     }),
@@ -585,6 +588,7 @@ export const solidRegistryManifest = {
       title: "Solid Organization",
       description:
         "Solid organization setup with settings tab, organization switcher, and slug route shell.",
+      registryDependencies: [betterAuthSolidRegistryDependency("user-view")],
       files: [
         libFile("src/lib/auth/organization-plugin.tsx"),
         componentFile(
@@ -659,6 +663,12 @@ export const solidRegistryManifest = {
           "src/components/auth/organization/organization-switcher.tsx"
         ),
         componentFile("src/components/auth/organization/organization-view.tsx"),
+        componentFile(
+          "src/components/auth/organization/organization-view-skeleton.tsx"
+        ),
+        componentFile(
+          "src/components/auth/organization/organizations-empty.tsx"
+        ),
         componentFile("src/components/auth/organization/organization.tsx"),
         componentFile("src/routes/organization/$slug/$path.tsx"),
         ...zaidanInteractiveSupportFiles

@@ -15,10 +15,13 @@
     "build-storybook-zaidan": {
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/../../examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
-        "{projectRoot}/../../examples/start-solid-zaidan-example/.storybook/**",
-        "{projectRoot}/../../examples/start-solid-zaidan-example/src/stories/**",
-        "{projectRoot}/../../examples/start-solid-zaidan-example/src/components/**"
+        "{workspaceRoot}/examples/start-solid-zaidan-example/package.json",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/.storybook/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/lib/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/stories/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/components/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/routes/**"
       ],
       "options": {
         "command": "bun ../../examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",

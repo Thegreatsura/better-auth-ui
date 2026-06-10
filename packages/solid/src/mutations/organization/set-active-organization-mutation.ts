@@ -39,7 +39,7 @@ export function useSetActiveOrganization<
   const queryClient = useQueryClient()
   const userId = () =>
     (session.data as { user?: { id?: string } } | undefined)?.user?.id
-  const { data: organizations } = useListOrganizations(authClient)
+  const organizationsQuery = useListOrganizations(authClient)
 
   return createMutation(() => ({
     ...createOrganizationMutationOptions(
@@ -72,7 +72,7 @@ export function useSetActiveOrganization<
         return { previousOrganizations }
       }
 
-      const newOrganization = organizations?.find(
+      const newOrganization = organizationsQuery.data?.find(
         (org: { id?: string; slug?: string }) =>
           (variables?.organizationId !== undefined &&
             org.id === variables.organizationId) ||
