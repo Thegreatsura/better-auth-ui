@@ -1,3 +1,4 @@
+import { authQueryKeys } from "@better-auth-ui/core"
 import { passkeyMutationKeys } from "@better-auth-ui/core/plugins"
 import type { PasskeyAuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
@@ -10,6 +11,7 @@ export function signInPasskeyOptions<TAuthClient extends PasskeyAuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.signIn.passkey,
-    passkeyMutationKeys.signIn
+    passkeyMutationKeys.signIn,
+    { awaits: [authQueryKeys.session] }
   )
 }

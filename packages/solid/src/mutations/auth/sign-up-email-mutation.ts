@@ -1,4 +1,4 @@
-import { authMutationKeys } from "@better-auth-ui/core"
+import { authMutationKeys, authQueryKeys } from "@better-auth-ui/core"
 import type { AuthClient } from "../../lib/auth-client"
 import { createAuthMutationOptions } from "../create-auth-mutation"
 
@@ -11,6 +11,7 @@ export function signUpEmailOptions<TAuthClient extends AuthClient>(
 ) {
   return createAuthMutationOptions(
     authClient.signUp.email,
-    authMutationKeys.signUp.email
+    authMutationKeys.signUp.email,
+    { awaits: [authQueryKeys.session] }
   )
 }

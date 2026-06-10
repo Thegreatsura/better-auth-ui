@@ -1,4 +1,8 @@
-import { type MutationKey, mutationOptions } from "@tanstack/solid-query"
+import {
+  type MutationKey,
+  mutationOptions,
+  type QueryKey
+} from "@tanstack/solid-query"
 import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
 
 // biome-ignore lint/suspicious/noExplicitAny: Better Auth client methods have intentionally variable generated params.
@@ -10,10 +14,15 @@ export type MutationData<TMethod extends MutationMethod> = Awaited<
   ReturnType<TMethod>
 >
 
+export type AuthMutationMeta = {
+  invalidates?: Array<QueryKey>
+  awaits?: Array<QueryKey>
+}
+
 export function createAuthMutationOptions<
   TMethod extends MutationMethod,
   const TMutationKey extends MutationKey
->(authFn: TMethod, mutationKey: TMutationKey) {
+>(authFn: TMethod, mutationKey: TMutationKey, meta?: AuthMutationMeta) {
   const mutationFn = (params: MutationParams<TMethod>) => {
     const input = (params ?? {}) as { fetchOptions?: BetterFetchOption }
 
@@ -29,6 +38,7 @@ export function createAuthMutationOptions<
     MutationParams<TMethod>
   >({
     mutationKey,
-    mutationFn
+    mutationFn,
+    ...(meta ? { meta } : {})
   })
 }

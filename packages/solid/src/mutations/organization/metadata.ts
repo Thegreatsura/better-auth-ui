@@ -1,10 +1,7 @@
 import { organizationQueryKeys } from "@better-auth-ui/core/plugins"
-import type { QueryKey } from "@tanstack/solid-query"
+import type { AuthMutationMeta } from "../create-auth-mutation"
 
-export type AuthMutationMeta = {
-  invalidates?: Array<QueryKey>
-  awaits?: Array<QueryKey>
-}
+export type { AuthMutationMeta }
 
 export const createOrganizationMeta = (
   userId: string | undefined

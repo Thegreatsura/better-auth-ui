@@ -1,11 +1,7 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import type { QueryClient, QueryKey } from "@tanstack/solid-query"
 import { onCleanup } from "solid-js"
-
-type AuthMutationMeta = {
-  invalidates?: Array<QueryKey>
-  awaits?: Array<QueryKey>
-}
+import type { AuthMutationMeta } from "../mutations/create-auth-mutation"
 
 const keyStartsWith = (
   queryKey: readonly unknown[],
