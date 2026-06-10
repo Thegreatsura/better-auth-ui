@@ -371,4 +371,116 @@ describe("Solid auth behavior parity", () => {
     )
     expect(invalidated).not.toContainEqual(["unrelated"])
   })
+
+  describe("mutation meta for cache invalidation", () => {
+    const authClient = {
+      signIn: {
+        email: vi.fn(async () => ({ data: "ok" })),
+        social: vi.fn(async () => ({ data: "ok" })),
+        passkey: vi.fn(async () => ({ data: "ok" })),
+        magicLink: vi.fn(async () => ({ data: "ok" })),
+        username: vi.fn(async () => ({ data: "ok" }))
+      },
+      signUp: { email: vi.fn(async () => ({ data: "ok" })) },
+      signOut: vi.fn(async () => ({ data: "ok" })),
+      sendVerificationEmail: vi.fn(async () => ({ data: "ok" })),
+      requestPasswordReset: vi.fn(async () => ({ data: "ok" })),
+      resetPassword: vi.fn(async () => ({ data: "ok" })),
+      updateUser: vi.fn(async () => ({ data: "ok" })),
+      changeEmail: vi.fn(async () => ({ data: "ok" })),
+      changePassword: vi.fn(async () => ({ data: "ok" })),
+      deleteUser: vi.fn(async () => ({ data: "ok" })),
+      revokeSession: vi.fn(async () => ({ data: "ok" })),
+      unlinkAccount: vi.fn(async () => ({ data: "ok" })),
+      linkSocial: vi.fn(async () => ({ data: "ok" })),
+      isUsernameAvailable: vi.fn(async () => ({ data: true })),
+      passkey: {
+        addPasskey: vi.fn(async () => ({ data: "ok" })),
+        deletePasskey: vi.fn(async () => ({ data: "ok" }))
+      },
+      multiSession: {
+        revoke: vi.fn(async () => ({ data: "ok" })),
+        setActive: vi.fn(async () => ({ data: "ok" }))
+      },
+      apiKey: {
+        create: vi.fn(async () => ({ data: "ok" })),
+        delete: vi.fn(async () => ({ data: "ok" }))
+      }
+    }
+
+    it("createAuthMutationOptions includes meta when provided", () => {
+      const meta = { awaits: [authQueryKeys.session] }
+      const options = signInEmailOptions(authClient as never)
+
+      expect(options.meta).toEqual(meta)
+    })
+
+    it("createAuthMutationOptions omits meta when not provided", () => {
+      const options = signInSocialOptions(authClient as never)
+
+      expect(options.meta).toBeUndefined()
+    })
+
+    it("signInEmail has awaits: [session]", () => {
+      const options = signInEmailOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("signUpEmail has awaits: [session]", () => {
+      const options = signUpEmailOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("updateUser has awaits: [session]", () => {
+      const options = updateUserOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("changeEmail has awaits: [session]", () => {
+      const options = changeEmailOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("signInPasskey has awaits: [session]", () => {
+      const options = signInPasskeyOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("signInUsername has awaits: [session]", () => {
+      const options = signInUsernameOptions(authClient as never)
+      expect(options.meta).toEqual({ awaits: [authQueryKeys.session] })
+    })
+
+    it("mutations without cache needs have no meta", () => {
+      expect(signInSocialOptions(authClient as never).meta).toBeUndefined()
+      expect(
+        sendVerificationEmailOptions(authClient as never).meta
+      ).toBeUndefined()
+      expect(
+        requestPasswordResetOptions(authClient as never).meta
+      ).toBeUndefined()
+      expect(resetPasswordOptions(authClient as never).meta).toBeUndefined()
+      expect(changePasswordOptions(authClient as never).meta).toBeUndefined()
+      expect(deleteUserOptions(authClient as never).meta).toBeUndefined()
+      expect(signInMagicLinkOptions(authClient as never).meta).toBeUndefined()
+      expect(
+        isUsernameAvailableOptions(authClient as never).meta
+      ).toBeUndefined()
+    })
+
+    it("userId-scoped mutations have no meta at factory level (meta injected by hook)", () => {
+      // These mutations use useSessionScopedMutation which injects meta
+      // at the Solid hook level, not at the factory level
+      expect(addPasskeyOptions(authClient as never).meta).toBeUndefined()
+      expect(deletePasskeyOptions(authClient as never).meta).toBeUndefined()
+      expect(revokeSessionOptions(authClient as never).meta).toBeUndefined()
+      expect(unlinkAccountOptions(authClient as never).meta).toBeUndefined()
+      expect(createApiKeyOptions(authClient as never).meta).toBeUndefined()
+      expect(deleteApiKeyOptions(authClient as never).meta).toBeUndefined()
+      expect(
+        revokeMultiSessionOptions(authClient as never).meta
+      ).toBeUndefined()
+      expect(setActiveSessionOptions(authClient as never).meta).toBeUndefined()
+    })
+  })
 })
