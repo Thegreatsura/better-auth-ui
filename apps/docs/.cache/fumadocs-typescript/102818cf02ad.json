@@ -1,0 +1,674 @@
+[
+  {
+    "id": "organization-localization.ts-OrganizationLocalization",
+    "name": "OrganizationLocalization",
+    "description": "",
+    "entries": [
+      {
+        "name": "organization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Organization\"`" }],
+        "type": "\"Organization\"",
+        "simplifiedType": "\"Organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Organizations\"`" }],
+        "type": "\"Organizations\"",
+        "simplifiedType": "\"Organizations\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "personalAccount",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Personal account\"`" }],
+        "type": "\"Personal account\"",
+        "simplifiedType": "\"Personal account\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "createOrganization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Create organization\"`" }],
+        "type": "\"Create organization\"",
+        "simplifiedType": "\"Create organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "name",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Name\"`" }],
+        "type": "\"Name\"",
+        "simplifiedType": "\"Name\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "namePlaceholder",
+        "description": "",
+        "tags": [
+          { "name": "remarks", "text": "`\"Enter the organization name\"`" }
+        ],
+        "type": "\"Enter the organization name\"",
+        "simplifiedType": "\"Enter the organization name\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "slug",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Slug\"`" }],
+        "type": "\"Slug\"",
+        "simplifiedType": "\"Slug\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "slugPlaceholder",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"organization-slug\"`" }],
+        "type": "\"organization-slug\"",
+        "simplifiedType": "\"organization-slug\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "create",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Create\"`" }],
+        "type": "\"Create\"",
+        "simplifiedType": "\"Create\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "cancel",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Cancel\"`" }],
+        "type": "\"Cancel\"",
+        "simplifiedType": "\"Cancel\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "confirm",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Confirm\"`" }],
+        "type": "\"Confirm\"",
+        "simplifiedType": "\"Confirm\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "delete",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Delete\"`" }],
+        "type": "\"Delete\"",
+        "simplifiedType": "\"Delete\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "deleteOrganization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Delete organization\"`" }],
+        "type": "\"Delete organization\"",
+        "simplifiedType": "\"Delete organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "deleteOrganizationWarning",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.\"`"
+          }
+        ],
+        "type": "\"Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.\"",
+        "simplifiedType": "\"Are you sure you want to permanently delete this organization? All members will lose access and this cannot be undone.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "leave",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Leave\"`" }],
+        "type": "\"Leave\"",
+        "simplifiedType": "\"Leave\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "leaveOrganization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Leave organization\"`" }],
+        "type": "\"Leave organization\"",
+        "simplifiedType": "\"Leave organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "leaveConfirmation",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Are you sure you want to leave this organization?\"`"
+          }
+        ],
+        "type": "\"Are you sure you want to leave this organization?\"",
+        "simplifiedType": "\"Are you sure you want to leave this organization?\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "members",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Members\"`" }],
+        "type": "\"Members\"",
+        "simplifiedType": "\"Members\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "inviteMember",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invite member\"`" }],
+        "type": "\"Invite member\"",
+        "simplifiedType": "\"Invite member\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "inviteMemberDescription",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"We'll email them a link to join this organization. Choose the role they'll have once they accept.\"`"
+          }
+        ],
+        "type": "\"We'll email them a link to join this organization. Choose the role they'll have once they accept.\"",
+        "simplifiedType": "\"We'll email them a link to join this organization. Choose the role they'll have once they accept.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "inviteEmail",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Enter email address\"`" }],
+        "type": "\"Enter email address\"",
+        "simplifiedType": "\"Enter email address\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "email",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Email\"`" }],
+        "type": "\"Email\"",
+        "simplifiedType": "\"Email\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitedAt",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invited\"`" }],
+        "type": "\"Invited\"",
+        "simplifiedType": "\"Invited\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "role",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Role\"`" }],
+        "type": "\"Role\"",
+        "simplifiedType": "\"Role\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusColumn",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Status\"`" }],
+        "type": "\"Status\"",
+        "simplifiedType": "\"Status\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusPending",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Pending\"`" }],
+        "type": "\"Pending\"",
+        "simplifiedType": "\"Pending\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusAccepted",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Accepted\"`" }],
+        "type": "\"Accepted\"",
+        "simplifiedType": "\"Accepted\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusRejected",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Rejected\"`" }],
+        "type": "\"Rejected\"",
+        "simplifiedType": "\"Rejected\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusCanceled",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Canceled\"`" }],
+        "type": "\"Canceled\"",
+        "simplifiedType": "\"Canceled\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationStatusUnknown",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Unknown\"`" }],
+        "type": "\"Unknown\"",
+        "simplifiedType": "\"Unknown\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "actions",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Actions\"`" }],
+        "type": "\"Actions\"",
+        "simplifiedType": "\"Actions\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "changeMemberRole",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Change role\"`" }],
+        "type": "\"Change role\"",
+        "simplifiedType": "\"Change role\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "owner",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Owner\"`" }],
+        "type": "\"Owner\"",
+        "simplifiedType": "\"Owner\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "admin",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Admin\"`" }],
+        "type": "\"Admin\"",
+        "simplifiedType": "\"Admin\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "member",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Member\"`" }],
+        "type": "\"Member\"",
+        "simplifiedType": "\"Member\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invite",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invite\"`" }],
+        "type": "\"Invite\"",
+        "simplifiedType": "\"Invite\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invitations\"`" }],
+        "type": "\"Invitations\"",
+        "simplifiedType": "\"Invitations\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "noInvitations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"No invitations\"`" }],
+        "type": "\"No invitations\"",
+        "simplifiedType": "\"No invitations\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "userInvitationsEmptyDescription",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Invitations to join an organization will show up here.\"`"
+          }
+        ],
+        "type": "\"Invitations to join an organization will show up here.\"",
+        "simplifiedType": "\"Invitations to join an organization will show up here.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "pendingInvitations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Pending invitations\"`" }],
+        "type": "\"Pending invitations\"",
+        "simplifiedType": "\"Pending invitations\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "removeInvitation",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Remove invitation\"`" }],
+        "type": "\"Remove invitation\"",
+        "simplifiedType": "\"Remove invitation\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "removeInvitationConfirmation",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Are you sure you want to remove this invitation?\"`"
+          }
+        ],
+        "type": "\"Are you sure you want to remove this invitation?\"",
+        "simplifiedType": "\"Are you sure you want to remove this invitation?\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationSettings",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Organization settings\"`" }],
+        "type": "\"Organization settings\"",
+        "simplifiedType": "\"Organization settings\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationProfile",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Profile\"`" }],
+        "type": "\"Profile\"",
+        "simplifiedType": "\"Profile\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationUpdatedSuccess",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Organization updated successfully\"`"
+          }
+        ],
+        "type": "\"Organization updated successfully\"",
+        "simplifiedType": "\"Organization updated successfully\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "manageOrganization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Manage\"`" }],
+        "type": "\"Manage\"",
+        "simplifiedType": "\"Manage\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "switchOrganization",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Switch organization\"`" }],
+        "type": "\"Switch organization\"",
+        "simplifiedType": "\"Switch organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "noOrganizations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"No organizations\"`" }],
+        "type": "\"No organizations\"",
+        "simplifiedType": "\"No organizations\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationsDescription",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Create an organization to collaborate with others and manage shared access.\"`"
+          }
+        ],
+        "type": "\"Create an organization to collaborate with others and manage shared access.\"",
+        "simplifiedType": "\"Create an organization to collaborate with others and manage shared access.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "noActiveOrganization",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"You haven't created any organizations yet.\"`"
+          }
+        ],
+        "type": "\"You haven't created any organizations yet.\"",
+        "simplifiedType": "\"You haven't created any organizations yet.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "noOrganizationInvitations",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"No invitations yet\"`" }],
+        "type": "\"No invitations yet\"",
+        "simplifiedType": "\"No invitations yet\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationInvitationsEmptyDescription",
+        "description": "",
+        "tags": [
+          {
+            "name": "remarks",
+            "text": "`\"Invite a teammate to collaborate in this organization.\"`"
+          }
+        ],
+        "type": "\"Invite a teammate to collaborate in this organization.\"",
+        "simplifiedType": "\"Invite a teammate to collaborate in this organization.\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "memberRemoved",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Member removed\"`" }],
+        "type": "\"Member removed\"",
+        "simplifiedType": "\"Member removed\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "memberRoleUpdated",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Member role updated\"`" }],
+        "type": "\"Member role updated\"",
+        "simplifiedType": "\"Member role updated\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationSent",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invitation sent\"`" }],
+        "type": "\"Invitation sent\"",
+        "simplifiedType": "\"Invitation sent\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "invitationRemoved",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Invitation removed\"`" }],
+        "type": "\"Invitation removed\"",
+        "simplifiedType": "\"Invitation removed\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationDeleted",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Organization deleted\"`" }],
+        "type": "\"Organization deleted\"",
+        "simplifiedType": "\"Organization deleted\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationCreated",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Organization created\"`" }],
+        "type": "\"Organization created\"",
+        "simplifiedType": "\"Organization created\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "organizationLeft",
+        "description": "",
+        "tags": [
+          { "name": "remarks", "text": "`\"You left the organization\"`" }
+        ],
+        "type": "\"You left the organization\"",
+        "simplifiedType": "\"You left the organization\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "removeMember",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Remove member\"`" }],
+        "type": "\"Remove member\"",
+        "simplifiedType": "\"Remove member\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "acceptInvitation",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Accept\"`" }],
+        "type": "\"Accept\"",
+        "simplifiedType": "\"Accept\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "rejectInvitation",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Reject invitation\"`" }],
+        "type": "\"Reject invitation\"",
+        "simplifiedType": "\"Reject invitation\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "logo",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Logo\"`" }],
+        "type": "\"Logo\"",
+        "simplifiedType": "\"Logo\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "logoChangedSuccess",
+        "description": "",
+        "tags": [
+          { "name": "remarks", "text": "`\"Logo updated successfully\"`" }
+        ],
+        "type": "\"Logo updated successfully\"",
+        "simplifiedType": "\"Logo updated successfully\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "logoDeletedSuccess",
+        "description": "",
+        "tags": [
+          { "name": "remarks", "text": "`\"Logo removed successfully\"`" }
+        ],
+        "type": "\"Logo removed successfully\"",
+        "simplifiedType": "\"Logo removed successfully\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "changeLogo",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Change logo\"`" }],
+        "type": "\"Change logo\"",
+        "simplifiedType": "\"Change logo\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "deleteLogo",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Delete logo\"`" }],
+        "type": "\"Delete logo\"",
+        "simplifiedType": "\"Delete logo\"",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "uploadLogo",
+        "description": "",
+        "tags": [{ "name": "remarks", "text": "`\"Upload logo\"`" }],
+        "type": "\"Upload logo\"",
+        "simplifiedType": "\"Upload logo\"",
+        "required": true,
+        "deprecated": false
+      }
+    ]
+  }
+]

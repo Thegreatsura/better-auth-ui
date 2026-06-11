@@ -1,0 +1,78 @@
+[
+  {
+    "id": "organization-plugin.ts-OrganizationPluginOptions",
+    "name": "OrganizationPluginOptions",
+    "description": "",
+    "entries": [
+      {
+        "name": "localization",
+        "description": "Override the plugin's default localization strings.",
+        "tags": [{ "name": "remarks", "text": "`OrganizationLocalization`" }],
+        "type": "OrganizationLocalization",
+        "simplifiedType": "OrganizationLocalization",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "path",
+        "description": "URL segment for the organizations settings view.",
+        "tags": [
+          { "name": "remarks", "text": "`string`" },
+          { "name": "default", "text": "\"organizations\"" }
+        ],
+        "type": "string",
+        "simplifiedType": "string",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "organizationSettingsPath",
+        "description": "URL segment for `/organization/...` profile and danger zone tab.",
+        "tags": [{ "name": "default", "text": "\"settings\"" }],
+        "type": "string",
+        "simplifiedType": "string",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "organizationMembersPath",
+        "description": "URL segment for `/organization/...` members and invitations tab.",
+        "tags": [{ "name": "default", "text": "\"members\"" }],
+        "type": "string",
+        "simplifiedType": "string",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "logo",
+        "description": "Organization logo upload, optimization, and deletion configuration.\nSame shape as {@link AvatarConfig} used for user avatars (`AuthConfig.avatar`).",
+        "tags": [
+          { "name": "remarks", "text": "`AvatarConfig`" },
+          {
+            "name": "default",
+            "text": "{ enabled: true, resize: resizeAvatar, size: 256, extension: \"png\" }"
+          }
+        ],
+        "type": "Partial<AvatarConfig>",
+        "simplifiedType": "AvatarConfig",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "roles",
+        "description": "Map of role keys to display labels. Merged with the built-in defaults\n(`owner`, `admin`, `member`) so you only need to declare the labels for\nany custom roles your Better Auth server adds (e.g. `manager`,\n`billing`). Looked up at render time via `roles?.[role]`.",
+        "tags": [
+          { "name": "remarks", "text": "`Record<string, string>`" },
+          {
+            "name": "default",
+            "text": "{ owner: \"Owner\", admin: \"Admin\", member: \"Member\" }"
+          }
+        ],
+        "type": "OrganizationRoles",
+        "simplifiedType": "Record<string, string>",
+        "required": false,
+        "deprecated": false
+      }
+    ]
+  }
+]

@@ -1,7 +1,12 @@
 node_modules
 
 .DS_Store
-.cache
+# Keep the fumadocs-typescript generator cache in git: AutoTypeTable type
+# generation for 300+ tables costs ~3-5 minutes of TypeScript checker time on
+# every cold CI/Cloudflare build without it. Entries are content-hash keyed
+# portable JSON; stale entries are ignored and regenerated automatically.
+.cache/*
+!.cache/fumadocs-typescript
 .vercel
 .output
 .nitro

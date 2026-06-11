@@ -1,0 +1,90 @@
+[
+  {
+    "id": "link-social-mutation.ts-LinkSocialParams",
+    "name": "LinkSocialParams",
+    "description": "",
+    "entries": [
+      {
+        "name": "callbackURL",
+        "description": "",
+        "tags": [],
+        "type": "string",
+        "simplifiedType": "string",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "errorCallbackURL",
+        "description": "",
+        "tags": [],
+        "type": "string",
+        "simplifiedType": "string",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "provider",
+        "description": "",
+        "tags": [],
+        "type": "unknown",
+        "simplifiedType": "unknown",
+        "required": true,
+        "deprecated": false
+      },
+      {
+        "name": "disableRedirect",
+        "description": "",
+        "tags": [],
+        "type": "boolean",
+        "simplifiedType": "boolean",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "idToken",
+        "description": "",
+        "tags": [],
+        "type": "{ token: string; nonce?: string; accessToken?: string; refreshToken?: string; scopes?: string[]; }",
+        "simplifiedType": "object",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "scopes",
+        "description": "",
+        "tags": [],
+        "type": "string[]",
+        "simplifiedType": "array",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "requestSignUp",
+        "description": "",
+        "tags": [],
+        "type": "boolean",
+        "simplifiedType": "boolean",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "additionalData",
+        "description": "",
+        "tags": [],
+        "type": "Record<string, any>",
+        "simplifiedType": "Record<string, any>",
+        "required": false,
+        "deprecated": false
+      },
+      {
+        "name": "fetchOptions",
+        "description": "",
+        "tags": [],
+        "type": "ClientFetchOption<Partial<{ provider: unknown; callbackURL?: string; idToken?: { token: string; nonce?: string; accessToken?: string; refreshToken?: string; scopes?: string[]; }; requestSignUp?: boolean; scopes?: string[]; errorCallbackURL?: string; disableRedirect?: boolean; additionalData?: Record<string, any>; }> & Record<string, any>, Partial<Record<string, any>> & Record<string, any>, Record<string, any>>",
+        "simplifiedType": "ClientFetchOption<Record<string, any> & Partial<object>, Record<string, any> & Partial<Record<string, any>>, union>",
+        "required": false,
+        "deprecated": false
+      }
+    ]
+  }
+]
