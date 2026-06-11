@@ -54,7 +54,7 @@ export default defineConfig(async ({ command }) => ({
       // functions; it remains active during `vite dev`, which is where
       // server/client boundary mistakes are caught.
       importProtection: {
-        enabled: command !== "serve"
+        enabled: command === "serve"
       },
       prerender: {
         enabled: true,
