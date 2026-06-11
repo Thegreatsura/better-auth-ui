@@ -72,6 +72,11 @@ export function SlugField({
   )
 
   useEffect(() => {
+    // Clear stale validation errors when the controlled value changes
+    // externally (e.g. the parent resets the form), not just via this
+    // input's onChange.
+    setSlugError(undefined)
+
     if (!checkSlugEnabled) return
 
     resetCheckSlug()
