@@ -24,7 +24,7 @@ const solidJsWebServer = fileURLToPath(
   new URL("web/dist/server.js", import.meta.resolve("solid-js/package.json"))
 )
 
-export default defineConfig({
+export default defineConfig(async ({ command }) => ({
   server: {
     port: 3000
   },
@@ -46,6 +46,15 @@ export default defineConfig({
       // CSRF protection is therefore not applicable.
       serverFns: {
         disableCsrfMiddlewareWarning: true
+      },
+      // Import protection resolves every import of every module in the graph
+      // (~7300 modules here) and dominated production builds — 88% of plugin
+      // time, turning a ~1 minute build into 9m40s on 4-core CI runners.
+      // Safe to skip for this static prerendered site with no live server
+      // functions; it remains active during `vite dev`, which is where
+      // server/client boundary mistakes are caught.
+      importProtection: {
+        enabled: command !== "serve"
       },
       prerender: {
         enabled: true,
@@ -74,4 +83,4 @@ export default defineConfig({
     }),
     react()
   ]
-})
+}))
