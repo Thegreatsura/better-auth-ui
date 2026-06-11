@@ -25,11 +25,11 @@
     }
   },
   "devDependencies": {
-    "better-auth": "^1.6.11",
+    "better-auth": "^1.6.16",
     "vitest": "^4.1.7"
   },
   "peerDependencies": {
-    "better-auth": ">=1.6.11"
+    "better-auth": ">=1.6.16"
   },
   "repository": {
     "type": "git",
