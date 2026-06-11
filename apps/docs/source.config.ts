@@ -1,3 +1,4 @@
+import { relative, resolve } from "node:path"
 import { transformerMetaHighlight } from "@shikijs/transformers"
 import { rehypeCodeDefaultOptions } from "fumadocs-core/mdx-plugins"
 import { defineConfig, defineDocs } from "fumadocs-mdx/config"
@@ -66,9 +67,29 @@ function collapseVerboseTypeExpansions(entry: DocEntry): void {
   }
 }
 
-const generator = createGenerator({
+const baseGenerator = createGenerator({
   cache: createFileSystemGeneratorCache(".cache/fumadocs-typescript")
 })
+
+/**
+ * fumadocs-typescript hashes `file.path` verbatim into its cache key, and
+ * remarkAutoTypeTable resolves AutoTypeTable paths against the MDX file's
+ * absolute dirname. That makes cache keys machine-specific
+ * (/Users/... locally vs /opt/buildhome/repo/... on Cloudflare), so the
+ * committed .cache/fumadocs-typescript entries would never hit on CI.
+ * Relativize the path against cwd (always apps/docs) before it reaches the
+ * hasher so the cache is portable across machines.
+ */
+const generator: typeof baseGenerator = {
+  ...baseGenerator,
+  generateDocumentation(file, name, options) {
+    return baseGenerator.generateDocumentation(
+      { ...file, path: relative(process.cwd(), resolve(file.path)) },
+      name,
+      options
+    )
+  }
+}
 
 export const docs = defineDocs({
   dir: "content/docs",
