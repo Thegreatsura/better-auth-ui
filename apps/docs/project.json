@@ -13,8 +13,13 @@
       "cache": true
     },
     "build-storybook-zaidan": {
+      "dependsOn": ["^build"],
       "executor": "nx:run-commands",
       "inputs": [
+        "{workspaceRoot}/packages/core/src/**",
+        "{workspaceRoot}/packages/core/package.json",
+        "{workspaceRoot}/packages/solid/src/**",
+        "{workspaceRoot}/packages/solid/package.json",
         "{workspaceRoot}/examples/start-solid-zaidan-example/package.json",
         "{workspaceRoot}/examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
         "{workspaceRoot}/examples/start-solid-zaidan-example/.storybook/**",
