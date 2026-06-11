@@ -26,6 +26,14 @@ export type AuthProps = {
  */
 const PASSWORD_ONLY_VIEWS = ["signUp", "forgotPassword", "resetPassword"]
 
+/**
+ * Built-in views that render social provider buttons and accept the
+ * `socialLayout` / `socialPosition` props. Other views (e.g. resetPassword)
+ * spread remaining props onto the underlying Card, so forwarding social
+ * props to them would leak unknown attributes to the DOM.
+ */
+const SOCIAL_VIEWS: AuthView[] = ["signIn", "signUp"]
+
 const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
   signIn: SignIn,
   signOut: SignOut,
@@ -143,8 +151,9 @@ export function Auth({
 
   return (
     <AuthView
-      socialLayout={socialLayout}
-      socialPosition={socialPosition}
+      {...(authView && SOCIAL_VIEWS.includes(authView)
+        ? { socialLayout, socialPosition }
+        : undefined)}
       {...props}
     />
   )
