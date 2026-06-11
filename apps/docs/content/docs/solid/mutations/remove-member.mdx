@@ -1,0 +1,29 @@
+---
+title: useRemoveMember
+description: Remove a member from an organization.
+---
+
+## Usage
+
+```tsx
+import { useRemoveMember } from "@better-auth-ui/solid"
+
+const mutation = useRemoveMember(authClient)
+
+mutation.mutate(/* params */)
+```
+
+Organization mutations require `organizationClient()` on the Better Auth client. They attach the same `meta.invalidates` / `meta.awaits` cache metadata used by upstream React, and the Solid `AuthProvider` installs a mutation invalidator that refreshes affected organization/session caches after successful auth mutations.
+
+## Options factory
+
+```tsx
+import { removeMemberOptions } from "@better-auth-ui/solid"
+import { createMutation } from "@tanstack/solid-query"
+
+const mutation = createMutation(() => removeMemberOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/mutations/organization/remove-member-mutation.ts" name="RemoveMemberParams" />

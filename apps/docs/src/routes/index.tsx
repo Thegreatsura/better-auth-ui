@@ -9,7 +9,12 @@ import {
   ShieldCheck,
   Zap
 } from "lucide-react"
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
+import { HeroUI } from "@/components/icons/heroui"
+import { React as ReactIcon } from "@/components/icons/react"
+import { Shadcn } from "@/components/icons/shadcn"
+import { Solid } from "@/components/icons/solid"
+import { Zaidan } from "@/components/icons/zaidan"
 import { baseOptions } from "@/lib/layout.shared"
 import appCss from "@/styles/app.css?url"
 
@@ -23,6 +28,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [copiedShadcn, setCopiedShadcn] = useState(false)
   const [copiedHeroui, setCopiedHeroui] = useState(false)
+  const [copiedSolid, setCopiedSolid] = useState(false)
 
   const copyShadcnCommand = () => {
     navigator.clipboard.writeText(
@@ -38,6 +44,14 @@ function Home() {
     )
     setCopiedHeroui(true)
     setTimeout(() => setCopiedHeroui(false), 2000)
+  }
+
+  const copySolidCommand = () => {
+    navigator.clipboard.writeText(
+      "bun add @better-auth-ui/solid@latest @better-auth-ui/core@latest @tanstack/solid-query"
+    )
+    setCopiedSolid(true)
+    setTimeout(() => setCopiedSolid(false), 2000)
   }
 
   return (
@@ -83,14 +97,15 @@ function Home() {
             >
               Better Auth
             </a>
-            . Built with shadcn/ui and HeroUI. Drop in and go.
+            . Built with shadcn/ui, HeroUI, and Zaidan (SolidJS). Drop in and
+            go.
           </p>
 
           {/* CTA Buttons */}
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/docs/$"
-              params={{ _splat: "" }}
+              params={{ _splat: "shadcn" }}
               className="group inline-flex items-center justify-center gap-2 rounded-xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-neutral-900/25 transition-all hover:bg-neutral-800 hover:shadow-xl hover:shadow-neutral-900/30 dark:bg-white dark:text-neutral-900 dark:shadow-white/5 dark:hover:bg-neutral-100 dark:hover:shadow-white/10"
             >
               Get Started
@@ -108,7 +123,7 @@ function Home() {
           </div>
 
           {/* Install commands */}
-          <div className="mt-12 grid w-full max-w-3xl gap-4 sm:grid-cols-2 sm:gap-6">
+          <div className="mt-12 grid w-full max-w-5xl gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             <button
               type="button"
               onClick={copyShadcnCommand}
@@ -148,6 +163,26 @@ function Home() {
                 )}
               </span>
             </button>
+            <button
+              type="button"
+              onClick={copySolidCommand}
+              className="group flex min-w-0 items-center justify-between gap-3 overflow-hidden rounded-xl border border-neutral-200 bg-white/80 px-4 py-3 text-left font-mono text-xs backdrop-blur-sm transition-all hover:border-neutral-300 hover:bg-white dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-neutral-700 dark:hover:bg-neutral-900"
+            >
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="shrink-0 text-orange-500">$</span>
+                <span className="truncate text-neutral-600 dark:text-neutral-400">
+                  bun add @better-auth-ui/solid @better-auth-ui/core
+                  @tanstack/solid-query
+                </span>
+              </div>
+              <span className="shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-600 dark:group-hover:text-neutral-400">
+                {copiedSolid ? (
+                  <Check className="h-3.5 w-3.5 text-green-500" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+              </span>
+            </button>
           </div>
 
           {/* Component Screenshots */}
@@ -164,13 +199,20 @@ function Home() {
               >
                 <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-orange-300 to-orange-500 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-30 dark:from-orange-400 dark:to-orange-600" />
                 <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
-                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                    <span className="ml-3 text-xs text-neutral-500">
-                      shadcn/ui
-                    </span>
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        shadcn/ui
+                      </span>
+                    </div>
+                    <PreviewBadge label="React and shadcn/ui preview badge">
+                      <ReactIcon className="h-4 w-4 text-[#61dafb]" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <Shadcn className="h-4 w-4 text-neutral-900 dark:text-white" />
+                    </PreviewBadge>
                   </div>
                   <img
                     src="/screenshots/shadcn-sign-in-light.png"
@@ -195,13 +237,20 @@ function Home() {
               >
                 <div className="absolute -inset-1 rounded-3xl bg-linear-to-br from-blue-400 to-blue-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-60 dark:from-blue-500 dark:to-blue-700" />
                 <div className="relative overflow-hidden rounded-2xl rounded-b-3xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
-                  <div className="flex items-center gap-1.5 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-                    <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                    <span className="ml-3 text-xs text-neutral-500">
-                      HeroUI
-                    </span>
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        HeroUI
+                      </span>
+                    </div>
+                    <PreviewBadge label="React and HeroUI preview badge">
+                      <ReactIcon className="h-4 w-4 text-[#61dafb]" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <HeroUI className="h-4 w-4 text-neutral-900 dark:text-white" />
+                    </PreviewBadge>
                   </div>
                   <img
                     src="/screenshots/heroui-sign-in-light.png"
@@ -217,6 +266,46 @@ function Home() {
                   />
                 </div>
               </Link>
+
+              {/* Zaidan Screenshot */}
+              <Link
+                to="/docs/$"
+                params={{ _splat: "zaidan" }}
+                className="group relative w-full max-w-sm sm:w-auto sm:max-w-none lg:translate-y-6"
+              >
+                <div className="absolute -inset-1 rounded-2xl bg-linear-to-br from-sky-400 via-indigo-400 to-cyan-600 opacity-0 blur transition-opacity duration-300 will-change-[opacity] group-hover:opacity-50 dark:from-sky-500 dark:via-indigo-500 dark:to-cyan-700" />
+                <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-900/20 transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/50">
+                  <div className="flex items-center justify-between gap-3 border-b border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                      <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                      <span className="ml-3 truncate text-xs text-neutral-500">
+                        Zaidan
+                      </span>
+                    </div>
+                    <PreviewBadge label="SolidJS and Zaidan preview badge">
+                      <Solid className="h-4 w-4" />
+                      <div className="h-3 w-px bg-neutral-300/80 dark:bg-neutral-700/80" />
+                      <Zaidan className="h-4 w-5" />
+                    </PreviewBadge>
+                  </div>
+                  <div className="relative">
+                    <img
+                      src="/screenshots/shadcn-sign-in-light.png"
+                      alt="Zaidan Sign In Component"
+                      className="w-full dark:hidden sm:w-80 lg:w-96"
+                      draggable={false}
+                    />
+                    <img
+                      src="/screenshots/shadcn-sign-in-dark.png"
+                      alt="Zaidan Sign In Component"
+                      className="hidden w-full dark:block sm:w-80 lg:w-96"
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
 
@@ -227,7 +316,7 @@ function Home() {
                 icon: <LayoutTemplate className="h-5 w-5" />,
                 title: "Fully Customizable",
                 description:
-                  "Built on shadcn/ui and HeroUI. Own your code, style it your way."
+                  "Built on shadcn/ui, HeroUI, and Zaidan (SolidJS). Own your code, style it your way."
               },
               {
                 icon: <Zap className="h-5 w-5" />,
@@ -261,5 +350,22 @@ function Home() {
         </div>
       </div>
     </HomeLayout>
+  )
+}
+
+function PreviewBadge({
+  children,
+  label
+}: {
+  children: ReactNode
+  label: string
+}) {
+  return (
+    <div
+      title={label}
+      className="pointer-events-none flex h-4 shrink-0 items-center gap-1.5 text-neutral-500 dark:text-neutral-400"
+    >
+      {children}
+    </div>
   )
 }

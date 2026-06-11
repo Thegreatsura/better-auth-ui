@@ -1,0 +1,51 @@
+---
+title: useListOrganizationInvitations
+description: List pending invitations for an organization.
+---
+
+## Usage
+
+```tsx
+import { useListOrganizationInvitations } from "@better-auth-ui/solid"
+
+const result = useListOrganizationInvitations(authClient)
+```
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Options factory
+
+```tsx
+import { listOrganizationInvitationsOptions } from "@better-auth-ui/solid"
+import { createQuery } from "@tanstack/solid-query"
+
+const query = createQuery(() =>
+  listOrganizationInvitationsOptions(authClient, userId)
+)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For Solid route loaders, import the router-loader helpers from `@better-auth-ui/solid`. These helpers use the Solid client-shaped `authClient`/`userId` signature so they hydrate into the same cache keys as the component hook. True server-auth Organization helpers are not currently exported from `@better-auth-ui/solid/server`; use the session server helper first when your route needs request-header authentication.
+
+```ts
+import {
+  ensureListOrganizationInvitations,
+  fetchListOrganizationInvitations,
+  prefetchListOrganizationInvitations
+} from "@better-auth-ui/solid"
+
+await ensureListOrganizationInvitations(queryClient, authClient, userId, { query: { organizationId: "org_123" } })
+await prefetchListOrganizationInvitations(queryClient, authClient, userId, { query: { organizationId: "org_123" } })
+const invitations = await fetchListOrganizationInvitations(queryClient, authClient, userId, { query: { organizationId: "org_123" } })
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/queries/organization/list-invitations-query.ts" name="ListOrganizationInvitationsParams" />

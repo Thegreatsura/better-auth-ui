@@ -1,0 +1,20 @@
+---
+title: signOutOptions
+description: Sign-out mutation options.
+---
+
+## Options factory
+
+```tsx
+import { signOutOptions } from "@better-auth-ui/solid"
+import { createMutation } from "@tanstack/solid-query"
+
+const signOut = createMutation(() => signOutOptions(authClient))
+signOut.mutate()
+```
+
+The raw options factory does not perform React hook cache cleanup automatically. After sign-out, remove or invalidate `authQueryKeys.all` in your `onSuccess` handler so user-scoped data leaves the cache.
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/mutations/auth/sign-out-mutation.ts" name="SignOutParams" />

@@ -1,0 +1,56 @@
+---
+title: useListOrganizations
+description: List organizations available to the current user.
+---
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Usage
+
+```tsx
+import { useAuth, useListOrganizations } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const result = useListOrganizations(authClient)
+```
+
+## Client options factory and router-loader helpers
+
+```tsx
+import {
+  ensureListOrganizations,
+  fetchListOrganizations,
+  listOrganizationsOptions,
+  prefetchListOrganizations
+} from "@better-auth-ui/react"
+
+const options = listOrganizationsOptions(authClient, userId)
+await ensureListOrganizations(queryClient, authClient, userId)
+await prefetchListOrganizations(queryClient, authClient, userId)
+const organizations = await fetchListOrganizations(queryClient, authClient, userId)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For server loaders, import from `@better-auth-ui/react/server`. The server helper uses your Better Auth server instance and the signed-in `userId` so the cache key stays partitioned per user.
+
+```ts
+import { ensureListOrganizations } from "@better-auth-ui/react/server"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+await ensureListOrganizations(queryClient, auth, userId, {
+  headers: getRequestHeaders()
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/queries/organization/list-organizations-query.ts" name="ListOrganizationsParams" />

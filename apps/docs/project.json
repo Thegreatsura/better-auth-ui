@@ -1,0 +1,34 @@
+{
+  "name": "docs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "build": {
+      "dependsOn": ["^build", "build-storybook-zaidan"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "NODE_OPTIONS='--max-old-space-size=10240' vite build",
+        "cwd": "apps/docs"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "build-storybook-zaidan": {
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/examples/start-solid-zaidan-example/package.json",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/.storybook/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/lib/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/stories/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/components/**",
+        "{workspaceRoot}/examples/start-solid-zaidan-example/src/routes/**"
+      ],
+      "options": {
+        "command": "bun ../../examples/start-solid-zaidan-example/scripts/build-docs-storybook.ts",
+        "cwd": "apps/docs"
+      },
+      "outputs": ["{projectRoot}/public/storybook/zaidan"],
+      "cache": true
+    }
+  }
+}

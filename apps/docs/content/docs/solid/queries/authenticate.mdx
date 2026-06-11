@@ -1,0 +1,57 @@
+---
+title: useAuthenticate
+description: Redirect unauthenticated Solid users to the configured sign-in route.
+---
+
+`useAuthenticate` calls [`useSession`](/docs/solid/queries/session) and, once the query settles, redirects unauthenticated users to the configured sign-in path. The current URL is preserved as a `redirectTo` query parameter so the user lands back where they started after signing in.
+
+Use this as the primary guard inside protected route components.
+
+## Usage
+
+```tsx
+import { useAuthenticate } from "@better-auth-ui/solid"
+
+export function AccountPage() {
+  const session = useAuthenticate(authClient)
+
+  if (session.isPending) return <Spinner />
+  if (!session.data) return null // navigating to sign-in
+
+  return <Account user={session.data.user} />
+}
+```
+
+The redirect uses `basePaths.auth` + `viewPaths.auth.signIn` from `AuthProvider` — override those to target a custom sign-in view.
+
+Accepts the same arguments as `useSession` — see its [Params](/docs/solid/queries/session#params).
+
+## First-render caveat
+
+The redirect runs inside a Solid `createEffect`, so it's client-only. On the first render `session.data` is `undefined` while the session query is pending and no navigation happens yet — without something in front of the protected UI, it can briefly flash before the client effect runs and navigates to sign-in.
+
+You have two ways to handle this:
+
+### Gate on `isPending` (simplest)
+
+Render a skeleton or spinner while the session query is pending, and `null` once it resolves to unauthenticated (the redirect is already in flight). This is what the [Usage](#usage) example does and is enough for most apps:
+
+```tsx
+const session = useAuthenticate(authClient)
+
+if (session.isPending) return <Skeleton />
+if (!session.data) return null // navigating to sign-in
+
+return <Account user={session.data.user} />
+```
+
+No flash of protected content, no server work required — just a brief loading state on first mount. Works identically for SSR, client-rendered, and statically prerendered routes.
+
+### Pair with a server-side guard (no loading state)
+
+If you want the protected UI to render immediately on first paint with no skeleton, prefetch the session on the server and hydrate it into the query cache:
+
+- **TanStack Start** — check the session in a server route guard or loader, then hydrate the session query for the protected route.
+- **Solid server runtimes** — use the server-side session helpers from [`useSession`](/docs/solid/queries/session#server-side-prefetching) with the request headers for the current request.
+
+The server-side check handles first paint; `useAuthenticate` handles everything after — token expiry, sign-out in another tab, server-side session revocation — by reactively redirecting whenever the session goes away.

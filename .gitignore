@@ -59,3 +59,5 @@ Thumbs.db
 .claude/
 .agents/
 .cursor/
+.repos
+/apps/docs/public/storybook/

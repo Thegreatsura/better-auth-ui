@@ -1,0 +1,15 @@
+{
+  "icon": "Plug",
+  "defaultOpen": true,
+  "pages": [
+    "api-key",
+    "captcha",
+    "delete-user",
+    "magic-link",
+    "multi-session",
+    "organization",
+    "passkey",
+    "theme",
+    "username"
+  ]
+}

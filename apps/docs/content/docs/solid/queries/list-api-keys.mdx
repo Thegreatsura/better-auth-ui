@@ -1,0 +1,44 @@
+---
+title: useListApiKeys
+description: List API keys for the current user.
+---
+
+This page documents the Solid package API for the Better Auth API key plugin. React now has a matching runtime/docs track, but the Solid helpers remain specific to `@tanstack/solid-query` usage.
+
+## Usage
+
+```tsx
+import { useListApiKeys } from "@better-auth-ui/solid"
+
+const apiKeys = useListApiKeys(authClient)
+```
+
+## Options factory and loader helpers
+
+```ts
+import {
+  ensureListApiKeys,
+  fetchListApiKeys,
+  listApiKeysOptions,
+  prefetchListApiKeys
+} from "@better-auth-ui/solid"
+
+const options = listApiKeysOptions(authClient, userId)
+await ensureListApiKeys(queryClient, authClient, userId)
+await prefetchListApiKeys(queryClient, authClient, userId)
+const keys = await fetchListApiKeys(queryClient, authClient, userId)
+```
+
+## Invalidation
+
+```ts
+import { listApiKeysOptions } from "@better-auth-ui/solid"
+
+queryClient.invalidateQueries({
+  queryKey: listApiKeysOptions(authClient, userId).queryKey
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/queries/api-key/list-api-keys-query.ts" name="ListApiKeysParams" />

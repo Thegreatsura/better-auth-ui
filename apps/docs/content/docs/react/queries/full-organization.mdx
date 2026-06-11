@@ -1,0 +1,57 @@
+---
+title: useFullOrganization
+description: Read full details for one organization.
+---
+
+Organization queries require `organizationClient()` on your Better Auth client. Queries that depend on a signed-in user wait for session data before calling Better Auth.
+
+## Usage
+
+```tsx
+import { useAuth, useFullOrganization } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const result = useFullOrganization(authClient)
+```
+
+## Client options factory and router-loader helpers
+
+```tsx
+import {
+  ensureFullOrganization,
+  fetchFullOrganization,
+  fullOrganizationOptions,
+  prefetchFullOrganization
+} from "@better-auth-ui/react"
+
+const options = fullOrganizationOptions(authClient, userId)
+await ensureFullOrganization(queryClient, authClient, userId)
+await prefetchFullOrganization(queryClient, authClient, userId)
+const organization = await fetchFullOrganization(queryClient, authClient, userId)
+```
+
+## Notes
+
+- `useActiveOrganization` treats `slug: undefined` as the session active organization, a string slug as a URL-selected organization, and `slug: null` as intentionally no active organization.
+- Member, invitation, and permission helpers follow upstream active-organization fallback behavior when an organization id is not provided.
+- `useHasPermission` preserves Better Auth's flat permission parameter shape.
+
+## Server-side prefetching
+
+For server loaders, import from `@better-auth-ui/react/server`. The server helper calls your Better Auth server instance directly and accepts the same request params forwarded to `auth.api.getFullOrganization`.
+
+```ts
+import { ensureFullOrganization } from "@better-auth-ui/react/server"
+import { getRequestHeaders } from "@tanstack/react-start/server"
+
+import { auth } from "@/lib/auth"
+
+await ensureFullOrganization(queryClient, auth, userId, {
+  headers: getRequestHeaders(),
+  query: { organizationId: "org_123" }
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/queries/organization/full-organization-query.ts" name="FullOrganizationParams" />

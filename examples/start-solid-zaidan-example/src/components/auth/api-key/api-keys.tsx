@@ -1,0 +1,121 @@
+import { apiKeyLocalization } from "@better-auth-ui/core/plugins"
+import {
+  type ApiKeyAuthClient,
+  listApiKeysOptions,
+  useAuth,
+  useSession
+} from "@better-auth-ui/solid"
+import { createQuery } from "@tanstack/solid-query"
+import { createSignal, For, Show } from "solid-js"
+import { ApiKey } from "@/components/auth/api-key/api-key"
+import { ApiKeySkeleton } from "@/components/auth/api-key/api-key-skeleton"
+import { ApiKeysEmpty } from "@/components/auth/api-key/api-keys-empty"
+import { CreateApiKeyDialog } from "@/components/auth/api-key/create-api-key-dialog"
+import { shouldLoadDeviceSessions } from "@/components/auth/settings/shared/helpers"
+import type { ListedApiKey } from "@/components/auth/settings/shared/types"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { ItemSeparator } from "@/components/ui/item"
+import { cn } from "@/lib/utils"
+
+export type ApiKeysProps = {
+  class?: string
+  organizationId?: string
+  isPending?: boolean
+  hideCreate?: boolean
+  hideDelete?: boolean
+}
+
+export function ApiKeys(props: ApiKeysProps = {}) {
+  const auth = useAuth()
+  const session = useSession(auth.authClient)
+  const userId = () => session.data?.user.id
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = createSignal(false)
+  const listParams = () =>
+    props.organizationId
+      ? {
+          query: {
+            organizationId: props.organizationId,
+            configId: "organization" as const
+          }
+        }
+      : undefined
+  const apiKeys = createQuery(() => ({
+    ...listApiKeysOptions(
+      auth.authClient as ApiKeyAuthClient,
+      userId(),
+      listParams() as Parameters<typeof listApiKeysOptions<ApiKeyAuthClient>>[2]
+    ),
+    enabled:
+      !props.isPending &&
+      shouldLoadDeviceSessions({
+        isSsr: import.meta.env.SSR,
+        userId: userId()
+      })
+  }))
+  const keys = () => apiKeys.data?.apiKeys ?? []
+  const pending = () => Boolean(props.isPending || apiKeys.isPending)
+
+  return (
+    <div class={cn("flex flex-col gap-3", props.class)}>
+      <div class="flex items-end justify-between gap-3">
+        <h2 class="truncate text-sm font-semibold">
+          {apiKeyLocalization.apiKeys}
+        </h2>
+        <Show when={!props.hideCreate}>
+          <Dialog
+            open={isCreateDialogOpen()}
+            onOpenChange={setIsCreateDialogOpen}
+          >
+            <DialogTrigger
+              as={Button}
+              class="shrink-0"
+              disabled={pending()}
+              size="sm"
+            >
+              {apiKeyLocalization.createApiKey}
+            </DialogTrigger>
+            <CreateApiKeyDialog
+              organizationId={props.organizationId}
+              onOpenChange={setIsCreateDialogOpen}
+            />
+          </Dialog>
+        </Show>
+      </div>
+
+      <Card class="z-card-padding-none">
+        <CardContent class="z-card-content-padding-none">
+          <Show when={!pending()} fallback={<ApiKeySkeleton />}>
+            <Show
+              when={keys().length > 0}
+              fallback={
+                <ApiKeysEmpty
+                  hideCreate={props.hideCreate}
+                  onCreatePress={() => setIsCreateDialogOpen(true)}
+                />
+              }
+            >
+              <For each={keys()}>
+                {(apiKey, index) => (
+                  <>
+                    <Show when={index() > 0}>
+                      <ItemSeparator />
+                    </Show>
+                    <ApiKey
+                      apiKey={apiKey as ListedApiKey}
+                      hideDelete={props.hideDelete}
+                      organizationId={props.organizationId}
+                    />
+                  </>
+                )}
+              </For>
+            </Show>
+          </Show>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+export const ApiKeysSettings = ApiKeys

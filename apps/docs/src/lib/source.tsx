@@ -8,7 +8,9 @@ import { HeroUI } from "@/components/icons/heroui"
 import { NextJS } from "@/components/icons/nextjs"
 import { React } from "@/components/icons/react"
 import { Shadcn } from "@/components/icons/shadcn"
+import { Solid } from "@/components/icons/solid"
 import { TanStackStart } from "@/components/icons/tanstack-start"
+import { Zaidan } from "@/components/icons/zaidan"
 
 const docsBaseUrl = "/docs"
 
@@ -17,7 +19,9 @@ const customIcons = {
   NextJS,
   React,
   Shadcn,
-  TanStackStart
+  Solid,
+  TanStackStart,
+  Zaidan
 }
 
 export const source = loader({

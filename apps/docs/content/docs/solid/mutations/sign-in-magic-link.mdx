@@ -1,0 +1,24 @@
+---
+title: signInMagicLinkOptions
+description: Magic-link sign-in mutation options.
+---
+
+Requires the Better Auth magic-link plugin. If TypeScript cannot infer the plugin methods from your client, type or cast `authClient` as `MagicLinkAuthClient` from `@better-auth-ui/solid`.
+
+## Options factory
+
+```tsx
+import { signInMagicLinkOptions } from "@better-auth-ui/solid"
+import { createMutation } from "@tanstack/solid-query"
+
+const sendMagicLink = createMutation(() => signInMagicLinkOptions(authClient))
+
+sendMagicLink.mutate({
+  email: "alice@example.com",
+  callbackURL: "/dashboard"
+})
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/mutations/magic-link/sign-in-magic-link-mutation.ts" name="SignInMagicLinkParams" />

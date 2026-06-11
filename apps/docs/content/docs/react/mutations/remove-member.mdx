@@ -1,0 +1,30 @@
+---
+title: useRemoveMember
+description: Remove a member from an organization.
+---
+
+Organization mutations require `organizationClient()` on the Better Auth client.
+
+## Usage
+
+```tsx
+import { useAuth, useRemoveMember } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const mutation = useRemoveMember(authClient)
+
+mutation.mutate(/* params */)
+```
+
+## Options factory
+
+```tsx
+import { removeMemberOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const mutation = useMutation(removeMemberOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/mutations/organization/remove-member-mutation.ts" name="RemoveMemberParams" />

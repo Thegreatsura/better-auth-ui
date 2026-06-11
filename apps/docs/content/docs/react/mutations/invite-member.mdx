@@ -1,0 +1,30 @@
+---
+title: useInviteMember
+description: Invite a member to an organization.
+---
+
+Organization mutations require `organizationClient()` on the Better Auth client.
+
+## Usage
+
+```tsx
+import { useAuth, useInviteMember } from "@better-auth-ui/react"
+
+const { authClient } = useAuth()
+const mutation = useInviteMember(authClient)
+
+mutation.mutate(/* params */)
+```
+
+## Options factory
+
+```tsx
+import { inviteMemberOptions } from "@better-auth-ui/react"
+import { useMutation } from "@tanstack/react-query"
+
+const mutation = useMutation(inviteMemberOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/react/src/mutations/organization/invite-member-mutation.ts" name="InviteMemberParams" />

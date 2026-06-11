@@ -1,0 +1,29 @@
+---
+title: useRejectInvitation
+description: Reject an organization invitation.
+---
+
+## Usage
+
+```tsx
+import { useRejectInvitation } from "@better-auth-ui/solid"
+
+const mutation = useRejectInvitation(authClient)
+
+mutation.mutate(/* params */)
+```
+
+Organization mutations require `organizationClient()` on the Better Auth client. They attach the same `meta.invalidates` / `meta.awaits` cache metadata used by upstream React, and the Solid `AuthProvider` installs a mutation invalidator that refreshes affected organization/session caches after successful auth mutations.
+
+## Options factory
+
+```tsx
+import { rejectInvitationOptions } from "@better-auth-ui/solid"
+import { createMutation } from "@tanstack/solid-query"
+
+const mutation = createMutation(() => rejectInvitationOptions(authClient))
+```
+
+## Params
+
+<auto-type-table path="../../../../../../packages/solid/src/mutations/organization/reject-invitation-mutation.ts" name="RejectInvitationParams" />
