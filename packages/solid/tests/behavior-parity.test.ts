@@ -124,7 +124,13 @@ describe("Solid auth behavior parity", () => {
       multiSessionQueryKeys.list("user-1")
     )
     expect(apiKeys.queryKey).toEqual(apiKeyQueryKeys.list("user-1"))
-    await expect(accountInfo.queryFn?.({ signal } as never)).resolves.toEqual({
+    await expect(
+      (
+        accountInfo as {
+          queryFn?: (context: { signal: AbortSignal }) => unknown
+        }
+      ).queryFn?.({ signal })
+    ).resolves.toEqual({
       data: "acct-1"
     })
     expect(authClient.accountInfo).toHaveBeenCalledWith({
@@ -184,10 +190,12 @@ describe("Solid auth behavior parity", () => {
     )
     expect(resetPassword.mutationKey).toEqual(authMutationKeys.resetPassword)
     await expect(
-      signInEmail.mutationFn?.({
+      (
+        signInEmail as { mutationFn?: (variables: unknown) => unknown }
+      ).mutationFn?.({
         email: "ada@example.com",
         fetchOptions: { credentials: "include" }
-      } as never)
+      })
     ).resolves.toEqual({ data: "ada@example.com" })
     expect(authClient.signIn.email).toHaveBeenCalledWith({
       email: "ada@example.com",
@@ -277,10 +285,14 @@ describe("Solid auth behavior parity", () => {
     )
 
     await expect(
-      createApiKeyOptions(authClient as never).mutationFn?.({
+      (
+        createApiKeyOptions(authClient as never) as {
+          mutationFn?: (variables: unknown) => unknown
+        }
+      ).mutationFn?.({
         name: "CLI",
         fetchOptions: { credentials: "include" }
-      } as never)
+      })
     ).resolves.toEqual({ data: "CLI" })
     expect(authClient.apiKey.create).toHaveBeenCalledWith({
       name: "CLI",
