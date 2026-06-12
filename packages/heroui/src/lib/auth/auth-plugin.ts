@@ -55,10 +55,12 @@ export type AuthPluginComponents = Omit<
   userMenuItems?: ComponentType<UserMenuItemProps>[]
 }
 
-/** Props the heroui `<Auth>` router spreads onto plugin-contributed auth views. */
-export type AuthViewProps = Omit<CardProps, "children"> & {
+/** Props the heroui `<Auth>` router passes to plugin-contributed auth views. */
+export type AuthViewProps = {
+  className?: string
   socialLayout?: SocialLayout
   socialPosition?: "top" | "bottom"
+  variant?: CardProps["variant"]
 }
 
 /** Props the heroui `<Settings>` router spreads onto plugin-contributed settings views. */

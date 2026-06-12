@@ -137,14 +137,11 @@ export function UserButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className={cn(
-          size === "icon" && "rounded-full",
-          size === "icon" && className
-        )}
+        className={cn(size === "icon" && "rounded-full")}
         asChild={size === "default"}
       >
         {size === "icon" ? (
-          <UserAvatar />
+          <UserAvatar className={className} />
         ) : (
           <Button
             variant={variant}

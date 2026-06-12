@@ -8,6 +8,10 @@
     },
     "typecheck": {
       "dependsOn": ["^build", "^typecheck"],
+      "inputs": ["default", "^default", "{workspaceRoot}/tsconfig.json"],
+      "cache": true
+    },
+    "test": {
       "cache": true
     },
     "dev": {
@@ -20,7 +24,7 @@
   },
   "namedInputs": {
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"],
-    "default": ["sharedGlobals"]
+    "default": ["{projectRoot}/**/*", "sharedGlobals"]
   },
   "nxCloudId": "691fe786e56af5ab30ac4788",
   "plugins": [

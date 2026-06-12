@@ -123,8 +123,8 @@ export function UserButton({
   return (
     <Dropdown>
       {size === "icon" ? (
-        <Dropdown.Trigger className={cn("rounded-full", className)}>
-          <UserAvatar />
+        <Dropdown.Trigger className={cn("rounded-full")}>
+          <UserAvatar className={className} />
         </Dropdown.Trigger>
       ) : (
         <Button

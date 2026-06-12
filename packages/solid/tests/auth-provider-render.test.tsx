@@ -1,5 +1,5 @@
 import { basePaths } from "@better-auth-ui/core"
-import { renderToString } from "solid-js/web/dist/server"
+import { renderToString } from "solid-js/web"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider, useAuth } from "../src"

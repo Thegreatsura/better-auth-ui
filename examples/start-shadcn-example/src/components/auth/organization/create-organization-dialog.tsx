@@ -43,6 +43,7 @@ export function CreateOrganizationDialog({
 
   const [name, setName] = useState("")
   const [slug, setSlug] = useState("")
+  const [nameError, setNameError] = useState<string>()
 
   const { mutate: createOrganization, isPending: isCreating } =
     useCreateOrganization(authClient as OrganizationAuthClient, {
@@ -58,6 +59,7 @@ export function CreateOrganizationDialog({
     if (!open) {
       setSlug("")
       setName("")
+      setNameError(undefined)
     }
   }, [open])
 
@@ -84,7 +86,7 @@ export function CreateOrganizationDialog({
           </AlertDialogHeader>
 
           <div className="flex flex-col gap-4">
-            <Field>
+            <Field data-invalid={!!nameError}>
               <Label htmlFor="create-organization-name">
                 {organizationLocalization.name}
               </Label>
@@ -96,11 +98,19 @@ export function CreateOrganizationDialog({
                 required
                 placeholder={organizationLocalization.namePlaceholder}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setNameError(undefined)
+                }}
+                onInvalid={(e) => {
+                  e.preventDefault()
+                  setNameError(localization.auth.fieldRequired)
+                }}
+                aria-invalid={!!nameError}
                 disabled={isCreating}
               />
 
-              <FieldError />
+              <FieldError>{nameError}</FieldError>
             </Field>
 
             <SlugField

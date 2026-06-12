@@ -14,9 +14,7 @@
         "@tanstack/react-query",
         "better-auth"
       ],
-      "registryDependencies": [
-        "sonner"
-      ],
+      "registryDependencies": ["sonner"],
       "files": [
         {
           "path": "src/components/auth/auth-provider.tsx",
@@ -676,13 +674,7 @@
         "@better-auth-ui/core@latest",
         "lucide-react"
       ],
-      "registryDependencies": [
-        "card",
-        "field",
-        "label",
-        "radio-group",
-        "tabs"
-      ],
+      "registryDependencies": ["card", "field", "label", "radio-group", "tabs"],
       "files": [
         {
           "path": "src/lib/auth/auth-plugin.ts",
@@ -813,10 +805,7 @@
         "@better-auth-ui/core@latest",
         "better-auth"
       ],
-      "registryDependencies": [
-        "card",
-        "spinner"
-      ],
+      "registryDependencies": ["card", "spinner"],
       "files": [
         {
           "path": "src/components/auth/sign-out.tsx",
@@ -861,10 +850,7 @@
         "better-auth",
         "lucide-react"
       ],
-      "registryDependencies": [
-        "avatar",
-        "skeleton"
-      ],
+      "registryDependencies": ["avatar", "skeleton"],
       "files": [
         {
           "path": "src/components/auth/user/user-avatar.tsx",

@@ -46,9 +46,8 @@ export function SignInUsername({
   className,
   socialLayout,
   socialPosition = "bottom",
-  variant,
-  ...props
-}: SignInUsernameProps & Omit<CardProps, "children">) {
+  variant
+}: SignInUsernameProps) {
   const {
     authClient,
     basePaths,
@@ -154,7 +153,6 @@ export function SignInUsername({
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
-      {...props}
     >
       <Card.Header>
         <Card.Title className="text-xl font-semibold mb-1">

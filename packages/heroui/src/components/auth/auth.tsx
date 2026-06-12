@@ -37,6 +37,7 @@ const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
 /**
  * Render the appropriate authentication view based on the provided `view` or `path`.
  *
+ * @param className - Class name applied to the rendered view's card
  * @param path - Route path used to resolve an auth view when `view` is not provided
  * @param socialLayout - Social layout to apply to sign-in/sign-up/magic-link views
  * @param socialPosition - Position for social buttons ("top" or "bottom")
@@ -45,12 +46,13 @@ const AUTH_VIEWS: Partial<Record<AuthView, ComponentType<AuthProps>>> = {
  * @returns The React element for the resolved authentication view
  */
 export function Auth({
+  className,
   path,
   socialLayout,
   socialPosition,
-  view,
-  ...props
-}: AuthProps & Omit<CardProps, "children">) {
+  variant,
+  view
+}: AuthProps) {
   const { basePaths, emailAndPassword, plugins, viewPaths, navigate } =
     useAuth()
 
@@ -107,9 +109,10 @@ export function Auth({
 
     return (
       <PluginView
+        className={className}
         socialLayout={socialLayout}
         socialPosition={socialPosition}
-        {...props}
+        variant={variant}
       />
     )
   }
@@ -125,9 +128,10 @@ export function Auth({
     if (Fallback) {
       return (
         <Fallback
+          className={className}
           socialLayout={socialLayout}
           socialPosition={socialPosition}
-          {...props}
+          variant={variant}
         />
       )
     }
@@ -143,9 +147,10 @@ export function Auth({
 
   return (
     <AuthView
+      className={className}
       socialLayout={socialLayout}
       socialPosition={socialPosition}
-      {...props}
+      variant={variant}
     />
   )
 }

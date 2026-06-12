@@ -29,12 +29,13 @@ TARGETS=(
 REGISTRY_OUTPUT="$EXAMPLE_DIR/../../apps/docs/public/r"
 
 # `shadcn build` writes one JSON per registry item but never deletes stale
-# entries from previous runs. Wipe the output directory first so renames
-# and removals propagate cleanly.
+# entries from previous runs. Prune only the top-level JSON files this build
+# owns so renames/removals propagate without touching namespaced registries
+# (e.g. `solid/`, owned by the Solid example's registry build).
 echo "→ pruning $REGISTRY_OUTPUT"
 : "${REGISTRY_OUTPUT:?REGISTRY_OUTPUT is empty}"
-rm -rf -- "$REGISTRY_OUTPUT"
 mkdir -p "$REGISTRY_OUTPUT"
+find "$REGISTRY_OUTPUT" -maxdepth 1 -type f -name '*.json' -delete
 
 echo "→ shadcn build → $REGISTRY_OUTPUT"
 (cd "$EXAMPLE_DIR" && bunx shadcn build --output "$REGISTRY_OUTPUT")
