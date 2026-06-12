@@ -1144,12 +1144,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/email-verification.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-verification.tsx"
+          "target": "@components/auth/email/email-verification.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1168,12 +1168,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/magic-link.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/magic-link.tsx"
+          "target": "@components/auth/email/magic-link.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1192,12 +1192,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/reset-password.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/reset-password.tsx"
+          "target": "@components/auth/email/reset-password.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1216,12 +1216,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/password-changed.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/password-changed.tsx"
+          "target": "@components/auth/email/password-changed.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1240,12 +1240,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/email-changed.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-changed.tsx"
+          "target": "@components/auth/email/email-changed.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1264,12 +1264,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/otp-email.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/otp-email.tsx"
+          "target": "@components/auth/email/otp-email.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1288,12 +1288,12 @@
         {
           "path": "../../packages/react/src/components/auth/email/new-device.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/new-device.tsx"
+          "target": "@components/auth/email/new-device.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
     },
@@ -1312,14 +1312,58 @@
         {
           "path": "../../packages/react/src/components/auth/email/organization-invitation.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/organization-invitation.tsx"
+          "target": "@components/auth/email/organization-invitation.tsx"
         },
         {
           "path": "../../packages/react/src/components/auth/email/email-styles.tsx",
           "type": "registry:component",
-          "target": "@components/../../packages/react/src/components/auth/email/email-styles.tsx"
+          "target": "@components/auth/email/email-styles.tsx"
         }
       ]
+    },
+    {
+      "name": "all",
+      "type": "registry:item",
+      "title": "All",
+      "description": "Installs every Better Auth UI component, plugin, and email template in one shot.",
+      "registryDependencies": [
+        "https://better-auth-ui.com/r/auth-provider.json",
+        "https://better-auth-ui.com/r/additional-field.json",
+        "https://better-auth-ui.com/r/sign-in.json",
+        "https://better-auth-ui.com/r/sign-up.json",
+        "https://better-auth-ui.com/r/magic-link.json",
+        "https://better-auth-ui.com/r/username.json",
+        "https://better-auth-ui.com/r/passkey.json",
+        "https://better-auth-ui.com/r/api-key.json",
+        "https://better-auth-ui.com/r/multi-session.json",
+        "https://better-auth-ui.com/r/organization.json",
+        "https://better-auth-ui.com/r/theme.json",
+        "https://better-auth-ui.com/r/delete-user.json",
+        "https://better-auth-ui.com/r/forgot-password.json",
+        "https://better-auth-ui.com/r/reset-password.json",
+        "https://better-auth-ui.com/r/sign-out.json",
+        "https://better-auth-ui.com/r/auth.json",
+        "https://better-auth-ui.com/r/user-avatar.json",
+        "https://better-auth-ui.com/r/user-view.json",
+        "https://better-auth-ui.com/r/user-button.json",
+        "https://better-auth-ui.com/r/user-profile.json",
+        "https://better-auth-ui.com/r/change-email.json",
+        "https://better-auth-ui.com/r/account-settings.json",
+        "https://better-auth-ui.com/r/change-password.json",
+        "https://better-auth-ui.com/r/linked-accounts.json",
+        "https://better-auth-ui.com/r/active-sessions.json",
+        "https://better-auth-ui.com/r/security-settings.json",
+        "https://better-auth-ui.com/r/settings.json",
+        "https://better-auth-ui.com/r/email-verification-email.json",
+        "https://better-auth-ui.com/r/magic-link-email.json",
+        "https://better-auth-ui.com/r/reset-password-email.json",
+        "https://better-auth-ui.com/r/password-changed-email.json",
+        "https://better-auth-ui.com/r/email-changed-email.json",
+        "https://better-auth-ui.com/r/otp-email.json",
+        "https://better-auth-ui.com/r/new-device-email.json",
+        "https://better-auth-ui.com/r/organization-invitation-email.json"
+      ],
+      "files": []
     }
   ]
 }
