@@ -34,11 +34,7 @@ export type ForgotPasswordProps = {
  * @param className - Optional additional CSS class names applied to the card
  * @returns The forgot-password form UI as a JSX element
  */
-export function ForgotPassword({
-  className,
-  variant,
-  ...props
-}: ForgotPasswordProps & Omit<CardProps, "children">) {
+export function ForgotPassword({ className, variant }: ForgotPasswordProps) {
   const {
     authClient,
     baseURL,
@@ -83,7 +79,6 @@ export function ForgotPassword({
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
-      {...props}
     >
       <Card.Header>
         <Card.Title className="text-xl font-semibold mb-1">

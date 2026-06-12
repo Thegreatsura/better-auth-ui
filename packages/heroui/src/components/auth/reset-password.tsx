@@ -27,11 +27,7 @@ export type ResetPasswordProps = {
  *
  * Renders password (and optional confirm-password) inputs with visibility toggles, applies min/max length constraints from the auth configuration, shows field errors, and submits the new password to the auth client.
  */
-export function ResetPassword({
-  className,
-  variant,
-  ...props
-}: ResetPasswordProps & Omit<CardProps, "children">) {
+export function ResetPassword({ className, variant }: ResetPasswordProps) {
   const {
     authClient,
     basePaths,
@@ -95,7 +91,6 @@ export function ResetPassword({
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
-      {...props}
     >
       <Card.Header>
         <Card.Title className="text-xl font-semibold mb-1">

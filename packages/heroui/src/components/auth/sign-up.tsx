@@ -47,9 +47,8 @@ export function SignUp({
   className,
   socialLayout,
   socialPosition = "bottom",
-  variant,
-  ...props
-}: SignUpProps & Omit<CardProps, "children">) {
+  variant
+}: SignUpProps) {
   const {
     additionalFields,
     authClient,
@@ -156,7 +155,6 @@ export function SignUp({
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
-      {...props}
     >
       <Card.Header>
         <Card.Title className="text-xl font-semibold mb-1">

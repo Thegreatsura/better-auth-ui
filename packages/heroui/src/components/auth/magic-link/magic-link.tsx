@@ -45,9 +45,8 @@ export function MagicLink({
   className,
   socialLayout,
   socialPosition = "bottom",
-  variant,
-  ...props
-}: MagicLinkProps & Omit<CardProps, "children">) {
+  variant
+}: MagicLinkProps) {
   const {
     authClient,
     basePaths,
@@ -90,7 +89,6 @@ export function MagicLink({
     <Card
       className={cn("w-full max-w-sm gap-4 md:p-6", className)}
       variant={variant}
-      {...props}
     >
       <Card.Header>
         <Card.Title className="text-xl font-semibold mb-1">
