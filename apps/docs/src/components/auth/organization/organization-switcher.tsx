@@ -35,6 +35,7 @@ import { OrganizationView } from "./organization-view"
 export type OrganizationSwitcherProps = {
   className?: string
   align?: "center" | "end" | "start"
+  side?: "top" | "right" | "bottom" | "left"
   sideOffset?: number
   trigger?: ReactNode
   hideCreate?: boolean
@@ -51,6 +52,7 @@ export type OrganizationSwitcherProps = {
 export function OrganizationSwitcher({
   className,
   align,
+  side,
   sideOffset,
   hideCreate,
   hidePersonal,
@@ -142,6 +144,7 @@ export function OrganizationSwitcher({
 
         <DropdownMenuContent
           align={align}
+          side={side}
           sideOffset={sideOffset}
           className="min-w-64 max-w-svw"
         >
