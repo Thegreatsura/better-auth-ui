@@ -421,7 +421,7 @@ function SliderField({ name, field, isPending }: AdditionalFieldProps) {
   const initial =
     typeof field.defaultValue === "number"
       ? field.defaultValue
-      : field.defaultValue != null
+      : field.defaultValue != null && !Number.isNaN(Number(field.defaultValue))
         ? Number(field.defaultValue)
         : min
 
@@ -484,8 +484,8 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
       // Anchor to local midnight then serialize as ISO so the downstream
       // `parseAdditionalFieldValue` parses the same calendar day regardless
       // of timezone (a bare "YYYY-MM-DD" would be parsed as UTC midnight).
-      // For datetime fields with a blank time, we fall through to this path
-      // so an empty time stays blank rather than silently becoming midnight.
+      // Datetime fields with a blank time also fall through here, defaulting
+      // the time to local midnight since the parsed value is always a `Date`.
       const localMidnight = new Date(date)
       localMidnight.setHours(0, 0, 0, 0)
       formValue = localMidnight.toISOString()

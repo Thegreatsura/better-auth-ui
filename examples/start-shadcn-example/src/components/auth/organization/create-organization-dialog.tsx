@@ -43,6 +43,7 @@ export function CreateOrganizationDialog({
 
   const [name, setName] = useState("")
   const [slug, setSlug] = useState("")
+  const [slugEdited, setSlugEdited] = useState(false)
   const [nameError, setNameError] = useState<string>()
 
   const { mutate: createOrganization, isPending: isCreating } =
@@ -59,13 +60,15 @@ export function CreateOrganizationDialog({
     if (!open) {
       setSlug("")
       setName("")
+      setSlugEdited(false)
       setNameError(undefined)
     }
   }, [open])
 
   useEffect(() => {
+    if (slugEdited) return
     setSlug(sanitizeSlug(name))
-  }, [name])
+  }, [name, slugEdited])
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -116,7 +119,10 @@ export function CreateOrganizationDialog({
             <SlugField
               id="create-organization-slug"
               value={slug}
-              onChange={setSlug}
+              onChange={(value) => {
+                setSlug(value)
+                setSlugEdited(true)
+              }}
               disabled={isCreating}
             />
           </div>

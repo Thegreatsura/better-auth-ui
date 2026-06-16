@@ -15,7 +15,7 @@ import {
   PlusCircle,
   Settings as SettingsIcon
 } from "lucide-react"
-import { type ReactNode, useState } from "react"
+import { type ComponentProps, type ReactElement, useState } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -37,7 +37,7 @@ export type OrganizationSwitcherProps = {
   align?: "center" | "end" | "start"
   side?: "top" | "right" | "bottom" | "left"
   sideOffset?: number
-  trigger?: ReactNode
+  trigger?: ReactElement<ComponentProps<typeof DropdownMenuTrigger>>
   hideCreate?: boolean
   hidePersonal?: boolean
   hideSettings?: boolean
@@ -114,9 +114,7 @@ export function OrganizationSwitcher({
   return (
     <>
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-        {trigger ? (
-          <DropdownMenuTrigger>{trigger}</DropdownMenuTrigger>
-        ) : (
+        {trigger ?? (
           <DropdownMenuTrigger
             className={cn(
               buttonVariants({ variant: "ghost" }),

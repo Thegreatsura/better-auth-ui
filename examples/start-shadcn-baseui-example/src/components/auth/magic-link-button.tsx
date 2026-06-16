@@ -45,6 +45,11 @@ export function MagicLinkButton({ view }: MagicLinkButtonProps) {
   return (
     <Link
       href={`${basePaths.auth}/${isMagicLinkView ? viewPaths.auth.signIn : magicLinkViewPaths.auth.magicLink}`}
+      aria-disabled={isPending || undefined}
+      tabIndex={isPending ? -1 : undefined}
+      onClick={(event) => {
+        if (isPending) event.preventDefault()
+      }}
       className={cn(
         buttonVariants({ variant: "outline" }),
         "w-full",

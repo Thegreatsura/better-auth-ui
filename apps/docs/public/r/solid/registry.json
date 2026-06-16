@@ -214,6 +214,18 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/auth/provider-buttons.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/provider-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/sign-in-path.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
@@ -1235,7 +1247,7 @@
         "tailwind-merge"
       ],
       "registryDependencies": [
-        "https://better-auth-ui.com/r/solid/auth-provider.json"
+        "https://better-auth-ui.com/r/solid/user-view.json"
       ],
       "files": [
         {
@@ -1348,6 +1360,18 @@
         },
         {
           "path": "src/components/auth/organization/organization-switcher.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-view.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organization-view-skeleton.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/organization/organizations-empty.tsx",
           "type": "registry:component"
         },
         {
