@@ -88,7 +88,6 @@ function AuthPreviewStory(props: { children: JSX.Element }) {
 
 const meta = {
   title: "Zaidan/Components/Auth",
-  tags: ["autodocs"],
   parameters: {
     layout: "fullscreen"
   }
