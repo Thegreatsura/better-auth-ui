@@ -258,11 +258,13 @@ export function AdditionalField({
         isDisabled={isPending}
         isReadOnly={field.readOnly}
       >
-        <Switch.Control>
-          <Switch.Thumb />
-        </Switch.Control>
+        <Switch.Content>
+          <Switch.Control>
+            <Switch.Thumb />
+          </Switch.Control>
 
-        <Label>{field.label}</Label>
+          {field.label}
+        </Switch.Content>
       </Switch>
     )
   }
@@ -279,12 +281,12 @@ export function AdditionalField({
         isRequired={field.required}
         variant={inputVariant}
       >
-        <Checkbox.Control>
-          <Checkbox.Indicator />
-        </Checkbox.Control>
-
         <Checkbox.Content>
-          <Label>{field.label}</Label>
+          <Checkbox.Control>
+            <Checkbox.Indicator />
+          </Checkbox.Control>
+
+          {field.label}
         </Checkbox.Content>
       </Checkbox>
     )

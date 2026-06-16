@@ -213,12 +213,12 @@ export function SignIn({
                 isDisabled={isPending}
                 variant={variant === "transparent" ? "primary" : "secondary"}
               >
-                <Checkbox.Control>
-                  <Checkbox.Indicator />
-                </Checkbox.Control>
-
                 <Checkbox.Content>
-                  <Label>{localization.auth.rememberMe}</Label>
+                  <Checkbox.Control>
+                    <Checkbox.Indicator />
+                  </Checkbox.Control>
+
+                  {localization.auth.rememberMe}
                 </Checkbox.Content>
               </Checkbox>
             )}
@@ -261,7 +261,7 @@ export function SignIn({
         {emailAndPassword?.enabled && emailAndPassword?.forgotPassword && (
           <Link
             href={`${basePaths.auth}/${viewPaths.auth.forgotPassword}`}
-            className="no-underline hover:underline"
+            className="text-sm no-underline hover:underline"
           >
             {localization.auth.forgotPasswordLink}
           </Link>
