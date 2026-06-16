@@ -3357,7 +3357,7 @@ describe("Solid registry isolation", () => {
     expect(organizationRegistry).toContain("useCheckOrganizationSlug")
     expect(organizationRegistry).toContain("organization-row.tsx")
     expect(organizationPayload.registryDependencies).toEqual([
-      solidRegistryUrl("auth-provider")
+      solidRegistryUrl("user-view")
     ])
     const authProviderPayload = readJson<{
       registryDependencies: string[]
