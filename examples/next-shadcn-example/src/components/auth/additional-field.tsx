@@ -10,7 +10,7 @@ import { CalendarIcon, Check, ChevronDownIcon, Copy } from "lucide-react"
 import { useRef, useState } from "react"
 import { toast } from "sonner"
 
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -421,7 +421,7 @@ function SliderField({ name, field, isPending }: AdditionalFieldProps) {
   const initial =
     typeof field.defaultValue === "number"
       ? field.defaultValue
-      : field.defaultValue != null
+      : field.defaultValue != null && !Number.isNaN(Number(field.defaultValue))
         ? Number(field.defaultValue)
         : min
 
@@ -442,7 +442,7 @@ function SliderField({ name, field, isPending }: AdditionalFieldProps) {
         id={name}
         name={name}
         value={[value]}
-        onValueChange={([v]) => setValue(v ?? min)}
+        onValueChange={(v) => setValue((Array.isArray(v) ? v[0] : v) ?? min)}
         min={min}
         max={max}
         step={step}
@@ -484,8 +484,8 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
       // Anchor to local midnight then serialize as ISO so the downstream
       // `parseAdditionalFieldValue` parses the same calendar day regardless
       // of timezone (a bare "YYYY-MM-DD" would be parsed as UTC midnight).
-      // For datetime fields with a blank time, we fall through to this path
-      // so an empty time stays blank rather than silently becoming midnight.
+      // Datetime fields with a blank time also fall through here, defaulting
+      // the time to local midnight since the parsed value is always a `Date`.
       const localMidnight = new Date(date)
       localMidnight.setHours(0, 0, 0, 0)
       formValue = localMidnight.toISOString()
@@ -516,23 +516,21 @@ function DateInput({ name, field, isPending }: AdditionalFieldProps) {
           }}
         />
         <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              id={`${name}-date`}
-              data-empty={!date}
-              aria-invalid={!!error}
-              disabled={isPending || field.readOnly}
-              className={cn(
-                "flex-1 justify-between font-normal",
-                "data-[empty=true]:text-muted-foreground"
-              )}
-            >
-              {date ? format(date, "PPP") : <span>{field.placeholder}</span>}
+          <PopoverTrigger
+            type="button"
+            id={`${name}-date`}
+            data-empty={!date}
+            aria-invalid={!!error}
+            disabled={isPending || field.readOnly}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "flex-1 justify-between font-normal",
+              "data-[empty=true]:text-muted-foreground"
+            )}
+          >
+            {date ? format(date, "PPP") : <span>{field.placeholder}</span>}
 
-              {isDateTime ? <ChevronDownIcon /> : <CalendarIcon />}
-            </Button>
+            {isDateTime ? <ChevronDownIcon /> : <CalendarIcon />}
           </PopoverTrigger>
 
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
