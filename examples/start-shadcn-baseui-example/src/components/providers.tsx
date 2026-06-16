@@ -41,7 +41,7 @@ export function Providers({ children }: { children: ReactNode }) {
             slug: slug ?? null
           })
         ]}
-        Link={Link}
+        Link={({ href, ...props }) => <Link to={href} {...props} />}
       >
         {children}
 

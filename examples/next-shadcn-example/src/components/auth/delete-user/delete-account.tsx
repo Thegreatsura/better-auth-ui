@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Field, FieldError } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -105,10 +105,13 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
         </div>
 
         <AlertDialog open={confirmOpen} onOpenChange={handleDialogOpenChange}>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm" disabled={!accounts}>
-              {deleteUserLocalization.deleteAccount}
-            </Button>
+          <AlertDialogTrigger
+            className={cn(
+              buttonVariants({ variant: "destructive", size: "sm" })
+            )}
+            disabled={!accounts}
+          >
+            {deleteUserLocalization.deleteAccount}
           </AlertDialogTrigger>
 
           <AlertDialogContent>
