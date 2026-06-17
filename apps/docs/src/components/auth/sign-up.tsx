@@ -83,10 +83,11 @@ export function SignUp({
         setConfirmPassword("")
         resetFetchOptions()
       },
-      onSuccess: () => {
+      onSuccess: (_data, { email }) => {
         if (emailAndPassword?.requireEmailVerification) {
-          toast.success(localization.auth.verifyYourEmail)
-          navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+          navigate({
+            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}?email=${encodeURIComponent(email)}`
+          })
         } else {
           navigate({ to: redirectTo })
         }

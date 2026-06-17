@@ -796,6 +796,25 @@
       ]
     },
     {
+      "name": "verify-email",
+      "type": "registry:component",
+      "title": "Verify Email",
+      "description": "A page prompting the user to verify their email, with a resend button rate-limited by a cooldown timer.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth"
+      ],
+      "registryDependencies": ["button", "card", "field", "sonner", "spinner"],
+      "files": [
+        {
+          "path": "src/components/auth/verify-email.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/verify-email.tsx"
+        }
+      ]
+    },
+    {
       "name": "sign-out",
       "type": "registry:component",
       "title": "Sign Out",
@@ -829,6 +848,7 @@
         "https://better-auth-ui.com/r/sign-up.json",
         "https://better-auth-ui.com/r/forgot-password.json",
         "https://better-auth-ui.com/r/reset-password.json",
+        "https://better-auth-ui.com/r/verify-email.json",
         "https://better-auth-ui.com/r/sign-out.json"
       ],
       "files": [
@@ -1341,6 +1361,7 @@
         "https://better-auth-ui.com/r/delete-user.json",
         "https://better-auth-ui.com/r/forgot-password.json",
         "https://better-auth-ui.com/r/reset-password.json",
+        "https://better-auth-ui.com/r/verify-email.json",
         "https://better-auth-ui.com/r/sign-out.json",
         "https://better-auth-ui.com/r/auth.json",
         "https://better-auth-ui.com/r/user-avatar.json",

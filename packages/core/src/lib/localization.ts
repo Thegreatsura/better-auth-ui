@@ -118,10 +118,7 @@ export const localization = {
     verificationEmailSent: "Verification email sent!",
 
     /** @remarks `"Verify Email"` */
-    verifyEmail: "Verify Email",
-
-    /** @remarks `"Verify your email"` */
-    verifyYourEmail: "Verify your email"
+    verifyEmail: "Verify Email"
   },
   settings: {
     /** @remarks `"Account"` */
