@@ -7,7 +7,7 @@ import {
 import { useAuth } from "@better-auth-ui/react"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronDownIcon, Copy } from "lucide-react"
-import { useRef, useState } from "react"
+import { type ComponentType, useRef, useState } from "react"
 import { toast } from "sonner"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -121,12 +121,10 @@ export function AdditionalField({
   isPending
 }: AdditionalFieldProps) {
   const inputType = resolveInputType(field)
-  // Used by `inputType: "input"` with `copyable: true` so the copy button
-  // reads the input's *live* value rather than a stale `defaultValue`.
-  const inputRef = useRef<HTMLInputElement>(null)
 
   if (field.render) {
-    return <>{field.render({ name, field, isPending })}</>
+    const FieldRenderer = field.render as ComponentType<AdditionalFieldProps>
+    return <FieldRenderer name={name} field={field} isPending={isPending} />
   }
 
   if (inputType === "hidden") {
@@ -315,13 +313,15 @@ export function AdditionalField({
     return <DateInput name={name} field={field} isPending={isPending} />
   }
 
-  // inputType === "input"
+  return <InputField name={name} field={field} isPending={isPending} />
+}
+
+function InputField({ name, field, isPending }: AdditionalFieldProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const hasPrefix = field.prefix != null
   const hasSuffix = field.suffix != null || field.copyable
 
-  // When `inputType: "input"` is paired with `type: "number"`, restrict the
-  // native input to numbers. `formatOptions.maximumFractionDigits` enables
-  // fractional input via `step`.
   const isNumeric = field.type === "number"
   const maxFractionDigits = field.formatOptions?.maximumFractionDigits
   const nativeInputType = isNumeric ? "number" : undefined
