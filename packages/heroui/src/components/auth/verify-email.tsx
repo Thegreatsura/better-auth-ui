@@ -7,9 +7,12 @@ import {
   Description,
   Link,
   Spinner,
-  toast
+  toast,
+  useIsHydrated
 } from "@heroui/react"
 import { useEffect, useState } from "react"
+
+import { OpenEmailButton } from "./open-email-button"
 
 export type VerifyEmailProps = {
   className?: string
@@ -23,9 +26,10 @@ const RESEND_COOLDOWN_SECONDS = 60
  * Render a card prompting the user to verify their email, with a resend button
  * that is rate-limited by a cooldown timer.
  *
- * The target email is read from the `email` URL search param (set when sign-up
- * or sign-in redirects here). The resend button is disabled while a cooldown is
- * active and shows the remaining seconds.
+ * The target email is read from `sessionStorage` (set when sign-up or sign-in
+ * redirects here); if none is stored the user is redirected back to sign-in.
+ * The resend button is disabled while a cooldown is active and shows the
+ * remaining seconds.
  *
  * @param className - Additional CSS classes applied to the outer card container
  * @param variant - Variant to apply to the card
@@ -37,17 +41,27 @@ export function VerifyEmail({ className, variant }: VerifyEmailProps) {
     basePaths,
     baseURL,
     localization,
+    navigate,
     redirectTo,
     viewPaths
   } = useAuth()
 
-  const [email, setEmail] = useState("")
+  const isHydrated = useIsHydrated()
+  const [email, setEmail] = useState(
+    (isHydrated && sessionStorage.getItem("better-auth-ui.verify-email")) || ""
+  )
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS)
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    setEmail(searchParams.get("email") ?? "")
-  }, [])
+    const storedEmail = sessionStorage.getItem("better-auth-ui.verify-email")
+
+    if (!storedEmail) {
+      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
+      return
+    }
+
+    setEmail(storedEmail)
+  }, [basePaths.auth, navigate, viewPaths.auth.signIn])
 
   useEffect(() => {
     if (cooldown <= 0) return
@@ -88,8 +102,11 @@ export function VerifyEmail({ className, variant }: VerifyEmailProps) {
         </Description>
 
         <div className="flex flex-col gap-3">
+          <OpenEmailButton email={email} />
+
           <Button
             className="w-full"
+            variant="tertiary"
             isDisabled={!email || isCoolingDown || isPending}
             isPending={isPending}
             onPress={() =>

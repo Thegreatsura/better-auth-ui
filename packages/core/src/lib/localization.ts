@@ -60,6 +60,9 @@ export const localization = {
     /** @remarks `"Enter your new password"` */
     newPasswordPlaceholder: "Enter your new password",
 
+    /** @remarks `"Open {{provider}}"` */
+    openEmailProvider: "Open {{provider}}",
+
     /** @remarks `"OR"` */
     or: "OR",
 
