@@ -470,6 +470,42 @@
       ]
     },
     {
+      "name": "verify-email",
+      "type": "registry:component",
+      "title": "Solid Verify Email",
+      "description": "Solid verify-email view with a button to open the user's email provider and a cooldown-limited resend button.",
+      "dependencies": [
+        "@better-auth-ui/solid@latest",
+        "@better-auth-ui/core@latest",
+        "@tanstack/solid-query",
+        "better-auth",
+        "lucide-solid",
+        "solid-sonner",
+        "solid-js",
+        "@kobalte/core",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [
+        "https://better-auth-ui.com/r/solid/auth-provider.json"
+      ],
+      "files": [
+        {
+          "path": "src/components/auth/verify-email.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/auth/open-email-button.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "sign-out",
       "type": "registry:component",
       "title": "Solid Sign Out",
@@ -517,6 +553,7 @@
         "https://better-auth-ui.com/r/solid/sign-up.json",
         "https://better-auth-ui.com/r/solid/forgot-password.json",
         "https://better-auth-ui.com/r/solid/reset-password.json",
+        "https://better-auth-ui.com/r/solid/verify-email.json",
         "https://better-auth-ui.com/r/solid/sign-out.json"
       ],
       "files": [
