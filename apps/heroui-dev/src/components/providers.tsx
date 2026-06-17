@@ -25,6 +25,7 @@ export function Providers({ children }: { children: ReactNode }) {
         authClient={authClient}
         redirectTo="/settings/account"
         socialProviders={["github"]}
+        emailAndPassword={{ requireEmailVerification: true }}
         navigate={navigate}
         plugins={[
           usernamePlugin(),

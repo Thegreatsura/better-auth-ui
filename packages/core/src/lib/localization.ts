@@ -6,11 +6,17 @@ export const localization = {
     /** @remarks `"Already have an account?"` */
     alreadyHaveAnAccount: "Already have an account?",
 
+    /** @remarks `"Already verified your email?"` */
+    alreadyVerifiedYourEmail: "Already verified your email?",
+
     /** @remarks `"Confirm password"` */
     confirmPassword: "Confirm password",
 
     /** @remarks `"Confirm your password"` */
     confirmPasswordPlaceholder: "Confirm your password",
+
+    /** @remarks `"Check your email for a verification link"` */
+    checkYourEmail: "Check your email for a verification link",
 
     /** @remarks `"Continue with {{provider}}"` */
     continueWith: "Continue with {{provider}}",
@@ -87,6 +93,9 @@ export const localization = {
     /** @remarks `"Resend"` */
     resend: "Resend",
 
+    /** @remarks `"Resend in {{seconds}}s"` */
+    resendIn: "Resend in {{seconds}}s",
+
     /** @remarks `"Reset Password"` */
     resetPassword: "Reset Password",
 
@@ -107,6 +116,9 @@ export const localization = {
 
     /** @remarks `"Verification email sent!"` */
     verificationEmailSent: "Verification email sent!",
+
+    /** @remarks `"Verify Email"` */
+    verifyEmail: "Verify Email",
 
     /** @remarks `"Verify your email"` */
     verifyYourEmail: "Verify your email"
