@@ -76,8 +76,9 @@ export function SignInUsername({
         setPassword("")
 
         if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+          sessionStorage.setItem("better-auth-ui.verify-email", email)
           navigate({
-            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}?email=${encodeURIComponent(email)}`
+            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`
           })
         }
 

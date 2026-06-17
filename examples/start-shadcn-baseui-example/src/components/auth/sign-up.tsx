@@ -85,8 +85,9 @@ export function SignUp({
       },
       onSuccess: (_data, { email }) => {
         if (emailAndPassword?.requireEmailVerification) {
+          sessionStorage.setItem("better-auth-ui.verify-email", email)
           navigate({
-            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}?email=${encodeURIComponent(email)}`
+            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`
           })
         } else {
           navigate({ to: redirectTo })

@@ -799,11 +799,12 @@
       "name": "verify-email",
       "type": "registry:component",
       "title": "Verify Email",
-      "description": "A page prompting the user to verify their email, with a resend button rate-limited by a cooldown timer.",
+      "description": "A page prompting the user to verify their email, with a button to open their email provider and a resend button rate-limited by a cooldown timer.",
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "better-auth"
+        "better-auth",
+        "lucide-react"
       ],
       "registryDependencies": ["button", "card", "field", "sonner", "spinner"],
       "files": [
@@ -811,6 +812,11 @@
           "path": "src/components/auth/verify-email.tsx",
           "type": "registry:component",
           "target": "@components/auth/verify-email.tsx"
+        },
+        {
+          "path": "src/components/auth/open-email-button.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/open-email-button.tsx"
         }
       ]
     },
