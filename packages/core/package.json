@@ -25,10 +25,12 @@
     }
   },
   "devDependencies": {
+    "@mikkelscheike/email-provider-links": "^5.1.8",
     "better-auth": "^1.6.19",
     "vitest": "^4.1.9"
   },
   "peerDependencies": {
+    "@mikkelscheike/email-provider-links": ">=5.1.8",
     "better-auth": ">=1.6.19"
   },
   "repository": {

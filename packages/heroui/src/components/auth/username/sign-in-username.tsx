@@ -4,7 +4,6 @@ import {
   useAuth,
   useAuthPlugin,
   useFetchOptions,
-  useSendVerificationEmail,
   useSignInEmail,
   useSignInUsername
 } from "@better-auth-ui/react"
@@ -21,8 +20,7 @@ import {
   Label,
   Link,
   Spinner,
-  TextField,
-  toast
+  TextField
 } from "@heroui/react"
 import { useIsMutating } from "@tanstack/react-query"
 import { type SyntheticEvent, useState } from "react"
@@ -51,7 +49,6 @@ export function SignInUsername({
   const {
     authClient,
     basePaths,
-    baseURL,
     emailAndPassword,
     localization,
     plugins,
@@ -67,13 +64,6 @@ export function SignInUsername({
 
   const [password, setPassword] = useState("")
 
-  const { mutate: sendVerificationEmail } = useSendVerificationEmail(
-    authClient,
-    {
-      onSuccess: () => toast.success(localization.auth.verificationEmailSent)
-    }
-  )
-
   function isEmail(value: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
   }
@@ -84,15 +74,9 @@ export function SignInUsername({
         setPassword("")
 
         if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-          toast.danger(error.error?.message || error.message, {
-            actionProps: {
-              children: localization.auth.resend,
-              onClick: () =>
-                sendVerificationEmail({
-                  email,
-                  callbackURL: `${baseURL}${redirectTo}`
-                })
-            }
+          sessionStorage.setItem("better-auth-ui.verify-email", email)
+          navigate({
+            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`
           })
         }
 

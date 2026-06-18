@@ -17,3 +17,15 @@ html,
 body {
   @apply bg-background text-foreground;
 }
+
+.button {
+  @apply will-change-transform;
+}
+
+.menu-item {
+  @apply will-change-transform;
+}
+
+.dropdown__popover {
+  @apply will-change-transform;
+}
