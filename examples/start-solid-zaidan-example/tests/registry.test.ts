@@ -2536,6 +2536,7 @@ describe("Solid registry isolation", () => {
       "sign-out",
       "forgot-password",
       "reset-password",
+      "verify-email",
       "---Settings---",
       "settings",
       "account-settings",

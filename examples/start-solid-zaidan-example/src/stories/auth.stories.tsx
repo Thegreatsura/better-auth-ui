@@ -14,10 +14,12 @@ import { ResetPassword } from "@/components/auth/reset-password"
 import { SignIn } from "@/components/auth/sign-in"
 import { SignOut } from "@/components/auth/sign-out"
 import { SignUp } from "@/components/auth/sign-up"
+import { VerifyEmail } from "@/components/auth/verify-email"
 
 const mockAuthClient = {
   requestPasswordReset: async () => ({ data: null, error: null }),
   resetPassword: async () => ({ data: null, error: null }),
+  sendVerificationEmail: async () => ({ data: null, error: null }),
   signIn: {
     email: async () => ({ data: null, error: null }),
     social: async () => ({ data: null, error: null }),
@@ -143,4 +145,18 @@ export const SignOutPreview: Story = {
       <SignOut />
     </AuthPreviewStory>
   )
+}
+
+export const VerifyEmailPreview: Story = {
+  render: () => {
+    if (typeof sessionStorage !== "undefined") {
+      sessionStorage.setItem("better-auth-ui.verify-email", "user@gmail.com")
+    }
+
+    return (
+      <AuthPreviewStory>
+        <VerifyEmail />
+      </AuthPreviewStory>
+    )
+  }
 }
