@@ -8,6 +8,7 @@ describe("viewPaths.auth", () => {
     expect(viewPaths.auth).toHaveProperty("forgotPassword")
     expect(viewPaths.auth).toHaveProperty("resetPassword")
     expect(viewPaths.auth).toHaveProperty("signOut")
+    expect(viewPaths.auth).toHaveProperty("verifyEmail")
   })
 
   it("should have correct path values", () => {
@@ -16,6 +17,7 @@ describe("viewPaths.auth", () => {
     expect(viewPaths.auth.forgotPassword).toBe("forgot-password")
     expect(viewPaths.auth.resetPassword).toBe("reset-password")
     expect(viewPaths.auth.signOut).toBe("sign-out")
+    expect(viewPaths.auth.verifyEmail).toBe("verify-email")
   })
 
   it("should use kebab-case for all paths", () => {
@@ -91,6 +93,7 @@ describe("viewPaths", () => {
     expect(viewPaths.auth.forgotPassword).toBe("forgot-password")
     expect(viewPaths.auth.resetPassword).toBe("reset-password")
     expect(viewPaths.auth.signOut).toBe("sign-out")
+    expect(viewPaths.auth.verifyEmail).toBe("verify-email")
   })
 })
 
@@ -101,7 +104,8 @@ describe("type safety", () => {
       "signUp",
       "forgotPassword",
       "resetPassword",
-      "signOut"
+      "signOut",
+      "verifyEmail"
     ]
 
     validViews.forEach((view) => {
