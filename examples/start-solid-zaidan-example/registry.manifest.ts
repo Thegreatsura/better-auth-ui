@@ -24,6 +24,7 @@ const solidDependencies = [
   "@better-auth-ui/solid@latest",
   "@better-auth-ui/core@latest",
   "@tanstack/solid-query",
+  "@tanstack/solid-router",
   "better-auth",
   "lucide-solid",
   "solid-sonner",
