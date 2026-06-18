@@ -44,6 +44,7 @@ describe("authViews (derived)", () => {
     expect(authViews).toContain("forgotPassword")
     expect(authViews).toContain("resetPassword")
     expect(authViews).toContain("signOut")
+    expect(authViews).toContain("verifyEmail")
   })
 
   it("should have valid AuthView type elements", () => {
@@ -69,6 +70,7 @@ describe("authPaths (derived)", () => {
     expect(authPaths).toContain("forgot-password")
     expect(authPaths).toContain("reset-password")
     expect(authPaths).toContain("sign-out")
+    expect(authPaths).toContain("verify-email")
   })
 
   it("should have no duplicates", () => {
