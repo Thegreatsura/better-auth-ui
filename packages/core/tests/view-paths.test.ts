@@ -59,7 +59,7 @@ describe("authPaths (derived)", () => {
   it("should be able to derive array of auth path values", () => {
     const authPaths = Object.values(viewPaths.auth)
     expect(Array.isArray(authPaths)).toBe(true)
-    expect(authPaths.length).toBe(5)
+    expect(authPaths.length).toBe(6)
   })
 
   it("should contain all built-in path values", () => {
