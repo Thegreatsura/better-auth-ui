@@ -53,9 +53,9 @@ export function SignInUsername(props: SignInUsernameProps) {
   }
   const signIn = createMutation(() => ({
     ...signInEmailOptions(auth.authClient),
-    onError: (error) => {
+    onError: (error, variables) => {
       if ((error as BetterFetchError).error?.code === "EMAIL_NOT_VERIFIED") {
-        sessionStorage.setItem("better-auth-ui.verify-email", identifier())
+        sessionStorage.setItem("better-auth-ui.verify-email", variables.email)
         auth.navigate({
           to: `${auth.basePaths.auth}/${auth.viewPaths.auth.verifyEmail}`
         })
