@@ -36,7 +36,8 @@ export function UsernameField({
     localization,
     minUsernameLength,
     maxUsernameLength,
-    isUsernameAvailable: checkAvailability
+    isUsernameAvailable: checkAvailability,
+    usernamePrefix
   } = useAuthPlugin(usernamePlugin)
 
   const currentUsername = String(field.defaultValue ?? "")
@@ -83,6 +84,12 @@ export function UsernameField({
       <Label htmlFor={name}>{field.label}</Label>
 
       <InputGroup>
+        {usernamePrefix && (
+          <InputGroupAddon align="inline-start">
+            {usernamePrefix}
+          </InputGroupAddon>
+        )}
+
         <InputGroupInput
           id={name}
           name={name}
