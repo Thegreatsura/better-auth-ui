@@ -2,6 +2,20 @@
   "name": "start-solid-zaidan-example",
   "private": true,
   "type": "module",
+  "nx": {
+    "targets": {
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "typecheck": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
