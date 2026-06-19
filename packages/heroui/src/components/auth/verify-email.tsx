@@ -41,7 +41,6 @@ export function VerifyEmail({ className, variant }: VerifyEmailProps) {
     basePaths,
     baseURL,
     localization,
-    navigate,
     redirectTo,
     viewPaths
   } = useAuth()
@@ -53,25 +52,18 @@ export function VerifyEmail({ className, variant }: VerifyEmailProps) {
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS)
 
   useEffect(() => {
-    const storedEmail = sessionStorage.getItem("better-auth-ui.verify-email")
-
-    if (!storedEmail) {
-      navigate({ to: `${basePaths.auth}/${viewPaths.auth.signIn}` })
-      return
-    }
-
-    setEmail(storedEmail)
-  }, [basePaths.auth, navigate, viewPaths.auth.signIn])
+    setEmail(sessionStorage.getItem("better-auth-ui.verify-email") ?? "")
+  }, [])
 
   useEffect(() => {
-    if (cooldown <= 0) return
+    if (cooldown <= 0 || !email) return
 
     const interval = setInterval(() => {
       setCooldown((current) => (current > 0 ? current - 1 : 0))
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [cooldown])
+  }, [cooldown, email])
 
   const { mutate: sendVerificationEmail, isPending } = useSendVerificationEmail(
     authClient,
@@ -101,31 +93,33 @@ export function VerifyEmail({ className, variant }: VerifyEmailProps) {
           {localization.auth.checkYourEmail}
         </Description>
 
-        <div className="flex flex-col gap-3">
-          <OpenEmailButton email={email} />
+        {email && (
+          <div className="flex flex-col gap-3">
+            <OpenEmailButton email={email} />
 
-          <Button
-            className="w-full"
-            variant="tertiary"
-            isDisabled={!email || isCoolingDown || isPending}
-            isPending={isPending}
-            onPress={() =>
-              sendVerificationEmail({
-                email,
-                callbackURL: `${baseURL}${redirectTo}`
-              })
-            }
-          >
-            {isPending && <Spinner color="current" size="sm" />}
+            <Button
+              className="w-full"
+              variant="tertiary"
+              isDisabled={!email || isCoolingDown || isPending}
+              isPending={isPending}
+              onPress={() =>
+                sendVerificationEmail({
+                  email,
+                  callbackURL: `${baseURL}${redirectTo}`
+                })
+              }
+            >
+              {isPending && <Spinner color="current" size="sm" />}
 
-            {isCoolingDown
-              ? localization.auth.resendIn.replace(
-                  "{{seconds}}",
-                  String(cooldown)
-                )
-              : localization.auth.resend}
-          </Button>
-        </div>
+              {isCoolingDown
+                ? localization.auth.resendIn.replace(
+                    "{{seconds}}",
+                    String(cooldown)
+                  )
+                : localization.auth.resend}
+            </Button>
+          </div>
+        )}
       </Card.Content>
 
       <Card.Footer className="flex-col gap-3">
