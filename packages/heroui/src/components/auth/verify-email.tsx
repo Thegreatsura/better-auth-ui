@@ -27,9 +27,9 @@ const RESEND_COOLDOWN_SECONDS = 60
  * that is rate-limited by a cooldown timer.
  *
  * The target email is read from `sessionStorage` (set when sign-up or sign-in
- * redirects here); if none is stored the user is redirected back to sign-in.
- * The resend button is disabled while a cooldown is active and shows the
- * remaining seconds.
+ * redirects here); the OpenEmail/Resend controls are only shown when an email
+ * is stored. The resend button is disabled while a cooldown is active and shows
+ * the remaining seconds.
  *
  * @param className - Additional CSS classes applied to the outer card container
  * @param variant - Variant to apply to the card
