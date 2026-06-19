@@ -28,7 +28,10 @@ export function Providers({ children }: { children: ReactNode }) {
         emailAndPassword={{ requireEmailVerification: false }}
         navigate={navigate}
         plugins={[
-          usernamePlugin({ usernamePrefix: "@" }),
+          usernamePlugin({
+            usernamePrefix: "@",
+            localization: { usernamePlaceholder: "username" }
+          }),
           magicLinkPlugin(),
           passkeyPlugin(),
           apiKeyPlugin({ organization: true }),
