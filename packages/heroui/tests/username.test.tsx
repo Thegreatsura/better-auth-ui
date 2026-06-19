@@ -96,7 +96,7 @@ describe("<SignInUsername />", () => {
     renderSignInUsername()
 
     expect(
-      screen.getByPlaceholderText("Enter your username or email")
+      screen.getByPlaceholderText("Username or email")
     ).toBeInTheDocument()
   })
 
