@@ -49,8 +49,11 @@ export function SlugField({
   id = "slug"
 }: SlugFieldProps) {
   const { authClient, localization: authLocalization } = useAuth()
-  const { localization, checkSlug: checkSlugEnabled } =
-    useAuthPlugin(organizationPlugin)
+  const {
+    localization,
+    checkSlug: checkSlugEnabled,
+    slugPrefix
+  } = useAuthPlugin(organizationPlugin)
 
   const [slugError, setSlugError] = useState<string>()
 
@@ -88,6 +91,10 @@ export function SlugField({
       <Label htmlFor={id}>{localization.slug}</Label>
 
       <InputGroup>
+        {slugPrefix && (
+          <InputGroupAddon align="inline-start">{slugPrefix}</InputGroupAddon>
+        )}
+
         <InputGroupInput
           id={id}
           name="slug"
