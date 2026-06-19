@@ -111,7 +111,7 @@ export function UsernameField({
 
       <InputGroup variant={variant === "transparent" ? "primary" : "secondary"}>
         {usernamePrefix && (
-          <InputGroup.Prefix className="pr-0 text-muted">
+          <InputGroup.Prefix className="pr-1.5 text-muted">
             {usernamePrefix}
           </InputGroup.Prefix>
         )}

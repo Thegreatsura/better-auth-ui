@@ -97,7 +97,7 @@ export function SlugField({
 
       <InputGroup variant={variant}>
         {slugPrefix && (
-          <InputGroup.Prefix className="pr-0 text-muted">
+          <InputGroup.Prefix className="pr-1.5 text-muted">
             {slugPrefix}
           </InputGroup.Prefix>
         )}
