@@ -1156,7 +1156,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1180,7 +1180,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1204,7 +1204,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1228,7 +1228,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1252,7 +1252,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1276,7 +1276,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1300,7 +1300,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
@@ -1324,7 +1324,7 @@
       "dependencies": [
         "@better-auth-ui/react@latest",
         "@better-auth-ui/core@latest",
-        "@react-email/components"
+        "react-email"
       ],
       "registryDependencies": [],
       "files": [
