@@ -390,7 +390,7 @@
     },
     "packages/core": {
       "name": "@better-auth-ui/core",
-      "version": "1.6.29",
+      "version": "1.6.30",
       "devDependencies": {
         "@mikkelscheike/email-provider-links": "^5.1.8",
         "better-auth": "^1.6.19",
@@ -403,7 +403,7 @@
     },
     "packages/heroui": {
       "name": "@better-auth-ui/heroui",
-      "version": "1.6.29",
+      "version": "1.6.30",
       "devDependencies": {
         "@gravity-ui/icons": "^2.18.0",
         "@heroui/react": "^3.2.1",
@@ -440,7 +440,7 @@
     },
     "packages/react": {
       "name": "@better-auth-ui/react",
-      "version": "1.6.29",
+      "version": "1.6.30",
       "devDependencies": {
         "@better-auth/api-key": "^1.6.19",
         "@better-auth/passkey": "^1.6.19",
@@ -484,7 +484,7 @@
     },
     "packages/solid": {
       "name": "@better-auth-ui/solid",
-      "version": "1.6.29",
+      "version": "1.6.30",
       "devDependencies": {
         "@better-auth/api-key": "^1.6.19",
         "@better-auth/passkey": "^1.6.19",
