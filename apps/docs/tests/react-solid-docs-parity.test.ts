@@ -66,7 +66,10 @@ const sharedAuthMutationPages = [
   "reset-password",
   "send-verification-email",
   "is-username-available",
-  "oauth-consent"
+  "oauth-consent",
+  "verify-device-code",
+  "approve-device",
+  "deny-device"
 ]
 
 const sharedMutationPages = [

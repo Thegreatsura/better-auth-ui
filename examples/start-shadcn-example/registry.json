@@ -286,6 +286,38 @@
       ]
     },
     {
+      "name": "device-authorization",
+      "type": "registry:component",
+      "title": "Device Authorization",
+      "description": "Device authorization plugin: code entry, sign-in continuation, and approve or deny actions for Better Auth device requests.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "better-auth",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "card",
+        "field",
+        "input-otp",
+        "separator",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/device-authorization-plugin.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/device-authorization-plugin.ts"
+        },
+        {
+          "path": "src/components/auth/device-authorization/device-authorization.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/device-authorization/device-authorization.tsx"
+        }
+      ]
+    },
+    {
       "name": "username",
       "type": "registry:component",
       "title": "Username",
@@ -1531,6 +1563,7 @@
         "https://better-auth-ui.com/r/sign-up.json",
         "https://better-auth-ui.com/r/magic-link.json",
         "https://better-auth-ui.com/r/oauth-provider.json",
+        "https://better-auth-ui.com/r/device-authorization.json",
         "https://better-auth-ui.com/r/username.json",
         "https://better-auth-ui.com/r/passkey.json",
         "https://better-auth-ui.com/r/api-key.json",

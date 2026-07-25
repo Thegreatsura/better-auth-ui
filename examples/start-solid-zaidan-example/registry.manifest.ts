@@ -233,6 +233,20 @@ export const solidRegistryManifest = {
       ]
     }),
     item({
+      name: "device-authorization",
+      type: "registry:component",
+      title: "Solid Device Authorization",
+      description:
+        "Solid/Zaidan code verification and approval view for Better Auth device authorization requests.",
+      files: [
+        libFile("src/lib/auth/device-authorization-plugin.ts"),
+        componentFile(
+          "src/components/auth/device-authorization/device-authorization.tsx"
+        ),
+        ...zaidanInteractiveSupportFiles
+      ]
+    }),
+    item({
       name: "username",
       type: "registry:component",
       title: "Solid Username",

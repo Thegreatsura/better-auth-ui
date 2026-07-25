@@ -102,6 +102,7 @@ const expectedSolidRegistryPayloadNames = [
   "sign-up",
   "magic-link",
   "oauth-provider",
+  "device-authorization",
   "username",
   "passkey",
   "api-key",
@@ -208,6 +209,16 @@ describe("Solid registry isolation", () => {
         "src/components/auth/sign-in-path.ts",
         "src/components/auth/provider-button.tsx",
         "src/components/auth/provider-buttons.tsx"
+      ])
+    )
+
+    const deviceAuthorizationPayload = solidRegistryManifest.items.find(
+      (item) => item.name === "device-authorization"
+    )
+    expect(deviceAuthorizationPayload?.files.map((file) => file.path)).toEqual(
+      expect.arrayContaining([
+        "src/lib/auth/device-authorization-plugin.ts",
+        "src/components/auth/device-authorization/device-authorization.tsx"
       ])
     )
   })
@@ -2307,6 +2318,7 @@ describe("Solid registry isolation", () => {
       "last-login-method",
       "magic-link",
       "oauth-provider",
+      "device-authorization",
       "theme"
     ]
 
@@ -2486,6 +2498,9 @@ describe("Solid registry isolation", () => {
       "send-verification-email",
       "is-username-available",
       "oauth-consent",
+      "verify-device-code",
+      "approve-device",
+      "deny-device",
       "---Settings---",
       "update-user",
       "change-email",
@@ -2531,6 +2546,7 @@ describe("Solid registry isolation", () => {
       "api-key",
       "captcha",
       "delete-user",
+      "device-authorization",
       "last-login-method",
       "magic-link",
       "multi-session",
@@ -2809,6 +2825,7 @@ describe("Solid registry isolation", () => {
       "last-login-method",
       "magic-link",
       "oauth-provider",
+      "device-authorization",
       "theme"
     ]
     const runtimeOnlyPluginNames = ["captcha"]
@@ -2951,6 +2968,7 @@ describe("Solid registry isolation", () => {
         name === "last-login-method" ||
         name === "magic-link" ||
         name === "oauth-provider" ||
+        name === "device-authorization" ||
         name === "multi-session" ||
         name === "theme" ||
         name === "username"
