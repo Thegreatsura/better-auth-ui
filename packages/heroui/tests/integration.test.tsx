@@ -22,6 +22,7 @@ const pluginsExports = [
   "StopImpersonating",
   "DeviceAuthorization",
   "MagicLink",
+  "OAuthConsent",
   "Passkeys",
   "SignInUsername",
   "LastUsedBadge",
@@ -30,6 +31,7 @@ const pluginsExports = [
   "deviceAuthorizationPlugin",
   "lastLoginMethodPlugin",
   "magicLinkPlugin",
+  "oauthProviderPlugin",
   "passkeyPlugin",
   "usernamePlugin"
 ] as const
