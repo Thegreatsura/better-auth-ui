@@ -32,7 +32,7 @@ export function LastUsedBadge({
       )}
       color={floating ? "accent" : "default"}
       size="sm"
-      variant={floating ? "primary" : "secondary"}
+      variant={floating ? "soft" : "secondary"}
     >
       {compact || floating ? localization.lastUsedShort : localization.lastUsed}
     </Chip>
