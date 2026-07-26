@@ -110,6 +110,11 @@
           "path": "src/lib/auth/use-sign-in-continuation.ts",
           "type": "registry:lib",
           "target": "@lib/auth/use-sign-in-continuation.ts"
+        },
+        {
+          "path": "src/lib/auth/two-factor-methods.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/two-factor-methods.ts"
         }
       ]
     },
@@ -191,6 +196,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
+        "badge",
         "button",
         "card",
         "field",
@@ -199,7 +205,8 @@
         "input-otp",
         "skeleton",
         "sonner",
-        "spinner"
+        "spinner",
+        "https://better-auth-ui.com/r/account-settings.json"
       ],
       "files": [
         {
@@ -221,6 +228,11 @@
           "path": "src/lib/auth/use-sign-in-continuation.ts",
           "type": "registry:lib",
           "target": "@lib/auth/use-sign-in-continuation.ts"
+        },
+        {
+          "path": "src/lib/auth/two-factor-methods.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/two-factor-methods.ts"
         },
         {
           "path": "src/components/auth/otp-field.tsx",
@@ -266,6 +278,11 @@
           "path": "src/components/auth/provider-buttons.tsx",
           "type": "registry:component",
           "target": "@components/auth/provider-buttons.tsx"
+        },
+        {
+          "path": "src/components/auth/last-login-method/last-used-badge.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/last-login-method/last-used-badge.tsx"
         },
         {
           "path": "src/components/auth/use-is-hydrated.ts",
@@ -481,7 +498,8 @@
         "input-group",
         "separator",
         "sonner",
-        "spinner"
+        "spinner",
+        "https://better-auth-ui.com/r/additional-field.json"
       ],
       "files": [
         {
@@ -513,6 +531,11 @@
           "path": "src/lib/auth/use-sign-in-continuation.ts",
           "type": "registry:lib",
           "target": "@lib/auth/use-sign-in-continuation.ts"
+        },
+        {
+          "path": "src/lib/auth/two-factor-methods.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/two-factor-methods.ts"
         }
       ]
     },
@@ -607,7 +630,9 @@
         "input-otp",
         "skeleton",
         "sonner",
-        "spinner"
+        "spinner",
+        "https://better-auth-ui.com/r/sign-in.json",
+        "https://better-auth-ui.com/r/username.json"
       ],
       "files": [
         {
@@ -629,6 +654,11 @@
           "path": "src/lib/auth/use-sign-in-continuation.ts",
           "type": "registry:lib",
           "target": "@lib/auth/use-sign-in-continuation.ts"
+        },
+        {
+          "path": "src/lib/auth/two-factor-methods.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/two-factor-methods.ts"
         },
         {
           "path": "src/lib/auth/use-two-factor-password.ts",

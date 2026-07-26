@@ -1,9 +1,4 @@
 import {
-  clearTwoFactorMethods,
-  readTwoFactorMethods,
-  type TwoFactorMethod
-} from "@better-auth-ui/core/plugins"
-import {
   sendTwoFactorOtpOptions,
   type TwoFactorAuthClient,
   useAuth,
@@ -29,6 +24,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import {
+  clearTwoFactorMethods,
+  readTwoFactorMethods,
+  type TwoFactorMethod
+} from "@/lib/auth/two-factor-methods"
 import { twoFactorPlugin } from "@/lib/auth/two-factor-plugin"
 import {
   RESEND_COOLDOWN_SECONDS,

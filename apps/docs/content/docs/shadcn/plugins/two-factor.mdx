@@ -85,12 +85,15 @@ This drops the following into your codebase:
 
 - `src/lib/auth/two-factor-plugin.ts` — the `twoFactorPlugin()` factory
 - `src/lib/auth/use-sign-in-continuation.ts` — shared post-sign-in handler
+- `src/lib/auth/two-factor-methods.ts`: local redirect metadata storage and validation
 - `src/lib/auth/use-two-factor-password.ts` — decides whether to ask for a password
 - `src/components/auth/otp-field.tsx` — the shared code input
 - `src/components/auth/two-factor/two-factor-challenge.tsx` — the challenge view
 - `src/components/auth/two-factor/two-factor-settings.tsx` — the settings card
 - `src/components/auth/two-factor/*-dialog.tsx` — enable, disable, and regenerate dialogs
 - `src/components/auth/two-factor/backup-codes.tsx` — the one-time code display
+
+The registry also refreshes the email/password and username sign-in forms so both detect the two-factor redirect.
 
 </Step>
 <Step>
@@ -160,7 +163,10 @@ The method names ride along in session storage — names only, never a code or t
 Building a custom sign-in form? Check for the redirect yourself:
 
 ```tsx
-import { isTwoFactorRedirect, storeTwoFactorMethods } from "@better-auth-ui/core/plugins"
+import {
+  isTwoFactorRedirect,
+  storeTwoFactorMethods
+} from "@/lib/auth/two-factor-methods"
 
 const { mutate: signInEmail } = useSignInEmail(authClient, {
   onSuccess: (data) => {

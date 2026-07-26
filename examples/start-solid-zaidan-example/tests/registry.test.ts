@@ -9,7 +9,7 @@ import {
   writeFileSync
 } from "node:fs"
 import { tmpdir } from "node:os"
-import { join, resolve } from "node:path"
+import { join, posix, resolve } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
 import {
   type SolidRegistryManifest,
@@ -34,6 +34,109 @@ const makeTempRoot = () => {
 
 const readJson = <T>(path: string) =>
   JSON.parse(readFileSync(path, "utf8")) as T
+
+type GeneratedRegistryFile = {
+  content: string
+  path: string
+}
+
+type GeneratedRegistryItem = {
+  files: GeneratedRegistryFile[]
+  registryDependencies?: string[]
+}
+
+const extractModuleSpecifiers = (content: string) =>
+  [...content.matchAll(/\b(?:from|import)\s*(?:\(\s*)?["']([^"']+)["']/g)].map(
+    ([, specifier]) => specifier
+  )
+
+const registryDependencyName = (dependency: string, solid: boolean) => {
+  const pattern = solid
+    ? /^https:\/\/better-auth-ui\.com\/r\/solid\/([a-z0-9-]+)\.json$/
+    : /^https:\/\/better-auth-ui\.com\/r\/([a-z0-9-]+)\.json$/
+
+  return dependency.match(pattern)?.[1]
+}
+
+const collectRegistryInstall = ({
+  entry,
+  registryRoot,
+  solid
+}: {
+  entry: string
+  registryRoot: string
+  solid: boolean
+}) => {
+  const files = new Map<string, string>()
+  const itemNames = new Set<string>()
+  const registryDependencies = new Set<string>()
+  const queue = [entry]
+
+  while (queue.length > 0) {
+    const name = queue.pop()
+    if (!name || itemNames.has(name)) {
+      continue
+    }
+
+    itemNames.add(name)
+    const item = readJson<GeneratedRegistryItem>(
+      resolve(registryRoot, `${name}.json`)
+    )
+
+    for (const file of item.files) {
+      files.set(file.path, file.content)
+    }
+
+    for (const dependency of item.registryDependencies ?? []) {
+      registryDependencies.add(dependency)
+      const dependencyName = registryDependencyName(dependency, solid)
+      if (dependencyName) {
+        queue.push(dependencyName)
+      }
+    }
+  }
+
+  const fileCandidates = (path: string) => [
+    path,
+    `${path}.ts`,
+    `${path}.tsx`,
+    `${path}/index.ts`,
+    `${path}/index.tsx`
+  ]
+  const unresolvedImports: string[] = []
+
+  for (const [path, content] of files) {
+    for (const specifier of extractModuleSpecifiers(content)) {
+      if (
+        specifier.startsWith("@/components/ui/") ||
+        specifier.startsWith("@/hooks/") ||
+        specifier === "@/lib/utils"
+      ) {
+        continue
+      }
+
+      const importedPath = specifier.startsWith("@/")
+        ? `src/${specifier.slice(2)}`
+        : specifier.startsWith(".")
+          ? posix.normalize(posix.join(posix.dirname(path), specifier))
+          : undefined
+
+      if (
+        importedPath &&
+        !fileCandidates(importedPath).some((candidate) => files.has(candidate))
+      ) {
+        unresolvedImports.push(`${path} imports ${specifier}`)
+      }
+    }
+  }
+
+  return {
+    files,
+    itemNames,
+    registryDependencies,
+    unresolvedImports
+  }
+}
 
 const collectFiles = (root: string): string[] =>
   readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -2227,6 +2330,72 @@ describe("Solid registry isolation", () => {
       "Unable to create an account. Try again."
     )
     expect(signUp.files[0]?.content).toContain("auth.emailAndPassword.name")
+  })
+
+  it("installs complete Email OTP and Two-Factor dependency closures", () => {
+    const registryRoot = resolve(__dirname, "../../../apps/docs/public/r")
+    const registries = [
+      {
+        root: registryRoot,
+        solid: false
+      },
+      {
+        root: resolve(registryRoot, "solid"),
+        solid: true
+      }
+    ]
+
+    for (const registry of registries) {
+      const emailOtpInstall = collectRegistryInstall({
+        entry: "email-otp",
+        registryRoot: registry.root,
+        solid: registry.solid
+      })
+      const twoFactorInstall = collectRegistryInstall({
+        entry: "two-factor",
+        registryRoot: registry.root,
+        solid: registry.solid
+      })
+
+      expect(emailOtpInstall.unresolvedImports).toEqual([])
+      expect(twoFactorInstall.unresolvedImports).toEqual([])
+      expect(emailOtpInstall.itemNames).toContain("account-settings")
+      expect(twoFactorInstall.itemNames).toContain("sign-in")
+      expect(
+        emailOtpInstall.files.has(
+          "src/components/auth/last-login-method/last-used-badge.tsx"
+        )
+      ).toBe(true)
+      expect(
+        emailOtpInstall.files.has("src/lib/auth/two-factor-methods.ts")
+      ).toBe(true)
+      expect(
+        twoFactorInstall.files.has("src/lib/auth/two-factor-methods.ts")
+      ).toBe(true)
+
+      const continuation = twoFactorInstall.files.get(
+        "src/lib/auth/use-sign-in-continuation.ts"
+      )
+      expect(continuation).toBeDefined()
+      const continuationImports = extractModuleSpecifiers(continuation ?? "")
+      expect(continuationImports).toContain("./two-factor-methods")
+      expect(continuationImports).not.toContain("@better-auth-ui/core/plugins")
+    }
+
+    const shadcnEmailOtpInstall = collectRegistryInstall({
+      entry: "email-otp",
+      registryRoot,
+      solid: false
+    })
+    const shadcnTwoFactorInstall = collectRegistryInstall({
+      entry: "two-factor",
+      registryRoot,
+      solid: false
+    })
+
+    expect(shadcnEmailOtpInstall.registryDependencies).toContain("badge")
+    expect(shadcnTwoFactorInstall.itemNames).toContain("username")
+    expect(shadcnTwoFactorInstall.itemNames).toContain("additional-field")
   })
 
   it("rejects manifest files that escape the Solid example source tree", () => {

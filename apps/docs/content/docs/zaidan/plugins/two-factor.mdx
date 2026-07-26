@@ -87,9 +87,12 @@ This drops the following into your codebase:
 
 - `src/lib/auth/two-factor-plugin.ts` — the `twoFactorPlugin()` factory
 - `src/lib/auth/use-sign-in-continuation.ts` — shared post-sign-in handler
+- `src/lib/auth/two-factor-methods.ts`: local redirect metadata storage and validation
 - `src/lib/auth/use-two-factor-password.ts` — decides whether to ask for a password
 - `src/components/auth/otp-field.tsx` — the shared code input
 - `src/components/auth/two-factor/*.tsx` — the challenge view, settings card, dialogs, and backup-code display
+
+The registry also refreshes the copied sign-in form so password and username sign-in both detect the two-factor redirect.
 
 </Step>
 <Step>
@@ -153,7 +156,10 @@ The method names ride along in session storage — names only, never a code or t
 Building a custom sign-in form? Check for the redirect yourself:
 
 ```tsx
-import { isTwoFactorRedirect, storeTwoFactorMethods } from "@better-auth-ui/core/plugins"
+import {
+  isTwoFactorRedirect,
+  storeTwoFactorMethods
+} from "@/lib/auth/two-factor-methods"
 
 const signIn = createMutation(() => ({
   ...signInEmailOptions(auth.authClient),

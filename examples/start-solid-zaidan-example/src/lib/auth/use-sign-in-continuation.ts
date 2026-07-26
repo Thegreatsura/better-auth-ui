@@ -1,9 +1,9 @@
+import { useAuth } from "@better-auth-ui/solid"
 import {
   isTwoFactorRedirect,
   storeTwoFactorMethods,
-  twoFactorPlugin
-} from "@better-auth-ui/core/plugins"
-import { useAuth } from "@better-auth-ui/solid"
+  TWO_FACTOR_PLUGIN_ID
+} from "./two-factor-methods"
 
 /**
  * Resolve what happens after a sign-in request succeeds.
@@ -18,8 +18,9 @@ import { useAuth } from "@better-auth-ui/solid"
  * code or token) and `redirectTo` rides along in the query string so the
  * challenge view can finish the original navigation.
  *
- * The two-factor plugin is looked up by id from `@better-auth-ui/core`, so
- * sign-in forms stay installable without the two-factor components.
+ * The two-factor plugin is looked up by its stable id, so sign-in forms stay
+ * installable without either the two-factor components or a matching release
+ * of `@better-auth-ui/core`.
  *
  * @returns A callback taking the resolved data of a sign-in mutation.
  */
@@ -28,7 +29,7 @@ export function useSignInContinuation() {
 
   return (data: unknown) => {
     const twoFactorPath = auth.plugins.find(
-      (plugin) => plugin.id === twoFactorPlugin.id
+      (plugin) => plugin.id === TWO_FACTOR_PLUGIN_ID
     )?.viewPaths?.auth?.twoFactor
 
     if (twoFactorPath && isTwoFactorRedirect(data)) {

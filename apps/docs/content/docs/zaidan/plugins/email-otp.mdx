@@ -76,8 +76,12 @@ This drops the following into your codebase:
 - `src/lib/auth/email-otp-plugin.ts` — the `emailOtpPlugin()` factory
 - `src/lib/auth/use-resend-cooldown.ts` — countdown state for resend buttons
 - `src/lib/auth/use-sign-in-continuation.ts` — shared post-sign-in handler
+- `src/lib/auth/two-factor-methods.ts`: local two-factor redirect metadata support
 - `src/components/auth/otp-field.tsx` — the shared code input
 - `src/components/auth/email-otp/*.tsx` — sign-in, toggle button, verification, password reset, and change-email views
+- Provider-button and last-used badge components needed by the passwordless sign-in view
+
+The registry also refreshes `<AccountSettings />`, so enabling the change-email override does not require a separate registry command.
 
 </Step>
 <Step>
