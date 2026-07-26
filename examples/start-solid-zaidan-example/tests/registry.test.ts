@@ -884,7 +884,7 @@ describe("Solid registry isolation", () => {
     }
   })
 
-  it("requires upstream Zaidan dependencies for generated UI primitive imports", () => {
+  it("resolves generated UI primitive imports from bundled files or Zaidan dependencies", () => {
     const uiPrimitiveDependencies = {
       avatar: "@zaidan/avatar",
       badge: "@zaidan/badge",
@@ -920,7 +920,7 @@ describe("Solid registry isolation", () => {
       registryFiles.map((registryFile) => [
         registryFile.replace(/\.json$/, ""),
         readJson<{
-          files: Array<{ content?: string }>
+          files: Array<{ content?: string; path: string }>
           registryDependencies: string[]
         }>(join(outputRoot, "solid", registryFile))
       ])
@@ -971,6 +971,15 @@ describe("Solid registry isolation", () => {
       const registryDependencies = collectRegistryDependencies(name)
 
       for (const primitive of importedUiPrimitives) {
+        const bundledPrimitivePath = `src/components/ui/${primitive}.tsx`
+        const isBundled = [...registryDependencies].some((dependency) =>
+          registryPayloads[dependency]?.files.some(
+            (file) => file.path === bundledPrimitivePath
+          )
+        )
+
+        if (isBundled) continue
+
         const dependency =
           uiPrimitiveDependencies[
             primitive as keyof typeof uiPrimitiveDependencies

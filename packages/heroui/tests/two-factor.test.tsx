@@ -129,7 +129,7 @@ describe("sign-in continuation", () => {
 })
 
 describe("<TwoFactorChallenge />", () => {
-  it("verifies an authenticator code with the trust-device choice", async () => {
+  it("auto-verifies an authenticator code with the trust-device choice", async () => {
     sessionStorage.setItem(
       "better-auth-ui.two-factor-methods",
       '["totp","otp"]'
@@ -138,11 +138,10 @@ describe("<TwoFactorChallenge />", () => {
     const user = userEvent.setup()
     const { authClient, navigate } = renderWithProvider(<TwoFactorChallenge />)
 
-    await typeCode(user, "123456")
     await user.click(
       screen.getByRole("checkbox", { name: /trust this device/i })
     )
-    await user.click(screen.getByRole("button", { name: /^verify$/i }))
+    await typeCode(user, "123456")
 
     await waitFor(() => {
       expect(authClient.twoFactor.verifyTotp).toHaveBeenCalledWith(
@@ -155,7 +154,7 @@ describe("<TwoFactorChallenge />", () => {
     ).toBeNull()
   })
 
-  it("requests an emailed code before accepting one", async () => {
+  it("requests an emailed code before auto-verifying it", async () => {
     sessionStorage.setItem("better-auth-ui.two-factor-methods", '["otp"]')
 
     const user = userEvent.setup()
@@ -168,7 +167,6 @@ describe("<TwoFactorChallenge />", () => {
     })
 
     await typeCode(user, "999888")
-    await user.click(screen.getByRole("button", { name: /^verify$/i }))
 
     await waitFor(() => {
       expect(authClient.twoFactor.verifyOtp).toHaveBeenCalledWith(
@@ -196,7 +194,7 @@ describe("<TwoFactorChallenge />", () => {
 })
 
 describe("<TwoFactorSettings />", () => {
-  it("enrolls through password, verification, and backup codes", async () => {
+  it("auto-verifies enrollment codes before showing backup codes", async () => {
     const user = userEvent.setup()
     const { authClient } = renderWithProvider(<TwoFactorSettings />)
 
@@ -215,7 +213,6 @@ describe("<TwoFactorSettings />", () => {
     })
 
     await typeCode(user, "246810")
-    await user.click(screen.getByRole("button", { name: /^verify$/i }))
 
     await waitFor(() => {
       expect(authClient.twoFactor.verifyTotp).toHaveBeenCalledWith(

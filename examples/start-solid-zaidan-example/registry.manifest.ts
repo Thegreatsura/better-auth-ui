@@ -32,6 +32,7 @@ const solidDependencies = [
 ]
 
 const zaidanUiDependencies = [
+  "@corvu/otp-field",
   "@kobalte/core",
   "class-variance-authority",
   "clsx",
@@ -89,6 +90,9 @@ const componentFile = (path: SolidRegistryFile["path"]) =>
 const libFile = (path: SolidRegistryFile["path"]) =>
   ({ path, type: "registry:lib" }) satisfies SolidRegistryFile
 
+const uiFile = (path: SolidRegistryFile["path"]) =>
+  ({ path, type: "registry:ui" }) satisfies SolidRegistryFile
+
 const zaidanFormSupportFiles = [
   libFile("src/lib/utils.ts")
 ] satisfies SolidRegistryFile[]
@@ -136,6 +140,7 @@ export const solidRegistryManifest = {
       files: [
         componentFile("src/components/auth/auth-provider.tsx"),
         componentFile("src/components/auth/error-toaster.tsx"),
+        uiFile("src/components/ui/input-otp.tsx"),
         libFile("src/lib/theme.ts")
       ]
     }),

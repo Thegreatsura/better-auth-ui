@@ -124,10 +124,31 @@ export function TwoFactorChallenge({
 
   const isPending =
     isSendingOtp || isVerifyingTotp || isVerifyingOtp || isVerifyingBackupCode
+  const needsOtpRequest = method === "otp" && !otpRequested
 
   const switchMethod = (next: ChallengeMethod) => {
     setCode("")
     setMethod(next)
+  }
+
+  const verifyCode = (completedCode: string) => {
+    if (
+      isPending ||
+      needsOtpRequest ||
+      method === "backup" ||
+      completedCode.length !== codeLength
+    ) {
+      return
+    }
+
+    const trust = trustDeviceEnabled ? { trustDevice } : {}
+
+    if (method === "otp") {
+      verifyTwoFactorOtp({ code: completedCode, ...trust })
+      return
+    }
+
+    verifyTotp({ code: completedCode, ...trust })
   }
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
@@ -144,15 +165,8 @@ export function TwoFactorChallenge({
       return
     }
 
-    if (method === "otp") {
-      verifyTwoFactorOtp({ code, ...trust })
-      return
-    }
-
-    verifyTotp({ code, ...trust })
+    verifyCode(code)
   }
-
-  const needsOtpRequest = method === "otp" && !otpRequested
 
   const description =
     method === "backup"
@@ -223,6 +237,7 @@ export function TwoFactorChallenge({
               value={code}
               variant={variant}
               onChange={setCode}
+              onComplete={verifyCode}
             />
           )}
 

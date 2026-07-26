@@ -89,6 +89,20 @@ export function EnableTwoFactorDialog(props: {
     verifyTotp.isPending ||
     isResolvingPasswordRequirement()
 
+  const verifyCode = (completedCode: string) => {
+    if (
+      isPending() ||
+      step() !== "verify" ||
+      completedCode.length !== codeLength
+    ) {
+      return
+    }
+
+    verifyTotp.mutate({ code: completedCode } as Parameters<
+      typeof verifyTotp.mutate
+    >[0])
+  }
+
   const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
     event.preventDefault()
 
@@ -98,9 +112,7 @@ export function EnableTwoFactorDialog(props: {
     }
 
     if (step() === "verify") {
-      verifyTotp.mutate({ code: code() } as Parameters<
-        typeof verifyTotp.mutate
-      >[0])
+      verifyCode(code())
       return
     }
 
@@ -205,6 +217,7 @@ export function EnableTwoFactorDialog(props: {
               length={codeLength}
               name="code"
               onInput={setCode}
+              onComplete={verifyCode}
               value={code()}
             />
           </div>

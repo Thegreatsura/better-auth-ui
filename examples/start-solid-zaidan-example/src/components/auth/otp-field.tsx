@@ -1,6 +1,10 @@
-import { Show } from "solid-js"
+import { createMemo, For, Show } from "solid-js"
 
-import { Input } from "@/components/ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot
+} from "@/components/ui/input-otp"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
@@ -25,6 +29,13 @@ function normalizeCode(value: string) {
   return value.replace(/\D/g, "")
 }
 
+function createOtpSlots(length: number) {
+  return Array.from({ length }, (_, slotIndex) => ({
+    id: `otp-slot-${String(slotIndex + 1)}`,
+    index: slotIndex
+  }))
+}
+
 /**
  * Labelled one-time-code input.
  *
@@ -35,34 +46,37 @@ function normalizeCode(value: string) {
 export function OtpField(props: OtpFieldProps) {
   const inputId = () => props.id ?? "otp-code"
   const errorId = () => `${inputId()}-error`
+  const slots = createMemo(() => createOtpSlots(props.length))
 
   return (
     <div class={cn("flex flex-col gap-2", props.class)}>
       <Label for={inputId()}>{props.label}</Label>
 
-      <Input
+      <InputOTP
+        maxLength={props.length}
         aria-describedby={props.errorMessage ? errorId() : undefined}
         aria-invalid={Boolean(props.errorMessage)}
+        aria-label={props.label}
         autocomplete="one-time-code"
         autofocus={props.autofocus}
-        class="text-center font-mono text-lg tracking-[0.5em]"
+        containerClass="w-full justify-center"
         disabled={props.disabled}
         id={inputId()}
         inputmode="numeric"
-        maxLength={props.length}
         name={props.name}
-        onInput={(event) => {
-          const next = normalizeCode(event.currentTarget.value)
-          event.currentTarget.value = next
-          props.onInput(next)
-
-          if (next.length === props.length) {
-            props.onComplete?.(next)
-          }
-        }}
-        spellcheck={false}
+        pattern="^\\d*$"
         value={props.value}
-      />
+        onValueChange={(next) => props.onInput(normalizeCode(next))}
+        onComplete={(completedCode) =>
+          props.onComplete?.(normalizeCode(completedCode))
+        }
+      >
+        <InputOTPGroup>
+          <For each={slots()}>
+            {(slot) => <InputOTPSlot index={slot.index} />}
+          </For>
+        </InputOTPGroup>
+      </InputOTP>
 
       <Show when={props.errorMessage}>
         {(message) => (

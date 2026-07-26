@@ -11,7 +11,15 @@ import {
 import { createMutation } from "@tanstack/solid-query"
 import type { BetterFetchError } from "better-auth/client"
 import { Check, CircleCheck, CircleX, X } from "lucide-solid"
-import { createSignal, type JSX, Match, onMount, Show, Switch } from "solid-js"
+import {
+  createEffect,
+  createSignal,
+  For,
+  Match,
+  onMount,
+  Show,
+  Switch
+} from "solid-js"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,7 +30,12 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot
+} from "@/components/ui/input-otp"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
@@ -54,6 +67,13 @@ function normalizeDeviceCode(value: string) {
   return value.replace(/-/g, "").trim().toUpperCase()
 }
 
+function createDeviceCodeSlots(length: number) {
+  return Array.from({ length }, (_, slotIndex) => ({
+    id: `device-code-character-${String(slotIndex + 1)}`,
+    index: slotIndex
+  }))
+}
+
 export type DeviceAuthorizationProps = {
   class?: string
 }
@@ -78,6 +98,7 @@ export function DeviceAuthorization(props: DeviceAuthorizationProps) {
   const [userCode, setUserCode] = createSignal("")
   const [codeError, setCodeError] = createSignal("")
   const normalizedUserCode = () => normalizeDeviceCode(userCode())
+  let submittedCode: string | undefined
 
   const handleAuthorizationError = () => {
     setStep("code")
@@ -132,16 +153,52 @@ export function DeviceAuthorization(props: DeviceAuthorizationProps) {
     onSuccess: () => setStep("denied")
   }))
 
-  const handleCodeInput: JSX.EventHandler<HTMLInputElement, InputEvent> = (
-    event
-  ) => {
-    setUserCode(
-      normalizeDeviceCode(event.currentTarget.value)
-        .replace(/[^A-Z0-9]/g, "")
-        .slice(0, userCodeLength)
-    )
+  const handleCodeChange = (value: string) => {
+    const nextCode = normalizeDeviceCode(value)
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, userCodeLength)
+
+    if (nextCode !== submittedCode) {
+      submittedCode = undefined
+    }
+
+    setUserCode(nextCode)
     setCodeError("")
   }
+
+  const submitCode = (completedCode: string) => {
+    const normalizedCode = normalizeDeviceCode(completedCode)
+
+    if (
+      session.isPending ||
+      verifyDeviceCode.isPending ||
+      normalizedCode.length !== userCodeLength ||
+      normalizedCode === submittedCode
+    ) {
+      return
+    }
+
+    submittedCode = normalizedCode
+
+    if (!session.data) {
+      const verificationPath = `${auth.basePaths.auth}/${deviceAuthorizationViewPaths.auth.deviceAuthorization}?user_code=${encodeURIComponent(normalizedCode)}`
+      const signInPath = `${auth.basePaths.auth}/${auth.viewPaths.auth.signIn}?redirectTo=${encodeURIComponent(verificationPath)}`
+      auth.navigate({ to: signInPath })
+      return
+    }
+
+    verifyDeviceCode.mutate({
+      query: { user_code: normalizedCode }
+    })
+  }
+
+  createEffect(() => {
+    const currentCode = normalizedUserCode()
+
+    if (currentCode.length === userCodeLength) {
+      submitCode(currentCode)
+    }
+  })
 
   const handleSubmit = (event: SubmitEvent) => {
     event.preventDefault()
@@ -151,16 +208,7 @@ export function DeviceAuthorization(props: DeviceAuthorizationProps) {
       return
     }
 
-    if (!session.data) {
-      const verificationPath = `${auth.basePaths.auth}/${deviceAuthorizationViewPaths.auth.deviceAuthorization}?user_code=${encodeURIComponent(normalizedUserCode())}`
-      const signInPath = `${auth.basePaths.auth}/${auth.viewPaths.auth.signIn}?redirectTo=${encodeURIComponent(verificationPath)}`
-      auth.navigate({ to: signInPath })
-      return
-    }
-
-    verifyDeviceCode.mutate({
-      query: { user_code: normalizedUserCode() }
-    })
+    submitCode(normalizedUserCode())
   }
 
   const cardClass = () => cn("w-full max-w-sm", props.class)
@@ -202,7 +250,8 @@ export function DeviceAuthorization(props: DeviceAuthorizationProps) {
           localization={localization}
           userCode={userCode()}
           userCodeLength={userCodeLength}
-          onCodeInput={handleCodeInput}
+          onCodeChange={handleCodeChange}
+          onCodeComplete={submitCode}
           onSubmit={handleSubmit}
         />
       </Match>
@@ -218,11 +267,16 @@ type DeviceCodeFormProps = {
   localization: DeviceAuthorizationLocalization
   userCode: string
   userCodeLength: number
-  onCodeInput: JSX.EventHandler<HTMLInputElement, InputEvent>
+  onCodeChange: (value: string) => void
+  onCodeComplete: (value: string) => void
   onSubmit: (event: SubmitEvent) => void
 }
 
 function DeviceCodeForm(props: DeviceCodeFormProps) {
+  const slots = createDeviceCodeSlots(props.userCodeLength)
+  const groupBreak = Math.ceil(props.userCodeLength / 2)
+  const firstGroup = slots.slice(0, groupBreak)
+  const secondGroup = slots.slice(groupBreak)
   const errorId = "device-code-error"
 
   return (
@@ -244,20 +298,38 @@ function DeviceCodeForm(props: DeviceCodeFormProps) {
           <div class="flex flex-col gap-5">
             <div class="flex flex-col gap-2">
               <Label for="device-code">{props.localization.deviceCode}</Label>
-              <Input
+
+              <InputOTP
+                maxLength={props.userCodeLength}
                 id="device-code"
                 aria-describedby={props.codeError ? errorId : undefined}
                 aria-invalid={Boolean(props.codeError)}
+                aria-label={props.localization.deviceCode}
                 autocomplete="one-time-code"
-                class="font-mono tracking-[0.25em] uppercase"
+                containerClass="w-full justify-center"
                 disabled={props.isVerifying}
                 inputmode="text"
-                maxLength={props.userCodeLength}
                 name="userCode"
-                onInput={props.onCodeInput}
-                spellcheck={false}
+                pattern="^[A-Za-z0-9]*$"
                 value={props.userCode}
-              />
+                onValueChange={props.onCodeChange}
+                onComplete={props.onCodeComplete}
+              >
+                <InputOTPGroup>
+                  <For each={firstGroup}>
+                    {(slot) => <InputOTPSlot index={slot.index} />}
+                  </For>
+                </InputOTPGroup>
+
+                <Show when={secondGroup.length > 0}>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <For each={secondGroup}>
+                      {(slot) => <InputOTPSlot index={slot.index} />}
+                    </For>
+                  </InputOTPGroup>
+                </Show>
+              </InputOTP>
 
               <Show when={props.codeError}>
                 <p class="text-sm text-destructive" id={errorId} role="alert">

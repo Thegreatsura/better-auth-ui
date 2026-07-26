@@ -111,6 +111,30 @@ export function TwoFactorChallenge(props: TwoFactorChallengeProps) {
 
   const needsOtpRequest = () => method() === "otp" && !otpRequested()
 
+  const verifyCode = (completedCode: string) => {
+    if (
+      isPending() ||
+      needsOtpRequest() ||
+      method() === "backup" ||
+      completedCode.length !== codeLength
+    ) {
+      return
+    }
+
+    const trust = trustDeviceEnabled ? { trustDevice: trustDevice() } : {}
+
+    if (method() === "otp") {
+      verifyOtp.mutate({ code: completedCode, ...trust } as Parameters<
+        typeof verifyOtp.mutate
+      >[0])
+      return
+    }
+
+    verifyTotp.mutate({ code: completedCode, ...trust } as Parameters<
+      typeof verifyTotp.mutate
+    >[0])
+  }
+
   const description = () => {
     if (method() === "backup")
       return twoFactorLocalization.backupCodeDescription
@@ -150,16 +174,7 @@ export function TwoFactorChallenge(props: TwoFactorChallengeProps) {
       return
     }
 
-    if (method() === "otp") {
-      verifyOtp.mutate({ code: code(), ...trust } as Parameters<
-        typeof verifyOtp.mutate
-      >[0])
-      return
-    }
-
-    verifyTotp.mutate({ code: code(), ...trust } as Parameters<
-      typeof verifyTotp.mutate
-    >[0])
+    verifyCode(code())
   }
 
   return (
@@ -190,6 +205,7 @@ export function TwoFactorChallenge(props: TwoFactorChallengeProps) {
                   length={codeLength}
                   name="code"
                   onInput={setCode}
+                  onComplete={verifyCode}
                   value={code()}
                 />
               }
