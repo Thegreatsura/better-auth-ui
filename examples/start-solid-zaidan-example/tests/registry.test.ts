@@ -100,11 +100,13 @@ const expectedSolidRegistryPayloadNames = [
   "sign-in",
   "last-login-method",
   "sign-up",
+  "email-otp",
   "magic-link",
   "oauth-provider",
   "device-authorization",
   "username",
   "passkey",
+  "two-factor",
   "api-key",
   "forgot-password",
   "reset-password",
@@ -2494,6 +2496,7 @@ describe("Solid registry isolation", () => {
       "sign-in-email",
       "sign-in-username",
       "sign-in-magic-link",
+      "sign-in-email-otp",
       "sign-in-passkey",
       "sign-in-social",
       "sign-up-email",
@@ -2501,21 +2504,35 @@ describe("Solid registry isolation", () => {
       "request-password-reset",
       "reset-password",
       "send-verification-email",
+      "send-verification-otp",
+      "verify-email-otp",
+      "request-password-reset-otp",
+      "reset-password-otp",
       "is-username-available",
       "oauth-consent",
       "oauth-continue",
       "verify-device-code",
       "approve-device",
       "deny-device",
+      "send-two-factor-otp",
+      "verify-totp",
+      "verify-two-factor-otp",
+      "verify-backup-code",
       "---Settings---",
       "update-user",
       "change-email",
+      "request-email-change-otp",
+      "change-email-otp",
       "change-password",
       "delete-user",
       "link-social",
       "unlink-account",
       "add-passkey",
       "delete-passkey",
+      "enable-two-factor",
+      "disable-two-factor",
+      "get-totp-uri",
+      "generate-backup-codes",
       "revoke-session",
       "revoke-multi-session",
       "set-active-session",
@@ -2554,6 +2571,7 @@ describe("Solid registry isolation", () => {
       "captcha",
       "delete-user",
       "device-authorization",
+      "email-otp",
       "last-login-method",
       "magic-link",
       "multi-session",
@@ -2561,6 +2579,7 @@ describe("Solid registry isolation", () => {
       "oauth-provider",
       "passkey",
       "theme",
+      "two-factor",
       "username"
     ])
     expect(zaidanComponentsMeta.pages).toEqual([
@@ -2829,6 +2848,8 @@ describe("Solid registry isolation", () => {
       "admin",
       "username",
       "passkey",
+      "two-factor",
+      "email-otp",
       "multi-session",
       "api-key",
       "delete-user",
@@ -2977,9 +2998,11 @@ describe("Solid registry isolation", () => {
       } else if (
         name === "admin" ||
         name === "delete-user" ||
+        name === "email-otp" ||
         name === "last-login-method" ||
         name === "magic-link" ||
         name === "oauth-provider" ||
+        name === "two-factor" ||
         name === "device-authorization" ||
         name === "multi-session" ||
         name === "theme" ||
