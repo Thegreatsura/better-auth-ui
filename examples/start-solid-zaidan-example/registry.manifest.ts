@@ -207,7 +207,8 @@ export const solidRegistryManifest = {
         "Solid/Zaidan passwordless sign-in with an emailed code, plus code-based email verification, password reset, and email change views.",
       registryDependencies: [
         betterAuthSolidRegistryDependency("auth-provider"),
-        betterAuthSolidRegistryDependency("account-settings")
+        betterAuthSolidRegistryDependency("account-settings"),
+        "@zaidan/tooltip"
       ],
       files: [
         libFile("src/lib/auth/email-otp-plugin.ts"),
@@ -221,6 +222,7 @@ export const solidRegistryManifest = {
         componentFile("src/components/auth/email-otp/forgot-password-otp.tsx"),
         componentFile("src/components/auth/email-otp/reset-password-otp.tsx"),
         componentFile("src/components/auth/email-otp/change-email-otp.tsx"),
+        componentFile("src/components/auth/open-email-button.tsx"),
         componentFile("src/components/auth/provider-buttons.tsx"),
         componentFile("src/components/auth/provider-button.tsx"),
         componentFile(

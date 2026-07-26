@@ -27,6 +27,7 @@ import { emailOtpPlugin } from "../../../lib/auth/email-otp-plugin"
 import { useResendCooldown } from "../../../lib/auth/use-resend-cooldown"
 import { useSignInContinuation } from "../../../lib/auth/use-sign-in-continuation"
 import { FieldSeparator } from "../field-separator"
+import { OpenEmailButton } from "../open-email-button"
 import { OtpField } from "../otp-field"
 import { ProviderButtons, type SocialLayout } from "../provider-buttons"
 
@@ -99,6 +100,11 @@ export function EmailOtp({
   const isPending = signInMutating + signUpMutating > 0 || isSending
 
   const sendCode = () => sendVerificationOtp({ email, type: "sign-in" })
+  const verifyCode = (completedCode: string) => {
+    if (isPending || isSigningIn) return
+
+    signInEmailOtp({ email, otp: completedCode })
+  }
 
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -108,7 +114,7 @@ export function EmailOtp({
       return
     }
 
-    signInEmailOtp({ email, otp: code })
+    verifyCode(code)
   }
 
   const startOver = () => {
@@ -159,6 +165,7 @@ export function EmailOtp({
               value={code}
               variant={variant}
               onChange={setCode}
+              onComplete={verifyCode}
             />
           ) : (
             <TextField
@@ -204,6 +211,8 @@ export function EmailOtp({
 
             {codeSent ? (
               <div className="flex flex-col gap-3">
+                <OpenEmailButton email={email} variant="secondary" />
+
                 <Button
                   className="w-full"
                   variant="tertiary"

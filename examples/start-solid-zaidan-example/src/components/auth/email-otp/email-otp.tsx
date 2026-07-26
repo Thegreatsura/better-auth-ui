@@ -8,6 +8,7 @@ import {
 import { createMutation } from "@tanstack/solid-query"
 import { createSignal, Show } from "solid-js"
 
+import { OpenEmailButton } from "@/components/auth/open-email-button"
 import { OtpField } from "@/components/auth/otp-field"
 import {
   ProviderButtons,
@@ -77,6 +78,14 @@ export function EmailOtp(props: EmailOtpProps) {
       typeof sendCode.mutate
     >[0])
 
+  const verifyCode = (completedCode: string) => {
+    if (isPending()) return
+
+    signIn.mutate({ email: email(), otp: completedCode } as Parameters<
+      typeof signIn.mutate
+    >[0])
+  }
+
   const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
     event.preventDefault()
 
@@ -85,9 +94,7 @@ export function EmailOtp(props: EmailOtpProps) {
       return
     }
 
-    signIn.mutate({ email: email(), otp: code() } as Parameters<
-      typeof signIn.mutate
-    >[0])
+    verifyCode(code())
   }
 
   const socialPosition = () => props.socialPosition ?? "bottom"
@@ -173,6 +180,7 @@ export function EmailOtp(props: EmailOtpProps) {
                   length={otpLength}
                   name="otp"
                   onInput={setCode}
+                  onComplete={verifyCode}
                   value={code()}
                 />
               </Show>
@@ -195,6 +203,8 @@ export function EmailOtp(props: EmailOtpProps) {
                 </Button>
 
                 <Show when={codeSent()}>
+                  <OpenEmailButton email={email()} variant="secondary" />
+
                   <Button
                     class="w-full"
                     disabled={isPending() || isCoolingDown()}

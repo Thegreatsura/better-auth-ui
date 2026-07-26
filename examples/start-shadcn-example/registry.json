@@ -200,13 +200,14 @@
         "button",
         "card",
         "field",
+        "https://better-auth-ui.com/r/account-settings.json",
         "input",
         "input-group",
         "input-otp",
         "skeleton",
         "sonner",
         "spinner",
-        "https://better-auth-ui.com/r/account-settings.json"
+        "tooltip"
       ],
       "files": [
         {
@@ -268,6 +269,11 @@
           "path": "src/components/auth/email-otp/change-email-otp.tsx",
           "type": "registry:component",
           "target": "@components/auth/email-otp/change-email-otp.tsx"
+        },
+        {
+          "path": "src/components/auth/open-email-button.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/open-email-button.tsx"
         },
         {
           "path": "src/components/auth/provider-button.tsx",

@@ -11,6 +11,7 @@ import { createMutation } from "@tanstack/solid-query"
 import { createSignal, Show } from "solid-js"
 import { toast } from "solid-sonner"
 
+import { OpenEmailButton } from "@/components/auth/open-email-button"
 import { OtpField } from "@/components/auth/otp-field"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -87,6 +88,23 @@ export function ChangeEmailOtp(props: ChangeEmailOtpProps = {}) {
   const codeTarget = () =>
     step() === "currentCode" ? currentEmail() : newEmail()
 
+  const submitCode = (completedCode: string) => {
+    if (isPending() || step() === "email") return
+
+    if (step() === "currentCode") {
+      requestChange.mutate({
+        newEmail: newEmail(),
+        otp: completedCode
+      } as Parameters<typeof requestChange.mutate>[0])
+      return
+    }
+
+    changeEmail.mutate({
+      newEmail: newEmail(),
+      otp: completedCode
+    } as Parameters<typeof changeEmail.mutate>[0])
+  }
+
   const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
     event.preventDefault()
 
@@ -113,17 +131,7 @@ export function ChangeEmailOtp(props: ChangeEmailOtpProps = {}) {
       return
     }
 
-    if (step() === "currentCode") {
-      requestChange.mutate({
-        newEmail: newEmail(),
-        otp: code()
-      } as Parameters<typeof requestChange.mutate>[0])
-      return
-    }
-
-    changeEmail.mutate({ newEmail: newEmail(), otp: code() } as Parameters<
-      typeof changeEmail.mutate
-    >[0])
+    submitCode(code())
   }
 
   return (
@@ -158,8 +166,15 @@ export function ChangeEmailOtp(props: ChangeEmailOtpProps = {}) {
                     length={otpLength}
                     name="otp"
                     onInput={setCode}
+                    onComplete={submitCode}
                     value={code()}
                   />
+
+                  <Show when={codeTarget()}>
+                    {(target) => (
+                      <OpenEmailButton email={target()} variant="secondary" />
+                    )}
+                  </Show>
                 </div>
               }
             >

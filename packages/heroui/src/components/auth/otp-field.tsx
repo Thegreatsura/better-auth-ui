@@ -14,6 +14,7 @@ export type OtpFieldProps = {
   length: number
   value: string
   onChange: (value: string) => void
+  onComplete?: (value: string) => void
   autoFocus?: boolean
   className?: string
   errorMessage?: string
@@ -48,6 +49,7 @@ export function OtpField({
   length,
   name,
   onChange,
+  onComplete,
   value,
   variant
 }: OtpFieldProps) {
@@ -74,6 +76,9 @@ export function OtpField({
         value={value}
         variant={variant === "transparent" ? "primary" : "secondary"}
         onChange={(next) => onChange(normalizeCode(next))}
+        onComplete={(completedCode) =>
+          onComplete?.(normalizeCode(completedCode))
+        }
       >
         <InputOTP.Group className="gap-1">
           {Array.from({ length }, (_, slotIndex) => (

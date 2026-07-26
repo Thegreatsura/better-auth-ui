@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AuthProvider } from "../src/components/auth/auth-provider"
 import { ChangeEmailOtp } from "../src/components/auth/email-otp/change-email-otp"
 import { EmailOtp } from "../src/components/auth/email-otp/email-otp"
+import { ResetPasswordOtp } from "../src/components/auth/email-otp/reset-password-otp"
 import { VerifyEmailOtp } from "../src/components/auth/email-otp/verify-email-otp"
 import { emailOtpPlugin } from "../src/lib/auth/email-otp-plugin"
 
@@ -15,17 +16,19 @@ function createMockAuthClient() {
   const verifyEmail = vi.fn(async () => ({ status: true }))
   const requestEmailChange = vi.fn(async () => ({ success: true }))
   const changeEmail = vi.fn(async () => ({ success: true }))
+  const resetPassword = vi.fn(async () => ({ success: true }))
 
   return {
     emailOtp: {
       sendVerificationOtp,
       verifyEmail,
       requestEmailChange,
-      changeEmail
+      changeEmail,
+      resetPassword
     },
     signIn: { emailOtp: signInEmailOtp },
     getSession: async () => ({
-      user: { id: "user-1", email: "user@example.com", name: "User" },
+      user: { id: "user-1", email: "user@gmail.com", name: "User" },
       session: {}
     })
   } as unknown as Parameters<typeof AuthProvider>[0]["authClient"] & {
@@ -34,6 +37,7 @@ function createMockAuthClient() {
       verifyEmail: typeof verifyEmail
       requestEmailChange: typeof requestEmailChange
       changeEmail: typeof changeEmail
+      resetPassword: typeof resetPassword
     }
     signIn: { emailOtp: typeof signInEmailOtp }
   }
@@ -79,24 +83,27 @@ describe("<EmailOtp />", () => {
     const user = userEvent.setup()
     const { authClient, navigate } = renderWithProvider(<EmailOtp />)
 
-    await user.type(screen.getByLabelText(/email/i), "user@example.com")
+    await user.type(screen.getByLabelText(/email/i), "user@gmail.com")
     await user.click(screen.getByRole("button", { name: /send code/i }))
 
     await waitFor(() => {
       expect(authClient.emailOtp.sendVerificationOtp).toHaveBeenCalledWith(
         expect.objectContaining({
-          email: "user@example.com",
+          email: "user@gmail.com",
           type: "sign-in"
         })
       )
     })
 
+    expect(
+      await screen.findByRole("link", { name: /open gmail/i })
+    ).toBeInTheDocument()
+
     await typeCode(user, "123456")
-    await user.click(screen.getByRole("button", { name: /verify code/i }))
 
     await waitFor(() => {
       expect(authClient.signIn.emailOtp).toHaveBeenCalledWith(
-        expect.objectContaining({ email: "user@example.com", otp: "123456" })
+        expect.objectContaining({ email: "user@gmail.com", otp: "123456" })
       )
     })
     expect(navigate).toHaveBeenCalledWith({ to: "/dashboard" })
@@ -121,19 +128,21 @@ describe("<EmailOtp />", () => {
 
 describe("<VerifyEmailOtp />", () => {
   it("verifies the stored address and continues to the redirect target", async () => {
-    sessionStorage.setItem("better-auth-ui.verify-email", "user@example.com")
+    sessionStorage.setItem("better-auth-ui.verify-email", "user@gmail.com")
 
     const user = userEvent.setup()
     const { authClient, navigate } = renderWithProvider(<VerifyEmailOtp />, {
       emailVerification: true
     })
 
-    await typeCode(user, "654321")
-    await user.click(screen.getByRole("button", { name: /verify code/i }))
+    expect(
+      await screen.findByRole("link", { name: /open gmail/i })
+    ).toBeInTheDocument()
 
+    await typeCode(user, "654321")
     await waitFor(() => {
       expect(authClient.emailOtp.verifyEmail).toHaveBeenCalledWith(
-        expect.objectContaining({ email: "user@example.com", otp: "654321" })
+        expect.objectContaining({ email: "user@gmail.com", otp: "654321" })
       )
     })
     expect(sessionStorage.getItem("better-auth-ui.verify-email")).toBeNull()
@@ -150,22 +159,25 @@ describe("<ChangeEmailOtp />", () => {
 
     const emailField = await screen.findByLabelText(/email/i)
     await user.clear(emailField)
-    await user.type(emailField, "new@example.com")
+    await user.type(emailField, "new@gmail.com")
     await user.click(screen.getByRole("button", { name: /update email/i }))
 
     await waitFor(() => {
       expect(authClient.emailOtp.requestEmailChange).toHaveBeenCalledWith(
-        expect.objectContaining({ newEmail: "new@example.com" })
+        expect.objectContaining({ newEmail: "new@gmail.com" })
       )
     })
 
+    expect(
+      await screen.findByRole("link", { name: /open gmail/i })
+    ).toBeInTheDocument()
+
     await typeCode(user, "112233")
-    await user.click(screen.getByRole("button", { name: /verify code/i }))
 
     await waitFor(() => {
       expect(authClient.emailOtp.changeEmail).toHaveBeenCalledWith(
         expect.objectContaining({
-          newEmail: "new@example.com",
+          newEmail: "new@gmail.com",
           otp: "112233"
         })
       )
@@ -181,28 +193,66 @@ describe("<ChangeEmailOtp />", () => {
 
     const emailField = await screen.findByLabelText(/email/i)
     await user.clear(emailField)
-    await user.type(emailField, "new@example.com")
+    await user.type(emailField, "new@gmail.com")
     await user.click(screen.getByRole("button", { name: /update email/i }))
 
     await waitFor(() => {
       expect(authClient.emailOtp.sendVerificationOtp).toHaveBeenCalledWith(
         expect.objectContaining({
-          email: "user@example.com",
+          email: "user@gmail.com",
           type: "change-email"
         })
       )
     })
 
+    expect(
+      await screen.findByRole("link", { name: /open gmail/i })
+    ).toBeInTheDocument()
+
     await typeCode(user, "445566")
-    await user.click(screen.getByRole("button", { name: /verify code/i }))
 
     await waitFor(() => {
       expect(authClient.emailOtp.requestEmailChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          newEmail: "new@example.com",
+          newEmail: "new@gmail.com",
           otp: "445566"
         })
       )
     })
+  })
+})
+
+describe("<ResetPasswordOtp />", () => {
+  it("opens the inbox and submits once the form and code are complete", async () => {
+    sessionStorage.setItem(
+      "better-auth-ui.reset-password-otp",
+      "user@gmail.com"
+    )
+
+    const user = userEvent.setup()
+    const { authClient, navigate } = renderWithProvider(<ResetPasswordOtp />, {
+      passwordReset: true
+    })
+
+    expect(
+      await screen.findByRole("link", { name: /open gmail/i })
+    ).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText(/new password/i), "new-password")
+    await typeCode(user, "778899")
+
+    await waitFor(() => {
+      expect(authClient.emailOtp.resetPassword).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: "user@gmail.com",
+          otp: "778899",
+          password: "new-password"
+        })
+      )
+    })
+    expect(
+      sessionStorage.getItem("better-auth-ui.reset-password-otp")
+    ).toBeNull()
+    expect(navigate).toHaveBeenCalledWith({ to: "/auth/sign-in" })
   })
 })

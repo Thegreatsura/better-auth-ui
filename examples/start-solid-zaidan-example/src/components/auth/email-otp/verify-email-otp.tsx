@@ -10,6 +10,7 @@ import { Link } from "@tanstack/solid-router"
 import { createSignal, Show } from "solid-js"
 import { toast } from "solid-sonner"
 
+import { OpenEmailButton } from "@/components/auth/open-email-button"
 import { OtpField } from "@/components/auth/otp-field"
 import { Button } from "@/components/ui/button"
 import {
@@ -88,6 +89,14 @@ export function VerifyEmailOtp(props: VerifyEmailOtpProps) {
 
   const isPending = () => sendCode.isPending || verifyEmail.isPending
 
+  const verifyCode = (completedCode: string) => {
+    if (isPending() || !email()) return
+
+    verifyEmail.mutate({ email: email(), otp: completedCode } as Parameters<
+      typeof verifyEmail.mutate
+    >[0])
+  }
+
   const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
     event.preventDefault()
 
@@ -100,9 +109,7 @@ export function VerifyEmailOtp(props: VerifyEmailOtpProps) {
       return
     }
 
-    verifyEmail.mutate({ email: email(), otp: code() } as Parameters<
-      typeof verifyEmail.mutate
-    >[0])
+    verifyCode(code())
   }
 
   return (
@@ -164,6 +171,7 @@ export function VerifyEmailOtp(props: VerifyEmailOtpProps) {
                 length={otpLength}
                 name="otp"
                 onInput={setCode}
+                onComplete={verifyCode}
                 value={code()}
               />
             </Show>
@@ -187,6 +195,8 @@ export function VerifyEmailOtp(props: VerifyEmailOtpProps) {
               </Button>
 
               <Show when={email()}>
+                <OpenEmailButton email={email()} variant="secondary" />
+
                 <Button
                   class="w-full"
                   disabled={isPending() || isCoolingDown()}

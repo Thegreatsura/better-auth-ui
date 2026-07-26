@@ -11,6 +11,7 @@ export type OtpFieldProps = {
   length: number
   value: string
   onInput: (value: string) => void
+  onComplete?: (value: string) => void
   autofocus?: boolean
   class?: string
   disabled?: boolean
@@ -54,6 +55,10 @@ export function OtpField(props: OtpFieldProps) {
           const next = normalizeCode(event.currentTarget.value)
           event.currentTarget.value = next
           props.onInput(next)
+
+          if (next.length === props.length) {
+            props.onComplete?.(next)
+          }
         }}
         spellcheck={false}
         value={props.value}

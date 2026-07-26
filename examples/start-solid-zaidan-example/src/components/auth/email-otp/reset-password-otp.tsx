@@ -9,6 +9,7 @@ import { Link } from "@tanstack/solid-router"
 import { createSignal, Show } from "solid-js"
 import { toast } from "solid-sonner"
 
+import { OpenEmailButton } from "@/components/auth/open-email-button"
 import { OtpField } from "@/components/auth/otp-field"
 import { Button } from "@/components/ui/button"
 import {
@@ -49,13 +50,19 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
       ? ""
       : (sessionStorage.getItem(RESET_PASSWORD_OTP_STORAGE_KEY) ?? "")
 
-  const [email] = createSignal(storedEmail)
+  const hasStoredEmail = Boolean(storedEmail)
+  const [email, setEmail] = createSignal(storedEmail)
   const [code, setCode] = createSignal("")
   const [passwordError, setPasswordError] = createSignal<string>()
+  let formRef: HTMLFormElement | undefined
+  let submissionLocked = false
 
   const resetPassword = createMutation(() => ({
     ...resetPasswordOtpOptions(auth.authClient as EmailOtpAuthClient),
-    onError: () => setCode(""),
+    onError: () => {
+      submissionLocked = false
+      setCode("")
+    },
     onSuccess: () => {
       sessionStorage.removeItem(RESET_PASSWORD_OTP_STORAGE_KEY)
       toast.success(auth.localization.auth.passwordResetSuccess)
@@ -65,10 +72,14 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
     }
   }))
 
-  const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
-    event.preventDefault()
+  const submitReset = (
+    form: HTMLFormElement,
+    submittedCode: string,
+    reportErrors: boolean
+  ) => {
+    if (resetPassword.isPending || submissionLocked) return
 
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData(form)
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirmPassword") as string
 
@@ -76,25 +87,44 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
       auth.emailAndPassword?.confirmPassword &&
       password !== confirmPassword
     ) {
-      toast.error(auth.localization.auth.passwordsDoNotMatch)
+      if (reportErrors) {
+        toast.error(auth.localization.auth.passwordsDoNotMatch)
+      }
       return
     }
 
-    if (code().length !== otpLength) {
-      toast.error(
-        emailOtpLocalization.codeLengthMismatch.replace(
-          "{{length}}",
-          String(otpLength)
+    if (submittedCode.length !== otpLength) {
+      if (reportErrors) {
+        toast.error(
+          emailOtpLocalization.codeLengthMismatch.replace(
+            "{{length}}",
+            String(otpLength)
+          )
         )
-      )
+      }
       return
     }
 
+    submissionLocked = true
     resetPassword.mutate({
-      email: email() || (formData.get("email") as string),
-      otp: code(),
+      email: hasStoredEmail ? email() : (formData.get("email") as string),
+      otp: submittedCode,
       password
     } as Parameters<typeof resetPassword.mutate>[0])
+  }
+
+  const tryAutoSubmit = (completedCode?: string) => {
+    if (!formRef?.matches(":valid")) return
+
+    const formData = new FormData(formRef)
+    const submittedCode = completedCode ?? String(formData.get("otp") ?? "")
+
+    submitReset(formRef, submittedCode, false)
+  }
+
+  const submit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
+    event.preventDefault()
+    submitReset(event.currentTarget, code(), true)
   }
 
   return (
@@ -104,7 +134,7 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
           {auth.localization.auth.resetPassword}
         </CardTitle>
 
-        <Show when={email()}>
+        <Show when={hasStoredEmail && email()}>
           <CardDescription>
             {emailOtpLocalization.codeSentTo.replace("{{email}}", email())}
           </CardDescription>
@@ -113,11 +143,12 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
 
       <CardContent>
         <form
+          ref={formRef}
           aria-label={auth.localization.auth.resetPassword}
           onSubmit={submit}
         >
           <div class="grid gap-3">
-            <Show when={!email()}>
+            <Show when={!hasStoredEmail}>
               <Label for="reset-password-email">
                 {auth.localization.auth.email}
               </Label>
@@ -127,20 +158,23 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
                 disabled={resetPassword.isPending}
                 id="reset-password-email"
                 name="email"
+                onInput={(event) => setEmail(event.currentTarget.value)}
                 placeholder={auth.localization.auth.emailPlaceholder}
                 required
                 type="email"
+                value={email()}
               />
             </Show>
 
             <OtpField
-              autofocus={Boolean(email())}
+              autofocus={hasStoredEmail}
               disabled={resetPassword.isPending}
               id="reset-password-code"
               label={emailOtpLocalization.code}
               length={otpLength}
               name="otp"
               onInput={setCode}
+              onComplete={tryAutoSubmit}
               value={code()}
             />
 
@@ -203,6 +237,10 @@ export function ResetPasswordOtp(props: ResetPasswordOtpProps) {
 
               {auth.localization.auth.resetPassword}
             </Button>
+
+            <Show when={email()}>
+              <OpenEmailButton email={email()} variant="secondary" />
+            </Show>
           </div>
         </form>
       </CardContent>

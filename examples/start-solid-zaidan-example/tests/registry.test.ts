@@ -2360,7 +2360,13 @@ describe("Solid registry isolation", () => {
       expect(emailOtpInstall.unresolvedImports).toEqual([])
       expect(twoFactorInstall.unresolvedImports).toEqual([])
       expect(emailOtpInstall.itemNames).toContain("account-settings")
+      expect(emailOtpInstall.registryDependencies).toContain(
+        registry.solid ? "@zaidan/tooltip" : "tooltip"
+      )
       expect(twoFactorInstall.itemNames).toContain("sign-in")
+      expect(
+        emailOtpInstall.files.has("src/components/auth/open-email-button.tsx")
+      ).toBe(true)
       expect(
         emailOtpInstall.files.has(
           "src/components/auth/last-login-method/last-used-badge.tsx"

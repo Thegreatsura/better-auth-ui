@@ -28,6 +28,7 @@ import {
   RESEND_COOLDOWN_SECONDS,
   useResendCooldown
 } from "../../../lib/auth/use-resend-cooldown"
+import { OpenEmailButton } from "../open-email-button"
 import { OtpField } from "../otp-field"
 
 /** `sessionStorage` key the sign-up and sign-in flows store the pending address under. */
@@ -106,6 +107,12 @@ export function VerifyEmailOtp({ className, variant }: VerifyEmailOtpProps) {
 
   const isPending = isSending || isVerifying
 
+  const verifyCode = (completedCode: string) => {
+    if (isPending || !email) return
+
+    verifyEmailOtp({ email, otp: completedCode })
+  }
+
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -118,7 +125,7 @@ export function VerifyEmailOtp({ className, variant }: VerifyEmailOtpProps) {
       return
     }
 
-    verifyEmailOtp({ email, otp: code })
+    verifyCode(code)
   }
 
   return (
@@ -150,6 +157,7 @@ export function VerifyEmailOtp({ className, variant }: VerifyEmailOtpProps) {
               value={code}
               variant={variant}
               onChange={setCode}
+              onComplete={verifyCode}
             />
           ) : (
             <TextField
@@ -188,6 +196,8 @@ export function VerifyEmailOtp({ className, variant }: VerifyEmailOtpProps) {
                 ? emailOtpLocalization.verifyCode
                 : emailOtpLocalization.sendCode}
             </Button>
+
+            {email && <OpenEmailButton email={email} variant="secondary" />}
 
             {email && (
               <Button

@@ -25,6 +25,7 @@ import {
 import { type SyntheticEvent, useReducer, useState } from "react"
 
 import { emailOtpPlugin } from "../../../lib/auth/email-otp-plugin"
+import { OpenEmailButton } from "../open-email-button"
 import { OtpField } from "../otp-field"
 
 type ChangeEmailStep = "email" | "currentCode" | "newCode"
@@ -131,6 +132,20 @@ export function ChangeEmailOtp({
 
   const isPending = isSending || isRequesting || isChanging
 
+  const submitCode = (completedCode: string) => {
+    if (isPending || state.step === "email") return
+
+    if (state.step === "currentCode") {
+      requestEmailChangeOtp({
+        newEmail: state.newEmail,
+        otp: completedCode
+      })
+      return
+    }
+
+    changeEmailOtp({ newEmail: state.newEmail, otp: completedCode })
+  }
+
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -153,12 +168,7 @@ export function ChangeEmailOtp({
       return
     }
 
-    if (state.step === "currentCode") {
-      requestEmailChangeOtp({ newEmail: state.newEmail, otp: code })
-      return
-    }
-
-    changeEmailOtp({ newEmail: state.newEmail, otp: code })
+    submitCode(code)
   }
 
   const codeTarget =
@@ -222,7 +232,12 @@ export function ChangeEmailOtp({
                       value={code}
                       variant={variant}
                       onChange={setCode}
+                      onComplete={submitCode}
                     />
+
+                    {codeTarget && (
+                      <OpenEmailButton email={codeTarget} variant="secondary" />
+                    )}
                   </div>
                 )}
               </Fieldset.Group>

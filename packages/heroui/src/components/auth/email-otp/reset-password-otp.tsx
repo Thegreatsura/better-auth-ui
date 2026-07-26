@@ -22,9 +22,10 @@ import {
   toast,
   useIsHydrated
 } from "@heroui/react"
-import { type SyntheticEvent, useEffect, useState } from "react"
+import { type SyntheticEvent, useEffect, useRef, useState } from "react"
 
 import { emailOtpPlugin } from "../../../lib/auth/email-otp-plugin"
+import { OpenEmailButton } from "../open-email-button"
 import { OtpField } from "../otp-field"
 import { RESET_PASSWORD_OTP_STORAGE_KEY } from "./forgot-password-otp"
 
@@ -61,22 +62,31 @@ export function ResetPasswordOtp({
     useAuthPlugin(emailOtpPlugin)
 
   const isHydrated = useIsHydrated()
-  const [email, setEmail] = useState(
+  const initialEmail =
     (isHydrated && sessionStorage.getItem(RESET_PASSWORD_OTP_STORAGE_KEY)) || ""
-  )
+  const [email, setEmail] = useState(initialEmail)
+  const [hasStoredEmail, setHasStoredEmail] = useState(Boolean(initialEmail))
   const [code, setCode] = useState("")
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
+  const submissionLockedRef = useRef(false)
 
   useEffect(() => {
-    setEmail(sessionStorage.getItem(RESET_PASSWORD_OTP_STORAGE_KEY) ?? "")
+    const storedEmail =
+      sessionStorage.getItem(RESET_PASSWORD_OTP_STORAGE_KEY) ?? ""
+    setEmail(storedEmail)
+    setHasStoredEmail(Boolean(storedEmail))
   }, [])
 
   const { mutate: resetPasswordOtp, isPending } = useResetPasswordOtp(
     authClient as EmailOtpAuthClient,
     {
-      onError: () => setCode(""),
+      onError: () => {
+        submissionLockedRef.current = false
+        setCode("")
+      },
       onSuccess: () => {
         sessionStorage.removeItem(RESET_PASSWORD_OTP_STORAGE_KEY)
         toast.success(localization.auth.passwordResetSuccess)
@@ -95,30 +105,57 @@ export function ResetPasswordOtp({
       return localization.auth.tooLong.replace("{{max}}", String(max))
   }
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const submitReset = (
+    form: HTMLFormElement,
+    submittedCode: string,
+    reportErrors: boolean
+  ) => {
+    if (isPending || submissionLockedRef.current) return
 
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData(form)
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirmPassword") as string
-    const submittedEmail = email || (formData.get("email") as string)
+    const submittedEmail = hasStoredEmail
+      ? email
+      : (formData.get("email") as string)
 
     if (emailAndPassword?.confirmPassword && password !== confirmPassword) {
-      toast.danger(localization.auth.passwordsDoNotMatch)
+      if (reportErrors) {
+        toast.danger(localization.auth.passwordsDoNotMatch)
+      }
       return
     }
 
-    if (code.length !== otpLength) {
-      toast.danger(
-        emailOtpLocalization.codeLengthMismatch.replace(
-          "{{length}}",
-          String(otpLength)
+    if (submittedCode.length !== otpLength) {
+      if (reportErrors) {
+        toast.danger(
+          emailOtpLocalization.codeLengthMismatch.replace(
+            "{{length}}",
+            String(otpLength)
+          )
         )
-      )
+      }
       return
     }
 
-    resetPasswordOtp({ email: submittedEmail, otp: code, password })
+    submissionLockedRef.current = true
+    resetPasswordOtp({ email: submittedEmail, otp: submittedCode, password })
+  }
+
+  const tryAutoSubmit = (completedCode?: string) => {
+    const form = formRef.current
+
+    if (!form?.matches(":valid")) return
+
+    const formData = new FormData(form)
+    const submittedCode = completedCode ?? String(formData.get("otp") ?? "")
+
+    submitReset(form, submittedCode, false)
+  }
+
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    submitReset(e.currentTarget, code, true)
   }
 
   return (
@@ -131,7 +168,7 @@ export function ResetPasswordOtp({
           {localization.auth.resetPassword}
         </Card.Title>
 
-        {email && (
+        {hasStoredEmail && email && (
           <Card.Description>
             {emailOtpLocalization.codeSentTo.replace("{{email}}", email)}
           </Card.Description>
@@ -139,13 +176,19 @@ export function ResetPasswordOtp({
       </Card.Header>
 
       <Card.Content className="gap-4">
-        <Form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {!email && (
+        <Form
+          ref={formRef}
+          className="flex flex-col gap-4"
+          onSubmit={handleSubmit}
+        >
+          {!hasStoredEmail && (
             <TextField
               name="email"
               type="email"
               autoComplete="email"
               isDisabled={isPending}
+              value={email}
+              onChange={setEmail}
               validate={(value) => {
                 if (!value) return localization.auth.fieldRequired
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
@@ -165,7 +208,7 @@ export function ResetPasswordOtp({
           )}
 
           <OtpField
-            autoFocus={Boolean(email)}
+            autoFocus={hasStoredEmail}
             isDisabled={isPending}
             label={emailOtpLocalization.code}
             length={otpLength}
@@ -173,6 +216,7 @@ export function ResetPasswordOtp({
             value={code}
             variant={variant}
             onChange={setCode}
+            onComplete={tryAutoSubmit}
           />
 
           <TextField
@@ -261,11 +305,15 @@ export function ResetPasswordOtp({
             </TextField>
           )}
 
-          <Button type="submit" className="w-full" isPending={isPending}>
-            {isPending && <Spinner color="current" size="sm" />}
+          <div className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" isPending={isPending}>
+              {isPending && <Spinner color="current" size="sm" />}
 
-            {localization.auth.resetPassword}
-          </Button>
+              {localization.auth.resetPassword}
+            </Button>
+
+            {email && <OpenEmailButton email={email} variant="secondary" />}
+          </div>
         </Form>
       </Card.Content>
 
