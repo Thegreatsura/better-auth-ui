@@ -1,9 +1,10 @@
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useActiveOrganization, useAuth } from "@better-auth-ui/solid"
-import { useNavigate } from "@tanstack/solid-router"
 import { Settings as SettingsIcon, Users as UsersIcon } from "lucide-solid"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { organizationPlugin } from "@/lib/auth/organization-plugin"
+import { createOrganizationPath } from "./organization-path"
 import { OrganizationPeople } from "./organization-people"
 import { OrganizationSettings } from "./organization-settings"
 
@@ -13,8 +14,11 @@ export type OrganizationProps = {
 }
 
 export function Organization(props: OrganizationProps) {
-  const navigate = useNavigate()
   const auth = useAuth()
+  const organizationPluginConfig = () =>
+    auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
+      | { slugPrefix?: string }
+      | undefined
   const activeOrganization = useActiveOrganization(
     auth.authClient as OrganizationAuthClient
   )
@@ -22,9 +26,13 @@ export function Organization(props: OrganizationProps) {
   const handlePathChange = (path: string) => {
     if (!props.slug) return
 
-    navigate({
-      to: "/organization/$slug/$path",
-      params: { slug: props.slug, path }
+    auth.navigate({
+      to: createOrganizationPath({
+        basePath: auth.basePaths.organization,
+        slugPrefix: organizationPluginConfig()?.slugPrefix,
+        slug: props.slug,
+        path
+      })
     })
   }
 
@@ -56,7 +64,7 @@ export function Organization(props: OrganizationProps) {
           </TabsContent>
         </>
       ) : (
-        <div class="space-y-4">
+        <div class="flex flex-col gap-4">
           <Skeleton class="h-10 w-full" />
           <Skeleton class="h-32 w-full" />
         </div>

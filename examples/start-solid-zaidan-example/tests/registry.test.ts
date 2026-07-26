@@ -2570,6 +2570,7 @@ describe("Solid registry isolation", () => {
       "sign-out",
       "auth-redirect",
       "forgot-password",
+      "reset-link-sent",
       "reset-password",
       "verify-email",
       "---Settings---",
@@ -3312,9 +3313,10 @@ describe("Solid registry isolation", () => {
     )
     expect(organizationPluginDoc).toContain("authClient={authClient}")
     expect(organizationPluginDoc).toContain("queryClient={props.queryClient}")
-    expect(organizationPluginDoc).toContain("organizationPlugin({ slug")
+    expect(organizationPluginDoc).toContain("organizationPlugin({")
+    expect(organizationPluginDoc).toContain('slugPrefix: "@"')
     expect(organizationPluginDoc).toContain(
-      'createFileRoute("/organization/$slug/$path")'
+      'createFileRoute("/organization/@{$slug}/$path")'
     )
     expect(organizationPluginDoc).toContain(
       "ensureSessionServer(queryClient, auth"
@@ -3325,7 +3327,7 @@ describe("Solid registry isolation", () => {
     expect(organizationPluginDoc).toContain(
       "validOrganizationPaths.includes(path)"
     )
-    expect(organizationPluginDoc).toContain("/organization/$slug/$path")
+    expect(organizationPluginDoc).toContain("/organization/@{$slug}/$path")
     expect(organizationPluginDoc).toContain("non-slug page")
     expect(organizationPluginDoc).toContain("`null`")
     expect(organizationPluginDoc).toContain(
@@ -3803,14 +3805,17 @@ describe("Solid registry isolation", () => {
       readFileSync(resolve(zaidanDocsRoot, "components/meta.json"), "utf8")
     ) as { pages: string[] }
     const authStart = meta.pages.indexOf("---Auth---")
-    expect(meta.pages.slice(authStart + 1, authStart + 8)).toEqual([
+    const authEnd = meta.pages.indexOf("---Settings---")
+    expect(meta.pages.slice(authStart + 1, authEnd)).toEqual([
       "auth",
       "sign-in",
       "sign-up",
       "sign-out",
       "auth-redirect",
       "forgot-password",
-      "reset-password"
+      "reset-link-sent",
+      "reset-password",
+      "verify-email"
     ])
 
     const authStories = readFileSync(

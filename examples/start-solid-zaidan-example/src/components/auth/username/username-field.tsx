@@ -7,8 +7,13 @@ import { createMutation } from "@tanstack/solid-query"
 import { Check, X } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import type { AdditionalFieldProps } from "@/components/auth/additional-field"
-import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput
+} from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 
 export function UsernameField(props: AdditionalFieldProps) {
   const auth = useAuth()
@@ -20,6 +25,7 @@ export function UsernameField(props: AdditionalFieldProps) {
             usernameAvailable?: string
             usernameTaken?: string
           }
+          usernamePrefix?: string
           maxUsernameLength?: number
           minUsernameLength?: number
         }
@@ -50,8 +56,8 @@ export function UsernameField(props: AdditionalFieldProps) {
   return (
     <div class="grid gap-2">
       <Label for={props.name}>{props.field.label}</Label>
-      <div class="relative">
-        <Input
+      <InputGroup>
+        <InputGroupInput
           aria-invalid={Boolean(error())}
           autocomplete="username"
           disabled={props.isPending}
@@ -70,8 +76,16 @@ export function UsernameField(props: AdditionalFieldProps) {
           type="text"
           value={value()}
         />
+        <Show when={usernamePlugin()?.usernamePrefix}>
+          {(usernamePrefix) => (
+            <InputGroupAddon align="inline-start">
+              {usernamePrefix()}
+            </InputGroupAddon>
+          )}
+        </Show>
         <Show when={shouldCheckAvailability()}>
-          <span
+          <InputGroupAddon
+            align="inline-end"
             aria-label={
               availability.data?.available
                 ? usernamePlugin()?.localization?.usernameAvailable
@@ -79,7 +93,6 @@ export function UsernameField(props: AdditionalFieldProps) {
                   ? usernamePlugin()?.localization?.usernameTaken
                   : undefined
             }
-            class="absolute top-1/2 right-3 -translate-y-1/2"
             role="status"
           >
             {availability.data?.available ? (
@@ -87,11 +100,11 @@ export function UsernameField(props: AdditionalFieldProps) {
             ) : availability.error || availability.data?.available === false ? (
               <X class="size-4 text-destructive" />
             ) : (
-              <span class="text-muted-foreground text-xs">…</span>
+              <Spinner />
             )}
-          </span>
+          </InputGroupAddon>
         </Show>
-      </div>
+      </InputGroup>
       <Show when={error()}>{(message) => <p role="alert">{message()}</p>}</Show>
     </div>
   )

@@ -21,6 +21,7 @@ import { OrganizationViewSkeleton } from "./organization-view-skeleton"
 
 type OrganizationPluginConfig = {
   roles?: Record<string, string>
+  slugPrefix?: string
   localization?: OrganizationLocalization
 }
 
@@ -58,6 +59,7 @@ export function OrganizationView(props: OrganizationViewProps) {
       admin: organizationLocalization.admin,
       member: organizationLocalization.member
     }
+  const slugPrefix = () => pluginConfig()?.slugPrefix ?? ""
   const session = useSession(client)
   const activeOrganization = useActiveOrganization(client, {
     enabled: !local.organization && !local.isPending
@@ -117,6 +119,7 @@ export function OrganizationView(props: OrganizationViewProps) {
 
           <Show when={!local.hideSlug}>
             <p class="truncate overflow-x-hidden font-mono text-muted-foreground text-xs leading-tight">
+              {slugPrefix()}
               {resolvedOrganization()?.slug}
             </p>
           </Show>

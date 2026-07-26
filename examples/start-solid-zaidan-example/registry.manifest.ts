@@ -758,6 +758,7 @@ export const solidRegistryManifest = {
         componentFile(
           "src/components/auth/organization/organization-switcher.tsx"
         ),
+        componentFile("src/components/auth/organization/organization-path.ts"),
         componentFile("src/components/auth/organization/organization-view.tsx"),
         componentFile(
           "src/components/auth/organization/organization-view-skeleton.tsx"
@@ -766,7 +767,7 @@ export const solidRegistryManifest = {
           "src/components/auth/organization/organizations-empty.tsx"
         ),
         componentFile("src/components/auth/organization/organization.tsx"),
-        componentFile("src/routes/organization/$slug/$path.tsx"),
+        componentFile("src/routes/organization/@{$slug}/$path.tsx"),
         ...zaidanInteractiveSupportFiles
       ]
     }),

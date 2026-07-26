@@ -11,7 +11,7 @@ import {
   createQuery,
   useQueryClient
 } from "@tanstack/solid-query"
-import { TriangleAlert } from "lucide-solid"
+import { Eye, EyeOff, TriangleAlert } from "lucide-solid"
 import { createSignal, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import { shouldLoadAccounts } from "@/components/auth/settings/shared/helpers"
@@ -28,7 +28,12 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput
+} from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
@@ -45,6 +50,7 @@ export function DeleteAccount(props: DeleteAccountProps = {}) {
   const userId = () => session.data?.user.id
   const [confirmOpen, setConfirmOpen] = createSignal(false)
   const [password, setPassword] = createSignal("")
+  const [isPasswordVisible, setIsPasswordVisible] = createSignal(false)
   const deleteUserPluginConfig = () =>
     auth.plugins.find((plugin) => plugin.id === "deleteUser") as
       | DeleteUserPluginConfig
@@ -88,6 +94,7 @@ export function DeleteAccount(props: DeleteAccountProps = {}) {
     onSuccess: () => {
       setConfirmOpen(false)
       setPassword("")
+      setIsPasswordVisible(false)
 
       if (sendDeleteAccountVerification()) {
         toast.success(deleteUserLabels().deleteUserVerificationSent)
@@ -106,6 +113,7 @@ export function DeleteAccount(props: DeleteAccountProps = {}) {
   const handleDialogOpenChange = (open: boolean) => {
     setConfirmOpen(open)
     setPassword("")
+    setIsPasswordVisible(false)
   }
 
   const submitDeleteUser = (event: SubmitEvent) => {
@@ -157,17 +165,47 @@ export function DeleteAccount(props: DeleteAccountProps = {}) {
                   <Label for="delete-password">
                     {auth.localization.auth.password}
                   </Label>
-                  <Input
-                    autocomplete="current-password"
-                    disabled={deleteUser.isPending}
-                    id="delete-password"
-                    name="password"
-                    onInput={(event) => setPassword(event.currentTarget.value)}
-                    placeholder={auth.localization.auth.passwordPlaceholder}
-                    required
-                    type="password"
-                    value={password()}
-                  />
+                  <InputGroup>
+                    <InputGroupInput
+                      autocomplete="current-password"
+                      disabled={deleteUser.isPending}
+                      id="delete-password"
+                      name="password"
+                      onInput={(event) =>
+                        setPassword(event.currentTarget.value)
+                      }
+                      placeholder={auth.localization.auth.passwordPlaceholder}
+                      required
+                      type={isPasswordVisible() ? "text" : "password"}
+                      value={password()}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={
+                          isPasswordVisible()
+                            ? auth.localization.auth.hidePassword
+                            : auth.localization.auth.showPassword
+                        }
+                        disabled={deleteUser.isPending}
+                        onClick={() =>
+                          setIsPasswordVisible((visible) => !visible)
+                        }
+                        size="icon-sm"
+                        title={
+                          isPasswordVisible()
+                            ? auth.localization.auth.hidePassword
+                            : auth.localization.auth.showPassword
+                        }
+                      >
+                        <Show
+                          when={isPasswordVisible()}
+                          fallback={<Eye aria-hidden class="size-4" />}
+                        >
+                          <EyeOff aria-hidden class="size-4" />
+                        </Show>
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
                 </div>
               </Show>
 

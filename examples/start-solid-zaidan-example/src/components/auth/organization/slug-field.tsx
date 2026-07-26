@@ -2,10 +2,15 @@ import type { OrganizationLocalization } from "@better-auth-ui/core/plugins"
 import type { OrganizationAuthClient } from "@better-auth-ui/solid"
 import { useAuth, useCheckOrganizationSlug } from "@better-auth-ui/solid"
 import { createDebounce } from "@solid-primitives/debounce"
-import { Check, LoaderCircle, X } from "lucide-solid"
+import { Check, X } from "lucide-solid"
 import { createEffect } from "solid-js"
-import { Input } from "@/components/ui/input"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput
+} from "@/components/ui/input-group"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 
 export type SlugFieldProps = {
@@ -34,6 +39,7 @@ export function SlugField(props: SlugFieldProps) {
     auth.plugins.find((plugin) => plugin.id === organizationPlugin.id) as
       | {
           checkSlug?: boolean
+          slugPrefix?: string
           localization?: Pick<
             OrganizationLocalization,
             "slug" | "slugPlaceholder"
@@ -43,6 +49,7 @@ export function SlugField(props: SlugFieldProps) {
   const localization = () =>
     organizationPluginConfig()?.localization ?? organizationFallbackLocalization
   const checkSlug = () => organizationPluginConfig()?.checkSlug ?? true
+  const slugPrefix = () => organizationPluginConfig()?.slugPrefix ?? ""
   const shouldCheckSlug = () =>
     checkSlug() &&
     !!props.value.trim() &&
@@ -64,8 +71,8 @@ export function SlugField(props: SlugFieldProps) {
   return (
     <div class="grid gap-2">
       <Label for={props.id ?? "slug"}>{localization().slug}</Label>
-      <div class="relative">
-        <Input
+      <InputGroup>
+        <InputGroupInput
           id={props.id ?? "slug"}
           name="slug"
           value={props.value}
@@ -75,20 +82,22 @@ export function SlugField(props: SlugFieldProps) {
           placeholder={localization().slugPlaceholder}
           required
           disabled={props.disabled}
-          class="pr-10"
         />
+        {slugPrefix() ? (
+          <InputGroupAddon align="inline-start">{slugPrefix()}</InputGroupAddon>
+        ) : null}
         {shouldCheckSlug() ? (
-          <span class="absolute inset-y-0 right-3 inline-flex items-center">
+          <InputGroupAddon align="inline-end">
             {checkOrganizationSlug.data?.status ? (
               <Check class="size-4 text-foreground" />
             ) : checkOrganizationSlug.error ? (
               <X class="size-4 text-destructive" />
             ) : (
-              <LoaderCircle class="size-4 animate-spin text-muted-foreground" />
+              <Spinner />
             )}
-          </span>
+          </InputGroupAddon>
         ) : null}
-      </div>
+      </InputGroup>
     </div>
   )
 }

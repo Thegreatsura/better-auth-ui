@@ -10,7 +10,6 @@ import {
   useSession,
   useSetActiveOrganization
 } from "@better-auth-ui/solid"
-import { useNavigate } from "@tanstack/solid-router"
 import type { Organization } from "better-auth/client"
 import {
   ChevronsUpDown,
@@ -38,6 +37,7 @@ import {
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { cn } from "@/lib/utils"
 import { CreateOrganizationDialog } from "./create-organization-dialog"
+import { createOrganizationPath } from "./organization-path"
 import { OrganizationView } from "./organization-view"
 
 export type OrganizationSwitcherProps = {
@@ -52,6 +52,7 @@ export type OrganizationSwitcherProps = {
 
 type OrganizationPluginConfig = {
   slug?: string | null
+  slugPrefix?: string
   localization?: Pick<
     OrganizationLocalization,
     "createOrganization" | "organization" | "organizations" | "manage"
@@ -84,7 +85,6 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
   const props = mergeProps({ hideSlug: true }, rawProps)
   const auth = useAuth()
   const client = auth.authClient as OrganizationAuthClient
-  const navigate = useNavigate()
   const session = useSession(client)
   const activeOrganization = useActiveOrganization(client)
   const organizations = useListOrganizations(client)
@@ -120,19 +120,19 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
     (!!activeOrganization.data && !props.hidePersonal)
 
   const navigateToOrganization = (organization: Organization) => {
-    navigate({
-      to: "/organization/$slug/$path",
-      params: {
+    auth.navigate({
+      to: createOrganizationPath({
+        basePath: auth.basePaths.organization,
+        slugPrefix: organizationPluginConfig()?.slugPrefix,
         slug: organization.slug,
         path: organizationViewPaths().settings
-      }
+      })
     })
   }
 
   const navigateToPersonal = () => {
-    navigate({
-      to: "/settings/$path",
-      params: { path: auth.viewPaths.settings.account }
+    auth.navigate({
+      to: `${auth.basePaths.settings}/${auth.viewPaths.settings.account}`
     })
   }
 
@@ -140,14 +140,18 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
     const active = activeOrganization.data
 
     if (!active) {
-      navigate({
-        to: "/settings/$path",
-        params: { path: auth.viewPaths.settings.account }
-      })
+      navigateToPersonal()
       return
     }
 
-    navigateToOrganization(active as Organization)
+    if (isSlugMode()) {
+      navigateToOrganization(active as Organization)
+      return
+    }
+
+    auth.navigate({
+      to: `${auth.basePaths.organization}/${organizationViewPaths().settings}`
+    })
   }
 
   const handleSetActive = (organization: Organization | null) => {
@@ -172,7 +176,9 @@ function MountedOrganizationSwitcher(rawProps: OrganizationSwitcherProps = {}) {
       {
         onSuccess: () => {
           if (organization) {
-            navigateToOrganization(organization)
+            auth.navigate({
+              to: `${auth.basePaths.organization}/${organizationViewPaths().settings}`
+            })
             return
           }
 
