@@ -47,7 +47,7 @@ export function baseOptions(): BaseLayoutProps {
       {
         icon: <ListTodo />,
         text: "Roadmap",
-        url: "https://betterauthui.featurebase.app/roadmap",
+        url: "https://github.com/orgs/better-auth-ui/projects/1",
         external: true,
         secondary: false
       },
