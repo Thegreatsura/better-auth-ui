@@ -33,7 +33,7 @@ export function baseOptions(): BaseLayoutProps {
       {
         icon: <Discord />,
         text: "Discord",
-        url: "/discord",
+        url: "https://better-auth-ui.com/discord",
         external: true,
         secondary: false
       },

@@ -5,12 +5,11 @@ import react from "@vitejs/plugin-react"
 import mdx from "fumadocs-mdx/vite"
 import { defineConfig } from "vite"
 
-// Paths that require authentication, dynamic data, or runtime redirects should not be prerendered
+// Paths that require authentication or dynamic data should not be prerendered
 const EXCLUDED_PRERENDER_PATHS = [
   "/settings",
   "/auth",
-  "/organization",
-  "/discord"
+  "/organization"
 ] as const
 
 const FumadocsDeps = [
