@@ -53,7 +53,7 @@ const extractModuleSpecifiers = (content: string) =>
 const registryDependencyName = (dependency: string, solid: boolean) => {
   const pattern = solid
     ? /^https:\/\/better-auth-ui\.com\/r\/solid\/([a-z0-9-]+)\.json$/
-    : /^https:\/\/better-auth-ui\.com\/r\/([a-z0-9-]+)\.json$/
+    : /^https:\/\/better-auth-ui\.com\/r\/(?:base|radix)-[a-z0-9-]+\/([a-z0-9-]+)\.json$/
 
   return dependency.match(pattern)?.[1]
 }
@@ -2371,9 +2371,10 @@ describe("Solid registry isolation", () => {
 
   it("installs complete Email OTP and Two-Factor dependency closures", () => {
     const registryRoot = resolve(__dirname, "../../../apps/docs/public/r")
+    const shadcnRegistryRoot = resolve(registryRoot, "radix-nova")
     const registries = [
       {
-        root: registryRoot,
+        root: shadcnRegistryRoot,
         solid: false
       },
       {
@@ -2427,12 +2428,12 @@ describe("Solid registry isolation", () => {
 
     const shadcnEmailOtpInstall = collectRegistryInstall({
       entry: "email-otp",
-      registryRoot,
+      registryRoot: shadcnRegistryRoot,
       solid: false
     })
     const shadcnTwoFactorInstall = collectRegistryInstall({
       entry: "two-factor",
-      registryRoot,
+      registryRoot: shadcnRegistryRoot,
       solid: false
     })
 

@@ -156,7 +156,7 @@ export const verifySolidRegistryCoherence = ({
     resolve(publicSolidRegistryRoot, "registry.json")
   )
   const shadcnRegistry = readJson<ShadcnRegistryJson>(
-    resolve(repoRoot, "apps/docs/public/r/registry.json")
+    resolve(repoRoot, "apps/docs/public/r/radix-nova/registry.json")
   )
 
   const expectedStaticFiles = [
