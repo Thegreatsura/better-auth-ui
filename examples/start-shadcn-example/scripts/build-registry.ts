@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process"
 import {
+  cpSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -43,6 +44,7 @@ const baseExampleRoot = resolve(
 )
 const registryManifest = resolve(radixExampleRoot, "registry.json")
 const registryOutputRoot = resolve(radixExampleRoot, "../../apps/docs/public/r")
+const registryRewriteRoot = resolve(registryOutputRoot, "styles")
 
 const canonicalStyleFor = (base: "base" | "radix") => `${base}-nova`
 
@@ -53,20 +55,24 @@ const jsonFileNames = (directory: string) =>
     .sort()
 
 const cleanReactRegistryOutput = () => {
-  mkdirSync(registryOutputRoot, { recursive: true })
+  for (const root of [registryOutputRoot, registryRewriteRoot]) {
+    mkdirSync(root, { recursive: true })
 
-  for (const entry of readdirSync(registryOutputRoot, {
-    withFileTypes: true
-  })) {
-    const path = resolve(registryOutputRoot, entry.name)
+    for (const entry of readdirSync(root, {
+      withFileTypes: true
+    })) {
+      const path = resolve(root, entry.name)
 
-    if (entry.isFile() && entry.name.endsWith(".json")) {
-      rmSync(path)
-      continue
-    }
+      if (root === registryOutputRoot && entry.isFile()) {
+        if (entry.name.endsWith(".json")) {
+          rmSync(path)
+        }
+        continue
+      }
 
-    if (entry.isDirectory() && /^(base|radix)-/.test(entry.name)) {
-      rmSync(path, { force: true, recursive: true })
+      if (entry.isDirectory() && /^(base|radix)-/.test(entry.name)) {
+        rmSync(path, { force: true, recursive: true })
+      }
     }
   }
 }
@@ -254,6 +260,18 @@ const assertStyleRegistry = (style: string, expectedFileNames: string[]) => {
   }
 }
 
+const mirrorStyleRegistries = () => {
+  for (const base of ["radix", "base"] as const) {
+    for (const styleName of STYLE_NAMES) {
+      const style = `${base}-${styleName}`
+      const source = resolve(registryOutputRoot, style)
+      const target = resolve(registryRewriteRoot, style)
+
+      cpSync(source, target, { recursive: true })
+    }
+  }
+}
+
 cleanReactRegistryOutput()
 
 buildCanonicalRegistry({
@@ -287,6 +305,8 @@ for (const base of ["radix", "base"] as const) {
     assertStyleRegistry(`${base}-${styleName}`, expectedFileNames)
   }
 }
+
+mirrorStyleRegistries()
 
 console.log(
   `registry build complete: ${expectedFileNames.length} items across ${
