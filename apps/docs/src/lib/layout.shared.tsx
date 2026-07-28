@@ -1,3 +1,4 @@
+import { Discord } from "@better-auth-ui/react"
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
 import {
   ArrowUpRight,
@@ -27,6 +28,13 @@ export function baseOptions(): BaseLayoutProps {
         icon: <BookOpen />,
         text: "Docs",
         url: "/docs",
+        secondary: false
+      },
+      {
+        icon: <Discord />,
+        text: "Discord",
+        url: "/discord",
+        external: true,
         secondary: false
       },
       {
