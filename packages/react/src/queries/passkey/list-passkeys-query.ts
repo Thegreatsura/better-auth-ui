@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { passkeyQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -48,7 +49,10 @@ export function listPasskeysOptions<TAuthClient extends PasskeyAuthClient>(
       queryFn: ({ signal }) =>
         authClient.passkey.listUserPasskeys({
           ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )

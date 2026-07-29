@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { apiKeyQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -55,7 +56,10 @@ export function listApiKeysOptions<TAuthClient extends ApiKeyAuthClient>(
       queryFn: ({ signal }) =>
         authClient.apiKey.list({
           ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )

@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { organizationQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -46,7 +47,7 @@ export function hasPermissionOptions<
       queryFn: ({ signal }) =>
         authClient.organization.hasPermission({
           ...query,
-          fetchOptions: { ...fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(fetchOptions, signal)
         }) as Promise<TData>
     }
   )

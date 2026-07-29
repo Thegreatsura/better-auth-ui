@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { multiSessionQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -53,7 +54,10 @@ export function listDeviceSessionsOptions<
       queryFn: ({ signal }) =>
         authClient.multiSession.listDeviceSessions({
           ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )

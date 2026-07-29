@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { organizationQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -46,7 +47,10 @@ export function listOrganizationsOptions<
       queryFn: ({ signal }) =>
         authClient.organization.list({
           ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )

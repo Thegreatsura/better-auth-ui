@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import {
   type DataTag,
   type QueryClient,
@@ -5,7 +6,7 @@ import {
   queryOptions,
   skipToken
 } from "@tanstack/solid-query"
-import type { BetterFetchError } from "better-auth/client"
+import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
 
 export type OrganizationQueryMethod<TData = unknown> = (
   // biome-ignore lint/suspicious/noExplicitAny: Better Auth generated methods use plugin-specific params.
@@ -32,12 +33,11 @@ export function createOrganizationQueryOptions<
     queryFn: ({ signal }) =>
       authFn({
         ...(params ?? {}),
-        fetchOptions: {
-          ...(params as { fetchOptions?: Record<string, unknown> } | undefined)
+        fetchOptions: createAuthQueryFetchOptions(
+          (params as { fetchOptions?: BetterFetchOption } | undefined)
             ?.fetchOptions,
-          signal,
-          throw: true
-        }
+          signal
+        )
       } as OrganizationQueryParams<TMethod>) as Promise<TData>
   })
 

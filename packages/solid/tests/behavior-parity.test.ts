@@ -159,7 +159,11 @@ describe("Solid auth behavior parity", () => {
     })
     expect(authClient.accountInfo).toHaveBeenCalledWith({
       query: { accountId: "acct-1" },
-      fetchOptions: { credentials: "include", signal, throw: true }
+      fetchOptions: expect.objectContaining({
+        credentials: "include",
+        signal,
+        throw: true
+      })
     })
   })
 

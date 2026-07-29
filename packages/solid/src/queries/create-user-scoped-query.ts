@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import {
   createQuery,
   type DataTag,
@@ -6,7 +7,7 @@ import {
   queryOptions,
   skipToken
 } from "@tanstack/solid-query"
-import type { BetterFetchError } from "better-auth/client"
+import type { BetterFetchError, BetterFetchOption } from "better-auth/client"
 
 // biome-ignore lint/suspicious/noExplicitAny: Better Auth client methods have intentionally variable generated params.
 export type QueryMethod<TData = unknown> = (params?: any) => Promise<TData>
@@ -27,12 +28,11 @@ export function createUserScopedOptions<
     queryFn: ({ signal }) =>
       authFn({
         ...(params ?? {}),
-        fetchOptions: {
-          ...(params as { fetchOptions?: Record<string, unknown> } | undefined)
+        fetchOptions: createAuthQueryFetchOptions(
+          (params as { fetchOptions?: BetterFetchOption } | undefined)
             ?.fetchOptions,
-          signal,
-          throw: true
-        }
+          signal
+        )
       } as QueryParams<TMethod>) as Promise<TData>
   })
 

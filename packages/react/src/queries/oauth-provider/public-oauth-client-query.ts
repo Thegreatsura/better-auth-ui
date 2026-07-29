@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import { oauthProviderQueryKeys } from "@better-auth-ui/core/plugins"
 import {
   type DataTag,
@@ -54,7 +55,10 @@ export function publicOAuthClientOptions<
         authClient.oauth2.publicClient({
           ...params,
           query: { client_id: clientId },
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )

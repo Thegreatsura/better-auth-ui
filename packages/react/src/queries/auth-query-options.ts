@@ -1,3 +1,4 @@
+import { createAuthQueryFetchOptions } from "@better-auth-ui/core"
 import {
   type DataTag,
   type QueryKey,
@@ -77,7 +78,7 @@ export function authQueryOptions<
     queryFn: ({ signal }) =>
       authFn({
         ...params,
-        fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+        fetchOptions: createAuthQueryFetchOptions(params?.fetchOptions, signal)
       }) as Promise<AuthQueryFnData<TFn>>
   }) as AuthQueryOptions<TFn, TPrefix>
 }

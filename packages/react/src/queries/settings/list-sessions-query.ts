@@ -1,4 +1,7 @@
-import { authQueryKeys } from "@better-auth-ui/core"
+import {
+  authQueryKeys,
+  createAuthQueryFetchOptions
+} from "@better-auth-ui/core"
 import {
   type DataTag,
   type QueryClient,
@@ -48,7 +51,10 @@ export function listSessionsOptions<TAuthClient extends AuthClient>(
       queryFn: ({ signal }) =>
         authClient.listSessions({
           ...params,
-          fetchOptions: { ...params?.fetchOptions, signal, throw: true }
+          fetchOptions: createAuthQueryFetchOptions(
+            params?.fetchOptions,
+            signal
+          )
         }) as Promise<TData>
     }
   )
