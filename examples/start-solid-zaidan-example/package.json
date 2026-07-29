@@ -31,7 +31,8 @@
           "{workspaceRoot}/bun.lock"
         ],
         "outputs": [
-          "{workspaceRoot}/apps/docs/public/r/solid/**/*"
+          "{workspaceRoot}/apps/docs/public/r/solid/**/*",
+          "{workspaceRoot}/apps/docs/public/r/styles/solid/**/*"
         ]
       }
     }
