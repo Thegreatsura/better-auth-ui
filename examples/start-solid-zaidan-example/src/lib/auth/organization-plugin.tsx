@@ -3,7 +3,7 @@ import {
   organizationPlugin as coreOrganizationPlugin,
   type OrganizationLocalization,
   type OrganizationPluginOptions
-} from "@better-auth-ui/core/plugins"
+} from "@better-auth-ui/core/plugins/organization"
 import { BriefcaseBusiness } from "lucide-solid"
 import type { Component } from "solid-js"
 import { AcceptInvitation } from "@/components/auth/organization/accept-invitation"

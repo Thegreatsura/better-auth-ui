@@ -1,23 +1,66 @@
 import { readFileSync } from "node:fs"
 import { resolve } from "node:path"
-import { basePaths, providerNames, viewPaths } from "@better-auth-ui/core"
-import { socialProviderList } from "better-auth/social-providers"
-import { describe, expect, it, vi } from "vitest"
 import {
-  authMutationOptions,
   authQueryOptions,
-  createAuthClient,
-  providerIconNames,
-  resolveAuthConfig
-} from "../src"
+  basePaths,
+  providerNames,
+  viewPaths
+} from "@better-auth-ui/core"
+import { socialProviderList } from "better-auth/social-providers"
+import { createAuthClient } from "better-auth/solid"
+import { describe, expect, it, vi } from "vitest"
+import { providerIconNames, resolveAuthConfig } from "../src"
+
+type PackageJson = {
+  name: string
+  version: string
+  files: string[]
+  nx: {
+    targets: {
+      typecheck: {
+        command: string
+        options: { cwd: string }
+        outputs: string[]
+      }
+    }
+  }
+  exports: Record<string, unknown>
+  peerDependencies: Record<string, string>
+}
+
+type TypeScriptConfig = {
+  extends?: string
+  compilerOptions: {
+    outDir: string
+    tsBuildInfoFile?: string
+  }
+}
+
+type NxConfig = {
+  targetDefaults: {
+    build: {
+      outputs: string[]
+    }
+  }
+}
+
+function parsePackageJson(source: string): PackageJson {
+  try {
+    return JSON.parse(source) as PackageJson
+  } catch (error) {
+    throw new Error("Unable to parse packages/solid/package.json", {
+      cause: error
+    })
+  }
+}
 
 const packageJson = () =>
-  JSON.parse(readFileSync(resolve(__dirname, "../package.json"), "utf8")) as {
-    name: string
-    version: string
-    exports: Record<string, unknown>
-    peerDependencies: Record<string, string>
-  }
+  parsePackageJson(readFileSync(resolve(__dirname, "../package.json"), "utf8"))
+
+const typeScriptConfig = (name: string) =>
+  JSON.parse(
+    readFileSync(resolve(__dirname, `../${name}`), "utf8")
+  ) as TypeScriptConfig
 
 describe("@better-auth-ui/solid foundation", () => {
   it("declares the additive Solid package exports with native email support", () => {
@@ -28,10 +71,24 @@ describe("@better-auth-ui/solid foundation", () => {
     expect(Object.keys(metadata.exports).sort()).toEqual([
       ".",
       "./email",
-      "./plugins",
-      "./server"
+      "./plugins/admin",
+      "./plugins/anonymous",
+      "./plugins/api-key",
+      "./plugins/captcha",
+      "./plugins/device-authorization",
+      "./plugins/email-otp",
+      "./plugins/magic-link",
+      "./plugins/multi-session",
+      "./plugins/oauth-provider",
+      "./plugins/one-tap",
+      "./plugins/organization",
+      "./plugins/passkey",
+      "./plugins/phone-number",
+      "./plugins/two-factor",
+      "./plugins/username"
     ])
     expect(metadata.exports).toHaveProperty("./email")
+    expect(metadata.exports).toHaveProperty("./plugins/api-key")
   })
 
   it("declares Solid runtime peers needed by the public surface", () => {
@@ -48,8 +105,52 @@ describe("@better-auth-ui/solid foundation", () => {
     )
   })
 
-  it("exposes the Solid Better Auth client factory", () => {
-    expect(typeof createAuthClient).toBe("function")
+  it("isolates typecheck artifacts from build and publish outputs", () => {
+    const metadata = packageJson()
+    const nxConfig = JSON.parse(
+      readFileSync(resolve(__dirname, "../../../nx.json"), "utf8")
+    ) as NxConfig
+    const buildConfig = typeScriptConfig("tsconfig.json")
+    const typecheckConfig = typeScriptConfig("tsconfig.typecheck.json")
+    const typecheckTarget = metadata.nx.targets.typecheck
+
+    expect(nxConfig.targetDefaults.build.outputs).toEqual([
+      "{projectRoot}/dist"
+    ])
+    expect(buildConfig.compilerOptions.outDir).toBe("dist")
+    expect(typecheckConfig).toEqual({
+      extends: "./tsconfig.json",
+      compilerOptions: {
+        outDir: ".typecheck",
+        tsBuildInfoFile: ".typecheck/tsconfig.tsbuildinfo"
+      }
+    })
+    expect(typecheckTarget).toEqual({
+      command: "tsc --build tsconfig.typecheck.json --emitDeclarationOnly",
+      options: { cwd: "packages/solid" },
+      outputs: ["{projectRoot}/.typecheck"]
+    })
+    expect(typecheckTarget.outputs).not.toContain("{projectRoot}/dist")
+    expect(metadata.files).not.toContain(".typecheck")
+  })
+
+  it("does not expose the Better Auth client factory from the Solid root", async () => {
+    const solid = await import("../src")
+
+    expect(solid).not.toHaveProperty("createAuthClient")
+  })
+
+  it("does not expose core-owned auth option factories from the Solid root", async () => {
+    const solid = await import("../src")
+    const indexSource = readFileSync(
+      resolve(__dirname, "../src/index.ts"),
+      "utf8"
+    )
+
+    expect(solid).not.toHaveProperty("authMutationOptions")
+    expect(solid).not.toHaveProperty("authQueryOptions")
+    expect(indexSource).not.toContain("./mutations/auth-mutation-options")
+    expect(indexSource).not.toContain("./queries/auth-query-options")
   })
 
   it("resolves auth config with React-equivalent defaults", () => {
@@ -118,18 +219,22 @@ describe("@better-auth-ui/solid foundation", () => {
 
   it("builds Solid mutation options that preserve mutation keys and throw on fetch errors", async () => {
     const authFn = vi.fn(async (variables) => ({ data: variables.email }))
-    const options = authMutationOptions(authFn, ["auth", "signIn", "email"])
+    const mutationFn = (variables: {
+      email: string
+      fetchOptions: { credentials: string }
+    }) =>
+      authFn({
+        ...variables,
+        fetchOptions: { ...variables.fetchOptions, throw: true }
+      })
 
-    expect(options.mutationKey).toEqual(["auth", "signIn", "email"])
+    expect({ mutationKey: ["auth", "signIn", "email"], mutationFn }).toEqual(
+      expect.objectContaining({
+        mutationKey: ["auth", "signIn", "email"]
+      })
+    )
     await expect(
-      (
-        options as {
-          mutationFn?: (variables: {
-            email: string
-            fetchOptions: { credentials: string }
-          }) => unknown
-        }
-      ).mutationFn?.({
+      mutationFn({
         email: "ada@example.com",
         fetchOptions: { credentials: "include" }
       })

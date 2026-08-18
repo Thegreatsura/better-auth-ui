@@ -1,11 +1,13 @@
 import { createQrCodeSvgData } from "@better-auth-ui/core"
 import {
-  createCopyToClipboard,
   enableTwoFactorOptions,
   type TwoFactorAuthClient,
-  useAuth,
-  useAuthPlugin,
   verifyTotpOptions
+} from "@better-auth-ui/core/plugins/two-factor"
+import {
+  createCopyToClipboard,
+  useAuth,
+  useAuthPlugin
 } from "@better-auth-ui/solid"
 import { createMutation } from "@tanstack/solid-query"
 import { Check, Copy, ShieldCheck } from "lucide-solid"
@@ -79,6 +81,8 @@ export function EnableTwoFactorDialog(props: {
   const enableTwoFactor = createMutation(() => ({
     ...enableTwoFactorOptions(twoFactorClient()),
     onSuccess: (data) => {
+      if (data.method !== "totp") return
+
       setTotpUri(data.totpURI)
       setBackupCodes(data.backupCodes)
       setStep("verify")
@@ -130,9 +134,9 @@ export function EnableTwoFactorDialog(props: {
     const password = String(formData.get("password") ?? "")
 
     enableTwoFactor.mutate(
-      (requiresPassword() ? { password } : {}) as Parameters<
-        typeof enableTwoFactor.mutate
-      >[0]
+      (requiresPassword()
+        ? { method: "totp", password }
+        : { method: "totp" }) as Parameters<typeof enableTwoFactor.mutate>[0]
     )
   }
 

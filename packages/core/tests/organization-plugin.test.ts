@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest"
-import { organizationLocalization, organizationPlugin } from "../src/plugins"
+import {
+  organizationLocalization,
+  organizationPlugin
+} from "../src/plugins/organization"
 
 describe("organizationPlugin", () => {
   it("provides direct invitation, settings, and organization paths", () => {
