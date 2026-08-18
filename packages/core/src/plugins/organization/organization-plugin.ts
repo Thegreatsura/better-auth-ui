@@ -1,4 +1,5 @@
 import { defaultAuthConfig } from "../../config"
+import type { AdditionalFields } from "../../config/additional-fields-config"
 import type { AvatarConfig } from "../../config/avatar-config"
 import { createAuthPlugin } from "../../lib/create-auth-plugin"
 import {
@@ -45,6 +46,7 @@ export type OrganizationPluginOptions = {
    * - `settings.organizations` — segment for the organizations settings view (default `"organizations"`).
    * - `organization.settings` — segment for the `/organization/...` profile and danger zone tab (default `"settings"`).
    * - `organization.people` — segment for the `/organization/...` members and invitations tab (default `"people"`).
+   * - `organization.teams` — segment for the `/organization/...` teams tab (default `"teams"`).
    */
   viewPaths?: {
     auth?: {
@@ -87,7 +89,24 @@ export type OrganizationPluginOptions = {
    * @default ""
    */
   slugPrefix?: string
+  /** Additional organization fields rendered during creation and profile editing. */
+  additionalFields?: AdditionalFields
+  /** Maximum organizations the current user can create. */
+  organizationLimit?: number
+  /** Maximum members per organization. */
+  membershipLimit?: number
+  /** Maximum pending invitations per organization. */
+  invitationLimit?: number
+  /** Whether organization creation controls are available. @default true */
+  allowOrganizationCreation?: boolean
+  /** Enable Better Auth team management controls. @default false */
+  teams?: boolean
 }
+
+const resolvePolicyLimit = (limit?: number) =>
+  limit !== undefined && Number.isSafeInteger(limit) && limit >= 0
+    ? limit
+    : undefined
 
 export const organizationPlugin = createAuthPlugin(
   "organization",
@@ -114,6 +133,12 @@ export const organizationPlugin = createAuthPlugin(
         }),
         ...options.additionalRoles
       },
+      additionalFields: options.additionalFields ?? [],
+      organizationLimit: resolvePolicyLimit(options.organizationLimit),
+      membershipLimit: resolvePolicyLimit(options.membershipLimit),
+      invitationLimit: resolvePolicyLimit(options.invitationLimit),
+      allowOrganizationCreation: options.allowOrganizationCreation ?? true,
+      teams: options.teams ?? false,
       viewPaths: {
         settings: {
           organizations:
@@ -125,7 +150,8 @@ export const organizationPlugin = createAuthPlugin(
         },
         organization: {
           settings: options.viewPaths?.organization?.settings ?? "settings",
-          people: options.viewPaths?.organization?.people ?? "people"
+          people: options.viewPaths?.organization?.people ?? "people",
+          teams: options.viewPaths?.organization?.teams ?? "teams"
         }
       }
     }

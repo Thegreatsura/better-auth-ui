@@ -24,6 +24,23 @@ describe("apiKeyPlugin", () => {
     expect(apiKeyPlugin({ keyExpiration: false }).keyExpiration).toBe(false)
   })
 
+  it("normalizes lifecycle configuration", () => {
+    const configurations = [
+      { id: "personal", label: "Personal", organization: false },
+      { id: "service", label: "Service", organization: true }
+    ]
+    const permissions = [{ resource: "project", actions: ["read", "write"] }]
+
+    expect(
+      apiKeyPlugin({ configurations, permissions, pageSize: 7 })
+    ).toMatchObject({ configurations, permissions, pageSize: 7 })
+    expect(apiKeyPlugin({ pageSize: 0 }).pageSize).toBe(1)
+    expect(apiKeyPlugin({ pageSize: Number.NaN }).pageSize).toBe(10)
+    expect(apiKeyPlugin({ pageSize: Number.POSITIVE_INFINITY }).pageSize).toBe(
+      10
+    )
+  })
+
   it("normalizes custom intervals and selects an available default", () => {
     expect(
       resolveApiKeyExpirationOptions({

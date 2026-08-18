@@ -16,6 +16,7 @@ import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { passkeyPlugin } from "@/lib/auth/passkey-plugin"
 import { themePlugin } from "@/lib/auth/theme-plugin"
 import { twoFactorPlugin } from "@/lib/auth/two-factor-plugin"
+import { updateApiKeyOnServer } from "@/lib/auth/update-api-key"
 import { usernamePlugin } from "@/lib/auth/username-plugin"
 import { authClient } from "@/lib/auth-client"
 import { syncDocumentThemePreference } from "@/lib/theme"
@@ -65,7 +66,15 @@ export function Providers(props: ProvidersProps) {
         socialProviders={["github"]}
         plugins={[
           multiSessionPlugin(),
-          apiKeyPlugin({ organization: true }),
+          apiKeyPlugin({
+            organization: true,
+            updateApiKey: (input) => updateApiKeyOnServer({ data: input }),
+            configurations: [
+              { id: "default", label: "Personal", organization: false },
+              { id: "organization", label: "Organization", organization: true }
+            ],
+            permissions: [{ resource: "project", actions: ["read", "write"] }]
+          }),
           usernamePlugin({
             usernamePrefix: "@",
             localization: { usernamePlaceholder: "username" }
@@ -82,7 +91,8 @@ export function Providers(props: ProvidersProps) {
           deleteUserPlugin(),
           organizationPlugin({
             slugPrefix: "@",
-            slug: organizationSlug()
+            slug: organizationSlug(),
+            teams: true
           })
         ]}
       >
