@@ -2,6 +2,17 @@ name: Release and Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: Version bump to apply, or infer it from conventional commits
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
 
 permissions: {}
 
@@ -18,6 +29,8 @@ jobs:
     permissions:
       contents: write
     uses: ./.github/workflows/release.yml
+    with:
+      release_type: ${{ inputs.release_type }}
 
   publish:
     name: Publish

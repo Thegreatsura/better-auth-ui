@@ -2,6 +2,12 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      release_type:
+        description: Version bump to apply, or auto to infer it from conventional commits
+        required: false
+        default: auto
+        type: string
     outputs:
       sha:
         description: Commit containing the released package versions
@@ -38,9 +44,22 @@ jobs:
           git config --global user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
 
       - name: Release
-        run: bun nx release
+        run: |
+          case "$RELEASE_TYPE" in
+            auto)
+              bun nx release
+              ;;
+            patch|minor|major)
+              bun nx release "$RELEASE_TYPE"
+              ;;
+            *)
+              echo "Unsupported release type: $RELEASE_TYPE" >&2
+              exit 1
+              ;;
+          esac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
 
       - name: Resolve release commit
         id: release-ref
