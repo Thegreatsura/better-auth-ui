@@ -56,6 +56,11 @@
       "types": "./dist/plugins/api-key/server.d.ts",
       "import": "./dist/plugins/api-key/server.js"
     },
+    "./plugins/billing": {
+      "src": "./src/plugins/billing/index.ts",
+      "types": "./dist/plugins/billing/index.d.ts",
+      "import": "./dist/plugins/billing/index.js"
+    },
     "./plugins/delete-user": {
       "src": "./src/plugins/delete-user/index.ts",
       "types": "./dist/plugins/delete-user/index.d.ts",
@@ -162,7 +167,9 @@
     "@better-auth/oauth-provider": "1.7.0",
     "@better-auth/passkey": "1.7.0",
     "@better-auth/sso": "1.7.0",
+    "@better-auth/stripe": "1.7.0",
     "@mikkelscheike/email-provider-links": "5.2.1",
+    "@polar-sh/better-auth": "1.7.0",
     "@tanstack/query-core": "^5.101.2",
     "better-auth": "1.7.0",
     "vitest": "^4.1.9"
@@ -172,7 +179,9 @@
     "@better-auth/oauth-provider": ">=1.7.0",
     "@better-auth/passkey": ">=1.7.0",
     "@better-auth/sso": ">=1.7.0",
+    "@better-auth/stripe": ">=1.7.0",
     "@mikkelscheike/email-provider-links": ">=5.2.1",
+    "@polar-sh/better-auth": ">=1.7.0",
     "@tanstack/query-core": ">=5.101.2",
     "better-auth": ">=1.7.0"
   },
@@ -187,6 +196,12 @@
       "optional": true
     },
     "@better-auth/sso": {
+      "optional": true
+    },
+    "@better-auth/stripe": {
+      "optional": true
+    },
+    "@polar-sh/better-auth": {
       "optional": true
     }
   },

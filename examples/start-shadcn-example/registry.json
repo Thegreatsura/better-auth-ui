@@ -565,6 +565,45 @@
       ]
     },
     {
+      "name": "billing",
+      "type": "registry:component",
+      "title": "Billing",
+      "description": "Provider-neutral plans, subscription, portal, seats, cancellation, restoration, and usage settings with Stripe and Polar adapters.",
+      "dependencies": [
+        "@better-auth-ui/react@latest",
+        "@better-auth-ui/core@latest",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "alert-dialog",
+        "badge",
+        "button",
+        "card",
+        "field",
+        "input",
+        "progress",
+        "select",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "src/lib/auth/auth-plugin.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/auth-plugin.ts"
+        },
+        {
+          "path": "src/lib/auth/billing-plugin.ts",
+          "type": "registry:lib",
+          "target": "@lib/auth/billing-plugin.ts"
+        },
+        {
+          "path": "src/components/auth/billing/billing-settings.tsx",
+          "type": "registry:component",
+          "target": "@components/auth/billing/billing-settings.tsx"
+        }
+      ]
+    },
+    {
       "name": "oauth-provider",
       "type": "registry:component",
       "title": "OAuth Provider",
@@ -2155,6 +2194,7 @@
         "https://better-auth-ui.com/r/radix-nova/additional-field.json",
         "https://better-auth-ui.com/r/radix-nova/sign-in.json",
         "https://better-auth-ui.com/r/radix-nova/anonymous.json",
+        "https://better-auth-ui.com/r/radix-nova/billing.json",
         "https://better-auth-ui.com/r/radix-nova/last-login-method.json",
         "https://better-auth-ui.com/r/radix-nova/one-tap.json",
         "https://better-auth-ui.com/r/radix-nova/sign-up.json",
