@@ -6,6 +6,11 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { Auth } from "../src/components/auth/auth"
 import { AuthProvider } from "../src/components/auth/auth-provider"
 import { AuthorizedApplications } from "../src/components/auth/oauth-provider/authorized-applications"
+import {
+  OAuthClients,
+  OrganizationOAuthClients,
+  UserOAuthClients
+} from "../src/components/auth/oauth-provider/oauth-clients"
 import { OAuthConsent } from "../src/components/auth/oauth-provider/oauth-consent"
 import { OAuthSelectAccount } from "../src/components/auth/oauth-provider/oauth-select-account"
 import { OAuthSignUp } from "../src/components/auth/oauth-provider/oauth-sign-up"
@@ -174,6 +179,30 @@ describe("oauthProviderPlugin (heroui)", () => {
     expect(
       oauthProviderPlugin({ showConnectedApplications: false }).securityCards
     ).toBeUndefined()
+  })
+
+  it("registers personal and explicitly scoped organization client settings", () => {
+    const manager = {
+      list: vi.fn(async () => []),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      rotateSecret: vi.fn()
+    }
+    const plugin = oauthProviderPlugin({
+      clientManagement: true,
+      organizationClientManager: manager
+    })
+
+    expect(plugin.settingsTabs?.[0]).toMatchObject({
+      view: "oauthClients",
+      component: UserOAuthClients
+    })
+    expect(plugin.organizationTabs?.[0]).toMatchObject({
+      id: "oauthClients",
+      path: "oauth-clients",
+      component: OrganizationOAuthClients
+    })
   })
 
   it("renders through the Auth plugin path dispatcher", async () => {
@@ -479,6 +508,38 @@ describe("<AuthorizedApplications />", () => {
 
     expect(
       await screen.findByText("No connected applications")
+    ).toBeInTheDocument()
+  })
+})
+
+describe("<OAuthClients />", () => {
+  it("labels each status switch with its client identity", async () => {
+    const manager = {
+      list: vi.fn(async () => [
+        {
+          client_id: "desktop-client",
+          client_name: "Acme CLI",
+          redirect_uris: ["https://acme.example/callback"],
+          disabled: false
+        }
+      ]),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      rotateSecret: vi.fn(),
+      setDisabled: vi.fn()
+    }
+
+    renderWithAuth(
+      <OAuthClients
+        manager={manager}
+        owner={{ type: "user" }}
+        ownerKey="user"
+      />
+    )
+
+    expect(
+      await screen.findByRole("switch", { name: "Acme CLI: Enabled" })
     ).toBeInTheDocument()
   })
 })
