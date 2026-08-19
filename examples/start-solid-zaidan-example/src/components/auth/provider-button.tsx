@@ -1,8 +1,13 @@
-import { getProviderName } from "@better-auth-ui/core"
+import {
+  type AuthSocialProvider,
+  getProviderId,
+  getProviderName,
+  isCustomSocialProvider
+} from "@better-auth-ui/core"
 import { useAuth } from "@better-auth-ui/solid"
-import type { SocialProvider } from "better-auth/social-providers"
 import type { ComponentProps } from "solid-js"
-import { createSignal } from "solid-js"
+import { createSignal, Show } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -11,7 +16,7 @@ import { resolveSocialAuthParams, type SocialAuthView } from "./sign-in-path"
 
 export type ProviderButtonProps = {
   display?: "full" | "icon" | "name"
-  provider: SocialProvider
+  provider: AuthSocialProvider
   view?: SocialAuthView
 } & Omit<ComponentProps<typeof Button>, "children" | "disabled" | "onClick">
 
@@ -49,17 +54,34 @@ function GoogleIcon(props: ComponentProps<"svg">) {
   )
 }
 
-function ProviderIcon(props: { provider: SocialProvider }) {
-  if (props.provider === "github") return <GitHubIcon class="size-4" />
-  if (props.provider === "google") return <GoogleIcon class="size-4" />
+function BuiltInProviderIcon(props: { provider: AuthSocialProvider }) {
+  const providerId = () => getProviderId(props.provider)
+
+  if (providerId() === "github") return <GitHubIcon class="size-4" />
+  if (providerId() === "google") return <GoogleIcon class="size-4" />
 
   return <span aria-hidden>{getProviderName(props.provider).slice(0, 1)}</span>
+}
+
+export function ProviderIcon(props: { provider: AuthSocialProvider }) {
+  const customIcon = () =>
+    isCustomSocialProvider(props.provider) ? props.provider.icon : undefined
+
+  return (
+    <Show
+      when={customIcon()}
+      fallback={<BuiltInProviderIcon provider={props.provider} />}
+    >
+      {(icon) => <Dynamic component={icon()} class="size-4" />}
+    </Show>
+  )
 }
 
 export function ProviderButton(props: ProviderButtonProps) {
   const auth = useAuth()
   const [isPending, setIsPending] = createSignal(false)
   const display = () => props.display ?? "full"
+  const providerId = () => getProviderId(props.provider)
   const providerName = () => getProviderName(props.provider)
   const label = () =>
     auth.localization.auth.continueWith.replace("{{provider}}", providerName())
@@ -71,7 +93,7 @@ export function ProviderButton(props: ProviderButtonProps) {
     try {
       await auth.authClient.signIn.social(
         resolveSocialAuthParams({
-          provider: props.provider,
+          provider: providerId(),
           basePaths: auth.basePaths,
           baseURL: auth.baseURL,
           redirectTo: auth.redirectTo,
@@ -104,7 +126,7 @@ export function ProviderButton(props: ProviderButtonProps) {
         <span class="sr-only">{label()}</span>
       ) : null}
       {(props.view ?? "signIn") !== "signUp" ? (
-        <LastUsedBadge floating method={props.provider} />
+        <LastUsedBadge floating method={providerId()} />
       ) : null}
     </Button>
   )
