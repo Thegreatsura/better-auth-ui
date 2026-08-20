@@ -64,10 +64,6 @@ export const authClient = createAuthClient({
 ### Install the UI plugin
 
 ```npm
-npx shadcn@latest registry add @better-auth-ui=https://better-auth-ui.com/r/{style}/{name}.json
-```
-
-```npm
 npx shadcn@latest add @better-auth-ui/email-otp
 ```
 
@@ -85,7 +81,7 @@ This drops the following into your codebase:
 - `src/components/auth/email-otp/change-email-otp.tsx` — the change-email card
 - Provider-button and last-used badge components needed by the passwordless sign-in view
 
-The registry also refreshes `<AccountSettings />`, so enabling the change-email override does not require a separate registry command.
+The registry item also refreshes `<AccountSettings />`, so the change-email override does not require a separate component install.
 
 </Step>
 <Step>

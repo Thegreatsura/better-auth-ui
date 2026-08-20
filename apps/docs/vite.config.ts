@@ -1,3 +1,5 @@
+import { readdirSync } from "node:fs"
+import { extname, join, relative, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
@@ -23,6 +25,28 @@ const FumadocsDeps = [
 const solidJsWebServer = fileURLToPath(
   new URL("web/dist/server.js", import.meta.resolve("solid-js/package.json"))
 )
+
+const docsContentRoot = fileURLToPath(new URL("content/docs", import.meta.url))
+
+function getDocsPrerenderPages(directory = docsContentRoot) {
+  return readdirSync(directory, { recursive: true, withFileTypes: true })
+    .filter(
+      (entry) => entry.isFile() && [".md", ".mdx"].includes(extname(entry.name))
+    )
+    .flatMap((entry) => {
+      const sourcePath = join(entry.parentPath, entry.name)
+      const relativePath = relative(directory, sourcePath)
+        .split(sep)
+        .join("/")
+        .replace(/\.(?:md|mdx)$/, "")
+        .replace(/(?:^|\/)index$/, "")
+      const docsPath = relativePath ? `/docs/${relativePath}` : "/docs"
+      const markdownPath =
+        docsPath === "/docs" ? "/docs/index.md" : `${docsPath}.md`
+
+      return [{ path: docsPath }, { path: markdownPath }]
+    })
+}
 
 export default defineConfig(async ({ command }) => ({
   server: {
@@ -59,12 +83,21 @@ export default defineConfig(async ({ command }) => ({
       prerender: {
         enabled: true,
         autoSubfolderIndex: false,
+        crawlLinks: false,
         filter: ({ path }) =>
           !EXCLUDED_PRERENDER_PATHS.some((excludedPath) =>
             path.startsWith(excludedPath)
           )
       },
       pages: [
+        ...getDocsPrerenderPages(),
+        {
+          path: "/api/search",
+          prerender: {
+            enabled: true,
+            outputPath: "/api/search"
+          }
+        },
         {
           path: "/llms.txt",
           prerender: {

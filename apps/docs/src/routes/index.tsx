@@ -17,8 +17,6 @@ import { Solid } from "@/components/icons/solid"
 import { Zaidan } from "@/components/icons/zaidan"
 import { baseOptions } from "@/lib/layout.shared"
 
-const shadcnRegistryCommand =
-  "bun x shadcn@latest registry add @better-auth-ui=https://better-auth-ui.com/r/{style}/{name}.json"
 const shadcnInstallCommand = "bun x shadcn@latest add @better-auth-ui/auth"
 
 export const Route = createFileRoute("/")({
@@ -31,9 +29,7 @@ function Home() {
   const [copiedSolid, setCopiedSolid] = useState(false)
 
   const copyShadcnCommand = () => {
-    navigator.clipboard.writeText(
-      `${shadcnRegistryCommand}\n${shadcnInstallCommand}`
-    )
+    navigator.clipboard.writeText(shadcnInstallCommand)
     setCopiedShadcn(true)
     setTimeout(() => setCopiedShadcn(false), 2000)
   }
@@ -138,11 +134,10 @@ function Home() {
               onClick={copyShadcnCommand}
               className="group flex min-w-0 items-center justify-between gap-3 overflow-hidden rounded-xl border border-neutral-200 bg-white/80 px-4 py-3 text-left font-mono text-xs backdrop-blur-sm transition-all hover:border-neutral-300 hover:bg-white dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-neutral-700 dark:hover:bg-neutral-900"
             >
-              <div className="flex min-w-0 items-start gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <span className="shrink-0 text-orange-500">$</span>
-                <span className="flex min-w-0 flex-col gap-1 text-neutral-600 dark:text-neutral-400">
-                  <span className="truncate">{shadcnRegistryCommand}</span>
-                  <span className="truncate">{shadcnInstallCommand}</span>
+                <span className="truncate text-neutral-600 dark:text-neutral-400">
+                  {shadcnInstallCommand}
                 </span>
               </div>
               <span className="shrink-0 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-600 dark:group-hover:text-neutral-400">

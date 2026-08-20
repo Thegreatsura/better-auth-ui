@@ -50,10 +50,6 @@ Wrap your application with the `Providers` component in your root layout.
 Install the auth components and create a dynamic auth page that renders the appropriate authentication view based on the path.
 
 ```npm
-npx shadcn@latest registry add @better-auth-ui=https://better-auth-ui.com/r/{style}/{name}.json
-```
-
-```npm
 npx shadcn@latest add @better-auth-ui/auth
 ```
 
@@ -67,10 +63,6 @@ The `viewPaths.auth` object contains the built-in auth paths: `redirect`, `sign-
 ### Create the Settings page
 
 If you installed the `settings` component, create a dynamic settings route that renders the `Settings` component for the URL segment. This page is an async server component that validates the path, checks the session with `ensureSession` (redirecting unauthenticated users before any HTML is sent), and dehydrates the session query into the client via `HydrationBoundary` so child hooks skip their loading state on hydration.
-
-```npm
-npx shadcn@latest registry add @better-auth-ui=https://better-auth-ui.com/r/{style}/{name}.json
-```
 
 ```npm
 npx shadcn@latest add @better-auth-ui/settings
