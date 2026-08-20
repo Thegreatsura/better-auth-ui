@@ -4,11 +4,12 @@ import type {
 } from "@better-auth-ui/core/plugins/organization"
 import { useAuth, useAuthenticate, useAuthPlugin } from "@better-auth-ui/react"
 import { useActiveOrganization } from "@better-auth-ui/react/plugins/organization"
-import { Gear, Person, Persons } from "@gravity-ui/icons"
+import { Gear, Person, Persons, Shield } from "@gravity-ui/icons"
 import { type CardProps, cn, Tabs } from "@heroui/react"
 import { type ComponentProps, useEffect, useMemo } from "react"
 import { organizationPlugin } from "../../../lib/auth/organization-plugin"
 import { OrganizationPeople } from "./organization-people"
+import { OrganizationRoles } from "./organization-roles"
 import { OrganizationSettings } from "./organization-settings"
 import { OrganizationTeams } from "./organization-teams"
 
@@ -46,7 +47,8 @@ export function Organization({
     viewPaths: organizationViewPaths,
     slug,
     slugPrefix,
-    teams
+    teams,
+    dynamicAccessControl
   } = useAuthPlugin(organizationPlugin)
 
   const { data: activeOrganization, isPending } = useActiveOrganization(
@@ -56,6 +58,7 @@ export function Organization({
     () => plugins.flatMap((plugin) => plugin.organizationTabs ?? []),
     [plugins]
   )
+  const rolesEnabled = dynamicAccessControl?.enabled === true
 
   useEffect(() => {
     if (!isPending && !activeOrganization) {
@@ -73,20 +76,29 @@ export function Organization({
   ])
 
   const currentView = useMemo(() => {
-    if (view) return view
+    if (view) return view === "roles" && !rolesEnabled ? undefined : view
 
     const match = [
-      ...Object.entries(organizationViewPaths.organization),
+      ...Object.entries(organizationViewPaths.organization).filter(
+        ([name]) => rolesEnabled || name !== "roles"
+      ),
       ...extensionTabs.map((tab) => [tab.id, tab.path] as const)
     ].find(([, segment]) => segment === path)
 
     return match?.[0] as OrganizationView | undefined
-  }, [extensionTabs, view, path, organizationViewPaths.organization])
+  }, [
+    extensionTabs,
+    view,
+    path,
+    organizationViewPaths.organization,
+    rolesEnabled
+  ])
 
   if (!currentView) {
-    const validPaths = Object.values(organizationViewPaths.organization).join(
-      ", "
-    )
+    const validPaths = Object.entries(organizationViewPaths.organization)
+      .filter(([name]) => rolesEnabled || name !== "roles")
+      .map(([, segment]) => segment)
+      .join(", ")
     throw new Error(
       `[Better Auth UI] Unknown organization path "${path}". Valid paths are: ${validPaths}`
     )
@@ -145,6 +157,21 @@ export function Organization({
                 <Tabs.Indicator />
               </Tabs.Tab>
             )}
+            {rolesEnabled && (
+              <Tabs.Tab
+                id="roles"
+                href={
+                  slug
+                    ? `${basePaths.organization}/${slugPrefix}${slug}/${organizationViewPaths.organization.roles}`
+                    : `${basePaths.organization}/${organizationViewPaths.organization.roles}`
+                }
+                className="gap-2"
+              >
+                <Shield className="text-muted" />
+                {organizationLocalization.roles}
+                <Tabs.Indicator />
+              </Tabs.Tab>
+            )}
             {extensionTabs.map((tab) => (
               <Tabs.Tab
                 id={tab.id}
@@ -196,6 +223,11 @@ export function Organization({
       {teams && (
         <Tabs.Panel id="teams" className="px-0">
           <OrganizationTeams />
+        </Tabs.Panel>
+      )}
+      {rolesEnabled && (
+        <Tabs.Panel id="roles" className="px-0">
+          <OrganizationRoles organizationId={activeOrganization?.id ?? ""} />
         </Tabs.Panel>
       )}
       {extensionTabs.map((tab) => {

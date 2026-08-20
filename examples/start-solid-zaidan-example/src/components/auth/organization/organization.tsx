@@ -2,17 +2,19 @@ import type { OrganizationAuthClient } from "@better-auth-ui/core/plugins/organi
 import { useAuth, useAuthPlugin } from "@better-auth-ui/solid"
 import { useActiveOrganization } from "@better-auth-ui/solid/plugins/organization"
 import {
+  ShieldCheck as RolesIcon,
   Settings as SettingsIcon,
   UsersRound as TeamsIcon,
   Users as UsersIcon
 } from "lucide-solid"
-import { For, Show } from "solid-js"
+import { createMemo, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { organizationPlugin } from "@/lib/auth/organization-plugin"
 import { createOrganizationPath } from "./organization-path"
 import { OrganizationPeople } from "./organization-people"
+import { OrganizationRoles } from "./organization-roles"
 import { OrganizationSettings } from "./organization-settings"
 import { OrganizationTeams } from "./organization-teams"
 
@@ -27,6 +29,16 @@ export function Organization(props: OrganizationProps) {
   const activeOrganization = useActiveOrganization(auth.authClient)
   const extensionTabs = () =>
     auth.plugins.flatMap((plugin) => plugin.organizationTabs ?? [])
+  const rolesEnabled = () => config.dynamicAccessControl?.enabled === true
+  const currentPath = createMemo(() => {
+    if (!rolesEnabled() && props.path === config.viewPaths.organization.roles) {
+      throw new Error(
+        "[Better Auth UI] The roles view requires dynamic access control."
+      )
+    }
+
+    return props.path
+  })
 
   const handlePathChange = (path: string) => {
     if (!props.slug) return
@@ -43,7 +55,7 @@ export function Organization(props: OrganizationProps) {
 
   return (
     <Tabs
-      value={props.path}
+      value={currentPath()}
       onChange={handlePathChange}
       class="w-full gap-4 md:gap-6"
     >
@@ -56,6 +68,12 @@ export function Organization(props: OrganizationProps) {
           <TabsTrigger value={config.viewPaths.organization.teams}>
             <TeamsIcon class="text-muted-foreground" />
             {config.localization.teams}
+          </TabsTrigger>
+        </Show>
+        <Show when={rolesEnabled()}>
+          <TabsTrigger value={config.viewPaths.organization.roles}>
+            <RolesIcon class="text-muted-foreground" />
+            {config.localization.roles}
           </TabsTrigger>
         </Show>
         <For each={extensionTabs()}>
@@ -101,6 +119,14 @@ export function Organization(props: OrganizationProps) {
                 tabIndex={-1}
               >
                 <OrganizationTeams />
+              </TabsContent>
+            </Show>
+            <Show when={rolesEnabled()}>
+              <TabsContent
+                value={config.viewPaths.organization.roles}
+                tabIndex={-1}
+              >
+                <OrganizationRoles organizationId={currentOrganization().id} />
               </TabsContent>
             </Show>
             <For each={extensionTabs()}>
