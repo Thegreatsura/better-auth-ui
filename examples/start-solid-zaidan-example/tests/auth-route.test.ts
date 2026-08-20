@@ -3544,7 +3544,12 @@ describe("Solid auth route component selection", () => {
       "disabled={cancelInvitation.isPending}"
     )
     expect(organizationInvitationRow).toContain(
-      'aria-label="Cancel invitation"'
+      "config.localization.cancelInvitation"
+    )
+    expect(organizationInvitationRow).toContain("resendInvitation.mutate")
+    expect(organizationInvitationRow).toContain("resend: true")
+    expect(organizationInvitationRow).toContain(
+      "organizationId: props.invitation.organizationId"
     )
     expect(organizationInvitationRow).toContain("Badge")
     expect(organizationInvitationRow).toContain("Spinner")
