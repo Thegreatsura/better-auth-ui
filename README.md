@@ -1,66 +1,127 @@
 # Better Auth UI
 
-[![discord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/GKPC4npz8K)
+Authentication components and data utilities for [Better Auth](https://better-auth.com), available for React and Solid.
 
-🇵🇸 Free Palestine
+[Documentation](https://better-auth-ui.com/docs) · [Demo](https://demo.better-auth-ui.com) · [Discord](https://better-auth-ui.com/discord)
 
-Beautiful, ready-to-use authentication components for [Better Auth](https://better-auth.com).
+Better Auth UI provides complete authentication flows, account settings, plugin integrations, and reusable data APIs. Choose the UI that fits your application:
 
-Built with **shadcn/ui** and **HeroUI**. Drop in and go.
-
-## [better-auth-ui.com](https://better-auth-ui.com)
-
-[Documentation](https://better-auth-ui.com/docs) • [Demo](https://demo.better-auth-ui.com)
-
-[![Discord Banner](https://discord.com/api/guilds/1531733072037412944/widget.png?style=banner2)](https://discord.gg/GKPC4npz8K)
-
----
-
-*Looking for the legacy package?*
-[Legacy Branch](https://github.com/better-auth-ui/better-auth-ui/tree/legacy) • [Legacy Docs](https://legacy.better-auth-ui.com)
-
----
-
-## Screenshots
-
-### shadcn/ui
-
-<picture>
-  <source srcset="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/shadcn-sign-in-dark.png" media="(prefers-color-scheme: dark)">
-  <source srcset="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/shadcn-sign-in-light.png" media="(prefers-color-scheme: light)">
-  <img src="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/shadcn-sign-in-light.png" alt="shadcn/ui Sign In" width="400">
-</picture>
-
-### HeroUI
-
-<picture>
-  <source srcset="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/heroui-sign-in-dark.png" media="(prefers-color-scheme: dark)">
-  <source srcset="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/heroui-sign-in-light.png" media="(prefers-color-scheme: light)">
-  <img src="https://raw.githubusercontent.com/better-auth-ui/better-auth-ui/shadcn-registry/apps/docs/public/screenshots/heroui-sign-in-light.png" alt="HeroUI Sign In" width="400">
-</picture>
-
----
+- **shadcn/ui** provides React components that you copy into your project.
+- **HeroUI** provides packaged React components built with HeroUI v3.
+- **Zaidan Solid** provides Solid components that you copy into your project.
+- **React and Solid packages** provide hooks, queries, mutations, and server helpers for custom interfaces.
 
 ## Features
 
-- **Fully Customizable** — Built on shadcn/ui and HeroUI. Own your code, style it your way.
-- **Drop-in Ready** — Pre-built Sign In, Sign Up, Forgot Password, and more. Just add and configure.
-- **Better Auth Native** — Built specifically for Better Auth. Social logins, magic links, and more.
+- Sign-in, sign-up, email verification, and password recovery flows
+- User profiles, account settings, session management, and security controls
+- Integrations for Better Auth plugins such as organizations, passkeys, two-factor authentication, magic links, and API keys
+- Query and mutation APIs for React and Solid
+- Server-rendering helpers and customizable email templates
+- Light and dark themes with full control over copied component code
 
-## Installation
+## Preview
 
 ### shadcn/ui
 
-```bash
-bun x shadcn@latest add @better-auth-ui/auth
-```
+<picture>
+  <source srcset="./apps/docs/public/screenshots/shadcn-sign-in-dark.png" media="(prefers-color-scheme: dark)">
+  <source srcset="./apps/docs/public/screenshots/shadcn-sign-in-light.png" media="(prefers-color-scheme: light)">
+  <img src="./apps/docs/public/screenshots/shadcn-sign-in-light.png" alt="Better Auth UI sign-in form built with shadcn/ui" width="440">
+</picture>
 
 ### HeroUI
 
+<picture>
+  <source srcset="./apps/docs/public/screenshots/heroui-sign-in-dark.png" media="(prefers-color-scheme: dark)">
+  <source srcset="./apps/docs/public/screenshots/heroui-sign-in-light.png" media="(prefers-color-scheme: light)">
+  <img src="./apps/docs/public/screenshots/heroui-sign-in-light.png" alt="Better Auth UI sign-in form built with HeroUI" width="440">
+</picture>
+
+## Quick start
+
+Install [Better Auth](https://www.better-auth.com/docs/installation). Then configure it for your application before you add a UI package.
+
+### shadcn/ui
+
+Add the authentication components to an existing shadcn/ui project:
+
 ```bash
-bun add @better-auth-ui/heroui@latest
+bunx --bun shadcn@latest add @better-auth-ui/auth
 ```
+
+Read the [shadcn/ui quick start](https://better-auth-ui.com/docs/shadcn) for framework setup and optional components.
+
+### HeroUI
+
+Install the HeroUI package and its Better Auth UI dependencies:
+
+```bash
+bun add @better-auth-ui/heroui@latest @better-auth-ui/react@latest @better-auth-ui/core@latest
+```
+
+Import the component styles in your global CSS file:
+
+```css
+@import "@better-auth-ui/heroui/styles";
+```
+
+Read the [HeroUI quick start](https://better-auth-ui.com/docs/heroui) for provider and framework setup.
+
+### Zaidan Solid
+
+Install the Solid data layer and its runtime dependencies:
+
+```bash
+bun add @better-auth-ui/solid @tanstack/solid-query better-auth solid-js
+```
+
+Then add the authentication components from the Solid registry:
+
+```bash
+bunx --bun shadcn@latest add https://better-auth-ui.com/r/solid/auth.json
+```
+
+Read the [Zaidan Solid quick start](https://better-auth-ui.com/docs/zaidan) for TanStack Start setup and optional components.
+
+## Package reference
+
+| Package | Purpose |
+| --- | --- |
+| `@better-auth-ui/core` | Shared query options, server helpers, types, and framework-independent utilities |
+| `@better-auth-ui/react` | React providers, hooks, queries, mutations, and plugin APIs |
+| `@better-auth-ui/heroui` | Ready-to-use React components built with HeroUI |
+| `@better-auth-ui/solid` | Solid providers, hooks, queries, mutations, and plugin APIs |
+
+See the [React reference](https://better-auth-ui.com/docs/react) or [Solid reference](https://better-auth-ui.com/docs/solid) when you need lower-level APIs.
+
+## Development
+
+This repository uses [Bun](https://bun.sh) and [Nx](https://nx.dev).
+
+Install the workspace dependencies:
+
+```bash
+bun install
+```
+
+Start the development projects:
+
+```bash
+bun run dev
+```
+
+Run the main workspace tasks:
+
+```bash
+bun run build
+bun run test
+```
+
+## Community
+
+Join the [Better Auth UI Discord](https://better-auth-ui.com/discord) to ask questions, share feedback, and connect with contributors.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Better Auth UI is available under the [MIT License](./LICENSE).
