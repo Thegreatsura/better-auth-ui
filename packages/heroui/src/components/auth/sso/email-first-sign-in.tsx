@@ -1,5 +1,10 @@
 import { authMutationKeys } from "@better-auth-ui/core"
 import {
+  isPasskeyAutoFillEnabled,
+  type PasskeyAuthClient,
+  withPasskeyAutoFill
+} from "@better-auth-ui/core/plugins/passkey"
+import {
   type SsoAuthClient,
   setSsoFallbackEmail
 } from "@better-auth-ui/core/plugins/sso"
@@ -11,6 +16,7 @@ import {
   useFetchOptions,
   useSignInEmail
 } from "@better-auth-ui/react"
+import { usePasskeyAutoFill } from "@better-auth-ui/react/plugins/passkey"
 import { useSignInSso } from "@better-auth-ui/react/plugins/sso"
 import { Eye, EyeSlash } from "@gravity-ui/icons"
 import {
@@ -69,6 +75,10 @@ export function EmailFirstSignIn({
   const { fetchOptions, resetFetchOptions } = useFetchOptions()
   const continueSignIn = useSignInContinuation()
 
+  usePasskeyAutoFill(authClient as PasskeyAuthClient, {
+    onSuccess: () => navigate({ to: redirectTo })
+  })
+
   const [step, setStep] = useState<Step>("email")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -117,6 +127,8 @@ export function EmailFirstSignIn({
   const Captcha = plugins.find(
     (plugin) => plugin.captchaComponent
   )?.captchaComponent
+
+  const passkeyAutoFill = isPasskeyAutoFillEnabled(plugins)
   const showSocialSeparator =
     emailAndPassword.enabled && !!socialProviders?.length
 
@@ -171,7 +183,7 @@ export function EmailFirstSignIn({
             <TextField
               name="email"
               type="email"
-              autoComplete="email"
+              autoComplete={withPasskeyAutoFill("email", passkeyAutoFill)}
               isDisabled={isPending}
               value={email}
               onChange={setEmail}
@@ -225,7 +237,10 @@ export function EmailFirstSignIn({
                   minLength={emailAndPassword.minPasswordLength}
                   maxLength={emailAndPassword.maxPasswordLength}
                   name="password"
-                  autoComplete="current-password"
+                  autoComplete={withPasskeyAutoFill(
+                    "current-password",
+                    passkeyAutoFill
+                  )}
                   isDisabled={isPending}
                   value={password}
                   onChange={setPassword}
@@ -305,6 +320,7 @@ export function EmailFirstSignIn({
             {plugins.flatMap((plugin) =>
               (plugin.authButtons ?? []).map((AuthButton) => (
                 <AuthButton
+                  autoFill={false}
                   key={getAuthButtonKey(plugin.id, AuthButton)}
                   view="signIn"
                 />

@@ -1,6 +1,7 @@
 import { QueryClient } from "@tanstack/react-query"
 import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { StrictMode } from "react"
 import { describe, expect, it, vi } from "vitest"
 
 import { AuthProvider } from "../src/components/auth/auth-provider"
@@ -36,19 +37,27 @@ function createPasskeyButtonAuthClient() {
   }
 }
 
-function renderPasskeyButton(authClient = createPasskeyButtonAuthClient()) {
+function renderPasskeyButton(
+  authClient = createPasskeyButtonAuthClient(),
+  {
+    autoFill = false,
+    strictMode = false
+  }: { autoFill?: boolean; strictMode?: boolean } = {}
+) {
+  const button = (
+    <AuthProvider
+      authClient={authClient}
+      navigate={() => {}}
+      plugins={[passkeyPlugin({ autoFill })]}
+      queryClient={createTestQueryClient()}
+    >
+      <PasskeyButton />
+    </AuthProvider>
+  )
+
   return {
     authClient,
-    ...render(
-      <AuthProvider
-        authClient={authClient}
-        navigate={() => {}}
-        plugins={[passkeyPlugin()]}
-        queryClient={createTestQueryClient()}
-      >
-        <PasskeyButton />
-      </AuthProvider>
-    )
+    ...render(strictMode ? <StrictMode>{button}</StrictMode> : button)
   }
 }
 
@@ -74,22 +83,53 @@ describe("<PasskeyButton />", () => {
 
     expect(authClient.signIn.passkey).toHaveBeenCalledWith(
       expect.objectContaining({
+        autoFill: false,
         fetchOptions: expect.objectContaining({ throw: true })
       })
     )
   })
 
-  it("does not render on the signUp view", () => {
+  it("opens a conditionally mediated request when autofill is enabled", async () => {
+    const { authClient } = renderPasskeyButton(
+      createPasskeyButtonAuthClient(),
+      { autoFill: true }
+    )
+
+    await waitFor(() => {
+      expect(authClient.signIn.passkey).toHaveBeenCalledWith(
+        expect.objectContaining({ autoFill: true })
+      )
+    })
+  })
+
+  it("opens one conditional request in React Strict Mode", async () => {
+    const { authClient } = renderPasskeyButton(
+      createPasskeyButtonAuthClient(),
+      { autoFill: true, strictMode: true }
+    )
+
+    await waitFor(() => {
+      expect(authClient.signIn.passkey).toHaveBeenCalledOnce()
+    })
+  })
+
+  it("stays out of the way on the signUp view", async () => {
+    const authClient = createPasskeyButtonAuthClient()
     const { container } = render(
       <AuthProvider
-        authClient={createPasskeyButtonAuthClient()}
+        authClient={authClient}
         navigate={() => {}}
-        plugins={[passkeyPlugin()]}
+        plugins={[passkeyPlugin({ autoFill: true })]}
         queryClient={createTestQueryClient()}
       >
         <PasskeyButton view="signUp" />
       </AuthProvider>
     )
+
+    // Neither the button nor the autofill request belongs on sign-up.
+    await vi.waitFor(() => {
+      expect(authClient.signIn.passkey).not.toHaveBeenCalled()
+    })
     expect(container).toBeEmptyDOMElement()
   })
 })

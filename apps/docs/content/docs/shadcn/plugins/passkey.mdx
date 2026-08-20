@@ -3,6 +3,7 @@ title: Passkey
 description: Add passwordless passkey sign-in and device management to your authentication flow.
 ---
 
+import { Callout } from 'fumadocs-ui/components/callout'
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
@@ -130,6 +131,57 @@ import { Passkeys } from "@/components/auth/passkey/passkeys"
 **Props**
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/passkey/passkeys.tsx" name="PasskeysProps" />
+
+## Passkey autofill
+
+With the plugin registered, the sign-in form asks the browser to offer saved
+passkeys straight from its autofill dropdown, so most people never press the
+passkey button at all. This is the WebAuthn conditional UI flow.
+
+Two pieces make it work, and the built-in components already handle both:
+
+- The identifier and password fields carry `webauthn` as the last token of
+  their `autocomplete` attribute, added by `withPasskeyAutoFill`.
+- `<PasskeyButton />` calls `usePasskeyAutoFill`, which opens a conditionally
+  mediated request once the browser reports that it supports one.
+
+Browsers without conditional mediation ignore the extra token and never get the
+request, so the button stays as the fallback everywhere.
+
+Turn the whole thing off with:
+
+```ts
+passkeyPlugin({ autoFill: false })
+```
+
+If you write your own sign-in form, add the token and start the conditional
+request:
+
+```tsx
+import type { PasskeyAuthClient } from "@better-auth-ui/core/plugins/passkey"
+import {
+  isPasskeyAutoFillEnabled,
+  withPasskeyAutoFill
+} from "@better-auth-ui/core/plugins/passkey"
+import { usePasskeyAutoFill } from "@better-auth-ui/react/plugins/passkey"
+
+const { authClient, plugins } = useAuth()
+const passkeyAutoFill = isPasskeyAutoFillEnabled(plugins)
+
+usePasskeyAutoFill(authClient as PasskeyAuthClient)
+
+<Input autoComplete={withPasskeyAutoFill("email", passkeyAutoFill)} />
+```
+
+<Callout type="warn">
+`navigator.credentials.get()` accepts an `AbortSignal`. The bundled hook calls
+the Better Auth passkey client, which does not expose that signal. Unmounting
+the form only stops a pending availability probe. It does not cancel a request
+that already started.
+
+If your custom implementation calls `navigator.credentials.get()` directly,
+pass an `AbortSignal` and abort it during cleanup.
+</Callout>
 
 ## Options
 
