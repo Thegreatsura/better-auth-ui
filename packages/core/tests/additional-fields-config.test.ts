@@ -1,8 +1,11 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import {
   type AdditionalField,
+  fieldsWithModelValues,
+  formatAdditionalFieldValue,
   parseAdditionalFieldValue,
+  parseAdditionalFieldValues,
   resolveInputType
 } from "../src/config/additional-fields-config"
 
@@ -13,6 +16,50 @@ const baseField = (overrides: Partial<AdditionalField>): AdditionalField =>
     type: "string",
     ...overrides
   }) as AdditionalField
+
+describe("model field helpers", () => {
+  it("parses writable values, validates them, and omits read-only fields", async () => {
+    const validate = vi.fn()
+    const fields = [
+      baseField({ name: "title", validate }),
+      baseField({ name: "level", type: "number" }),
+      baseField({ name: "internal", readOnly: true })
+    ]
+    const formData = new FormData()
+    formData.set("title", "Engineer")
+    formData.set("level", "4")
+    formData.set("internal", "secret")
+
+    await expect(parseAdditionalFieldValues(fields, formData)).resolves.toEqual(
+      { title: "Engineer", level: 4 }
+    )
+    expect(validate).toHaveBeenCalledWith("Engineer")
+  })
+
+  it("seeds edit fields without mutating the configured fields", () => {
+    const fields = [baseField({ name: "color", defaultValue: "blue" })]
+
+    expect(fieldsWithModelValues(fields, { color: "green" })[0]).toMatchObject({
+      name: "color",
+      defaultValue: "green"
+    })
+    expect(fields[0]?.defaultValue).toBe("blue")
+  })
+
+  it("formats date-only values as local calendar dates", () => {
+    const previousTimezone = process.env.TZ
+    process.env.TZ = "America/Los_Angeles"
+
+    try {
+      expect(formatAdditionalFieldValue("2024-06-15")).toBe(
+        new Date(2024, 5, 15).toLocaleString()
+      )
+    } finally {
+      if (previousTimezone === undefined) delete process.env.TZ
+      else process.env.TZ = previousTimezone
+    }
+  })
+})
 
 describe("parseAdditionalFieldValue", () => {
   describe("string", () => {

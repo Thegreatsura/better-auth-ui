@@ -1,3 +1,4 @@
+import { formatAdditionalFieldValue } from "@better-auth-ui/core"
 import {
   memberRoleLabels,
   type OrganizationAuthClient
@@ -24,8 +25,11 @@ export function OrganizationInvitationTableRow({
   invitation
 }: OrganizationInvitationTableRowProps) {
   const { authClient } = useAuth()
-  const { localization: organizationLocalization, roles } =
-    useAuthPlugin(organizationPlugin)
+  const {
+    modelFields: { invitation: invitationFields },
+    localization: organizationLocalization,
+    roles
+  } = useAuthPlugin(organizationPlugin)
 
   const {
     data: cancelInvitationPermission,
@@ -72,8 +76,20 @@ export function OrganizationInvitationTableRow({
 
   return (
     <Table.Row>
-      <Table.Cell className="font-medium text-sm">
-        {invitation.email}
+      <Table.Cell>
+        <div className="flex flex-col gap-1">
+          <span className="font-medium text-sm">{invitation.email}</span>
+          {invitationFields.map((field) => {
+            const value = formatAdditionalFieldValue(
+              (invitation as unknown as Record<string, unknown>)[field.name]
+            )
+            return value ? (
+              <span className="text-muted text-xs" key={field.name}>
+                {field.label}: {value}
+              </span>
+            ) : null
+          })}
+        </div>
       </Table.Cell>
 
       <Table.Cell className="text-muted text-xs tabular-nums whitespace-nowrap">
@@ -101,6 +117,14 @@ export function OrganizationInvitationTableRow({
               isPending={resendPending}
               onPress={() =>
                 resendInvitation({
+                  ...Object.fromEntries(
+                    invitationFields.flatMap((field) => {
+                      const value = (
+                        invitation as unknown as Record<string, unknown>
+                      )[field.name]
+                      return value === undefined ? [] : [[field.name, value]]
+                    })
+                  ),
                   email: invitation.email,
                   organizationId: invitation.organizationId,
                   role: invitation.role as Parameters<
