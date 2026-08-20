@@ -4,11 +4,13 @@ import {
   isConditionalMediationAvailable,
   isPasskeyAutoFillEnabled,
   type PasskeyAuthClient,
-  type SignInPasskeyOptions
+  passkeyMutationKeys,
+  type SignInPasskeyOptions,
+  signInPasskeyOptions
 } from "@better-auth-ui/core/plugins/passkey"
+import { useMutation } from "@tanstack/react-query"
 import { useEffect, useRef } from "react"
 import { useAuth } from "../../../components/auth/auth-provider"
-import { useSignInPasskey } from "./mutations/use-sign-in-passkey"
 
 export type UsePasskeyAutoFillOptions<TAuthClient extends PasskeyAuthClient> =
   SignInPasskeyOptions<TAuthClient> & {
@@ -43,10 +45,11 @@ export function usePasskeyAutoFill<TAuthClient extends PasskeyAuthClient>(
 ) {
   const { plugins } = useAuth()
   const { enabled = true, ...mutationOptions } = options ?? {}
-  const { mutate: signInPasskey } = useSignInPasskey(
-    authClient,
-    mutationOptions
-  )
+  const { mutate: signInPasskey } = useMutation({
+    ...signInPasskeyOptions(authClient),
+    ...mutationOptions,
+    mutationKey: passkeyMutationKeys.autoFill
+  })
   const started = useRef(false)
 
   const active = enabled && isPasskeyAutoFillEnabled(plugins)

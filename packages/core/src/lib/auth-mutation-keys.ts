@@ -22,10 +22,11 @@
  * `apiKeyMutationKeys`, `deviceAuthorizationMutationKeys`,
  * `organizationMutationKeys`, `passkeyMutationKeys`, `magicLinkMutationKeys`,
  * `multiSessionMutationKeys`, `usernameMutationKeys`, `deleteUserMutationKeys`).
- * Plugin-contributed sign-in strategies stay under the shared
+ * User-initiated plugin sign-in strategies stay under the shared
  * `["auth", "signIn", ...]` namespace so
  * `useIsMutating({ mutationKey: authMutationKeys.signIn.all })` still
- * matches them.
+ * matches them. Background authentication work can use a separate key when it
+ * must not put interactive sign-in controls into a pending state.
  *
  * For query keys, see `authQueryKeys` in `./auth-query-keys`.
  */

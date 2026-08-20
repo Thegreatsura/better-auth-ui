@@ -27,7 +27,10 @@ function createTestQueryClient() {
  * `signIn.passkey` — the only better-auth API the component touches.
  */
 function createPasskeyButtonAuthClient() {
-  const passkey = vi.fn(async () => ({ data: {}, error: null }))
+  const passkey = vi.fn(async (_params?: { autoFill?: boolean }) => ({
+    data: {},
+    error: null
+  }))
 
   return {
     signIn: { passkey },
@@ -110,6 +113,39 @@ describe("<PasskeyButton />", () => {
 
     await waitFor(() => {
       expect(authClient.signIn.passkey).toHaveBeenCalledOnce()
+    })
+  })
+
+  it("keeps explicit sign-in available while conditional autofill is pending", async () => {
+    const user = userEvent.setup()
+    const pendingAutoFill = new Promise<never>(() => {})
+    const authClient = createPasskeyButtonAuthClient()
+
+    authClient.signIn.passkey.mockImplementation(async (params) => {
+      if (params?.autoFill) return pendingAutoFill
+
+      return { data: {}, error: null }
+    })
+
+    renderPasskeyButton(authClient, { autoFill: true })
+
+    await waitFor(() => {
+      expect(authClient.signIn.passkey).toHaveBeenCalledWith(
+        expect.objectContaining({ autoFill: true })
+      )
+    })
+
+    const button = screen.getByRole("button", {
+      name: /continue with passkey/i
+    })
+
+    expect(button).toBeEnabled()
+    await user.click(button)
+
+    await waitFor(() => {
+      expect(authClient.signIn.passkey).toHaveBeenCalledWith(
+        expect.objectContaining({ autoFill: false })
+      )
     })
   })
 
