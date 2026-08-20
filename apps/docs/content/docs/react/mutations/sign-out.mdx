@@ -27,7 +27,9 @@ import { useMutation } from "@tanstack/react-query"
 const { mutate } = useMutation(signOutOptions(authClient))
 ```
 
-Note: using the raw factory skips the cache cleanup — prefer `useSignOut` unless you only need a stable options object (for example to match on `mutationKey` inside a global `MutationCache` observer).
+Note: The raw factory skips cache cleanup. Use `useSignOut` for the complete behavior.
+
+Use the raw factory only when you need a stable options object, such as for matching a `mutationKey`.
 
 ## Params
 

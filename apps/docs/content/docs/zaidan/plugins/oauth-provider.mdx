@@ -7,7 +7,7 @@ description: Add OAuth 2.1 consent, sign-up, account selection, and connected ap
 import { Callout } from "fumadocs-ui/components/callout"
 import { Step, Steps } from "fumadocs-ui/components/steps"
 
-The OAuth Provider plugin covers the user-facing screens Better Auth's [OAuth 2.1 Provider](https://better-auth.com/docs/plugins/oauth-provider) redirects to, plus the security settings card for managing what the user has already authorized.
+The OAuth Provider plugin provides the pages used by the [Better Auth OAuth 2.1 Provider](https://better-auth.com/docs/plugins/oauth-provider). It also provides a security card for authorized applications.
 
 It contributes:
 
@@ -21,14 +21,16 @@ It contributes:
 
 ## How the redirect screens fit together
 
-Better Auth owns the authorization request. When it needs something from the user it redirects to one of your pages with the signed authorization query attached, and waits for you to call `oauth2.continue`:
+Better Auth owns the authorization request. When it needs user input, it redirects to one of your pages.
+
+The redirect includes the signed authorization query. Call `oauth2.continue` after the user provides the input:
 
 | Prompt | Page | Continuation |
 | --- | --- | --- |
 | `consent` | `consentPage` | `oauth2.consent({ accept })` |
 | `create` | `signup.page` | `oauth2.continue({ created: true })` |
 | `select_account` | `selectAccount.page` | `oauth2.continue({ selected: true })` |
-| — | `postLogin.page` | `oauth2.continue({ postLogin: true })` |
+| None | `postLogin.page` | `oauth2.continue({ postLogin: true })` |
 
 Keep the query string on every one of those pages. Do not strip it, rebuild it from `redirect_uri`, or navigate to the requested redirect yourself. `oauthProviderClient()` forwards the signed query to Better Auth, and Better Auth validates it and completes the redirect.
 
@@ -71,7 +73,11 @@ export const auth = betterAuth({
 })
 ```
 
-`signup` and `selectAccount` both default their `page` to `loginPage`, so set them explicitly. Each points at a route of the plugin's own — the built-in `/auth/sign-up` view is left exactly as it was. `selectAccount.shouldRedirect` decides when the chooser is needed — return `true` to always let the user pick, or inspect the session and scopes to decide.
+`signup` and `selectAccount` both use `loginPage` by default. Set each `page` explicitly.
+
+Each page uses a plugin route and does not replace `/auth/sign-up`. `selectAccount.shouldRedirect` controls when the application shows the chooser.
+
+Return `true` to always show the chooser. Otherwise, use the session and scopes to make the decision.
 
 Generate or migrate your Better Auth schema after enabling the server plugin:
 
@@ -95,7 +101,7 @@ export const authClient = createAuthClient({
 })
 ```
 
-`multiSessionClient()` is what makes the account chooser work — it lists the device sessions and switches the active one. Skip it if you don't use `prompt=select_account`.
+`multiSessionClient()` is what makes the account chooser work: it lists the device sessions and switches the active one. Skip it if you do not use `prompt=select_account`.
 
 </Step>
 <Step>
@@ -153,7 +159,9 @@ Keep these paths aligned with the server's `consentPage`, `signup.page`, and `se
 
 ## Scope metadata
 
-`scopeMetadata` accepts three shapes. Every requested scope stays visible no matter which one you use — a scope that doesn't resolve falls back to built-in metadata, then to its own raw value.
+`scopeMetadata` accepts three shapes. Every requested scope remains visible.
+
+If a scope has no match, the plugin uses built-in metadata. The raw scope value is the final fallback.
 
 ### Map
 
@@ -213,7 +221,7 @@ Resolvers stay synchronous, so rendering is deterministic and behaves the same u
 
 ## Sign-up continuation
 
-`<OAuthSignUp />` lives at its own route and wraps the same `<SignUp />` component your app already uses — it does not replace the built-in sign-up view. Users who never go through OAuth never touch it.
+`<OAuthSignUp />` lives at its own route and wraps the same `<SignUp />` component your app already uses: it does not replace the built-in sign-up view. Users who never go through OAuth never touch it.
 
 When Better Auth redirects there with `prompt=create`, the ordinary sign-up implementation creates the account, and only after that succeeds does the view call:
 
@@ -221,7 +229,7 @@ When Better Auth redirects there with `prompt=create`, the ordinary sign-up impl
 authClient.oauth2.continue({ created: true })
 ```
 
-If the continuation request itself fails, the form is replaced with a retry — the account already exists, so asking the user to submit it again would be wrong.
+If the continuation request fails, the form shows a retry action. The account already exists, so do not submit the sign-up form again.
 
 Reached without `prompt=create`, it renders plain sign-up and redirects the way sign-up normally does.
 
@@ -236,7 +244,7 @@ In both cases only call `{ created: true }` if the account really was created du
 
 ## Account selection
 
-`<OAuthSelectAccount />` lists the device sessions from `multiSession` using the Zaidan `Item` primitives. Choosing the account that is already active continues directly. Choosing a different one calls `multiSession.setActive()` first, then continues — the switch always lands before Better Auth resumes.
+`<OAuthSelectAccount />` lists the device sessions from `multiSession` using the Zaidan `Item` primitives. Choosing the account that is already active continues directly. Choosing a different one calls `multiSession.setActive()` first, then continues: the switch always lands before Better Auth resumes.
 
 Sessions are compared by session ID, never by user ID or list position.
 
@@ -244,7 +252,9 @@ The chooser has no sign-out or revoke actions on purpose. Session management bel
 
 ## Post-login selection
 
-There is no post-login view to install. What an application selects after login differs too much — a workspace, a tenant, a team, a project, a role — so this stays yours to build. Use the headless continuation helper when your selector is done:
+There is no post-login view to install. An application can select a workspace, tenant, team, project, role, or another resource.
+
+Build this selection interface in the application. When the selection is complete, use the headless continuation helper:
 
 ```tsx title="src/routes/auth/select-workspace.tsx"
 import { oauthContinueOptions } from "@better-auth-ui/core/plugins/oauth-provider"
@@ -282,12 +292,14 @@ function SelectWorkspace(props: { workspaces: Workspace[] }) {
 Point the server's `postLogin.page` at that route.
 
 <Callout type="warn">
-Don't reach for Better Auth active organizations here. Persist the selection with your own slug- or ID-based mechanism.
+Do not use Better Auth active organizations here. Persist the selection with your own slug- or ID-based mechanism.
 </Callout>
 
 ## Connected applications
 
-`<AuthorizedApplications />` is registered as a security card and lists everything the user has authorized: client name and logo, granted scopes through the same scope resolver, the latest authorization date, and a "Remove authorization" action.
+`<AuthorizedApplications />` is a security card for authorized applications. It shows the client name, logo, granted scopes, and latest authorization date.
+
+The card also provides a "Remove authorization" action.
 
 Better Auth can store several consent records for one client, so records are grouped by client ID and rendered as a single application. Removing an application deletes every consent ID in that group. Each row loads its own client metadata, so one slow or missing application never blocks the rest of the card.
 
@@ -298,10 +310,16 @@ oauthProviderPlugin({ showConnectedApplications: false })
 ```
 
 <Callout type="warn">
-Removing an authorization deletes the stored consent record. The application will need the user's approval before it receives new access, but access tokens and refresh tokens that were already issued stay valid until they expire. Better Auth's consent deletion endpoint does not provide complete token revocation, so the UI does not claim otherwise — and neither should any copy you write around it.
+Removing an authorization deletes the stored consent record. The application needs the user's approval before it receives new access.
+
+Existing access and refresh tokens stay valid until they expire. Better Auth does not provide complete token revocation through this endpoint.
+
+Do not tell users that this action revokes existing tokens.
 </Callout>
 
-The card manages consent records only. It is not a session list and not a token list, and it intentionally has no revoke-all control, because Better Auth does not expose the list-and-revoke-all token semantics that would need.
+The card manages consent records only. It is not a session list or token list.
+
+The card has no revoke-all control because Better Auth does not provide the required token operations.
 
 ## Consent behavior
 

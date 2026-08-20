@@ -14,7 +14,9 @@ The delete-user plugin renders the UI for Better Auth's built-in [account deleti
 <Step>
 ### Enable account deletion in Better Auth
 
-Account deletion is [built into Better Auth core](https://www.better-auth.com/docs/concepts/users-accounts#delete-user) — there's no separate plugin to install. Enable it by setting `user.deleteUser.enabled` to `true`:
+[Better Auth core includes account deletion](https://www.better-auth.com/docs/concepts/users-accounts#delete-user). You do not need another plugin.
+
+Enable the feature by setting `user.deleteUser.enabled` to `true`:
 
 ```ts title="lib/auth.ts"
 import { betterAuth } from "better-auth"
@@ -29,7 +31,9 @@ export const auth = betterAuth({
 })
 ```
 
-Once enabled, `authClient.deleteUser()` is available on the client — no client plugin is required. For OAuth users (who don't have a password), also provide `sendDeleteAccountVerification` so they can confirm deletion via email. See the [Better Auth docs](https://www.better-auth.com/docs/concepts/users-accounts#delete-user) for the full options.
+After you enable the feature, the client provides `authClient.deleteUser()`. You do not need a client plugin.
+
+For an OAuth user without a password, provide `sendDeleteAccountVerification`. This callback lets the user confirm deletion by email.
 
 </Step>
 <Step>
@@ -43,10 +47,10 @@ npx shadcn@latest add @better-auth-ui/delete-user
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/delete-user-plugin.ts` — `deleteUserPlugin()` factory
-- `src/components/auth/delete-user/danger-zone.tsx` — the danger zone security card
-- `src/components/auth/delete-user/delete-account.tsx` — the delete account card with confirmation dialog
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/delete-user-plugin.ts`: `deleteUserPlugin()` factory
+- `src/components/auth/delete-user/danger-zone.tsx`: the danger zone security card
+- `src/components/auth/delete-user/delete-account.tsx`: the delete account card with confirmation dialog
 
 </Step>
 <Step>
@@ -92,7 +96,7 @@ import { DangerZone } from "@/components/auth/delete-user/danger-zone"
 
 ### `<DeleteAccount />`
 
-The delete account card with confirmation dialog. Used inside `<DangerZone />` by default; import it directly if you need a custom layout.
+The delete account card with confirmation dialog. Used inside `<DangerZone />` by default. Import it directly if you need a custom layout.
 
 When credential confirmation is required, the password starts masked and includes a localized show/hide control.
 

@@ -15,8 +15,8 @@ It contributes:
 - An `organizations` tab to `<Settings />` listing every organization the user belongs to plus pending invitations to them
 - An `<Organization />` shell mounted at `/organization/<path>` with `settings` and `people` tabs
 - An `<OrganizationSwitcher />` dropdown to switch the active organization, manage it, or create a new one
-- An `organizationCards` plugin slot rendered inside `<OrganizationSettings />` so other plugins (e.g. [api-key](/docs/shadcn/plugins/api-key)) can attach org-scoped cards
-- Hooks and mutations for every organization endpoint (`useActiveOrganization`, `useListOrganizations`, `useInviteMember`, etc.)
+- An `organizationCards` plugin slot rendered inside `<OrganizationSettings />` so other plugins (for example [api-key](/docs/shadcn/plugins/api-key)) can attach org-scoped cards
+- Hooks and mutations for organization endpoints, including `useActiveOrganization`, `useListOrganizations`, and `useInviteMember`
 
 ## Setup
 
@@ -65,31 +65,31 @@ npx shadcn@latest add @better-auth-ui/organization
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/organization-plugin.tsx` — `organizationPlugin()` factory
-- `src/components/auth/organization/accept-invitation.tsx` — direct invitation acceptance view
-- `src/components/auth/organization/organization.tsx` — the `/organization/<path>` shell
-- `src/components/auth/organization/organization-switcher.tsx` — header dropdown for switching organizations
-- `src/components/auth/organization/organization-settings.tsx` — settings tab contents (profile + danger zone + plugin cards)
-- `src/components/auth/organization/organization-people.tsx` — people tab contents (members + invitations)
-- `src/components/auth/organization/organization-profile.tsx` — profile card (logo, name, slug)
-- `src/components/auth/organization/organization-danger-zone.tsx` — danger zone card
-- `src/components/auth/organization/organization-members.tsx` — members table with search/filter/sort
-- `src/components/auth/organization/organization-member-row.tsx` — member row with role and remove actions
-- `src/components/auth/organization/organization-invitations.tsx` — invitations table with search/filter/sort
-- `src/components/auth/organization/organization-invitation-row.tsx` — invitation row with cancel action
-- `src/components/auth/organization/organizations.tsx` — list of organizations the user belongs to
-- `src/components/auth/organization/organization-row.tsx` — single organization row in the list
-- `src/components/auth/organization/organizations-settings.tsx` — `/settings/organizations` panel
-- `src/components/auth/organization/user-invitations.tsx` — invitations addressed to the user
-- `src/components/auth/organization/user-invitation-row.tsx` — invitation row with accept/reject actions
-- `src/components/auth/organization/create-organization-dialog.tsx` — new-organization dialog
-- `src/components/auth/organization/invite-member-dialog.tsx` — invite-by-email dialog
-- `src/components/auth/organization/delete-organization-dialog.tsx` — delete confirmation dialog
-- `src/components/auth/organization/leave-organization-dialog.tsx` — leave confirmation dialog
-- `src/components/auth/organization/remove-member-dialog.tsx` — remove-member confirmation dialog
-- `src/components/auth/organization/leave-organization.tsx` / `delete-organization.tsx` — danger-zone rows
-- `src/components/auth/organization/change-organization-logo.tsx` — logo upload control
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/organization-plugin.tsx`: `organizationPlugin()` factory
+- `src/components/auth/organization/accept-invitation.tsx`: direct invitation acceptance view
+- `src/components/auth/organization/organization.tsx`: the `/organization/<path>` shell
+- `src/components/auth/organization/organization-switcher.tsx`: header dropdown for switching organizations
+- `src/components/auth/organization/organization-settings.tsx`: settings tab contents (profile + danger zone + plugin cards)
+- `src/components/auth/organization/organization-people.tsx`: people tab contents (members + invitations)
+- `src/components/auth/organization/organization-profile.tsx`: profile card (logo, name, slug)
+- `src/components/auth/organization/organization-danger-zone.tsx`: danger zone card
+- `src/components/auth/organization/organization-members.tsx`: members table with search/filter/sort
+- `src/components/auth/organization/organization-member-row.tsx`: member row with role and remove actions
+- `src/components/auth/organization/organization-invitations.tsx`: invitations table with search/filter/sort
+- `src/components/auth/organization/organization-invitation-row.tsx`: invitation row with cancel action
+- `src/components/auth/organization/organizations.tsx`: list of organizations the user belongs to
+- `src/components/auth/organization/organization-row.tsx`: single organization row in the list
+- `src/components/auth/organization/organizations-settings.tsx`: `/settings/organizations` panel
+- `src/components/auth/organization/user-invitations.tsx`: invitations addressed to the user
+- `src/components/auth/organization/user-invitation-row.tsx`: invitation row with accept/reject actions
+- `src/components/auth/organization/create-organization-dialog.tsx`: new-organization dialog
+- `src/components/auth/organization/invite-member-dialog.tsx`: invite-by-email dialog
+- `src/components/auth/organization/delete-organization-dialog.tsx`: delete confirmation dialog
+- `src/components/auth/organization/leave-organization-dialog.tsx`: leave confirmation dialog
+- `src/components/auth/organization/remove-member-dialog.tsx`: remove-member confirmation dialog
+- `src/components/auth/organization/leave-organization.tsx` / `delete-organization.tsx`: danger-zone rows
+- `src/components/auth/organization/change-organization-logo.tsx`: logo upload control
 - `src/components/auth/organization/organization-logo.tsx`, `organization-view.tsx`, `slug-field.tsx`, plus matching skeletons and empty states
 
 </Step>
@@ -138,7 +138,9 @@ Invitation links use `/auth/accept-invitation?invitationId=<id>`. Signed-out rec
 <Step>
 ### Mount the organization switcher
 
-Drop `<OrganizationSwitcher />` into your app shell — typically in the header next to `<UserButton />`. It shows the active organization, lets users switch between organizations, and exposes a "Create organization" entry:
+Add `<OrganizationSwitcher />` to the application shell, usually next to `<UserButton />` in the header.
+
+It shows the selected organization and provides switch and create actions:
 
 ```tsx title="components/header.tsx" {2,7}
 import { UserButton } from "@/components/auth/user/user-button"
@@ -279,13 +281,13 @@ export default async function SettingsPage({
 </Tab>
 </Tabs>
 
-`/settings/organizations` now renders `<OrganizationsSettings />` — the list of organizations the user belongs to plus pending invitations.
+`/settings/organizations` now renders `<OrganizationsSettings />`: the list of organizations the user belongs to plus pending invitations.
 
 </Step>
 <Step>
 ### Create the organization page
 
-Mount a dynamic route at `/organization/<path>` that renders `<Organization />` for the matching tab. `<Organization />` is the shell — it shows the `settings` (profile + danger zone) and `people` (members + invitations) tabs for the **active** organization. The active organization is whatever the user picked in `<OrganizationSwitcher />` (persisted on the server session via `setActive`).
+Mount a dynamic route at `/organization/<path>` that renders `<Organization />` for the matching tab. `<Organization />` is the shell: it shows the `settings` (profile + danger zone) and `people` (members + invitations) tabs for the **active** organization. The active organization is whatever the user picked in `<OrganizationSwitcher />` (persisted on the server session via `setActive`).
 
 <Tabs defaultValue="tanstack-start">
 <TabsList>
@@ -406,15 +408,17 @@ export default async function OrganizationPage({
 </Step>
 </Steps>
 
-That's it — users can now create organizations from `/settings/organizations`, switch between them via the header switcher, and manage members and invitations at `/organization/<path>`.
+Users can now create organizations from `/settings/organizations`. They can use the header switcher and manage members or invitations at `/organization/<path>`.
 
 ## Slug-based routes
 
-By default the active organization is whatever the user last picked in the switcher (persisted on the session). If you'd rather drive the active organization from the URL — for example `acme.your-app.com` or `your-app.com/organization/acme/settings` — you can opt into **slug-based routing**.
+By default, the switcher stores the selected organization in the session. Enable **slug-based routing** to select the organization from the URL.
+
+For example, use `acme.your-app.com` or `your-app.com/organization/acme/settings`.
 
 This unlocks:
 
-- Shareable, bookmarkable per-org URLs that don't depend on session state
+- Shareable, bookmarkable per-org URLs that do not depend on session state
 - Server-side prefetching of the correct organization without round-tripping `setActive`
 - Letting members keep multiple organizations open in separate tabs without thrashing the active organization
 
@@ -422,9 +426,11 @@ You wire this up by passing the URL slug into `organizationPlugin({ slug })`. Th
 
 1. Drives `useActiveOrganization()` to fetch the org matching that slug (instead of reading the session's active org)
 2. Rewrites every link from `<OrganizationSwitcher />`, `<Organizations />`, and the `<Organization />` tabs to include `/<slug>/`
-3. Swaps the switcher's behavior from `setActive` to `navigate` — clicking an organization takes the user to its slug-prefixed route
+3. Swaps the switcher's behavior from `setActive` to `navigate`: clicking an organization takes the user to its slug-prefixed route
 
-Set `slugPrefix` when the visible route should include a marker, such as `/organization/@acme/settings`. Keep `slug` itself unprefixed. For example, a TanStack route named `/organization/@{$slug}/$path` captures `acme`, while `organizationPlugin({ slug, slugPrefix: "@" })` renders the prefix in fields and labels and includes it in generated links.
+Set `slugPrefix` to include a marker in the visible route, such as `/organization/@acme/settings`. Keep `slug` itself unprefixed.
+
+For example, `/organization/@{$slug}/$path` captures `acme`. The plugin adds the prefix to fields, labels, and generated links.
 
 <Steps>
 <Step>
@@ -498,7 +504,9 @@ export function Providers({ children }: { children: ReactNode }) {
 </Tab>
 </Tabs>
 
-When the user is on a non-slug page (`/settings/organizations`, `/dashboard`, etc.) `slug` is `null`, which tells the plugin "no active organization — this is the user's personal account." Don't leave it as `undefined` here: that falls back to whatever the session has cached as active, which can leak the wrong org into non-slug pages.
+On a non-slug page, set `slug` to `null`. This value tells the plugin to use the user's personal account.
+
+Do not leave `slug` as `undefined`. That value uses the organization from the session and can show the wrong organization.
 
 </Step>
 <Step>
@@ -623,13 +631,17 @@ export default async function OrganizationPage({
 </Step>
 </Steps>
 
-Internal links — the switcher, organization rows in `/settings/organizations`, and the tab bar inside `<Organization />` — automatically include `/<slug>/` once `organizationPlugin({ slug })` is wired in.
+After you configure `organizationPlugin({ slug })`, internal organization links include `/<slug>/` automatically.
+
+These links include the switcher, organization rows, and the tab bar in `<Organization />`.
 
 ### Customize where the switcher navigates
 
 When slug-based routing is enabled, clicking an organization in `<OrganizationSwitcher />` navigates to `/organization/<slug>/settings` by default, and clicking the personal account navigates to `/settings/account`.
 
-If you'd rather land on, say, `/<slug>/dashboard` (or any other per-org surface), pass the `setActive` prop to take over navigation entirely. The plugin's default navigation is skipped — you receive the picked `Organization` (or `null` for personal) and own what happens next:
+To use a custom destination such as `/<slug>/dashboard`, pass the `setActive` prop. This prop replaces the plugin's default navigation.
+
+The callback receives the selected `Organization`, or `null` for the personal account:
 
 <Tabs defaultValue="tanstack-start">
 <TabsList>
@@ -686,7 +698,7 @@ export function Header() {
 </Tab>
 </Tabs>
 
-`setActive` also works without slug-based routing — in that mode the default behavior is `authClient.organization.setActive`, and passing `setActive` lets you intercept the picker (for example, to also persist a per-org preference somewhere else).
+Without slug-based routing, the default behavior is `authClient.organization.setActive`. Pass `setActive` to intercept the selection and apply custom behavior.
 
 ## Options
 
@@ -723,27 +735,27 @@ Read these inside custom slot components via `useAuthPlugin(organizationPlugin).
 
 ### Queries
 
-- `useActiveOrganization()` — Full organization for the active session (or the URL slug when `organizationPlugin({ slug })` is set)
-- `useListOrganizations()` — All organizations the signed-in user belongs to
-- `useListOrganizationMembers()` — Members of the active organization
-- `useListOrganizationInvitations()` — Pending invitations for the active organization
-- `useListUserInvitations()` — Pending invitations addressed to the signed-in user
-- `useHasPermission({ permissions })` — Check the current member's permission against the active organization
+- `useActiveOrganization()`: Full organization for the active session (or the URL slug when `organizationPlugin({ slug })` is set)
+- `useListOrganizations()`: All organizations the signed-in user belongs to
+- `useListOrganizationMembers()`: Members of the active organization
+- `useListOrganizationInvitations()`: Pending invitations for the active organization
+- `useListUserInvitations()`: Pending invitations addressed to the signed-in user
+- `useHasPermission({ permissions })`: Check the current member's permission against the active organization
 
 ### Mutations
 
-- `useCreateOrganization()` — Create a new organization
-- `useUpdateOrganization()` — Update name / slug / logo of the active organization
-- `useDeleteOrganization()` — Delete an organization
-- `useSetActiveOrganization()` — Switch the active organization (server-side, persists on session)
-- `useLeaveOrganization()` — Leave an organization
-- `useInviteMember()` — Invite a member by email
-- `useRemoveMember()` — Remove a member
-- `useUpdateMemberRole()` — Update a member's role
-- `useCancelInvitation()` — Cancel a pending invitation
-- `useAcceptInvitation()` — Accept an invitation
-- `useRejectInvitation()` — Reject an invitation
-- `useCheckSlug()` — Check whether an organization slug is available
+- `useCreateOrganization()`: Create a new organization
+- `useUpdateOrganization()`: Update name / slug / logo of the active organization
+- `useDeleteOrganization()`: Delete an organization
+- `useSetActiveOrganization()`: Switch the active organization (server-side, persists on session)
+- `useLeaveOrganization()`: Leave an organization
+- `useInviteMember()`: Invite a member by email
+- `useRemoveMember()`: Remove a member
+- `useUpdateMemberRole()`: Update a member's role
+- `useCancelInvitation()`: Cancel a pending invitation
+- `useAcceptInvitation()`: Accept an invitation
+- `useRejectInvitation()`: Reject an invitation
+- `useCheckSlug()`: Check whether an organization slug is available
 
 ## Components
 
@@ -753,7 +765,7 @@ Direct invitation acceptance view registered by `organizationPlugin()` at `/auth
 
 ### `<OrganizationSwitcher />`
 
-Dropdown that shows the active organization, lets the user switch between organizations, and exposes a "Create organization" entry. Drop it in your app shell — typically next to `<UserButton />`.
+Dropdown that shows the active organization, lets the user switch between organizations, and exposes a "Create organization" entry. Drop it in your app shell: typically next to `<UserButton />`.
 
 <ComponentPreview name="shadcn-organization-switcher" />
 
@@ -775,7 +787,7 @@ The full organization management shell mounted at `/organization/<path>`. Render
 
 ### `<OrganizationSettings />`
 
-The contents of the `settings` tab — `<OrganizationProfile />`, any plugin-contributed `organizationCards` (e.g. `<OrganizationApiKeys />` from the [api-key plugin](/docs/shadcn/plugins/api-key)), then `<OrganizationDangerZone />`. Drop it into a custom layout if you don't want the tabbed shell.
+The contents of the `settings` tab: `<OrganizationProfile />`, any plugin-contributed `organizationCards` (for example `<OrganizationApiKeys />` from the [api-key plugin](/docs/shadcn/plugins/api-key)), then `<OrganizationDangerZone />`. Drop it into a custom layout if you do not want the tabbed shell.
 
 <ComponentPreview name="shadcn-organization-settings" />
 
@@ -808,7 +820,7 @@ Danger-zone card with `<LeaveOrganization />` and `<DeleteOrganization />` rows.
 
 ### `<OrganizationPeople />`
 
-The contents of the `people` tab — `<OrganizationMembers />` on top, `<OrganizationInvitations />` below.
+The contents of the `people` tab: `<OrganizationMembers />` on top, `<OrganizationInvitations />` below.
 
 <ComponentPreview name="shadcn-organization-people" />
 
@@ -834,7 +846,7 @@ By default `<OrganizationMembers />` asks for the whole list and filters it in
 the browser. That is fine for a handful of members and quietly wrong for a
 large organization: `list-members` caps its response at 100 rows (or your
 `membershipLimit`) and says nothing about the rest, so members past that point
-simply never appear.
+do not appear.
 
 Pass `pageSize` to move paging onto the server:
 
@@ -855,13 +867,13 @@ them across pages:
   row itself.
 
 The signed-in user's own role comes from `getActiveMemberRole` rather than from
-scanning the loaded page, since they may well be on a different one. That is
-exposed as `useActiveMemberRole` if you need it yourself.
+scanning the loaded page because that member can be on a different page. This is
+exposed as `useActiveMemberRole` for custom components.
 
 <Callout>
 `list-invitations` and `list-sessions` take no pagination parameters at all, so
 those lists stay client-side until Better Auth adds them. `list-api-keys` does
-support `limit` and `offset`; wiring it up is a separate change.
+support `limit` and `offset`. Wiring it up is a separate change.
 </Callout>
 
 ### `<OrganizationInvitations />`
@@ -915,7 +927,7 @@ Invitations addressed to the signed-in user across every organization, with Acce
 
 ### `<CreateOrganizationDialog />`
 
-Modal dialog with the new-organization form. Owned by `<OrganizationSwitcher />` and `<Organizations />`; mount it directly when you want to open the create flow from your own surface.
+Modal dialog with the new-organization form. Owned by `<OrganizationSwitcher />` and `<Organizations />`. Mount it directly when you want to open the create flow from your own surface.
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/create-organization-dialog.tsx" name="CreateOrganizationDialogProps" />
 
@@ -948,7 +960,7 @@ used to do when deciding whether to show owner-only actions.
 
 ### `<InviteMemberDialog />`
 
-Modal dialog for inviting a new member by email. Owned by `<OrganizationMembers />` and `<OrganizationInvitations />`; mount it directly to drive the invite flow from a custom action.
+Modal dialog for inviting a new member by email. Owned by `<OrganizationMembers />` and `<OrganizationInvitations />`. Mount it directly to drive the invite flow from a custom action.
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/organization/invite-member-dialog.tsx" name="InviteMemberDialogProps" />
 

@@ -1,7 +1,7 @@
 ---
 icon: Users
 title: Multi Session
-description: Enable multiple concurrent sessions with account switching. Allow users to sign in to multiple accounts simultaneously and switch between them seamlessly.
+description: Enable concurrent sessions so users can sign in to and switch between multiple accounts.
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
@@ -61,13 +61,13 @@ npx shadcn@latest add @better-auth-ui/multi-session
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/multi-session-plugin.ts` — `multiSessionPlugin()` factory
-- `src/components/multi-session/manage-accounts.tsx` — the account management card
-- `src/components/multi-session/manage-account.tsx` — individual account row
-- `src/components/multi-session/switch-account-submenu.tsx` — the submenu trigger
-- `src/components/multi-session/switch-account-submenu-content.tsx` — the submenu content
-- `src/components/multi-session/switch-account-submenu-item.tsx` — individual session item
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/multi-session-plugin.ts`: `multiSessionPlugin()` factory
+- `src/components/multi-session/manage-accounts.tsx`: the account management card
+- `src/components/multi-session/manage-account.tsx`: individual account row
+- `src/components/multi-session/switch-account-submenu.tsx`: the submenu trigger
+- `src/components/multi-session/switch-account-submenu-content.tsx`: the submenu content
+- `src/components/multi-session/switch-account-submenu-item.tsx`: individual session item
 
 </Step>
 <Step>
@@ -97,7 +97,9 @@ import { AuthProvider } from "@/components/auth/auth-provider"
 
 <ComponentPreview name="shadcn-switch-account-submenu" />
 
-The "Switch Account" submenu is automatically added to the `<UserButton />` dropdown when the plugin is registered. It shows all active device sessions and lets users switch between them with one click, add a new account, and see which account is currently active.
+The plugin adds a "Switch Account" submenu to `<UserButton />`. It shows all active device sessions.
+
+Users can switch accounts, add an account, and identify the current account.
 
 **Usage**
 

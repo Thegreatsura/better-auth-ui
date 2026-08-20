@@ -1,7 +1,7 @@
 ---
 icon: Users
 title: Multi Session
-description: Enable multiple concurrent sessions with account switching. Allow users to sign in to multiple accounts simultaneously and switch between them seamlessly.
+description: Enable concurrent sessions so users can sign in to and switch between multiple accounts.
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
@@ -77,7 +77,9 @@ import { multiSessionPlugin } from "@better-auth-ui/heroui/plugins/multi-session
 
 <ComponentPreview name="heroui-switch-account-submenu" />
 
-The "Switch Account" submenu is automatically added to the `<UserButton />` dropdown when the plugin is registered. It shows all active device sessions and lets users switch between them with one click, add a new account, and see which account is currently active.
+The plugin adds a "Switch Account" submenu to `<UserButton />`. It shows all active device sessions.
+
+Users can switch accounts, add an account, and identify the current account.
 
 **Usage**
 

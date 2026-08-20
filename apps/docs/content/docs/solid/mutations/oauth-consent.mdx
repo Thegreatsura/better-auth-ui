@@ -16,7 +16,9 @@ consent.mutate({ accept: true })
 consent.mutate({ accept: false })
 ```
 
-Pass only the user's decision to accept the full requested scope set. The OAuth Provider plugin handles the redirect, so the application should not navigate to `redirect_uri` itself.
+Pass only the user's decision for the complete requested scope set. The OAuth Provider plugin handles the redirect.
+
+Do not navigate to `redirect_uri` from the application.
 
 ## Options factory
 

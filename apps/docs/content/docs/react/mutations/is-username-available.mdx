@@ -3,7 +3,7 @@ title: useIsUsernameAvailable
 description: Check whether a username is free to claim.
 ---
 
-Modeled as a mutation (not a query) because callers typically trigger the check on user action — a debounced input or form submit — rather than on mount.
+This operation is a mutation because a user action starts it. Typical actions include a debounced input change or form submission.
 
 `data` is typed as `{ available: boolean; message: string | null }`.
 
@@ -19,7 +19,7 @@ const result = await checkUsername({ username: "alice" })
 // result.available -> boolean
 ```
 
-`useIsUsernameAvailable` requires the Better Auth `username` plugin. Import your configured `authClient`; it already carries the plugin methods from `createAuthClient`.
+`useIsUsernameAvailable` requires the Better Auth `username` plugin. Import your configured `authClient`. It already carries the plugin methods from `createAuthClient`.
 
 ## Options factory
 

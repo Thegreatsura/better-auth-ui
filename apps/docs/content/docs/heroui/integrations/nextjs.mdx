@@ -8,31 +8,33 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 ## Prerequisites
 
-Make sure you've completed the [Quick Start](/docs/heroui) guide first.
+Complete the [Quick Start](/docs/heroui) guide first.
 
 ## Integration
 
 <Steps>
 <Step>
-### Set up the QueryClient
+### Create the QueryClient
 
-Create a shared `QueryClient` factory using the canonical Next.js SSR pattern — a fresh client per server request, a singleton in the browser.
+Create a shared `QueryClient` factory with the standard Next.js SSR pattern. Create one client per server request and one browser singleton.
 
 ```ts title="lib/query-client.ts" file=<rootDir>/../../examples/next-heroui-example/src/lib/query-client.ts
 ```
 
-On the server, every call returns a new `QueryClient` so request caches never bleed across users. On the client, the singleton keeps the React Query cache consistent across navigations so `HydrationBoundary` has a stable target to rehydrate into.
+On the server, each call returns a new `QueryClient`. This design keeps the request cache separate for each user.
+
+In the browser, the singleton preserves the React Query cache across navigation. It also gives `HydrationBoundary` a stable hydration target.
 
 </Step>
 <Step>
 ### Configure AuthProvider
 
-Configure `AuthProvider` with Next.js navigation and wrap it in `QueryClientProvider` so `AuthProvider` picks up your shared client instead of spinning up its internal fallback.
+Configure `AuthProvider` with Next.js navigation. Then wrap it in `QueryClientProvider` so it uses the shared client.
 
 ```tsx title="components/providers.tsx" file=<rootDir>/../../examples/next-heroui-example/src/components/providers.tsx
 ```
 
-The `navigate` prop integrates with Next.js's navigation system. The `navigate` prop accepts `{ to, replace }` options to handle both push and replace navigation.
+The `navigate` prop connects Better Auth UI to Next.js navigation. It accepts `{ to, replace }` options.
 
 </Step>
 <Step>
@@ -52,29 +54,39 @@ Create a dynamic auth page that renders the appropriate authentication view base
 ```tsx title="app/auth/[path]/page.tsx" file=<rootDir>/../../examples/next-heroui-example/src/app/auth/[path]/page.tsx
 ```
 
-The built-in `viewPaths.auth` object contains `redirect`, `sign-in`, `sign-up`, `sign-out`, `forgot-password`, `reset-password`, `reset-link-sent`, and `verify-email`. If you register plugins that contribute their own auth paths, spread each plugin's `viewPaths.auth` into the validation set. See the per-plugin docs, such as [Magic Link](/docs/heroui/plugins/magic-link).
+The built-in `viewPaths.auth` object contains the standard authentication paths. These include `redirect`, `sign-in`, `sign-up`, `sign-out`, and password recovery paths.
+
+If a plugin adds authentication paths, spread its `viewPaths.auth` into the validation set. See the [Magic Link guide](/docs/heroui/plugins/magic-link) for an example.
 
 </Step>
 <Step>
 ### Create the Settings page
 
-Create a dynamic settings route that renders the `Settings` component for the URL segment. This page is an async server component that validates the path, checks the session with `ensureSession` (redirecting unauthenticated users before any HTML is sent), and dehydrates the session query into the client via `HydrationBoundary` so child hooks skip their loading state on hydration.
+Create a dynamic settings route for the URL segment.
+
+The async server component validates the path and session. It redirects unauthenticated users before it sends HTML.
+
+The component also adds the session query to `HydrationBoundary`. As a result, child hooks skip their loading state during hydration.
 
 ```tsx title="app/settings/[path]/page.tsx" file=<rootDir>/../../examples/next-heroui-example/src/app/settings/[path]/page.tsx
 ```
 
-The built-in `viewPaths.settings` object contains `account` and `security`. If a plugin contributes its own settings views, spread its `viewPaths.settings` the same way as the auth route above.
+The built-in `viewPaths.settings` object contains `account` and `security`. If a plugin adds settings views, spread its `viewPaths.settings` into the validation set.
 
 </Step>
 </Steps>
 
 ## Protecting Routes
 
-Better Auth UI supports two route protection patterns depending on whether your route is server-rendered or prerendered.
+Better Auth UI provides separate protection patterns for server-rendered and prerendered routes.
 
 ### Server-rendered routes (async server component)
 
-For SSR routes, check the session in an async server component so unauthenticated users are redirected before any HTML is streamed — no flash of unauthenticated UI. Call `ensureSessionServer` from `@better-auth-ui/core/server` with a per-request `QueryClient` (direct `auth.api` call, no HTTP hop), and wrap the rendered children in `HydrationBoundary` so downstream `useSession` calls read from the hydrated cache under `authQueryKeys.session` on mount.
+For an SSR route, read the session in an async server component. This redirects unauthenticated users before the server streams HTML.
+
+Call `ensureSessionServer` from `@better-auth-ui/core/server` with a separate `QueryClient` for each request. This helper calls `auth.api` directly.
+
+Wrap the rendered children in `HydrationBoundary`. Then downstream `useSession` calls read `authQueryKeys.session` from the hydrated cache.
 
 ```tsx title="app/dashboard/page.tsx"
 import { ensureSessionServer } from "@better-auth-ui/core/server"
@@ -109,18 +121,30 @@ export default async function Dashboard() {
 }
 ```
 
-Because `ensureSession` populates the query cache during SSR and `HydrationBoundary` ships the dehydrated state to the client, child components calling `useSession` render synchronously without a loading state.
+`ensureSession` adds the session to the query cache during SSR. `HydrationBoundary` sends this state to the browser.
 
-If you have client components outside of any protected route that also read the session — typically a header or sidebar with a `UserButton` — prefetch the session in that subtree's server parent and wrap it in its own `HydrationBoundary`. Otherwise those components trigger a fresh client-side fetch on mount. See the [example header](https://github.com/better-auth-ui/better-auth-ui/blob/main/examples/next-heroui-example/src/components/header.tsx) for the full pattern.
+As a result, child components that call `useSession` render without a loading state.
 
-### Reactive protection & prerendered routes (`useAuthenticate`)
+If a client component outside the protected route reads the session, prefetch the session in its server parent. Then wrap that subtree in `HydrationBoundary`.
 
-Server-side checks only run when the route loads — they can't react to session changes *while* the page is mounted (token expiry, sign-out in another tab via `multiSessionPlugin`, a revoked session from the server, etc.). And for statically prerendered or purely client-rendered routes there's no server to call in the first place. The `useAuthenticate` hook covers both: it subscribes to `useSession` and redirects unauthenticated users to the sign-in page the moment the session goes away, preserving the current URL as a `redirectTo` query param.
+This pattern commonly applies to a header or sidebar that contains `UserButton`. Without the prefetch, the component starts a new browser request.
+
+See the [example header](https://github.com/better-auth-ui/better-auth-ui/blob/main/examples/next-heroui-example/src/components/header.tsx) for the complete pattern.
+
+### Reactive protection and prerendered routes (`useAuthenticate`)
+
+Server-side session checks only occur when the route loads. They do not detect session changes while the page remains mounted.
+
+These changes include token expiration, sign-out in another tab, and server-side session revocation. Prerendered and client-rendered routes also have no server check.
+
+The `useAuthenticate` hook covers both cases. It subscribes to `useSession` and redirects the user when the session ends.
+
+The hook preserves the current URL in the `redirectTo` query parameter.
 
 Use it in two situations:
 
 1. **Alongside an async server component** for server-rendered routes, as a second layer that keeps the UI in sync after the initial load.
-2. **On its own** for statically prerendered or purely client-rendered routes (SSG output, client-only views, marketing pages), where server-side session access isn't available.
+2. **On its own** for prerendered or client-rendered routes that have no server-side session access.
 
 ```tsx title="app/dashboard/page.tsx"
 "use client"
@@ -151,15 +175,15 @@ export default function Dashboard() {
 }
 ```
 
-In combination, the async server component handles the initial render (including SSR hydration with no auth flash) and `useAuthenticate` handles everything after — giving you both first-paint protection and live reactivity to session changes.
+The async server component protects the initial render and hydrates the session. Then `useAuthenticate` reacts to later session changes.
 
 ## Example Project
 
-For a complete working example, check out the [next-heroui-example](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/next-heroui-example) in the repository.
+For a complete example, see [next-heroui-example](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/next-heroui-example) in the repository.
 
 ## Next Steps
 
-Explore the shared React hooks and query primitives powering every Better Auth UI component.
+Read about the shared React hooks and query primitives that power each Better Auth UI component.
 
 <Cards>
   <Card icon={<React />} title="React Reference" href="/docs/react">

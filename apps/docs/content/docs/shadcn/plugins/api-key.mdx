@@ -11,7 +11,7 @@ The API key plugin adds programmatic API key management to your authentication U
 It contributes:
 
 - An `<ApiKeys />` card to the security settings tab for user-owned keys
-- An `<OrganizationApiKeys />` card to `<OrganizationSettings />` for organization-owned keys (opt-in via `apiKeyPlugin({ organization: true })`; requires the [organization plugin](/docs/shadcn/plugins/organization) and a matching server-side API key config)
+- An `<OrganizationApiKeys />` card to `<OrganizationSettings />` for organization-owned keys (opt-in via `apiKeyPlugin({ organization: true })`. Requires the [organization plugin](/docs/shadcn/plugins/organization) and a matching server-side API key config)
 
 ## Setup
 
@@ -60,16 +60,16 @@ npx shadcn@latest add @better-auth-ui/api-key
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/api-key-plugin.ts` — `apiKeyPlugin()` factory
-- `src/components/auth/api-key/api-keys.tsx` — the API keys security card
-- `src/components/auth/api-key/api-key.tsx` — individual API key row with delete control
-- `src/components/auth/api-key/api-keys-empty.tsx` — empty state shown when no keys exist
-- `src/components/auth/api-key/api-key-skeleton.tsx` — skeleton shown while keys are loading
-- `src/components/auth/api-key/create-api-key-dialog.tsx` — dialog for creating a new key
-- `src/components/auth/api-key/new-api-key-dialog.tsx` — dialog showing the newly created key with copy button
-- `src/components/auth/api-key/delete-api-key-dialog.tsx` — confirmation dialog for revoking a key
-- `src/components/auth/api-key/organization-api-keys.tsx` — owner-gated wrapper that renders `<ApiKeys />` scoped to the active organization
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/api-key-plugin.ts`: `apiKeyPlugin()` factory
+- `src/components/auth/api-key/api-keys.tsx`: the API keys security card
+- `src/components/auth/api-key/api-key.tsx`: individual API key row with delete control
+- `src/components/auth/api-key/api-keys-empty.tsx`: empty state shown when no keys exist
+- `src/components/auth/api-key/api-key-skeleton.tsx`: skeleton shown while keys are loading
+- `src/components/auth/api-key/create-api-key-dialog.tsx`: dialog for creating a new key
+- `src/components/auth/api-key/new-api-key-dialog.tsx`: dialog showing the newly created key with copy button
+- `src/components/auth/api-key/delete-api-key-dialog.tsx`: confirmation dialog for revoking a key
+- `src/components/auth/api-key/organization-api-keys.tsx`: owner-gated wrapper that renders `<ApiKeys />` scoped to the active organization
 
 </Step>
 <Step>
@@ -138,7 +138,7 @@ apiKeyPlugin({ keyExpiration: false })
 
 <ComponentPreview name="shadcn-api-keys" />
 
-The `<ApiKeys />` security card is rendered on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `apiKeyPlugin()` is in `plugins`.
+The security settings page shows `<ApiKeys />` when the layout renders plugin `securityCards`. Add `apiKeyPlugin()` to `plugins` to provide this card.
 
 **Usage**
 

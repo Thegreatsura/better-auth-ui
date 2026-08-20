@@ -3,9 +3,11 @@ title: Queries
 description: Solid Query factories and auth read helpers.
 ---
 
-Solid queries are package runtime APIs. They return `@tanstack/solid-query` options and Solid hooks for Better Auth read endpoints, with shared `@better-auth-ui/core` cache keys.
+Solid query APIs provide options and hooks for Better Auth read endpoints. They use shared cache keys from `@better-auth-ui/core`.
 
-Every supported query exposes an options factory. UI-safe queries also expose a `use*` hook. Session and user-scoped families additionally expose `ensure*`, `prefetch*`, and `fetch*` helpers for loaders and server-aware route code.
+Each supported query provides an options factory. Queries that are safe for components also provide a `use*` hook.
+
+Session and user queries also provide `ensure*`, `prefetch*`, and `fetch*` helpers for route loaders.
 
 ```ts
 import { useSession } from "@better-auth-ui/solid"
@@ -17,7 +19,9 @@ const session = useSession(authClient, () => ({ enabled: !import.meta.env.SSR })
 
 ## Invalidation
 
-Keys follow an `["auth", ...]` prefix, with per-user queries nested under `["auth", "user", userId, ...]`. Invalidate by prefix for hierarchical cache control. Use the shared `authQueryKeys` factory from `@better-auth-ui/core` so cache entries line up regardless of which options factory produced them:
+All keys start with `["auth", ...]`. Queries for one user use the `["auth", "user", userId, ...]` prefix.
+
+Invalidate a prefix to control the related cache entries. Use `authQueryKeys` from `@better-auth-ui/core` to create consistent keys:
 
 ```ts
 import { authQueryKeys } from "@better-auth-ui/core"
@@ -29,7 +33,11 @@ queryClient.invalidateQueries({ queryKey: authQueryKeys.session })
 
 ## Per-user queries
 
-Settings queries (`useListAccounts`, `useAccountInfo`, `useListSessions`, `useListDeviceSessions`, `useListPasskeys`, `useListApiKeys`) are keyed per-user and wait for the active session before firing. Solid hooks stay disabled until the required user-scoped inputs resolve (`userId`, and `accountId` for `useAccountInfo`), while preserving consumer `enabled` controls. This means they drop out of the cache cleanly on sign-out and on account switching with a persister they stay isolated per user.
+Settings queries use a separate cache key for each user. They wait for the session before they start.
+
+Solid hooks remain disabled until their required user values resolve. Consumer `enabled` controls still apply.
+
+This design removes stale data after sign-out. It also isolates data after an account switch.
 
 ## Escape hatch
 

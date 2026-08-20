@@ -8,7 +8,7 @@ import { Callout } from 'fumadocs-ui/components/callout'
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 import { Tab, Tabs, TabsList, TabsTrigger } from 'fumadocs-ui/components/tabs'
 
-The email-OTP plugin swaps emailed links for short codes the user types back into the app. Every flow is opt-in, so you can keep the link-based views you like and replace only the ones you don't.
+The email-OTP plugin swaps emailed links for short codes the user types back into the app. Every flow is opt-in, so you can keep the link-based views you like and replace only the ones you do not.
 
 It contributes:
 
@@ -19,7 +19,7 @@ It contributes:
 When `emailAndPassword.enabled === false`, `<EmailOtp />` takes over `/auth/sign-in` as the primary passwordless surface.
 
 <Callout type="warn">
-Email-OTP sign-in **replaces** the password, it doesn't add a step after it. If you want "password, then an emailed code", that's the [two-factor plugin](/docs/heroui/plugins/two-factor) with `otpOptions`. Better Auth does not apply 2FA to passwordless methods, so email-OTP sign-in bypasses a configured second factor.
+Email-OTP sign-in **replaces** the password, it does not add a step after it. If you want "password, then an emailed code", that is the [two-factor plugin](/docs/heroui/plugins/two-factor) with `otpOptions`. Better Auth does not apply 2FA to passwordless methods, so email-OTP sign-in bypasses a configured second factor.
 </Callout>
 
 ## Setup
@@ -28,7 +28,7 @@ Email-OTP sign-in **replaces** the password, it doesn't add a step after it. If 
 <Step>
 ### Install the Better Auth plugin
 
-Add the [Email OTP](https://www.better-auth.com/docs/plugins/email-otp) plugin to your server config and wire `sendVerificationOTP` to your email provider. One callback serves all four flows — `type` tells you which one:
+Add the [Email OTP](https://www.better-auth.com/docs/plugins/email-otp) plugin to your server config and wire `sendVerificationOTP` to your email provider. One callback serves all four flows: `type` tells you which one:
 
 ```ts title="lib/auth.ts"
 import { betterAuth } from "better-auth"
@@ -180,13 +180,15 @@ emailOtpPlugin({
 
 Better Auth creates an account for any address that completes an email-OTP sign-in, unless you set `disableSignUp: true` on the server. The UI mirrors that with `disableSignUp` defaulting to `true`.
 
-The reason is account enumeration: collecting a name only for addresses that don't exist yet would tell an attacker which addresses are registered. Keep sign-up on the password or magic-link path, or build a combined flow that asks every user for the same fields.
+Collecting a name only for unregistered addresses reveals which addresses already have accounts. This creates an account-enumeration risk.
+
+Keep sign-up on the password or magic-link path. Alternatively, build a flow that asks every user for the same fields.
 
 ## Components
 
 ### `<EmailOtp />`
 
-A two-state form on one route — enter an email, then enter the code:
+The form has two states. First, enter an email. Then enter the code:
 
 ```tsx
 import { EmailOtp } from "@better-auth-ui/heroui/plugins"
@@ -198,7 +200,7 @@ import { EmailOtp } from "@better-auth-ui/heroui/plugins"
 
 ### `<VerifyEmailOtp />`
 
-Rendered at `/auth/verify-email` when `emailVerification` is on. Reads the pending address from session storage (sign-up and sign-in put it there) and asks for it when it's missing.
+Rendered at `/auth/verify-email` when `emailVerification` is on. Reads the pending address from session storage (sign-up and sign-in put it there) and asks for it when it is missing.
 
 ```tsx
 import { VerifyEmailOtp } from "@better-auth-ui/heroui/plugins"
@@ -223,7 +225,7 @@ import {
 
 ### `<ChangeEmailOtp />`
 
-With `changeEmail` on, this replaces the built-in change-email card inside `<AccountSettings />` — no extra wiring needed. With `verifyCurrentEmail` it becomes a three-step flow: confirm the current address, then the new one.
+With `changeEmail` on, this replaces the built-in change-email card inside `<AccountSettings />`: no extra wiring needed. With `verifyCurrentEmail` it becomes a three-step flow: confirm the current address, then the new one.
 
 ```tsx
 import { ChangeEmailOtp } from "@better-auth-ui/heroui/plugins"

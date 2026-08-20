@@ -113,9 +113,9 @@ Use `validAuthPaths` in the route guard that renders `<Auth path={path} />`.
 | UI option | Default | Server requirement |
 |---|---:|---|
 | `signIn` | `true` | `sendOTP` |
-| `passwordSignIn` | `false` | A password credential; use `requireVerification` when appropriate |
+| `passwordSignIn` | `false` | A password credential. Use `requireVerification` when appropriate |
 | `passwordReset` | `false` | `sendPasswordResetOTP` |
-| `changePhoneNumber` | `true` | `sendOTP`; verification uses `updatePhoneNumber: true` |
+| `changePhoneNumber` | `true` | `sendOTP`. Verification uses `updatePhoneNumber: true` |
 | `otpLength` | `6` | Must match Better Auth `otpLength` |
 
 When both sign-in modes are enabled, the form lets users switch between a code and a password. If password sign-in returns `PHONE_NUMBER_NOT_VERIFIED`, it moves directly to the code step because Better Auth has already started verification.
@@ -126,9 +126,11 @@ Passwordless verification is not a second factor. Better Auth applies 2FA to pho
 
 ## Account creation
 
-Set Better Auth `signUpOnVerification` when a verified unknown number should create a user. It requires a temporary email generator because the Better Auth user model still requires an email.
+Set Better Auth `signUpOnVerification` to create a user after it verifies an unknown number. This option requires a temporary email generator.
 
-If your user schema has other required fields, replace the plugin's `phoneNumber` auth view with a custom component that collects those values and passes them to `authClient.phoneNumber.verify`.
+The Better Auth user model still requires an email address.
+
+If the user schema requires more fields, replace the `phoneNumber` view with a custom component. Pass the collected values to `authClient.phoneNumber.verify`.
 
 ## Components
 

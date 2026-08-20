@@ -4,9 +4,11 @@ description: Shared React hooks, query primitives, and components used by both s
 icon: React
 ---
 
-The `@better-auth-ui/react` package ships the hook layer behind every Better Auth UI component. It's built on [TanStack Query](https://tanstack.com/query) and exposes purpose-built hooks per endpoint, such as `useSession`, `useSignInEmail`, and `useUpdateUser`.
+The `@better-auth-ui/react` package provides hooks for Better Auth UI components. It uses [TanStack Query](https://tanstack.com/query) and provides a hook for each supported endpoint.
 
-Every hook is a thin wrapper around `useQuery` or `useMutation` plus its matching core options factory. Use the hook in components, and import core options factories from `@better-auth-ui/core` anywhere TanStack Query takes a `queryOptions` / `mutationOptions` object (`useQuery`, `useQueries`, `prefetchQuery`, `useIsMutating`, loaders, a global `MutationCache`, …).
+Each hook wraps `useQuery` or `useMutation` and a matching core options factory. Use the hook in a component.
+
+Use a factory from `@better-auth-ui/core` when TanStack Query requires a `queryOptions` or `mutationOptions` object.
 
 ## Prerequisites
 
@@ -18,7 +20,9 @@ Wrap your app with a `QueryClientProvider` above `<AuthProvider>`.
 
 ## Cache keys
 
-All keys are prefixed with `"auth"`. Per-user reads are nested under `["auth", "user", userId, ...]` so they're cleared automatically when the user signs out or switches account. Mutation keys (`authMutationKeys.signIn.email`, `authMutationKeys.updateUser`, …) are stable and match-friendly for `useIsMutating` or a global `MutationCache` observer.
+All keys start with `"auth"`. Queries for one user use the `["auth", "user", userId, ...]` prefix.
+
+This structure clears user queries after sign-out or an account switch. Mutation keys are stable for `useIsMutating` and global `MutationCache` observers.
 
 Read a key off a core factory for cache seeding or invalidation:
 
@@ -40,12 +44,12 @@ useIsMutating({ mutationKey: authMutationKeys.signIn.all })
 
 ## Escape hatches
 
-For Better Auth endpoints that don't have a purpose-built hook yet, use the generic hook wrappers:
+For a Better Auth endpoint without a specific hook, use a generic hook:
 
-- `useAuthQuery(authFn, queryKey, options?)` — read-style endpoints.
-- `useAuthMutation(authFn, mutationKey, options?)` — write-style endpoints.
+- `useAuthQuery(authFn, queryKey, options?)`: read endpoints.
+- `useAuthMutation(authFn, mutationKey, options?)`: mutation endpoints.
 
-For loaders, prefetching, or other non-component usage, import `authQueryOptions(authFn, queryKey, params?)` from `@better-auth-ui/core`. Write-style endpoints use their per-endpoint option factory from core (e.g. `changePasswordOptions(authClient)`).
+For loaders and prefetch operations, import `authQueryOptions(authFn, queryKey, params?)` from `@better-auth-ui/core`. Mutation endpoints use their core options factory.
 
 Both wire `throw: true` into `fetchOptions` so results reject with a `BetterFetchError` instead of resolving to `{ error }`.
 

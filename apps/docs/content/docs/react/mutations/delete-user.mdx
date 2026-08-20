@@ -16,7 +16,7 @@ const { mutate: deleteUser } = useDeleteUser(authClient)
 deleteUser({ password: "hunter2", callbackURL: "/" })
 ```
 
-After a successful immediate deletion you'll typically want to pair this with `useSignOut` (or call `queryClient.removeQueries({ queryKey: ["auth"] })` yourself) to clear the cache.
+After an immediate deletion, use `useSignOut` to clear the cache. Alternatively, call `queryClient.removeQueries({ queryKey: ["auth"] })`.
 
 ## Options factory
 

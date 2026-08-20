@@ -8,7 +8,7 @@ description: Render custom user fields in copied Zaidan auth and profile forms.
 Zaidan copies the Solid `<AdditionalField />` renderer into your app, so the happy path matches the shadcn API while the UI remains app-owned and customizable.
 
 <Callout type="info">
-  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission — the server still owns persistence and validation.
+  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission: the server still owns persistence and validation.
 </Callout>
 
 ## Usage
@@ -54,7 +54,7 @@ Additional sign-up fields without `required: true` include an ` (optional)` suff
 
 ## Install model
 
-The composed auth/profile registry entries include the additional field renderer when those forms need it. If you're building a smaller custom install, you can install the renderer by itself:
+The composed auth/profile registry entries include the additional field renderer when those forms need it. If you are building a smaller custom install, you can install the renderer by itself:
 
 ```npm
 npx shadcn@latest add https://better-auth-ui.com/r/solid/additional-field.json
@@ -87,11 +87,11 @@ Override the visual rendering with `inputType`. The current Zaidan renderer favo
 | `"input"`     | Single-line native input using the copied Zaidan `Input`       |
 | `"textarea"`  | Native textarea with Zaidan classes                            |
 | `"number"`    | Native number input with `min`, `max`, and `step`              |
-| `"slider"`    | Native number fallback; customize the copied renderer for a slider |
+| `"slider"`    | Native number fallback. Customize the copied renderer for a slider |
 | `"switch"`    | Native checkbox fallback                                       |
 | `"checkbox"`  | Native checkbox                                                |
 | `"select"`    | Native select from `options`                                   |
-| `"combobox"`  | Native select fallback from `options`; customize for search UI |
+| `"combobox"`  | Native select fallback from `options`. Customize for search UI |
 | `"date"`      | Native date input                                              |
 | `"datetime"`  | Native `datetime-local` input                                  |
 | `"hidden"`    | Hidden input (submitted but not rendered)                      |
@@ -187,7 +187,9 @@ The current Zaidan renderer uses simple text wrappers next to the input. If your
 
 ### Copy button
 
-Set `copyable: true` to render a copy-to-clipboard button next to the input. The button copies the input's current value, so it works on editable fields too — though it's most commonly paired with `readOnly: true` for fields like `id`:
+Set `copyable: true` to add a copy button to the input. The button copies the current value, including an edited value.
+
+Use this option with `readOnly: true` for fields such as `id`:
 
 ```ts
 {
@@ -237,7 +239,9 @@ Use `render` when the native Zaidan renderer is not enough. The function receive
 
 ### Custom validation
 
-Provide a `validate` callback to run client-side checks before submission. Throw an `Error` to reject — the message is shown to the user via toast:
+Provide a `validate` callback to check a value before submission. If validation fails, throw an `Error`.
+
+The interface shows the error message in a toast:
 
 ```ts
 {

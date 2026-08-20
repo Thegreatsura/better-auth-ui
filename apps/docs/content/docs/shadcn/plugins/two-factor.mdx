@@ -1,7 +1,7 @@
 ---
 icon: ScanFace
 title: Two-Factor
-description: Add a second step after the password — authenticator codes, emailed codes, and backup codes.
+description: Add a second step after the password: authenticator codes, emailed codes, and backup codes.
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout'
@@ -18,7 +18,7 @@ It contributes:
 The copied sign-in forms detect `twoFactorRedirect` for you and route to the challenge with `redirectTo` preserved.
 
 <Callout type="warn">
-Better Auth doesn't apply two-factor to passwordless sign-in. Magic link, email OTP, passkeys, and OAuth all bypass the challenge — the second factor only guards password (and username) sign-in.
+Better Auth does not apply two-factor to passwordless sign-in. Magic link, email OTP, passkeys, and OAuth all bypass the challenge: the second factor only guards password (and username) sign-in.
 </Callout>
 
 ## Setup
@@ -72,7 +72,7 @@ export const authClient = createAuthClient({
 })
 ```
 
-Leave `twoFactorPage` and `onTwoFactorRedirect` unset — the copied components handle the redirect themselves and keep `redirectTo` intact, while `twoFactorPage` forces a full page reload.
+Leave `twoFactorPage` and `onTwoFactorRedirect` unset: the copied components handle the redirect themselves and keep `redirectTo` intact, while `twoFactorPage` forces a full page reload.
 
 </Step>
 <Step>
@@ -84,15 +84,15 @@ npx shadcn@latest add @better-auth-ui/two-factor
 
 This drops the following into your codebase:
 
-- `src/lib/auth/two-factor-plugin.ts` — the `twoFactorPlugin()` factory
-- `src/lib/auth/use-sign-in-continuation.ts` — shared post-sign-in handler
+- `src/lib/auth/two-factor-plugin.ts`: the `twoFactorPlugin()` factory
+- `src/lib/auth/use-sign-in-continuation.ts`: shared post-sign-in handler
 - `src/lib/auth/two-factor-methods.ts`: local redirect metadata storage and validation
-- `src/lib/auth/use-two-factor-password.ts` — decides whether to ask for a password
-- `src/components/auth/otp-field.tsx` — the shared code input
-- `src/components/auth/two-factor/two-factor-challenge.tsx` — the challenge view
-- `src/components/auth/two-factor/two-factor-settings.tsx` — the settings card
-- `src/components/auth/two-factor/*-dialog.tsx` — enable, disable, and regenerate dialogs
-- `src/components/auth/two-factor/backup-codes.tsx` — the one-time code display
+- `src/lib/auth/use-two-factor-password.ts`: decides whether to ask for a password
+- `src/components/auth/otp-field.tsx`: the shared code input
+- `src/components/auth/two-factor/two-factor-challenge.tsx`: the challenge view
+- `src/components/auth/two-factor/two-factor-settings.tsx`: the settings card
+- `src/components/auth/two-factor/*-dialog.tsx`: enable, disable, and regenerate dialogs
+- `src/components/auth/two-factor/backup-codes.tsx`: the one-time code display
 
 The registry also refreshes the email/password and username sign-in forms so both detect the two-factor redirect.
 
@@ -159,7 +159,7 @@ email/password or username/password
 authenticated session
 ```
 
-The method names ride along in session storage — names only, never a code or token. The two-factor cookie that authorizes the challenge stays HTTP-only, exactly as Better Auth set it.
+The method names ride along in session storage: names only, never a code or token. The two-factor cookie that authorizes the challenge stays HTTP-only, exactly as Better Auth set it.
 
 Building a custom sign-in form? Check for the redirect yourself:
 
@@ -196,7 +196,7 @@ Added to `<SecuritySettings />` automatically. Enrollment asks for the password,
 
 <auto-type-table path="../../../../../../examples/start-shadcn-example/src/components/auth/two-factor/two-factor-settings.tsx" name="TwoFactorSettingsProps" />
 
-Backup codes live in component state and are never written to storage or the query cache — once the dialog closes they're gone.
+Backup codes live in component state and are never written to storage or the query cache: once the dialog closes they are gone.
 
 ## Passwordless accounts
 
@@ -212,7 +212,7 @@ twoFactor({ allowPasswordless: true })
 twoFactorPlugin({ allowPasswordless: true })
 ```
 
-The UI still asks for a password when the account has a credential account, matching the server's rule. It reads the linked accounts to decide, so users who do have a password aren't offered a shortcut around it.
+The UI still asks for a password when the account has a credential account, matching the server's rule. It reads the linked accounts to decide, so users who do have a password are not offered a shortcut around it.
 
 ## Options
 

@@ -5,9 +5,9 @@ description: Customize the TanStack Query client and prefetch auth data on the s
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 
-Every Better Auth UI hook runs through [TanStack Query](https://tanstack.com/query), so wiring up a shared `QueryClient` and its router integration is all you need to prefetch sessions on the server, guard routes before render, and hydrate the cache on the client.
+Every Better Auth UI hook uses [TanStack Query](https://tanstack.com/query). A shared `QueryClient` lets the application prefetch sessions, protect routes, and hydrate the browser cache.
 
-The examples below mirror [`examples/start-heroui-example`](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/start-heroui-example) and target [TanStack Start](https://tanstack.com/start). The same `QueryClient` recipe works in any React app — only the router integration differs.
+The examples use [TanStack Start](https://tanstack.com/start) and match [`examples/start-heroui-example`](https://github.com/better-auth-ui/better-auth-ui/tree/main/examples/start-heroui-example). Other React applications can use the same `QueryClient` pattern with different router configuration.
 
 ## Install the SSR integration
 
@@ -15,11 +15,15 @@ The examples below mirror [`examples/start-heroui-example`](https://github.com/b
 @tanstack/react-query @tanstack/react-router-ssr-query
 ```
 
-`@tanstack/react-router-ssr-query` dehydrates the `QueryClient` on the server, streams it down with the HTML, and rehydrates it on the client. It also wraps the app in a `QueryClientProvider` for you, so no extra provider is required.
+`@tanstack/react-router-ssr-query` dehydrates the `QueryClient` on the server. It sends that state with the HTML and rehydrates it in the browser.
+
+The package also wraps the application in `QueryClientProvider`. You do not need another provider.
 
 ## Customize the QueryClient
 
-Build the `QueryClient` inside your router factory so every SSR request gets a fresh cache. Apply your `defaultOptions` here — the example sets a 5 second `staleTime` so repeat navigations within that window skip the network.
+Create the `QueryClient` inside the router factory. Each SSR request then receives a separate cache.
+
+Apply `defaultOptions` in this factory. The example uses a `staleTime` of 5 seconds to reuse recent results during navigation.
 
 ```tsx title="src/router.tsx"
 import { QueryClient } from "@tanstack/react-query"
@@ -53,13 +57,13 @@ export const getRouter = () => {
 }
 ```
 
-A few notes on the options above:
+The options have these effects:
 
-- `defaultPreloadStaleTime: 0` tells TanStack Router to always run loaders on preload. Pair it with `staleTime` on the query so the underlying data is still cached — the loader fires, the query returns instantly.
+- `defaultPreloadStaleTime: 0` tells TanStack Router to start loaders during each preload. Query `staleTime` can still reuse cached data.
 - `context: { queryClient }` exposes the client to every loader/`beforeLoad` hook via `context.queryClient`.
-- `setupRouterSsrQueryIntegration` must be called **after** `createRouter` — it subscribes to router events to dehydrate/hydrate around each navigation.
+- Call `setupRouterSsrQueryIntegration` **after** `createRouter`. It uses router events to dehydrate and hydrate data during navigation.
 
-Tune `defaultOptions` the same way you would in any TanStack Query app. For example, to disable refetch-on-window-focus globally:
+Configure `defaultOptions` as you do in other TanStack Query applications. For example, disable refetch on window focus with this option:
 
 ```ts
 new QueryClient({
@@ -91,7 +95,7 @@ The tree of routes now has `{ queryClient }` available in every loader, `beforeL
 
 ## Prefetch the session in `beforeLoad`
 
-Every `@better-auth-ui/react` query ships matching `ensure*`, `prefetch*`, and `fetch*` helpers alongside its options factory. They accept the `authClient`, a `QueryClient`, and the same params as the underlying query.
+Each `@better-auth-ui/react` query provides matching `ensure*`, `prefetch*`, and `fetch*` helpers. These helpers accept `authClient`, `QueryClient`, and the query parameters.
 
 | Helper             | When to use                                                                 |
 | ------------------ | --------------------------------------------------------------------------- |
@@ -99,7 +103,9 @@ Every `@better-auth-ui/react` query ships matching `ensure*`, `prefetch*`, and `
 | `prefetchSession`  | Kick off a background fetch without awaiting. Good for soft preloads.       |
 | `fetchSession`     | Always bypass the cache and fetch fresh data.                               |
 
-Use `ensureSession` in `beforeLoad` to gate protected routes. If no session is returned, redirect to sign-in and preserve the current URL so the user lands back after signing in.
+Use `ensureSession` in `beforeLoad` to protect a route. If it returns no session, redirect the user to sign-in.
+
+Preserve the current URL in the redirect. The application can return the user to this URL after sign-in.
 
 ```tsx title="src/routes/settings/$path.tsx"
 import { viewPaths } from "@better-auth-ui/core"
@@ -142,13 +148,15 @@ function SettingsPage() {
 }
 ```
 
-Because the query is seeded on the server, the `Settings` component — and any `useSession` call inside it — reads the session synchronously on first render, with no loading flash.
+The server adds the session to the query cache. As a result, `Settings` and its `useSession` calls read it during the first render.
 
-Anything you `return` from `beforeLoad` is merged into the route context, so you can forward the resolved user (or any other derived data) straight to the component via `Route.useRouteContext()` instead of re-reading the query downstream.
+TanStack Router adds the value from `beforeLoad` to the route context. Read this value in a component with `Route.useRouteContext()`.
+
+This pattern avoids another query for the same user data.
 
 ## Prefetch without blocking
 
-Use `prefetchSession` when you want to warm the cache without blocking navigation — for example, on a marketing route that lazily renders an authed widget:
+Use `prefetchSession` to fill the cache without blocking navigation. This pattern can prepare a public route that later shows an authenticated widget:
 
 ```ts
 import { prefetchSession } from "@better-auth-ui/core"
@@ -160,11 +168,13 @@ export const Route = createFileRoute("/")({
 })
 ```
 
-The same pattern works for every settings read — `prefetchListAccounts`, `prefetchListSessions`, `prefetchListDeviceSessions`, `prefetchListPasskeys`, and `prefetchAccountInfo` all live in `@better-auth-ui/core` next to their options factories.
+The same pattern works for each settings query. The related prefetch helpers and options factories are available from `@better-auth-ui/core`.
 
 ## Server-only helpers
 
-If you'd rather skip the HTTP round-trip for the session and hit the Better Auth server directly from a TanStack Start server function (or any other server runtime), import the session helpers from `@better-auth-ui/core/server`. They accept your Better Auth server instance instead of an `authClient`:
+To avoid an HTTP request, import the session helpers from `@better-auth-ui/core/server`. Call them from a server function or another server runtime.
+
+These helpers accept the Better Auth server instance instead of `authClient`:
 
 ```ts title="src/lib/session.ts"
 import { ensureSessionServer } from "@better-auth-ui/core/server"
@@ -182,7 +192,7 @@ export const ensureServerSession = (queryClient: QueryClient) =>
   ensureSessionServer(queryClient, auth, { headers: getRequestHeaders() })
 ```
 
-Session server-auth helpers are canonical from `@better-auth-ui/core/server` as `sessionOptionsServer`, `ensureSessionServer`, `prefetchSessionServer`, and `fetchSessionServer`. These helpers accept your Better Auth server instance (`auth`) and request params instead of a browser `authClient`.
+`@better-auth-ui/core/server` exports `sessionOptionsServer`, `ensureSessionServer`, `prefetchSessionServer`, and `fetchSessionServer`. They accept the Better Auth server instance and request parameters.
 
 Available `@better-auth-ui/core/server` helper families include:
 
@@ -196,4 +206,4 @@ Plugin server query helper families live under their plugin server entrypoints:
 - Passkey (`@better-auth-ui/core/plugins/passkey/server`): `listPasskeysOptions`, `ensureListPasskeys`, `prefetchListPasskeys`, `fetchListPasskeys`
 - Organization (`@better-auth-ui/core/plugins/organization/server`): `activeOrganizationOptions`, `ensureActiveOrganization`, `prefetchActiveOrganization`, `fetchActiveOrganization`, `fullOrganizationOptions`, `ensureFullOrganization`, `listOrganizationsOptions`, `ensureListOrganizations`, `listOrganizationMembersOptions`, `ensureListOrganizationMembers`, `listOrganizationInvitationsOptions`, `ensureListOrganizationInvitations`, `listUserInvitationsOptions`, `ensureListUserInvitations`, `hasPermissionOptions`, and `ensureHasPermission` with matching prefetch/fetch helpers
 
-Cache keys are identical between server and client helpers, so data prefetched on the server hydrates cleanly into client-side hooks like `useSession`, `useListApiKeys`, and `useActiveOrganization`.
+Server and client helpers use the same cache keys. Therefore, browser hooks such as `useSession` can read data that the server prefetched.

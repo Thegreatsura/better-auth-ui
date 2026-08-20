@@ -46,7 +46,9 @@ For interactive items shared across the app, prefer a plugin's `userMenuItems` s
 npx shadcn@latest add https://better-auth-ui.com/r/solid/user-button.json
 ```
 
-After install, `src/components/auth/user-button.tsx` and the copied user button files are app-owned. Point auth and settings links at your TanStack Router paths, then decide which plugins should contribute extra authenticated user menu items.
+After installation, the application owns `src/components/auth/user-button.tsx` and the other copied files. Point authentication and settings links to the TanStack Router paths.
+
+Then select the plugins that add authenticated user menu items.
 
 ## Props
 

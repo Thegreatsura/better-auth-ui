@@ -114,7 +114,7 @@ const validAuthPathSegments = new Set([
 Passwordless phone verification bypasses Better Auth 2FA. Phone number and password sign-in still follows the configured second-factor flow.
 </Callout>
 
-Set Better Auth `signUpOnVerification` when an unknown verified number should create an account. Build a custom view when verification also needs other required user fields.
+Set Better Auth `signUpOnVerification` to create an account after it verifies an unknown number. If verification requires more user fields, build a custom view.
 
 ## Options and localization
 

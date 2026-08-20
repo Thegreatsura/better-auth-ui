@@ -3,18 +3,20 @@ title: Mutations
 description: TanStack Query primitives for every Better Auth write endpoint.
 ---
 
-Solid exposes `use*` hooks for component code. Shared/base options factories live in `@better-auth-ui/core` and plugin options factories live in their core plugin entrypoints.
+Solid provides `use*` hooks for components. Shared options factories come from `@better-auth-ui/core`. Plugin factories come from their core plugin entrypoints.
 
 ```ts
 import { useSignInEmail } from "@better-auth-ui/solid"
 import { signInEmailOptions } from "@better-auth-ui/core"
 ```
 
-Use the hook in components. Use the core factory anywhere Solid Query takes a `mutationOptions` object — `useMutation`, global mutation state checks, or a `MutationCache` observer.
+Use the hook in components. Use the core factory where Solid Query accepts a `mutationOptions` object.
 
 ## Error handling
 
-Every mutation wires `throw: true` into `fetchOptions`, so the promise rejects with a `BetterFetchError` on failure instead of resolving with `{ error }`. This means you can rely on `error`, `isError`, `throwOnError`, and standard `onError` handlers from `useMutation`.
+Each mutation adds `throw: true` to `fetchOptions`. The promise rejects with `BetterFetchError` instead of resolving with `{ error }`.
+
+You can therefore use the standard `error`, `isError`, `throwOnError`, and `onError` values from `useMutation`.
 
 ```tsx
 import { signInEmailOptions } from "@better-auth-ui/core"
@@ -28,26 +30,29 @@ const signIn = useMutation(() => ({
 
 ## Cache side effects
 
-Factories that change auth state set up the same shared mutation keys as React. `AuthProvider` installs the shared mutation invalidator so core metadata handles the common cache side effects.
+Factories that change authentication state use the same mutation keys as React. `AuthProvider` installs an invalidator for the standard cache updates.
 
 Common side effects mirror the React docs:
 
-- `signInEmailOptions` / `signInUsernameOptions` / `signInPasskeyOptions` / `signUpEmailOptions` — reset the session query so the new session is refetched. (`signInSocialOptions` and `signInMagicLinkOptions` redirect instead, so they leave the cache alone.)
-- `signOutOptions` — remove every `["auth", ...]` query.
-- `useUpdateUser` — update the current user's profile fields and refresh cached session data.
-- `setActiveSessionOptions` — refetch session/device-session queries after the active session changes.
-- `changeEmailOptions` — refetch the session.
-- `addPasskeyOptions` / `deletePasskeyOptions` — refetch the passkey list.
-- `revokeSessionOptions` — refetch the sessions list.
-- `revokeMultiSessionOptions` — refetch the device sessions list.
-- `unlinkAccountOptions` — refetch the linked accounts list.
+- `signInEmailOptions` / `signInUsernameOptions` / `signInPasskeyOptions` / `signUpEmailOptions`: reset the session query so it retrieves the new session.
+- `signInSocialOptions` / `signInMagicLinkOptions`: redirect without a cache update.
+- `signOutOptions`: remove every `["auth", ...]` query.
+- `useUpdateUser`: update the current user's profile fields and refresh the cached session.
+- `setActiveSessionOptions`: refresh the session and device-session queries after the active session changes.
+- `changeEmailOptions`: refresh the session.
+- `addPasskeyOptions` / `deletePasskeyOptions`: refresh the passkey list.
+- `revokeSessionOptions`: refresh the sessions list.
+- `revokeMultiSessionOptions`: refresh the device sessions list.
+- `unlinkAccountOptions`: refresh the linked accounts list.
 - Organization hook mutations expose invalidation metadata consumed by `AuthProvider`, so organization/member/invitation queries are invalidated with the same shared cache keys.
 
-The Solid package does not render toast UI. Attach success/error handling in your app, or use installed Zaidan components that already integrate with the app's toast surface.
+The Solid package does not render toast messages. Add success and error handling in the application, or use Zaidan components with toast integration.
 
 ## Tracking mutation state globally
 
-All mutation keys are prefixed with `"auth"` and exposed through the shared `authMutationKeys` factory in `@better-auth-ui/core`. Use it instead of inlining tuples so call sites share the same source of truth as the mutation factories:
+All mutation keys start with `"auth"`. The shared `authMutationKeys` factory in `@better-auth-ui/core` exposes these keys.
+
+Use this factory instead of inline tuples. Call sites and mutation factories will then use the same keys:
 
 ```ts
 import { authMutationKeys } from "@better-auth-ui/core"
@@ -82,7 +87,7 @@ new MutationCache({
 
 ## Escape hatch
 
-For write-style endpoints without a purpose-built factory or hook, use `useAuthMutation` in components. Read-style endpoints should use `useAuthQuery` instead.
+Use `useAuthMutation` for a mutation endpoint that has no specific factory or hook. Use `useAuthQuery` for a read endpoint.
 
 ```tsx
 import { useAuthMutation } from "@better-auth-ui/solid"
@@ -95,7 +100,9 @@ const mutation = useAuthMutation(
 mutation.mutate({ email: "user@example.com", type: "sign-in" })
 ```
 
-Variables are inferred from `authFn`'s parameter — required params reject `mutate()` at the type level, optional-param methods (e.g. `signOut`) allow it. `throw: true` is wired into `fetchOptions` so `onError` and `error` get a `BetterFetchError`.
+TypeScript infers variables from the `authFn` parameter. Required parameters prevent an empty `mutate()` call, while optional parameters permit it.
+
+The factory adds `throw: true` to `fetchOptions`. Therefore, `onError` and `error` receive a `BetterFetchError`.
 
 For shared mutation registration, global mutation state checks, a `MutationCache` observer, or manual `useMutation`, use the endpoint's option factory from core directly:
 

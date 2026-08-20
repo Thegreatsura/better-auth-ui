@@ -4,9 +4,11 @@ description: Solid package setup and runtime API boundaries.
 icon: Solid
 ---
 
-Solid package/runtime track: `@better-auth-ui/solid` owns provider wiring and Solid hooks; core owns shared option factories/helpers, including plugin query helpers. Plugin hooks live under `@better-auth-ui/solid/plugins/*`, and server-boundary helpers live in `@better-auth-ui/core` or core plugin server entrypoints.
+`@better-auth-ui/solid` provides the Solid hooks and provider configuration. Core packages provide shared options factories and query helpers.
 
-Use [Zaidan](/docs/zaidan) when your job is installing copied Solid components or wiring TanStack Start app routes. Stay in this Solid section when your job is using package runtime APIs.
+Plugin hooks are available from `@better-auth-ui/solid/plugins/*`. Server helpers are available from core server entrypoints.
+
+Use [Zaidan](/docs/zaidan) to install copied Solid components or configure TanStack Start routes. Use this section for the Solid package APIs.
 
 ## Quick path
 
@@ -14,7 +16,7 @@ Use [Zaidan](/docs/zaidan) when your job is installing copied Solid components o
 2. Create a Better Auth client with `createAuthClient`.
 3. Wrap your app with `AuthProvider` and pass a `QueryClient`.
 4. Use base hooks from `@better-auth-ui/solid`, plugin hooks from `@better-auth-ui/solid/plugins/<plugin>`, and shared option factories/helpers from `@better-auth-ui/core`.
-5. Use `@better-auth-ui/core/server` and core plugin server entrypoints at server boundaries that need server-side auth data.
+5. Use the core server entrypoints when a server boundary needs authentication data.
 
 ```package-install
 @better-auth-ui/solid @tanstack/solid-query better-auth solid-js
@@ -32,10 +34,10 @@ Use [Zaidan](/docs/zaidan) when your job is installing copied Solid components o
 
 ## What belongs elsewhere
 
-- Component installation, generated payloads, and copied-file ownership belong in [Zaidan](/docs/zaidan).
-- TanStack Start app setup belongs in [Zaidan integrations](/docs/zaidan/integrations/tanstack-start).
-- Native Solid email templates are documented in [Zaidan Email](/docs/zaidan/components/email/email-verification-email); React render-hook behavior and HeroUI React components are not Solid package APIs.
-- Registry generation is part of the Solid example + Zaidan docs, not this package reference.
+- Use [Zaidan](/docs/zaidan) for component installation, generated payloads, and copied-file ownership.
+- Use [Zaidan integrations](/docs/zaidan/integrations/tanstack-start) for TanStack Start application setup.
+- Use [Zaidan Email](/docs/zaidan/components/email/email-verification-email) for native Solid email templates.
+- Use the Zaidan documentation for registry generation. This package reference does not describe React or HeroUI components.
 
 ## Next
 

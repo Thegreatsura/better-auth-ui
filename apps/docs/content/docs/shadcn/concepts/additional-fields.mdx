@@ -6,7 +6,7 @@ description: Render custom user fields on the sign-up form and user profile.
 `additionalFields` is an `AuthProvider` config option that declares extra user fields to render on the sign-up form and the user profile. Each field describes its data type, label, and optional UI rendering. Better Auth UI then handles rendering, parsing, and submitting the value through `signUp.email` (sign-up) and `updateUser` (profile).
 
 <Callout type="info">
-  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission — the server still owns persistence and validation.
+  Define the same fields in your Better Auth server config under `user.additionalFields`. The UI's `additionalFields` only controls rendering and form submission: the server still owns persistence and validation.
 </Callout>
 
 ## Usage
@@ -160,7 +160,9 @@ String inputs render inside an `InputGroup` when `prefix` or `suffix` is set:
 
 ### Copy button
 
-Set `copyable: true` to render a copy-to-clipboard button as a suffix on the input. The button copies the input's *current* value, so it works on editable fields too — though it's most commonly paired with `readOnly: true` for fields like `id`:
+Set `copyable: true` to add a copy button to the input. The button copies the current value, including an edited value.
+
+Use this option with `readOnly: true` for fields such as `id`:
 
 ```ts
 {
@@ -189,7 +191,9 @@ Set `copyable: true` to render a copy-to-clipboard button as a suffix on the inp
 
 ### Custom validation
 
-Provide a `validate` callback to run client-side checks before submission. Throw an `Error` to reject — the message is shown to the user via toast:
+Provide a `validate` callback to check a value before submission. If validation fails, throw an `Error`.
+
+The interface shows the error message in a toast:
 
 ```ts
 {

@@ -6,13 +6,15 @@ description: Add bot protection to sign-up, sign-in, and password reset using a 
 
 import { Step, Steps } from 'fumadocs-ui/components/steps'
 
-The captcha plugin renders a captcha widget on the sign-in, sign-up, and forgot-password forms and forwards the resolved token to Better Auth as the `x-captcha-response` header. It's provider-agnostic — you bring your own captcha library (Cloudflare Turnstile, hCaptcha, CaptchaFox, reCAPTCHA) and pass a `render` component that wires the provider's callbacks to `setToken`, `clearToken`, and `setReset`.
+The captcha plugin adds a widget to the sign-in, sign-up, and forgot-password forms. It sends the resolved token in the `x-captcha-response` header.
+
+The plugin supports Cloudflare Turnstile, hCaptcha, CaptchaFox, and reCAPTCHA. Provide a `render` component that connects the provider callbacks to the plugin.
 
 It contributes:
 
 - A captcha widget rendered above the submit button on sign-in, sign-up, and forgot-password forms
-- Automatic header management — the resolved token is attached to the next Better Auth request and cleared on error, expiry, or unmount
-- Automatic widget refresh after a failed submission — captcha tokens are single-use, so retries (wrong password, email already taken, etc.) need a fresh token
+- Automatic header management. The plugin clears the token after an error or expiration, or when the component unmounts.
+- Automatic widget refresh after an unsuccessful submission. Captcha tokens are single-use, so each retry requires a new token.
 
 ## Setup
 
@@ -37,7 +39,11 @@ export const auth = betterAuth({
 })
 ```
 
-The Better Auth captcha plugin protects `/sign-up/email`, `/sign-in/email`, and `/request-password-reset` by default — exactly the views the UI plugin renders the widget on. Better Auth 1.7+ matches full auth paths, so use exact endpoints like these or explicit wildcards such as `/sign-in/*`; do not rely on partial prefixes like `/sign-in`. To also protect `/sign-in/username`, pass it explicitly:
+By default, the Better Auth captcha plugin protects `/sign-up/email`, `/sign-in/email`, and `/request-password-reset`. The UI plugin shows the widget on these views.
+
+Better Auth 1.7 and later matches complete authentication paths. Use an exact endpoint or an explicit wildcard such as `/sign-in/*`.
+
+Do not use a partial prefix such as `/sign-in`. To protect `/sign-in/username`, add that endpoint explicitly:
 
 ```ts
 captcha({
@@ -245,8 +251,10 @@ The `render` component receives:
 
 <auto-type-table path="../../../../../../packages/react/src/plugins/captcha-plugin.tsx" name="CaptchaRenderProps" />
 
-- Wire your provider's success callback to `setToken` — it sets the `x-captcha-response` header on the next Better Auth request.
-- Wire error / expire callbacks to `clearToken` — it removes the header so a stale token isn't sent.
-- Wire your widget's `reset()` to `setReset` — Better Auth's captcha middleware consumes the token via `/siteverify` even when the auth handler later rejects the request (wrong password, email already taken, etc.), so retries with the same token would be rejected. Each captcha-protected form calls the registered `reset()` from its `onError`, and the consumed token is cleared automatically.
+- Connect the provider's success callback to `setToken`. It adds the `x-captcha-response` header to the next Better Auth request.
+- Connect the error and expiration callbacks to `clearToken`. It removes the header before the application sends a stale token.
+- Connect the widget's `reset()` function to `setReset`. Better Auth consumes the token through `/siteverify` before the authentication handler completes.
 
-The header is also cleared automatically on unmount, so you don't need to handle that manually.
+  A rejected request still consumes the token. Each protected form calls the registered `reset()` function from `onError` and clears the old token.
+
+The plugin also clears the header when the component unmounts. The application does not need additional cleanup.

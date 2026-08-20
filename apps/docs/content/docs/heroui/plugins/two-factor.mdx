@@ -1,7 +1,7 @@
 ---
 icon: ScanFace
 title: Two-Factor
-description: Add a second step after the password — authenticator codes, emailed codes, and backup codes.
+description: Add a second step after the password: authenticator codes, emailed codes, and backup codes.
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout'
@@ -16,10 +16,10 @@ It contributes:
 - A `<TwoFactorSettings />` card in security settings for enrolling, showing the QR code, and managing backup codes
 - Mutation hooks for every two-factor endpoint (`useEnableTwoFactor`, `useDisableTwoFactor`, `useVerifyTotp`, `useSendTwoFactorOtp`, `useVerifyTwoFactorOtp`, `useVerifyBackupCode`, `useGenerateBackupCodes`, `useGetTotpUri`)
 
-The built-in sign-in forms detect `twoFactorRedirect` for you and route to the challenge with `redirectTo` preserved, so the user lands where they were headed once the second factor clears.
+The built-in sign-in forms detect `twoFactorRedirect` and open the challenge. They preserve `redirectTo` and use it after successful verification.
 
 <Callout type="warn">
-Better Auth doesn't apply two-factor to passwordless sign-in. Magic link, email OTP, passkeys, and OAuth all bypass the challenge — the second factor only guards password (and username) sign-in.
+Better Auth does not apply two-factor to passwordless sign-in. Magic link, email OTP, passkeys, and OAuth all bypass the challenge: the second factor only guards password (and username) sign-in.
 </Callout>
 
 ## Setup
@@ -73,7 +73,7 @@ export const authClient = createAuthClient({
 })
 ```
 
-Leave `twoFactorPage` and `onTwoFactorRedirect` unset — the UI handles the redirect itself and keeps `redirectTo` intact, while `twoFactorPage` forces a full page reload.
+Leave `twoFactorPage` and `onTwoFactorRedirect` unset: the UI handles the redirect itself and keeps `redirectTo` intact, while `twoFactorPage` forces a full page reload.
 
 </Step>
 <Step>
@@ -178,7 +178,7 @@ email/password or username/password
 authenticated session
 ```
 
-The method names ride along in session storage — names only, never a code or token. The two-factor cookie that authorizes the challenge stays HTTP-only, exactly as Better Auth set it.
+The method names ride along in session storage: names only, never a code or token. The two-factor cookie that authorizes the challenge stays HTTP-only, exactly as Better Auth set it.
 
 Building a custom sign-in form? Check for the redirect yourself:
 
@@ -227,7 +227,7 @@ import { TwoFactorSettings } from "@better-auth-ui/heroui/plugins"
 
 <auto-type-table path="../../../../../../packages/heroui/src/components/auth/two-factor/two-factor-settings.tsx" name="TwoFactorSettingsProps" />
 
-Backup codes live in component state and are never written to storage or the query cache — once the dialog closes they're gone.
+Backup codes live in component state and are never written to storage or the query cache: once the dialog closes they are gone.
 
 ## Passwordless accounts
 
@@ -243,7 +243,7 @@ twoFactor({ allowPasswordless: true })
 twoFactorPlugin({ allowPasswordless: true })
 ```
 
-The UI still asks for a password when the account has a credential account, matching the server's rule. It reads the linked accounts to decide, so users who do have a password aren't offered a shortcut around it.
+The UI still asks for a password when the account has a credential account, matching the server's rule. It reads the linked accounts to decide, so users who do have a password are not offered a shortcut around it.
 
 ## Options
 

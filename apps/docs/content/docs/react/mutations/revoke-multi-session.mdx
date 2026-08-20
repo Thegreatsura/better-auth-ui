@@ -16,7 +16,7 @@ const { mutate: revokeMultiSession } = useRevokeMultiSession(authClient)
 revokeMultiSession({ sessionToken: deviceSession.session.token })
 ```
 
-`useRevokeMultiSession` requires the Better Auth `multiSession` plugin. Import your configured `authClient`; it already carries the plugin methods from `createAuthClient`.
+`useRevokeMultiSession` requires the Better Auth `multiSession` plugin. Import your configured `authClient`. It already carries the plugin methods from `createAuthClient`.
 
 ## Options factory
 

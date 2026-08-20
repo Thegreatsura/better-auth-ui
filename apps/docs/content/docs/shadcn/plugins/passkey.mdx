@@ -63,15 +63,15 @@ npx shadcn@latest add @better-auth-ui/passkey
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/passkey-plugin.ts` — `passkeyPlugin()` factory
-- `src/components/auth/passkey/passkey-button.tsx` — the "Continue with Passkey" sign-in button
-- `src/components/auth/passkey/passkeys.tsx` — the passkey management card
-- `src/components/auth/passkey/passkey.tsx` — individual passkey row
-- `src/components/auth/passkey/passkey-skeleton.tsx` — skeleton shown while passkeys load
-- `src/components/auth/passkey/passkeys-empty.tsx` — empty state shown when no passkeys exist
-- `src/components/auth/passkey/add-passkey-dialog.tsx` — dialog for registering a new passkey
-- `src/components/auth/passkey/delete-passkey-dialog.tsx` — confirmation dialog for revoking a passkey
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/passkey-plugin.ts`: `passkeyPlugin()` factory
+- `src/components/auth/passkey/passkey-button.tsx`: the "Continue with Passkey" sign-in button
+- `src/components/auth/passkey/passkeys.tsx`: the passkey management card
+- `src/components/auth/passkey/passkey.tsx`: individual passkey row
+- `src/components/auth/passkey/passkey-skeleton.tsx`: skeleton shown while passkeys load
+- `src/components/auth/passkey/passkeys-empty.tsx`: empty state shown when no passkeys exist
+- `src/components/auth/passkey/add-passkey-dialog.tsx`: dialog for registering a new passkey
+- `src/components/auth/passkey/delete-passkey-dialog.tsx`: confirmation dialog for revoking a passkey
 
 </Step>
 <Step>
@@ -119,7 +119,7 @@ import { PasskeyButton } from "@/components/auth/passkey/passkey-button"
 
 <ComponentPreview name="shadcn-passkeys" />
 
-The `<Passkeys />` security card is rendered on the security settings page when your layout renders each plugin's `securityCards` (as the example `SecuritySettings` does) and `passkeyPlugin()` is in `plugins`.
+The security settings page shows `<Passkeys />` when the layout renders plugin `securityCards`. Add `passkeyPlugin()` to `plugins` to provide this card.
 
 **Usage**
 

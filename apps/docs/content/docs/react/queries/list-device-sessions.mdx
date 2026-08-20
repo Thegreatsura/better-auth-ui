@@ -3,9 +3,9 @@ title: useListDeviceSessions
 description: Retrieve the device sessions for the multi-session account switcher.
 ---
 
-Powers the multi-session account switcher — each entry represents a session currently signed in on this device.
+Powers the multi-session account switcher: each entry represents a session currently signed in on this device.
 
-Keyed per-user; waits for the active session before firing.
+Keyed per-user. Waits for the active session before firing.
 
 ## Usage
 
@@ -21,7 +21,7 @@ const { data: deviceSessions } = useListDeviceSessions(authClient, {
 })
 ```
 
-`useListDeviceSessions` requires the Better Auth `multiSession` plugin. Import your configured `authClient`; it already carries the plugin methods from `createAuthClient`.
+`useListDeviceSessions` requires the Better Auth `multiSession` plugin. Import your configured `authClient`. It already carries the plugin methods from `createAuthClient`.
 
 ## Options factory
 

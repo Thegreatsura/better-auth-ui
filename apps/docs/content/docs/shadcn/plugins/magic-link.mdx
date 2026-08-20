@@ -69,13 +69,13 @@ npx shadcn@latest add @better-auth-ui/magic-link
 
 This drops the following into your codebase:
 
-- `src/lib/auth/auth-plugin.ts` — local `AuthPlugin` typing widener
-- `src/lib/auth/magic-link-plugin.ts` — `magicLinkPlugin()` factory
-- `src/components/auth/magic-link.tsx` — the magic-link form
+- `src/lib/auth/auth-plugin.ts`: local `AuthPlugin` typing widener
+- `src/lib/auth/magic-link-plugin.ts`: `magicLinkPlugin()` factory
+- `src/components/auth/magic-link.tsx`: the magic-link form
 - `src/components/auth/magic-link-sent.tsx`: the sent confirmation view
-- `src/components/auth/magic-link-button.tsx` — the toggle button
+- `src/components/auth/magic-link-button.tsx`: the toggle button
 - `src/components/auth/open-email-button.tsx`: the email-provider shortcut
-- `src/components/auth/provider-button(s).tsx` — social provider buttons used by the form
+- `src/components/auth/provider-button(s).tsx`: social provider buttons used by the form
 
 </Step>
 <Step>
@@ -233,7 +233,7 @@ Pair the plugin with the [`<MagicLinkEmail />`](/docs/shadcn/components/email/ma
 
 ## Passwordless-only flows
 
-If you disable email + password auth entirely, the magic-link form is promoted to the primary sign-in view automatically — no extra config needed:
+If you disable email and password authentication, the magic-link form becomes the primary sign-in view. No additional configuration is required:
 
 ```tsx
 <AuthProvider

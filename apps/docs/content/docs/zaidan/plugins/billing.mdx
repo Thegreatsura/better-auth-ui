@@ -64,13 +64,13 @@ export function Providers(props: { children?: JSX.Element }) {
 }
 ```
 
-`user` defaults to `true` and adds the tab to personal settings. `organization` defaults to `false`; turn it on to add the same tab to organization settings.
+`user` defaults to `true` and adds the tab to personal settings. `organization` defaults to `false`. Turn it on to add the same tab to organization settings.
 
 </Step>
 </Steps>
 
 <Callout type="info">
-  The adapter's `supports` flags decide which controls render. A provider that cannot restore a cancelled subscription simply never shows the restore button.
+  The adapter's `supports` flags decide which controls render. A provider that cannot restore a canceled subscription does not show the restore button.
 </Callout>
 
 ## Writing your own adapter

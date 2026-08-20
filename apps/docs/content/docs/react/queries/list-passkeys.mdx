@@ -3,10 +3,10 @@ title: useListPasskeys
 description: Retrieve the passkeys registered for the current user.
 ---
 
-Keyed per-user; waits for the active session before firing.
+Keyed per-user. Waits for the active session before firing.
 
 <Callout type="info">
-  The Better Auth client method is `authClient.passkey.listUserPasskeys`, while the corresponding server endpoint is `auth.api.listPasskeys`. The names diverge in Better Auth itself — this is not a typo. We expose a single unified `listPasskeys` API on top (hooks, options, helpers all drop the redundant `User` infix).
+  The Better Auth client method is `authClient.passkey.listUserPasskeys`, while the corresponding server endpoint is `auth.api.listPasskeys`. The names diverge in Better Auth itself: this is not a typo. We expose a single unified `listPasskeys` API on top (hooks, options, helpers all drop the redundant `User` infix).
 </Callout>
 
 ## Usage
@@ -23,7 +23,7 @@ const { data: passkeys } = useListPasskeys(authClient, {
 })
 ```
 
-`useListPasskeys` requires the Better Auth `passkey` plugin. Import your configured `authClient`; it already carries the plugin methods from `createAuthClient`.
+`useListPasskeys` requires the Better Auth `passkey` plugin. Import your configured `authClient`. It already carries the plugin methods from `createAuthClient`.
 
 ## Options factory
 

@@ -143,7 +143,7 @@ Pass `walletManager` to `siwePlugin()`. BAUI then adds connect, list, primary, a
 
 The link challenge must contain a single-use nonce. Verify its domain, chain, address, nonce, and signature before attaching the wallet.
 
-Removing a wallet should delete its `walletAddress` row and matching SIWE account in one server transaction.
+The server must delete a wallet's `walletAddress` row and matching SIWE account in one transaction.
 
 ## Email modes
 

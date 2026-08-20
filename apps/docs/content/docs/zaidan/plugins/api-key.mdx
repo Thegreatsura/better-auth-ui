@@ -64,15 +64,15 @@ npx shadcn@latest add https://better-auth-ui.com/r/solid/api-key.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth/api-key-plugin.ts` — local `apiKeyPlugin()` factory
-- `src/components/auth/api-key/api-keys.tsx` — the API keys security card
-- `src/components/auth/api-key/api-key.tsx` — individual API key row with delete control
-- `src/components/auth/api-key/api-keys-empty.tsx` — empty state shown when no keys exist
-- `src/components/auth/api-key/api-key-skeleton.tsx` — loading placeholder shown while keys are loading
-- `src/components/auth/api-key/create-api-key-dialog.tsx` — dialog for creating a new key
-- `src/components/auth/api-key/new-api-key-dialog.tsx` — dialog showing the newly created key with copy button
-- `src/components/auth/api-key/delete-api-key-dialog.tsx` — confirmation dialog for revoking a key
-- `src/components/auth/api-key/organization-api-keys.tsx` — owner-gated wrapper that renders `<ApiKeys />` scoped to the active organization
+- `src/lib/auth/api-key-plugin.ts`: local `apiKeyPlugin()` factory
+- `src/components/auth/api-key/api-keys.tsx`: the API keys security card
+- `src/components/auth/api-key/api-key.tsx`: individual API key row with delete control
+- `src/components/auth/api-key/api-keys-empty.tsx`: empty state shown when no keys exist
+- `src/components/auth/api-key/api-key-skeleton.tsx`: loading placeholder shown while keys are loading
+- `src/components/auth/api-key/create-api-key-dialog.tsx`: dialog for creating a new key
+- `src/components/auth/api-key/new-api-key-dialog.tsx`: dialog showing the newly created key with copy button
+- `src/components/auth/api-key/delete-api-key-dialog.tsx`: confirmation dialog for revoking a key
+- `src/components/auth/api-key/organization-api-keys.tsx`: owner-gated wrapper that renders `<ApiKeys />` scoped to the active organization
 
 </Step>
 <Step>
@@ -142,7 +142,9 @@ apiKeyPlugin({ keyExpiration: false })
   height={560}
 />
 
-The `<ApiKeys />` security card is rendered on the security settings page when your settings layout includes the copied `SecuritySettings` component and the API Key plugin is enabled. It uses the [Solid runtime APIs](/docs/solid) from `@better-auth-ui/solid` to list, create, and revoke keys.
+The security settings page shows `<ApiKeys />` when its layout includes `SecuritySettings` and enables the API Key plugin.
+
+The component uses the [Solid runtime APIs](/docs/solid) to list, create, and revoke keys.
 
 **Usage**
 
@@ -152,7 +154,7 @@ import { ApiKeys } from "@/components/auth/api-key/api-keys"
 <ApiKeys />
 ```
 
-This component is normally mounted by `SecuritySettings`; render it manually only if you are building a custom settings layout.
+This component is normally mounted by `SecuritySettings`. Render it manually only if you are building a custom settings layout.
 
 **Props**
 
@@ -160,7 +162,9 @@ This component is normally mounted by `SecuritySettings`; render it manually onl
 
 ### `<OrganizationApiKeys />`
 
-A thin wrapper around `<ApiKeys />` that resolves the active organization with `useActiveOrganization`, checks the current user with `useListOrganizationMembers`, and renders nothing unless the user is an organization owner.
+This component wraps `<ApiKeys />`. It resolves the organization and checks the current user's membership.
+
+It renders the API keys only for an organization owner.
 
 To enable, opt in on the copied UI plugin and add a matching API key configuration to your Better Auth server config. The organization API key config uses a fixed `configId` of `"organization"`, so the server entry **must** be `{ configId: "organization", references: "organization" }`:
 

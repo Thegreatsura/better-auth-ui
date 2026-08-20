@@ -7,7 +7,7 @@ description: Replace emailed links with one-time codes in your Solid/Zaidan auth
 import { Callout } from "fumadocs-ui/components/callout"
 import { Step, Steps } from "fumadocs-ui/components/steps"
 
-The Email OTP plugin swaps emailed links for short codes the user types back into the app. Every flow is opt-in, so you keep the link-based views you like and replace only the ones you don't.
+The Email OTP plugin swaps emailed links for short codes the user types back into the app. Every flow is opt-in, so you keep the link-based views you like and replace only the ones you do not.
 
 It contributes:
 
@@ -18,7 +18,7 @@ It contributes:
 When `emailAndPassword.enabled === false`, `<EmailOtp />` takes over `/auth/sign-in` as the primary passwordless surface.
 
 <Callout type="warn">
-Email OTP sign-in **replaces** the password, it doesn't add a step after it. If you want "password, then an emailed code", that's the [Two-Factor plugin](/docs/zaidan/plugins/two-factor) with `otpOptions`. Better Auth does not apply 2FA to passwordless methods, so email-OTP sign-in bypasses a configured second factor.
+Email OTP sign-in **replaces** the password, it does not add a step after it. If you want "password, then an emailed code", that is the [Two-Factor plugin](/docs/zaidan/plugins/two-factor) with `otpOptions`. Better Auth does not apply 2FA to passwordless methods, so email-OTP sign-in bypasses a configured second factor.
 </Callout>
 
 ## Setup
@@ -27,7 +27,7 @@ Email OTP sign-in **replaces** the password, it doesn't add a step after it. If 
 <Step>
 ### Install the Better Auth plugin
 
-Add `emailOTP({ sendVerificationOTP })` to your Better Auth server config. One callback serves all four flows — `type` tells you which one:
+Add `emailOTP({ sendVerificationOTP })` to your Better Auth server config. One callback serves all four flows: `type` tells you which one:
 
 ```ts title="src/lib/auth.ts"
 import { betterAuth } from "better-auth"
@@ -74,12 +74,12 @@ npx shadcn@latest add https://better-auth-ui.com/r/solid/email-otp.json
 
 This drops the following into your codebase:
 
-- `src/lib/auth/email-otp-plugin.ts` — the `emailOtpPlugin()` factory
-- `src/lib/auth/use-resend-cooldown.ts` — countdown state for resend buttons
-- `src/lib/auth/use-sign-in-continuation.ts` — shared post-sign-in handler
+- `src/lib/auth/email-otp-plugin.ts`: the `emailOtpPlugin()` factory
+- `src/lib/auth/use-resend-cooldown.ts`: countdown state for resend buttons
+- `src/lib/auth/use-sign-in-continuation.ts`: shared post-sign-in handler
 - `src/lib/auth/two-factor-methods.ts`: local two-factor redirect metadata support
-- `src/components/auth/otp-field.tsx` — the shared code input
-- `src/components/auth/email-otp/*.tsx` — sign-in, toggle button, verification, password reset, and change-email views
+- `src/components/auth/otp-field.tsx`: the shared code input
+- `src/components/auth/email-otp/*.tsx`: sign-in, toggle button, verification, password reset, and change-email views
 - Provider-button and last-used badge components needed by the passwordless sign-in view
 
 The registry also refreshes `<AccountSettings />`, so enabling the change-email override does not require a separate registry command.
@@ -157,27 +157,31 @@ emailOtpPlugin({
 
 ### Confirming the current address
 
-`verifyCurrentEmail` adds a step in front of the change: the user first types a code sent to their **current** address, and only then does the new address get one. It guards against a hijacked session being used to move the account — and with it the password-reset path — to an attacker's inbox.
+`verifyCurrentEmail` adds a verification step for the current address. After this step, the plugin sends a code to the new address.
 
-The copied `<ChangeEmailOtp />` card handles the extra round trip for you; set the option on both sides or neither.
+This process prevents a hijacked session from moving the account and its password-reset path to an attacker's inbox.
+
+The copied `<ChangeEmailOtp />` card handles the extra round trip for you. Set the option on both sides or neither.
 
 ## Sign-up and account creation
 
 Better Auth creates an account for any address that completes an email-OTP sign-in, unless you set `disableSignUp: true` on the server. The UI plugin mirrors that with `disableSignUp` defaulting to `true`.
 
-The reason is account enumeration: collecting a name only for addresses that don't exist yet would tell an attacker which addresses are registered. Keep sign-up on the password or magic-link path, or build a combined flow that asks every user for the same fields.
+Collecting a name only for unregistered addresses reveals which addresses already have accounts. This creates an account-enumeration risk.
+
+Keep sign-up on the password or magic-link path. Alternatively, build a flow that asks every user for the same fields.
 
 ## Components
 
 ### `<EmailOtp />`
 
-A two-state form on one route — enter an email, then enter the code.
+The form has two states. First, enter an email. Then enter the code.
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/email-otp/email-otp.tsx" name="EmailOtpProps" />
 
 ### `<VerifyEmailOtp />`
 
-Rendered at `/auth/verify-email` when `emailVerification` is on. Reads the pending address from session storage and asks for it when it's missing.
+Rendered at `/auth/verify-email` when `emailVerification` is on. Reads the pending address from session storage and asks for it when it is missing.
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/email-otp/verify-email-otp.tsx" name="VerifyEmailOtpProps" />
 
@@ -189,7 +193,7 @@ With `passwordReset` on, `/auth/forgot-password` emails a code and sends the use
 
 ### `<ChangeEmailOtp />`
 
-With `changeEmail` on, this replaces the built-in change-email card inside `<AccountSettings />` — no extra wiring needed.
+With `changeEmail` on, this replaces the built-in change-email card inside `<AccountSettings />`: no extra wiring needed.
 
 <auto-type-table path="../../../../../../examples/start-solid-zaidan-example/src/components/auth/email-otp/change-email-otp.tsx" name="ChangeEmailOtpProps" />
 
