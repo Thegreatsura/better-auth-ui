@@ -1,14 +1,12 @@
 "use client"
 
 import {
-  type AdditionalField,
   type AuthClient,
   type AuthConfig,
+  type AuthConfigOptions,
   authQueryKeys,
   createAuthQueryRetryOptions,
-  type DeepPartial,
-  deepmerge,
-  defaultAuthConfig
+  resolveAuthConfig
 } from "@better-auth-ui/core"
 import {
   environmentManager,
@@ -20,7 +18,8 @@ import {
   type PropsWithChildren,
   type ReactNode,
   useContext,
-  useMemo
+  useMemo,
+  useRef
 } from "react"
 import { MutationInvalidator } from "../mutation-invalidator"
 import { AuthContext } from "./auth-context"
@@ -38,6 +37,21 @@ const fallbackQueryClient = new QueryClient({
   }
 })
 
+function useShallowStableObject<T extends object>(value: T): T {
+  const reference = useRef(value)
+  const previousKeys = Object.keys(reference.current)
+  const nextKeys = Object.keys(value)
+  const isStable =
+    previousKeys.length === nextKeys.length &&
+    nextKeys.every((key) =>
+      Object.is(reference.current[key as keyof T], value[key as keyof T])
+    )
+
+  if (!isStable) reference.current = value
+
+  return reference.current
+}
+
 declare module "@better-auth-ui/core" {
   /** Widen `AdditionalField.label` to `ReactNode` in the React package. */
   interface AdditionalFieldRegister {
@@ -52,8 +66,7 @@ declare module "@better-auth-ui/core" {
 
 export type AuthProviderProps<TAuthClient extends AuthClient = AuthClient> =
   PropsWithChildren<
-    DeepPartial<Omit<AuthConfig, "authClient">> & {
-      authClient: TAuthClient
+    Omit<AuthConfigOptions<TAuthClient>, "navigate"> & {
       navigate: (options: { to: string; replace?: boolean }) => void
       /** TanStack QueryClient to use for your application's queries */
       queryClient?: QueryClient
@@ -77,37 +90,28 @@ export function AuthProvider<TAuthClient extends AuthClient = AuthClient>({
   queryClient,
   ...config
 }: AuthProviderProps<TAuthClient>) {
-  const { authClient, ...partialConfig } = config
-  const mergedConfig = {
-    ...deepmerge(defaultAuthConfig, partialConfig),
-    authClient
-  } as AuthConfig<TAuthClient>
-  const configuredRedirectTo = mergedConfig.redirectTo
+  const stableConfig = useShallowStableObject(config)
+  const mergedConfig = useMemo(() => {
+    const { authClient, ...partialConfig } = stableConfig
+    const resolvedConfig = resolveAuthConfig({
+      ...partialConfig,
+      authClient
+    }) as AuthConfig<TAuthClient>
+    const configuredRedirectTo = resolvedConfig.redirectTo
 
-  Object.defineProperty(mergedConfig, "redirectTo", {
-    configurable: true,
-    enumerable: true,
-    get: () =>
-      (typeof window !== "undefined" &&
-        new URLSearchParams(window.location.search)
-          .get("redirectTo")
-          ?.trim()) ||
-      configuredRedirectTo
-  })
+    Object.defineProperty(resolvedConfig, "redirectTo", {
+      configurable: true,
+      enumerable: true,
+      get: () =>
+        (typeof window !== "undefined" &&
+          new URLSearchParams(window.location.search)
+            .get("redirectTo")
+            ?.trim()) ||
+        configuredRedirectTo
+    })
 
-  // Merge plugin-contributed `additionalFields` with user-supplied ones.
-  // Plugin order is preserved; user-supplied entries with the same `name`
-  // override the plugin contribution.
-  const fieldsByName = new Map<string, AdditionalField>()
-  for (const plugin of mergedConfig.plugins ?? []) {
-    for (const field of plugin.additionalFields ?? []) {
-      fieldsByName.set(field.name, field)
-    }
-  }
-  for (const field of mergedConfig.additionalFields ?? []) {
-    fieldsByName.set(field.name, field)
-  }
-  mergedConfig.additionalFields = Array.from(fieldsByName.values())
+    return resolvedConfig
+  }, [stableConfig])
 
   const contextQueryClient = useContext(QueryClientContext)
   const resolvedQueryClient =
