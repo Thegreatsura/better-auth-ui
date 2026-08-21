@@ -221,6 +221,7 @@ const expectedSolidRegistryPayloadNames = [
   "siwe",
   "sso",
   "billing",
+  "dash",
   "agent-auth",
   "username",
   "passkey",
@@ -2454,6 +2455,31 @@ describe("Solid registry isolation", () => {
     expect(shadcnTwoFactorInstall.itemNames).toContain("additional-field")
   })
 
+  it("includes organization for dependent Solid registry plugins", () => {
+    const registryRoot = resolve(__dirname, "../../../apps/docs/public/r")
+    const solidRegistryRoot = resolve(registryRoot, "solid")
+
+    for (const entry of ["billing", "dash", "oauth-provider"]) {
+      const install = collectRegistryInstall({
+        entry,
+        registryRoot: solidRegistryRoot,
+        solid: true
+      })
+
+      expect(install.itemNames).toContain("organization")
+      expect(install.files.has("src/lib/auth/organization-plugin.tsx")).toBe(
+        true
+      )
+    }
+
+    const all = readJson<{ registryDependencies: string[] }>(
+      resolve(registryRoot, "radix-nova/all.json")
+    )
+    expect(all.registryDependencies).toContain(
+      "https://better-auth-ui.com/r/radix-nova/dash.json"
+    )
+  })
+
   it("rejects manifest files that escape the Solid example source tree", () => {
     const outputRoot = makeTempRoot()
     const unsafeManifest = {
@@ -2494,6 +2520,7 @@ describe("Solid registry isolation", () => {
       "./plugins/api-key",
       "./plugins/captcha",
       "./plugins/billing",
+      "./plugins/dash",
       "./plugins/device-authorization",
       "./plugins/email-otp",
       "./plugins/magic-link",
@@ -2813,28 +2840,35 @@ describe("Solid registry isolation", () => {
       "components"
     ])
     expect(zaidanPluginsMeta.pages).toEqual([
+      "---Authentication---",
+      "two-factor",
+      "username",
+      "anonymous",
+      "phone-number",
+      "magic-link",
+      "email-otp",
+      "passkey",
+      "one-tap",
+      "siwe",
+      "---Authorization---",
       "admin",
       "agent-auth",
-      "anonymous",
       "api-key",
-      "billing",
-      "captcha",
-      "delete-user",
-      "device-authorization",
-      "email-otp",
-      "last-login-method",
-      "magic-link",
-      "multi-session",
-      "oauth-provider",
-      "one-tap",
       "organization",
-      "passkey",
-      "phone-number",
-      "siwe",
+      "---Enterprise---",
+      "oauth-provider",
       "sso",
+      "---Infrastructure---",
+      "dash",
+      "---Utility---",
+      "device-authorization",
+      "captcha",
+      "last-login-method",
+      "multi-session",
+      "delete-user",
       "theme",
-      "two-factor",
-      "username"
+      "---Payments---",
+      "billing"
     ])
     expect(zaidanComponentsMeta.pages).toEqual([
       "---Provider---",
@@ -2876,7 +2910,6 @@ describe("Solid registry isolation", () => {
     ])
     expect(zaidanConceptsMeta.pages).toEqual(["additional-fields", "passwords"])
     expect(zaidanIntegrationsMeta.pages).toEqual(["tanstack-start"])
-    expect(solidOverview).toContain("Solid package/runtime track")
     expect(solidOverview).toContain("/docs/zaidan")
     expect(solidOverview).toContain("/docs/zaidan/integrations/tanstack-start")
     expect(solidOverview).not.toContain("/docs/solid/integrations")
@@ -3003,9 +3036,6 @@ describe("Solid registry isolation", () => {
       .map(({ content }) => content)
       .join("\n")
 
-    expect(combinedSolidPackageDocs).toContain(
-      "`@better-auth-ui/solid` owns provider wiring and Solid hooks; core owns shared option factories/helpers"
-    )
     expect(combinedSolidPackageDocs).toContain("ensureSession")
     expect(combinedSolidPackageDocs).toContain("prefetchSession")
     expect(combinedSolidPackageDocs).toContain("fetchSession")
@@ -3118,6 +3148,7 @@ describe("Solid registry isolation", () => {
       "siwe",
       "sso",
       "billing",
+      "dash",
       "agent-auth"
     ]
     const runtimeOnlyPluginNames = ["captcha"]

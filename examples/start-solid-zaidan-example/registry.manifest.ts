@@ -364,6 +364,7 @@ export const solidRegistryManifest = {
       dependencies: [...solidAuthDependencies, "@better-auth/oauth-provider"],
       registryDependencies: [
         betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("organization"),
         betterAuthSolidRegistryDependency("sign-up")
       ],
       files: [
@@ -446,9 +447,30 @@ export const solidRegistryManifest = {
       title: "Solid Billing",
       description:
         "Solid provider-agnostic billing settings: plans, subscription state, seats, and usage.",
+      registryDependencies: [
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("organization")
+      ],
       files: [
         libFile("src/lib/auth/billing-plugin.tsx"),
         componentFile("src/components/auth/billing/billing-settings.tsx"),
+        ...zaidanInteractiveSupportFiles
+      ]
+    }),
+    item({
+      name: "dash",
+      type: "registry:component",
+      title: "Solid Dash Activity",
+      description:
+        "Solid personal activity and role-aware organization audit logs backed by Better Auth Infrastructure Dash.",
+      dependencies: [...solidAuthDependencies, "@better-auth/infra@latest"],
+      registryDependencies: [
+        betterAuthSolidRegistryDependency("auth-provider"),
+        betterAuthSolidRegistryDependency("organization")
+      ],
+      files: [
+        libFile("src/lib/auth/dash-plugin.tsx"),
+        componentFile("src/components/auth/dash/activity.tsx"),
         ...zaidanInteractiveSupportFiles
       ]
     }),
