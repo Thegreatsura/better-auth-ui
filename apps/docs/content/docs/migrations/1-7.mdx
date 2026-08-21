@@ -1,0 +1,305 @@
+---
+title: Migrate from 1.6 to 1.7
+description: Update consumer imports, server helpers, types, and copied components for Better Auth UI 1.7.
+icon: ArrowUpCircle
+---
+
+import { Callout } from 'fumadocs-ui/components/callout'
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+Better Auth UI 1.7 changes several public import paths. Most applications must update consumer code, even when their authentication configuration does not change.
+
+<Callout type="warn" title="Upgrade Better Auth at the same time">
+  Better Auth UI 1.7 requires Better Auth 1.7 or newer. An older Better Auth version can cause many unrelated TypeScript errors after this migration.
+</Callout>
+
+## Consumer changes at a glance
+
+| Consumer code | Required change |
+| --- | --- |
+| Core plugin APIs | Replace `@better-auth-ui/core/plugins` with `@better-auth-ui/core/plugins/<plugin>` |
+| React and Solid plugin hooks | Import from `@better-auth-ui/react/plugins/<plugin>` or `@better-auth-ui/solid/plugins/<plugin>` |
+| Query and mutation option factories | Import shared factories from core and plugin factories from a core plugin path |
+| Auth client types | Import shared types from core and plugin types from a core plugin path |
+| Server helpers | Replace the React or Solid server path with a core server path |
+| Solid auth client | Import `createAuthClient` from `better-auth/solid` |
+| Copied registry components | Refresh them and merge the 1.7 changes with local customizations |
+
+## Update consumer code
+
+<Steps>
+<Step>
+### Find imports that need changes
+
+Search your application and any internal packages:
+
+```bash
+rg '"@better-auth-ui/(core|react|solid)/plugins"' .
+rg '"@better-auth-ui/(react|solid)/server"' .
+```
+
+Also search for APIs that moved or changed names:
+
+```bash
+rg '\b(AuthClient|createAuthClient|sessionOptions|ensureSession|prefetchSession|fetchSession)\b' .
+```
+
+Ignore generated output and dependency folders in the results.
+
+</Step>
+<Step>
+### Replace core plugin aggregate imports
+
+The `@better-auth-ui/core/plugins` entry point no longer exists. Import each API from its plugin entry point.
+
+```ts title="Before"
+import {
+  type OrganizationLocalization,
+  organizationPlugin,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins"
+```
+
+```ts title="After"
+import {
+  type OrganizationLocalization,
+  organizationPlugin,
+  organizationQueryKeys
+} from "@better-auth-ui/core/plugins/organization"
+```
+
+Use the plugin name at the end of the path. For example, use `/plugins/api-key`, `/plugins/passkey`, `/plugins/two-factor`, or `/plugins/organization`.
+
+If one import contains APIs from different plugins, split it into one import for each plugin.
+
+</Step>
+<Step>
+### Move plugin hooks out of the framework root
+
+Shared hooks remain in `@better-auth-ui/react` and `@better-auth-ui/solid`. Plugin hooks now use a plugin entry point.
+
+```ts title="Before"
+import {
+  useActiveOrganization,
+  useInviteMember,
+  useListOrganizations,
+  useSession
+} from "@better-auth-ui/react"
+```
+
+```ts title="After"
+import { useSession } from "@better-auth-ui/react"
+import {
+  useActiveOrganization,
+  useInviteMember,
+  useListOrganizations
+} from "@better-auth-ui/react/plugins/organization"
+```
+
+Use the same pattern with `@better-auth-ui/solid/plugins/<plugin>` in a Solid application.
+
+</Step>
+<Step>
+### Move option factories and auth client types to core
+
+Version 1.7 makes query and mutation option factories framework-independent. Import shared factories and types from `@better-auth-ui/core`.
+
+```ts title="Before"
+import {
+  type AuthClient,
+  sessionOptions,
+  signOutOptions
+} from "@better-auth-ui/react"
+```
+
+```ts title="After"
+import {
+  type AuthClient,
+  sessionOptions,
+  signOutOptions
+} from "@better-auth-ui/core"
+```
+
+Import plugin factories and client types from the matching core plugin path:
+
+```ts
+import {
+  type OrganizationAuthClient,
+  inviteMemberOptions,
+  listOrganizationsOptions
+} from "@better-auth-ui/core/plugins/organization"
+```
+
+Keep framework hooks in the React or Solid package. For example, `useSession` remains in the framework root, and `useListOrganizations` moves to the framework organization entry point.
+
+</Step>
+<Step>
+### Move server helpers and rename session helpers
+
+The React and Solid `/server` entry points no longer exist. Import shared server APIs from `@better-auth-ui/core/server`.
+
+The session helper names now use a `Server` suffix:
+
+| 1.6 name | 1.7 name |
+| --- | --- |
+| `sessionOptions` | `sessionOptionsServer` |
+| `ensureSession` | `ensureSessionServer` |
+| `prefetchSession` | `prefetchSessionServer` |
+| `fetchSession` | `fetchSessionServer` |
+
+```ts title="Before"
+import {
+  ensureSession,
+  sessionOptions
+} from "@better-auth-ui/react/server"
+```
+
+```ts title="After"
+import {
+  ensureSessionServer,
+  sessionOptionsServer
+} from "@better-auth-ui/core/server"
+```
+
+Plugin server APIs use a plugin-specific core path. Their existing function names remain unchanged.
+
+```ts title="Before"
+import {
+  ensureActiveOrganization,
+  listOrganizationsOptions
+} from "@better-auth-ui/react/server"
+```
+
+```ts title="After"
+import {
+  ensureActiveOrganization,
+  listOrganizationsOptions
+} from "@better-auth-ui/core/plugins/organization/server"
+```
+
+Version 1.7 provides server entry points for API key, magic link, multi-session, organization, passkey, and username.
+
+</Step>
+<Step>
+### Update Solid auth client imports
+
+If a Solid source file imports `createAuthClient` from Better Auth UI, import it from Better Auth instead.
+
+```ts title="Before"
+import { createAuthClient } from "@better-auth-ui/solid"
+```
+
+```ts title="After"
+import { createAuthClient } from "better-auth/solid"
+```
+
+</Step>
+<Step>
+### Refresh copied components
+
+If you installed shadcn/ui components, the source files are part of your application. A package update does not update those files.
+
+Inspect the registry changes first:
+
+```bash
+bunx --bun shadcn@latest add @better-auth-ui/all --dry-run
+bunx --bun shadcn@latest add @better-auth-ui/all --diff
+```
+
+Then refresh only the groups that your application uses. Merge the changes with your local customizations.
+
+```bash
+bunx --bun shadcn@latest add @better-auth-ui/auth @better-auth-ui/settings
+bunx --bun shadcn@latest add @better-auth-ui/organization
+```
+
+`@better-auth-ui/organization` is a shadcn registry item. It is not an npm package.
+
+If you use Zaidan, inspect the matching Solid registry entries before you replace local files:
+
+```bash
+bunx --bun shadcn@latest add https://better-auth-ui.com/r/solid/auth.json --dry-run
+bunx --bun shadcn@latest add https://better-auth-ui.com/r/solid/organization.json --dry-run
+```
+
+Remove `--dry-run` after you review the changes. HeroUI components come from `@better-auth-ui/heroui`, so they do not need this copied-component step.
+
+</Step>
+</Steps>
+
+## Align dependencies
+
+After you update the consumer code, keep the authentication packages on compatible versions:
+
+- Use `better-auth` 1.7.0 or newer.
+- Use Better Auth UI packages from the same 1.7 release.
+- Update each installed Better Auth plugin package to 1.7.0 or newer. This includes `@better-auth/api-key`, `@better-auth/oauth-provider`, and `@better-auth/passkey` when you use them.
+- Use TanStack Query 5.101.2 or newer.
+
+For a React application, the main update is:
+
+```bash
+bun add @better-auth-ui/core@^1.7.0 @better-auth-ui/react@^1.7.0 \
+  better-auth@^1.7.0 @tanstack/query-core@^5.101.2 \
+  @tanstack/react-query@^5.101.2
+```
+
+For a Solid application, the main update is:
+
+```bash
+bun add @better-auth-ui/core@^1.7.0 @better-auth-ui/solid@^1.7.0 \
+  better-auth@^1.7.0 @tanstack/query-core@^5.101.2 \
+  @tanstack/solid-query@^5.101.2 solid-js@^1.9.14
+```
+
+Add `@better-auth-ui/heroui@^1.7.0` for HeroUI. Update only the separate Better Auth plugin packages that your application already uses.
+
+## Validate the migration
+
+Check that the dependency tree contains compatible Better Auth versions:
+
+```bash
+bun pm why better-auth
+bun pm why @better-auth-ui/core
+```
+
+Search for removed paths again. Both commands must return no source imports:
+
+```bash
+rg '"@better-auth-ui/(core|react|solid)/plugins"' .
+rg '"@better-auth-ui/(react|solid)/server"' .
+```
+
+Run your typecheck, linter, tests, and production build. Then test the authentication flows that your application uses, including sign-in, account settings, organizations, passkeys, and API keys.
+
+## Common migration errors
+
+### Package subpath is not exported
+
+A source file still imports an aggregate 1.6 path. Replace it with the applicable plugin-specific 1.7 path.
+
+### Auth client types are incompatible
+
+First, verify that `better-auth` and its separate plugin packages use version 1.7 or newer. Then verify that every Better Auth UI package uses version 1.7.
+
+If the versions match, update your copied components. Old registry files can keep 1.6 imports and types in your application.
+
+### A Better Auth client method is missing
+
+Add the matching Better Auth client plugin. For example, organization hooks require `organizationClient()` from `better-auth/client/plugins`.
+
+### The organization installer does not resolve
+
+Run the registry installer:
+
+```bash
+bunx --bun shadcn@latest add @better-auth-ui/organization
+```
+
+Do not install `@better-auth-ui/organization` with a package manager. It is a registry item, not a package.
+
+## Postpone the migration
+
+If you cannot update the full integration, restore the complete pre-upgrade state. Restore `package.json`, `bun.lock`, and copied component files together.
+
+The last 1.6 release is `1.6.45`. Do not combine 1.6 packages with 1.7 copied components.

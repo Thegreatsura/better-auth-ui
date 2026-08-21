@@ -1,3 +1,11 @@
 {
-  "pages": ["index", "shadcn", "heroui", "react", "solid", "zaidan"]
+  "pages": [
+    "index",
+    "migrations",
+    "shadcn",
+    "heroui",
+    "react",
+    "solid",
+    "zaidan"
+  ]
 }
