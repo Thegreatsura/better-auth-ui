@@ -1,6 +1,6 @@
 {
   "name": "@better-auth-ui/locales",
-  "version": "1.7.24",
+  "version": "1.7.25",
   "type": "module",
   "scripts": {
     "build": "vite build",
