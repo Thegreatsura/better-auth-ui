@@ -1,6 +1,6 @@
 {
   "name": "@better-auth-ui/react",
-  "version": "1.7.25",
+  "version": "1.7.26",
   "type": "module",
   "scripts": {
     "build": "vite build",
