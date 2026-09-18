@@ -6,7 +6,7 @@ import {
   validateStringLength
 } from "@better-auth-ui/core"
 import { useAuth, useSession, useUpdateUser } from "@better-auth-ui/solid"
-import { createEffect, For } from "solid-js"
+import { createEffect, For, Show } from "solid-js"
 import { toast } from "solid-sonner"
 import {
   createAuthForm,
@@ -34,6 +34,9 @@ export function UserProfile(props: UserProfileProps = {}) {
 
   const profileFields = () =>
     auth.additionalFields?.filter((field) => field.profile !== false) ?? []
+  const hasProfileFields = () =>
+    auth.profile.name ||
+    profileFields().some((field) => field.inputType !== "hidden")
   const form = createAuthForm(() => ({
     defaultValues: {
       additionalFields: getAdditionalFieldDefaultValues(profileFields()),
@@ -41,7 +44,7 @@ export function UserProfile(props: UserProfileProps = {}) {
     },
     onSubmit: async ({ value }) => {
       await updateUser({
-        name: value.name,
+        ...(auth.profile.name && { name: value.name }),
         ...getAdditionalFieldSubmitValues(
           profileFields(),
           value.additionalFields
@@ -66,87 +69,95 @@ export function UserProfile(props: UserProfileProps = {}) {
   })
 
   return (
-    <div class={cn(props.class)}>
-      <h2 class="mb-3 text-sm font-semibold">
-        {auth.localization.settings.userProfile}
-      </h2>
-      <form.AppForm>
-        <form.AuthFormRoot aria-label="Profile">
-          <Card>
-            <CardContent class="flex flex-col gap-6">
-              <ChangeAvatar />
+    <Show when={auth.avatar.enabled || hasProfileFields()}>
+      <div class={cn(props.class)}>
+        <h2 class="mb-3 text-sm font-semibold">
+          {auth.localization.settings.userProfile}
+        </h2>
+        <form.AppForm>
+          <form.AuthFormRoot aria-label="Profile">
+            <Card>
+              <CardContent class="flex flex-col gap-6">
+                <ChangeAvatar />
 
-              <form.AppField
-                name="name"
-                validators={{
-                  onChange: ({ value }) =>
-                    validateStringLength(value, {
-                      requiredMessage: auth.localization.auth.fieldRequired,
-                      trim: true
-                    })
-                }}
-              >
-                {(field) => {
-                  const isInvalid = () =>
-                    isAuthFormFieldInvalid(field().state.meta)
-
-                  return (
-                    <Field data-invalid={isInvalid()}>
-                      <FieldLabel for="settings-name">
-                        {auth.localization.auth.name}
-                      </FieldLabel>
-                      <Input
-                        aria-invalid={isInvalid()}
-                        autocomplete="name"
-                        disabled={updateUserPending}
-                        id="settings-name"
-                        name={field().name}
-                        onBlur={field().handleBlur}
-                        onInput={(event) =>
-                          field().handleChange(event.currentTarget.value)
-                        }
-                        placeholder={auth.localization.auth.name}
-                        value={field().state.value}
-                      />
-                      <FieldError
-                        errors={getFormFieldErrors(field().state.meta.errors)}
-                      />
-                    </Field>
-                  )
-                }}
-              </form.AppField>
-
-              <For each={profileFields()}>
-                {(configuredField) => (
+                <Show when={auth.profile.name}>
                   <form.AppField
-                    name={`additionalFields.${configuredField.name}`}
-                    validators={getAuthAdditionalFieldValidators(
-                      configuredField,
-                      auth.localization.auth.fieldRequired
-                    )}
+                    name="name"
+                    validators={{
+                      onChange: ({ value }) =>
+                        validateStringLength(value, {
+                          requiredMessage: auth.localization.auth.fieldRequired,
+                          trim: true
+                        })
+                    }}
                   >
-                    {(field) => (
-                      <field.AuthFormAdditionalField
-                        field={configuredField}
-                        isPending={updateUserPending || !session.data}
-                      />
-                    )}
+                    {(field) => {
+                      const isInvalid = () =>
+                        isAuthFormFieldInvalid(field().state.meta)
+
+                      return (
+                        <Field data-invalid={isInvalid()}>
+                          <FieldLabel for="settings-name">
+                            {auth.localization.auth.name}
+                          </FieldLabel>
+                          <Input
+                            aria-invalid={isInvalid()}
+                            autocomplete="name"
+                            disabled={updateUserPending}
+                            id="settings-name"
+                            name={field().name}
+                            onBlur={field().handleBlur}
+                            onInput={(event) =>
+                              field().handleChange(event.currentTarget.value)
+                            }
+                            placeholder={auth.localization.auth.name}
+                            value={field().state.value}
+                          />
+                          <FieldError
+                            errors={getFormFieldErrors(
+                              field().state.meta.errors
+                            )}
+                          />
+                        </Field>
+                      )
+                    }}
                   </form.AppField>
-                )}
-              </For>
-            </CardContent>
-            <CardFooter>
-              <form.AuthFormSubmitButton
-                aria-label="Save changes"
-                disabled={updateUserPending || !session.data}
-                size="sm"
-              >
-                {auth.localization.settings.saveChanges}
-              </form.AuthFormSubmitButton>
-            </CardFooter>
-          </Card>
-        </form.AuthFormRoot>
-      </form.AppForm>
-    </div>
+                </Show>
+
+                <For each={profileFields()}>
+                  {(configuredField) => (
+                    <form.AppField
+                      name={`additionalFields.${configuredField.name}`}
+                      validators={getAuthAdditionalFieldValidators(
+                        configuredField,
+                        auth.localization.auth.fieldRequired
+                      )}
+                    >
+                      {(field) => (
+                        <field.AuthFormAdditionalField
+                          field={configuredField}
+                          isPending={updateUserPending || !session.data}
+                        />
+                      )}
+                    </form.AppField>
+                  )}
+                </For>
+              </CardContent>
+              <Show when={hasProfileFields()}>
+                <CardFooter>
+                  <form.AuthFormSubmitButton
+                    aria-label="Save changes"
+                    disabled={updateUserPending || !session.data}
+                    size="sm"
+                  >
+                    {auth.localization.settings.saveChanges}
+                  </form.AuthFormSubmitButton>
+                </CardFooter>
+              </Show>
+            </Card>
+          </form.AuthFormRoot>
+        </form.AppForm>
+      </div>
+    </Show>
   )
 }

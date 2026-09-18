@@ -6,6 +6,7 @@ import { defineConfig } from "vitest/config"
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    dedupe: ["react", "react-dom"],
     alias: {
       "@better-auth-ui/core": resolve(__dirname, "../core/src"),
       "@better-auth-ui/react": resolve(__dirname, "../react/src")

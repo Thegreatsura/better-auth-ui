@@ -1,5 +1,23 @@
 <ComponentPage id="user-profile">
 
+<PageSlot name="usage">
+
+Set `profile.name` to `false` on `AuthProvider` to hide the display name field:
+
+```tsx
+<AuthProvider authClient={authClient} profile={{ name: false }}>
+  {children}
+</AuthProvider>
+```
+
+The hidden name field is not validated or included in profile updates. Existing names remain unchanged.
+This option defaults to `true` and is independent of `emailAndPassword.name`, which controls sign-up only.
+
+To hide the whole card when no additional profile fields are visible, also set `avatar={{ enabled: false }}`.
+Avatar-only cards keep their upload and delete actions without a separate save button.
+
+</PageSlot>
+
 <PageSlot name="installation" doc-variant="zaidan">
 
 After install, `src/components/auth/settings/account/user-profile.tsx` is app-owned. Customize it inside your Solid app as needed.

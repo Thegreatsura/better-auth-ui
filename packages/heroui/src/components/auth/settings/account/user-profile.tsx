@@ -38,7 +38,8 @@ export function UserProfile({
   variant,
   ...props
 }: UserProfileProps & Omit<CardProps, "children">) {
-  const { additionalFields, authClient, localization } = useAuth()
+  const { additionalFields, authClient, avatar, localization, profile } =
+    useAuth()
   const { data: session } = useSession(authClient)
 
   const { mutateAsync: updateUser, isPending } = useUpdateUser(authClient, {
@@ -49,6 +50,8 @@ export function UserProfile({
     () => additionalFields?.filter((field) => field.profile !== false) ?? [],
     [additionalFields]
   )
+  const hasProfileFields =
+    profile.name || profileFields.some((field) => field.inputType !== "hidden")
   const form = useAuthForm({
     defaultValues: {
       additionalFields: getAdditionalFieldDefaultValues(profileFields),
@@ -56,7 +59,7 @@ export function UserProfile({
     },
     onSubmit: async ({ value }) => {
       await updateUser({
-        name: value.name,
+        ...(profile.name && { name: value.name }),
         ...getAdditionalFieldSubmitValues(profileFields, value.additionalFields)
       })
     }
@@ -75,6 +78,8 @@ export function UserProfile({
     })
   }, [form, profileFields, session])
 
+  if (!avatar.enabled && !hasProfileFields) return null
+
   return (
     <div>
       <h2 className={cn("text-sm font-semibold mb-3")}>
@@ -87,49 +92,51 @@ export function UserProfile({
             <form.AuthFormRoot className="flex flex-col gap-4">
               <ChangeAvatar />
 
-              <form.AppField
-                name="name"
-                validators={{
-                  onChange: ({ value }) =>
-                    validateStringLength(value, {
-                      requiredMessage: localization.auth.fieldRequired,
-                      trim: true
-                    })
-                }}
-              >
-                {(field) => {
-                  const isInvalid = isAuthFormFieldInvalid(field.state.meta)
+              {profile.name && (
+                <form.AppField
+                  name="name"
+                  validators={{
+                    onChange: ({ value }) =>
+                      validateStringLength(value, {
+                        requiredMessage: localization.auth.fieldRequired,
+                        trim: true
+                      })
+                  }}
+                >
+                  {(field) => {
+                    const isInvalid = isAuthFormFieldInvalid(field.state.meta)
 
-                  return (
-                    <TextField
-                      name={field.name}
-                      isDisabled={isPending || !session}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={field.handleChange}
-                      isInvalid={isInvalid || undefined}
-                      validationBehavior="aria"
-                    >
-                      <Label>{localization.auth.name}</Label>
+                    return (
+                      <TextField
+                        name={field.name}
+                        isDisabled={isPending || !session}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={field.handleChange}
+                        isInvalid={isInvalid || undefined}
+                        validationBehavior="aria"
+                      >
+                        <Label>{localization.auth.name}</Label>
 
-                      <Input
-                        className={cn(!session && "hidden")}
-                        autoComplete="name"
-                        placeholder={localization.auth.name}
-                        variant={
-                          variant === "transparent" ? "primary" : "secondary"
-                        }
-                      />
+                        <Input
+                          className={cn(!session && "hidden")}
+                          autoComplete="name"
+                          placeholder={localization.auth.name}
+                          variant={
+                            variant === "transparent" ? "primary" : "secondary"
+                          }
+                        />
 
-                      {!session && (
-                        <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
-                      )}
+                        {!session && (
+                          <Skeleton className="h-10 md:h-9 w-full rounded-xl" />
+                        )}
 
-                      <field.AuthFormFieldError />
-                    </TextField>
-                  )
-                }}
-              </form.AppField>
+                        <field.AuthFormFieldError />
+                      </TextField>
+                    )
+                  }}
+                </form.AppField>
+              )}
 
               {profileFields.map((configuredField) => {
                 if (!session) {
@@ -165,13 +172,15 @@ export function UserProfile({
                 )
               })}
 
-              <form.AuthFormSubmitButton
-                isDisabled={!session}
-                size="sm"
-                className="self-start mt-1"
-              >
-                {localization.settings.saveChanges}
-              </form.AuthFormSubmitButton>
+              {hasProfileFields && (
+                <form.AuthFormSubmitButton
+                  isDisabled={!session}
+                  size="sm"
+                  className="self-start mt-1"
+                >
+                  {localization.settings.saveChanges}
+                </form.AuthFormSubmitButton>
+              )}
             </form.AuthFormRoot>
           </form.AppForm>
         </Card.Content>

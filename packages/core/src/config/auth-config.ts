@@ -16,6 +16,7 @@ import type {
 } from "./additional-fields-config"
 import type { AvatarConfig } from "./avatar-config"
 import type { EmailAndPasswordConfig } from "./email-and-password-config"
+import type { ProfileConfig } from "./profile-config"
 import type { AuthSocialProvider } from "./social-provider-config"
 
 export type SocialSignInMode = "redirect" | "popup"
@@ -75,6 +76,12 @@ export interface AuthConfig<TAuthClient extends AuthClient = AuthClient> {
    * @default []
    */
   plugins: AuthPlugin[]
+  /**
+   * Account profile editing configuration.
+   * @remarks `ProfileConfig`
+   * @default { name: true }
+   */
+  profile: ProfileConfig
   /**
    * Default redirect path after successful authentication
    * @default "/"
@@ -145,6 +152,7 @@ export const defaultAuthConfig: Omit<AuthConfig, "authClient"> = {
     maxPasswordLength: 128
   },
   plugins: [],
+  profile: { name: true },
   redirectTo: "/",
   socialSignInMode: "redirect",
   viewPaths,
