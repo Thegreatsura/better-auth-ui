@@ -2,6 +2,7 @@ import {
   authMutationKeys,
   getAdditionalFieldDefaultValues,
   getAdditionalFieldSubmitValues,
+  getAuthCallbackURL,
   getAuthLinkURL,
   isPasswordCompromisedError,
   validateEmailAddress,
@@ -74,6 +75,7 @@ export function SignUp({
     additionalFields,
     authClient,
     basePaths,
+    baseURL,
     emailAndPassword,
     localization,
     plugins,
@@ -151,6 +153,7 @@ export function SignUp({
             signUpFields,
             value.additionalFields
           ),
+          callbackURL: getAuthCallbackURL(baseURL, redirectTo),
           fetchOptions
         })
       } catch {
