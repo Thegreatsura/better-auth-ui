@@ -6,6 +6,7 @@ import { defineConfig } from "vitest/config"
 
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  optimizeDeps: { include: ["@testing-library/react", "@tanstack/react-form"] },
   resolve: {
     alias: {
       "@": resolve(import.meta.dirname, "src"),
@@ -20,29 +21,13 @@ export default defineConfig({
     }
   },
   test: {
-    projects: [
-      {
-        extends: true,
-        test: {
-          environment: "node",
-          include: ["tests/source-sync.test.ts"],
-          name: "source-sync"
-        }
-      },
-      {
-        extends: true,
-        test: {
-          browser: {
-            enabled: true,
-            headless: true,
-            instances: [{ browser: "chromium" }],
-            provider: playwright(),
-            screenshotDirectory: ".vitest-attachments/screenshots"
-          },
-          include: ["tests/**/*.browser.test.{ts,tsx}"],
-          name: "browser"
-        }
-      }
-    ]
+    browser: {
+      enabled: true,
+      headless: true,
+      instances: [{ browser: "chromium" }],
+      provider: playwright(),
+      screenshotDirectory: ".vitest-attachments/screenshots"
+    },
+    include: ["tests/**/*.browser.test.{ts,tsx}"]
   }
 })
