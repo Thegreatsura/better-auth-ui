@@ -3,7 +3,7 @@
   "defaultBase": "main",
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "cf-typegen"],
       "inputs": [
         "production",
         "^production",
@@ -11,11 +11,11 @@
         "buildEnvironment",
         "buildToolchain"
       ],
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.cloudflare/output"],
       "cache": true
     },
     "typecheck": {
-      "dependsOn": ["^build", "^typecheck"],
+      "dependsOn": ["^build", "^typecheck", "cf-typegen"],
       "inputs": ["default", "^production", "typescript", "typecheckToolchain"],
       "cache": true
     },
@@ -41,7 +41,9 @@
         "^production",
         "typescript",
         "storybookToolchain",
-        { "env": "STORYBOOK_BASE_PATH" }
+        {
+          "env": "STORYBOOK_BASE_PATH"
+        }
       ],
       "outputs": ["{projectRoot}/storybook-static"],
       "cache": true
@@ -66,12 +68,20 @@
     },
     "email": {
       "continuous": true
+    },
+    "cf-typegen": {
+      "cache": true,
+      "outputs": ["{projectRoot}/.cloudflare/types"]
     }
   },
   "namedInputs": {
     "sharedGlobals": [
-      { "runtime": "node --version" },
-      { "runtime": "bun --version" }
+      {
+        "runtime": "node --version"
+      },
+      {
+        "runtime": "bun --version"
+      }
     ],
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -93,24 +103,62 @@
     ],
     "typescript": ["{workspaceRoot}/tsconfig.json"],
     "buildEnvironment": [
-      { "env": "NODE_ENV" },
-      { "env": "DATABASE_URL" },
-      { "env": "BETTER_AUTH_URL" },
-      { "env": "BETTER_AUTH_SECRET" },
-      { "env": "GITHUB_CLIENT_ID" },
-      { "env": "GITHUB_CLIENT_SECRET" },
-      { "env": "GOOGLE_CLIENT_ID" },
-      { "env": "GOOGLE_CLIENT_SECRET" },
-      { "env": "MAIL_FROM" },
-      { "env": "SMTP_HOST" },
-      { "env": "SMTP_PORT" },
-      { "env": "SMTP_USER" },
-      { "env": "SMTP_PASSWORD" },
-      { "env": "VITE_AUTH_URL" },
-      { "env": "VITE_TURNSTILE_SITE_KEY" }
+      {
+        "env": "NODE_ENV"
+      },
+      {
+        "env": "DATABASE_URL"
+      },
+      {
+        "env": "BETTER_AUTH_URL"
+      },
+      {
+        "env": "BETTER_AUTH_SECRET"
+      },
+      {
+        "env": "GITHUB_CLIENT_ID"
+      },
+      {
+        "env": "GITHUB_CLIENT_SECRET"
+      },
+      {
+        "env": "GOOGLE_CLIENT_ID"
+      },
+      {
+        "env": "GOOGLE_CLIENT_SECRET"
+      },
+      {
+        "env": "MAIL_FROM"
+      },
+      {
+        "env": "SMTP_HOST"
+      },
+      {
+        "env": "SMTP_PORT"
+      },
+      {
+        "env": "SMTP_USER"
+      },
+      {
+        "env": "SMTP_PASSWORD"
+      },
+      {
+        "env": "VITE_AUTH_URL"
+      },
+      {
+        "env": "VITE_TURNSTILE_SITE_KEY"
+      }
     ],
-    "testEnvironment": [{ "env": "CI" }, { "env": "TZ" }],
+    "testEnvironment": [
+      {
+        "env": "CI"
+      },
+      {
+        "env": "TZ"
+      }
+    ],
     "buildToolchain": [
+      "{workspaceRoot}/tools/vite/**/*",
       {
         "externalDependencies": [
           "@cloudflare/vite-plugin",
@@ -124,12 +172,16 @@
           "typescript",
           "vite",
           "vite-plugin-dts",
-          "vite-plugin-solid"
+          "vite-plugin-solid",
+          "cf"
         ]
-      },
-      "{workspaceRoot}/tools/vite/**/*"
+      }
     ],
-    "typecheckToolchain": [{ "externalDependencies": ["typescript"] }],
+    "typecheckToolchain": [
+      {
+        "externalDependencies": ["typescript"]
+      }
+    ],
     "testToolchain": [
       {
         "externalDependencies": [
@@ -159,12 +211,16 @@
       "{workspaceRoot}/.oxlintrc.json",
       "{workspaceRoot}/.oxfmtrc.json",
       "{workspaceRoot}/.gitignore",
-      { "externalDependencies": ["oxlint", "oxfmt"] }
+      {
+        "externalDependencies": ["oxlint", "oxfmt"]
+      }
     ],
     "workspaceLint": [
       "{workspaceRoot}/**/*",
       "sharedGlobals",
-      { "externalDependencies": ["oxlint", "oxfmt"] }
+      {
+        "externalDependencies": ["oxlint", "oxfmt"]
+      }
     ]
   },
   "pluginsConfig": {

@@ -52,21 +52,21 @@
     }
   },
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
+    "dev": "cf dev",
+    "build": "cf build",
     "test": "vitest run --config vitest.config.ts",
     "storybook": "storybook dev --config-dir .storybook --port 6006",
     "storybook:build": "storybook build --config-dir .storybook --output-dir storybook-static",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "deploy": "bun run build && wrangler deploy",
-    "cf-typegen": "wrangler types",
+    "deploy": "cf deploy",
+    "cf-typegen": "cf workers types --include-runtime=false",
     "registry:build": "bun scripts/build-registry.ts",
     "registry:test": "vitest run --config vitest.registry.config.ts tests/registry-graph.test.ts",
     "source:sync": "bash scripts/sync-consumers.sh"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.51.0",
+    "@cloudflare/vite-plugin": "2.0.0-beta.sha-ad79608dd",
     "@storybook/react-vite": "^10.5.10",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -84,7 +84,8 @@
     "typescript": "^6.0.3",
     "vite": "^8.2.1",
     "vitest": "^4.1.9",
-    "wrangler": "^4.119.0"
+    "cf": "1.0.0-beta.7",
+    "@cloudflare/workers-types": "5.20260930.2"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
