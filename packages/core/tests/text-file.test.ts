@@ -33,8 +33,9 @@ describe("text file browser actions", () => {
 
     vi.stubGlobal("document", {
       body: {
-        append: vi.fn((element: MockElement) => {
+        appendChild: vi.fn((element: MockElement) => {
           appendedElement = element
+          return element
         })
       },
       documentElement: {

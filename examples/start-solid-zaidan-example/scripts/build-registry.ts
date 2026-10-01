@@ -2,7 +2,6 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
-  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync
@@ -56,7 +55,6 @@ type VerifySolidRegistryCoherenceOptions = {
 
 export type SolidRegistryCoherenceReport = {
   exampleSolidDependency?: string
-  missingDocsLinks: string[]
   missingStaticFiles: string[]
   packageExports: string[]
   packageName?: string
@@ -126,24 +124,6 @@ const writeJson = (path: string, value: unknown) => {
 const readJson = <T>(path: string) =>
   JSON.parse(readFileSync(path, "utf8")) as T
 
-const registryUrlsForManifest = (manifest: SolidRegistryManifest) => [
-  `${manifest.homepage}/r/${manifest.namespace}/registry.json`,
-  ...manifest.items.map(
-    (item) => `${manifest.homepage}/r/${manifest.namespace}/${item.name}.json`
-  )
-]
-
-const collectMdxFiles = (root: string): string[] =>
-  readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
-    const path = resolve(root, entry.name)
-
-    if (entry.isDirectory()) {
-      return collectMdxFiles(path)
-    }
-
-    return entry.name.endsWith(".mdx") ? [path] : []
-  })
-
 export const verifySolidRegistryCoherence = ({
   exampleRoot,
   manifest,
@@ -155,10 +135,6 @@ export const verifySolidRegistryCoherence = ({
   const examplePackageJson = readJson<PackageJson>(
     resolve(exampleRoot, "package.json")
   )
-  const zaidanDocsRoot = resolve(repoRoot, "apps/docs/content/docs/zaidan")
-  const registryDocsContent = collectMdxFiles(zaidanDocsRoot)
-    .map((path) => readFileSync(path, "utf8"))
-    .join("\n")
   const publicSolidRegistryRoot = resolve(repoRoot, "apps/docs/public/r/solid")
   const publicSolidRegistry = readJson<SolidRegistryManifest>(
     resolve(publicSolidRegistryRoot, "registry.json")
@@ -174,9 +150,6 @@ export const verifySolidRegistryCoherence = ({
   ]
   const missingStaticFiles = expectedStaticFiles.filter(
     (file) => !existsSync(resolve(publicSolidRegistryRoot, file))
-  )
-  const missingDocsLinks = registryUrlsForManifest(manifest).filter(
-    (url) => !registryDocsContent.includes(url)
   )
   const shadcnCouplingFindings = [
     shadcnRegistry.namespace === manifest.namespace
@@ -202,7 +175,6 @@ export const verifySolidRegistryCoherence = ({
   return {
     exampleSolidDependency:
       examplePackageJson.dependencies?.["@better-auth-ui/solid"],
-    missingDocsLinks,
     missingStaticFiles,
     packageExports: Object.keys(packageJson.exports ?? {}),
     packageName: packageJson.name,

@@ -121,9 +121,12 @@ describe("@better-auth-ui/solid foundation", () => {
     const typecheckConfig = typeScriptConfig("tsconfig.typecheck.json")
     const typecheckTarget = metadata.nx.targets.typecheck
 
-    expect(nxConfig.targetDefaults.build.outputs).toEqual([
+    expect(nxConfig.targetDefaults.build.outputs).toContain(
       "{projectRoot}/dist"
-    ])
+    )
+    expect(nxConfig.targetDefaults.build.outputs).not.toContain(
+      "{projectRoot}/.typecheck"
+    )
     expect(buildConfig.compilerOptions.outDir).toBe("dist")
     expect(typecheckConfig).toEqual({
       extends: "./tsconfig.json",

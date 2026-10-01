@@ -18,7 +18,7 @@ export function downloadTextFile(text: string, filename: `${string}.txt`) {
   link.download = filename
   link.href = url
   link.hidden = true
-  document.body.append(link)
+  document.body.appendChild(link)
   link.click()
   link.remove()
 
@@ -83,5 +83,5 @@ export function printTextFile(text: string) {
   )
   frame.addEventListener("error", cleanup, { once: true })
   frame.src = url
-  document.body.append(frame)
+  document.body.appendChild(frame)
 }

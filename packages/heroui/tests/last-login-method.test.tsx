@@ -14,13 +14,13 @@ import { lastLoginMethodPlugin } from "../src/lib/auth/last-login-method-plugin"
 
 function createMockAuthClient(method: string | null) {
   return {
+    getSession: vi.fn(async () => null),
     getLastUsedLoginMethod: vi.fn(() => method),
     signIn: {
       email: vi.fn(),
       popup: vi.fn(),
       social: vi.fn()
-    },
-    useSession: () => ({ data: null, isPending: false, error: null })
+    }
   } as unknown as Parameters<typeof AuthProvider>[0]["authClient"]
 }
 
