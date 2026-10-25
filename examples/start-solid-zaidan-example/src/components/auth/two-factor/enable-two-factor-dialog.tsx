@@ -103,7 +103,8 @@ export function EnableTwoFactorDialog(props: {
     onError: () => form.setFieldValue("code", ""),
     onSuccess: () => {
       toast.success(twoFactorLocalization.twoFactorEnabled)
-      setStep("backupCodes")
+      if (backupCodes().length) setStep("backupCodes")
+      else props.onOpenChange(false)
     }
   }))
 
